@@ -1,0 +1,16 @@
+/* --- Custom Code Block Styles --- */
+
+/* Target the container for the code block */
+pre {
+  /* Allow the block to use the full width of its container */
+  max-width: 100%;
+
+  /* Add a horizontal scrollbar if the code is too wide */
+  overflow-x: auto;
+}
+
+/* Target the code text itself inside the block */
+pre code {
+  /* Make the font size slightly smaller for better readability */
+  font-size: 0.9rem;
+}

@@ -5,16 +5,36 @@
  */
 
 :root {
-	--accent: #2337ff;
-	--accent-dark: #000d8a;
-	--black: 15, 18, 25;
-	--gray: 96, 115, 159;
-	--gray-light: 229, 233, 240;
-	--gray-dark: 34, 41, 57;
+	/* Data Analytics Theme - Jupyter Orange with Data-Friendly Grays */
+	--accent: #ff6b35;
+	--accent-dark: #e55527;
+	--black: 33, 37, 41;          /* Darker, more readable text */
+	--gray: 108, 117, 125;        /* Neutral data-friendly gray */
+	--gray-light: 248, 249, 250;  /* Clean background gray */
+	--gray-dark: 52, 58, 64;      /* Professional dark gray */
 	--gray-gradient: rgba(var(--gray-light), 50%), #fff;
 	--box-shadow:
 		0 2px 6px rgba(var(--gray), 25%), 0 8px 24px rgba(var(--gray), 33%), 0 16px 32px
 		rgba(var(--gray), 33%);
+}
+
+/* Mermaid diagram styling */
+.mermaid {
+	text-align: center;
+	margin: 2rem auto;
+	background: white;
+	border: 1px solid rgb(var(--gray-light));
+	border-radius: 8px;
+	padding: 1rem;
+	overflow-x: auto;
+}
+
+@media (prefers-color-scheme: dark) {
+	.mermaid {
+		background: rgb(var(--gray-dark));
+		border-color: rgb(var(--gray));
+		color: rgb(var(--gray-light));
+	}
 }
 @font-face {
 	font-family: "Atkinson";

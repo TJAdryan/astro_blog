@@ -55,3 +55,51 @@ const { title, description, image = FallbackImage } = Astro.props;
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={new URL(image.src, Astro.url)} />
+
+<!-- Mermaid -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Mermaid
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'default',
+      securityLevel: 'loose',
+      flowchart: {
+        htmlLabels: true,
+        curve: 'basis'
+      }
+    });
+
+    // Function to render Mermaid diagrams
+    async function renderMermaidDiagrams() {
+      console.log('Rendering mermaid diagrams...');
+      const mermaidElements = document.querySelectorAll('.mermaid');
+      console.log(`Found ${mermaidElements.length} mermaid elements`);
+      
+      for (let i = 0; i < mermaidElements.length; i++) {
+        const element = mermaidElements[i];
+        if (!element.dataset.processed) {
+          console.log(`Processing mermaid element ${i}:`, element.textContent.trim().substring(0, 50));
+          element.dataset.processed = 'true';
+          const id = `mermaid-${Date.now()}-${i}`;
+          
+          try {
+            const { svg } = await mermaid.render(id, element.textContent.trim());
+            element.innerHTML = svg;
+            console.log(`Successfully rendered mermaid diagram ${i}`);
+          } catch (error) {
+            console.error('Mermaid rendering error:', error);
+            element.innerHTML = `<p style="color: red;">Error rendering diagram: ${error.message}</p>`;
+          }
+        }
+      }
+    }
+
+    // Render diagrams
+    renderMermaidDiagrams();
+    
+    // Also run when navigating in SPA mode
+    window.addEventListener('astro:page-load', renderMermaidDiagrams);
+  });
+</script>

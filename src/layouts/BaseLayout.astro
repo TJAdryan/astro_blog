@@ -1,0 +1,32 @@
+---
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
+import "../styles/global.css"; // <--- This is the crucial missing line
+
+const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body
+    class="min-h-screen bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-50"
+  >
+    <div class="flex flex-col min-h-screen">
+      <Header />
+      <main class="flex-grow px-4 py-8 max-w-3xl mx-auto w-full">
+        <slot /> <!-- Your page content will go here -->
+      </main>
+      <Footer />
+    </div>
+     <script is:inline src="/js/dailyWidget.js"></script>
+  </body>
+</html>
