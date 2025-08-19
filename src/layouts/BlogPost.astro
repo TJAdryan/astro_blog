@@ -83,6 +83,43 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 			</article>
 		</main>
 		<Footer />
-		 <script is:inline src="/js/dailyWidget.js"></script>
+		<script is:inline src="/js/dailyWidget.js"></script>
+		<script is:inline>
+			// Make Mermaid diagrams clickable to expand in modal
+			document.addEventListener('DOMContentLoaded', function() {
+				const mermaidDiagrams = document.querySelectorAll('.mermaid');
+				
+				// Create modal element
+				const modal = document.createElement('div');
+				modal.className = 'diagram-modal';
+				document.body.appendChild(modal);
+				
+				mermaidDiagrams.forEach(diagram => {
+					diagram.addEventListener('click', function() {
+						// Clone the diagram
+						const clonedDiagram = this.cloneNode(true);
+						
+						// Clear modal and add cloned diagram
+						modal.innerHTML = '';
+						modal.appendChild(clonedDiagram);
+						
+						// Show modal
+						modal.classList.add('active');
+					});
+				});
+				
+				// Close modal when clicking on it
+				modal.addEventListener('click', function() {
+					this.classList.remove('active');
+				});
+				
+				// Close modal with escape key
+				document.addEventListener('keydown', function(e) {
+					if (e.key === 'Escape') {
+						modal.classList.remove('active');
+					}
+				});
+			});
+		</script>
 	</body>
 </html>
