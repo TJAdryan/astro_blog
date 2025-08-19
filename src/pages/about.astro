@@ -1,5 +1,4 @@
 ---
-import AboutHeroImage from '../assets/blog-placeholder-about.jpg';
 import Layout from '../layouts/BlogPost.astro';
 ---
 
@@ -7,23 +6,29 @@ import Layout from '../layouts/BlogPost.astro';
 	title="About Me"
 	description="Senior Engineer specializing in data engineering, API integrations, and cloud services. I love data and making it useful for people."
 	pubDate={new Date('August 08 2021')}
-	heroImage={AboutHeroImage}
 >
-	<div style="overflow: auto; margin-bottom: 20px;">
-		<div style="width: 25%; float: left; margin-right: 15px; margin-bottom: 10px;">
-			<img src="/img/about/profileme.jpg" alt="Dominick Ryan" style="width: 100%; border-radius: 50%;">
+	<div style="overflow: auto; margin-bottom: 2rem; padding: 2rem; background: linear-gradient(135deg, rgba(255, 107, 53, 0.05) 0%, rgba(255, 107, 53, 0.02) 100%); border-radius: 12px; border: 1px solid rgba(255, 107, 53, 0.1);">
+		<div style="width: 200px; float: left; margin-right: 2rem; margin-bottom: 1rem;">
+			<img src="/img/about/profileme.jpg" alt="Dominick Ryan" style="width: 100%; border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
 		</div>
 		<div>
-			<p>Hey there, welcome to my blog! I'm Dominick, and this is my personal blog. I love data, and learning new things and new ways of looking at the world.</p>
+			<h2 style="color: var(--accent); margin-top: 0; font-size: 1.8rem;">Hey there! 👋</h2>
+			<p>Welcome to my blog! I'm Dominick, and this is my personal blog. I love data, and learning new things and new ways of looking at the world.</p>
 
-			<p>Professionally, I am working as a Senior Engineer, developing API integrations, automating reporting, and configuring and deploying cloud services. I'm lucky to be on a team with awesome and dedicated people, where we create solutions for a whole range of SaaS, PaaS, and legacy system challenges. Day-to-day, I get to use a lot of great technology like Python, SQL, Spark, and Airflow, sometimes on cloud platforms like GCP, Azure, and AWS.</p>
+			<p>Professionally, I am working as a <strong>Senior Engineer</strong>, developing API integrations, automating reporting, and configuring and deploying cloud services. I'm lucky to be on a team with awesome and dedicated people, where we create solutions for a whole range of SaaS, PaaS, and legacy system challenges.</p>
 
-			<p>Whether I'm building out ETL/ELT pipelines, setting up data warehouses or data lakes, or even diving into the data from that classic 'keyring of thumb drives someone found in a drawer,' my aim is to make sure data is useful. One of the most important steps in making this happen, is understanding what colleagues and stakeholders need from these solutions. Or as I like to say, Let's make it nice for the people.</p>
+			<p>Day-to-day, I get to use a lot of great technology like <strong>Python, SQL, Spark, and Airflow</strong>, sometimes on cloud platforms like <strong>GCP, Azure, and AWS</strong>.</p>
 		</div>
 	</div>
 
+	<div style="padding: 1.5rem; background: rgba(248, 249, 250, 0.8); border-radius: 8px; margin-bottom: 2rem; border-left: 4px solid var(--accent);">
+		<h3 style="margin-top: 0; color: var(--accent-dark);">My Philosophy</h3>
+		<p style="margin-bottom: 0; font-style: italic;">Whether I'm building out ETL/ELT pipelines, setting up data warehouses or data lakes, or even diving into the data from that classic 'keyring of thumb drives someone found in a drawer,' my aim is to make sure data is useful. One of the most important steps in making this happen, is understanding what colleagues and stakeholders need from these solutions.</p>
+		<p style="text-align: center; font-weight: bold; color: var(--accent); margin-bottom: 0; font-size: 1.1rem;">"Let's make it nice for the people." 🚀</p>
+	</div>
+
 	<div style="text-align: center; margin-top: 2rem;">
-		<a href="/more-about-me/" style="display: inline-block; padding: 0.5rem 1rem; background: var(--accent); color: white; text-decoration: none; border-radius: 4px; margin-right: 1rem;">I Want to Know More About Dominick</a>
-		<a href="https://www.google.com" style="display: inline-block; padding: 0.5rem 1rem; background: rgb(var(--gray)); color: white; text-decoration: none; border-radius: 4px;">I've Heard Enough</a>
+		<a href="/more-about-me/" style="display: inline-block; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%); color: white; text-decoration: none; border-radius: 8px; margin-right: 1rem; box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3); transition: all 0.3s ease; font-weight: 500;">I Want to Know More About Dominick</a>
+		<a href="https://www.google.com" style="display: inline-block; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, rgb(var(--gray)) 0%, rgb(var(--gray-dark)) 100%); color: white; text-decoration: none; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); transition: all 0.3s ease; font-weight: 500;">I've Heard Enough</a>
 	</div>
 </Layout>

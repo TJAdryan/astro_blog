@@ -52,6 +52,18 @@ const posts = (await getCollection('blog')).sort(
 			}
 			ul li a {
 				display: block;
+				padding: 1.5rem;
+				background: rgba(255, 255, 255, 0.8);
+				border-radius: 12px;
+				border: 1px solid rgba(255, 107, 53, 0.1);
+				box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+				transition: all 0.3s ease;
+				height: 100%;
+			}
+			ul li a:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 8px 25px rgba(255, 107, 53, 0.2);
+				border-color: rgba(255, 107, 53, 0.3);
 			}
 			.title {
 				margin: 0;
