@@ -15,7 +15,7 @@ description: A post about Bring me the Data.
 ---
 
 
-<img src="//img/rest_rate2.png" alt="We're toast!" width="400px" height="auto">
+<img src="/img/rest_rate2.png" alt="We're toast!" width="400px" height="auto">
 
 <p style="font-size:0.9em; margin-top:0.5em; color:#555;"><em>taking it personally.</em></p>
 

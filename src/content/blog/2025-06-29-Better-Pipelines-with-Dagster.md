@@ -21,11 +21,11 @@ I am always looking for ways to improve my data pipelines, and Dagster has been 
 I tried to keep it simple, flowing from the NYC Open Data API through various Dagster assets, eventually feeding into both static PNG charts and the dynamic Streamlit dashboard. 
 Dagster updates the information and then it is displayed in the Streamlit app.  Here is an exmple of what the output looks like:
 
-<img src="//img/streamdagster.png" alt="Dagster streamlit image" width="600px">
+<img src="/img/streamdagster.png" alt="Dagster streamlit image" width="600px">
 
 The output from Dagster is no slouch when it comes to visualizations either.  Being able to see the orchestration visually and being able to choose to run a single asset is great.
 
-<img src="//img/full_pipeline.png" alt="Dagster streamlit image" width="600px">
+<img src="/img/full_pipeline.png" alt="Dagster streamlit image" width="600px">
 
 
 Also the way Dagster displays the logs and allows you to trace back any issues is super helpful too.  Once you start a job you can move over to the runs tab, or you can follow the link that gets generated when you run a job.  

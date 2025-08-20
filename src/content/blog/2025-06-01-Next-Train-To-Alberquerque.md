@@ -18,7 +18,7 @@ description: 'A post about Next Train to Alberquerque: Track NYC Subway Arrivals
 
 
 <figure style="text-align: center;">
-  <img src="//img/next_train.png" alt="Twas but a cookie, with lemon" style="width: 400px; height: auto;">
+  <img src="/img/next_train.png" alt="Twas but a cookie, with lemon" style="width: 400px; height: auto;">
   <figcaption style="font-size: smaller; color: gray;">If only there was a better way.</figcaption>
 </figure>
 

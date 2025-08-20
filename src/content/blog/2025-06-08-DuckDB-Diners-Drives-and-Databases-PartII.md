@@ -15,7 +15,7 @@ description: A post about DuckDB - Diners, Drives, and Databases Part II.
 ---
 
 
-<img src="//img/duckdbgf2.png" alt="All paws on Deck" width="400px" height="auto">
+<img src="/img/duckdbgf2.png" alt="All paws on Deck" width="400px" height="auto">
 
 <p style="font-size:0.9em; margin-top:0.5em; color:#555;"><em>Hoping for an A.</em></p>
 
