@@ -39,7 +39,7 @@ user/downloads/
 
 ### 4. Now you can change the file extension to .zip and unzip the file to see the contents
 
-![Top of the xml folder](//img/2024-06-05-xml-all-the-things/firstlevel.png)
+![Top of the xml folder](/img/2024-06-05-xml-all-the-things/firstlevel.png)
 
 What we thought was a single file is actually a nested folder structure. 
 
@@ -54,7 +54,7 @@ What we thought was a single file is actually a nested folder structure.
 │   ├── workbook.xml
 │   └── sharedStrings.xml 
 
-![nested xml](//img/2024-06-05-xml-all-the-things/xl_level.png)
+![nested xml](/img/2024-06-05-xml-all-the-things/xl_level.png)
 
 
 

@@ -29,7 +29,7 @@ The output from Dagster is no slouch when it comes to visualizations either.  Be
 
 
 Also the way Dagster displays the logs and allows you to trace back any issues is super helpful too.  Once you start a job you can move over to the runs tab, or you can follow the link that gets generated when you run a job.  
-<img src="//img/Run_dagster.png" alt="Dagster streamlit image" width="600px">
+<img src="/img/Run_dagster.png" alt="Dagster streamlit image" width="600px">
 
 
 If you are interested in getting some ideas for yourself you can follow the README which you to check out directly on the [GitHub repo](https://github.com/TJAdryan/dagster_starter) and walks through the process step by step. 

@@ -16,7 +16,7 @@ description: 'A post about Lemon Labor Lost: A Quest for the Perfect Cookie.'
 
 
 <figure style="text-align: center;">
-  <img src="//img/lemon-hamlet.png" alt="Twas but a cookie, with lemon" style="width: 400px; height: auto;">
+  <img src="/img/lemon-hamlet.png" alt="Twas but a cookie, with lemon" style="width: 400px; height: auto;">
   <figcaption style="font-size: smaller; color: gray;">Twas a cookie, with scant but the scent of a lemon.</figcaption>
 </figure>
 
