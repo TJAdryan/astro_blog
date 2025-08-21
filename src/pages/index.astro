@@ -19,28 +19,10 @@ const latestPosts = posts.slice(0, 3);
       Data insights, analytics, and technical explorations.
     </p>
 
-    <!-- Daily Widget -->
-    <div
-      id="daily-widget"
-      class="mb-12 p-6 border rounded-lg bg-gray-50 dark:bg-gray-800"
-    >
-      <h3 class="font-bold text-lg mb-2">Seminal Paper of the Day</h3>
-      <a
-        id="article-title"
-        href="#"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="text-blue-600 dark:text-blue-400 hover:underline italic"
-      >
-        Loading...
-      </a>
-      <p id="article-author" class="text-sm text-gray-600 dark:text-gray-400 mt-1"></p>
-    </div>
-
     <!-- Latest Posts Section -->
     {
       latestPosts.length > 0 && (
-        <div class="latest-posts">
+        <div class="latest-posts mb-12">
           <h2 class="text-2xl font-bold mb-4">Latest Posts</h2>
           <div class="space-y-4">
             {latestPosts.map((post) => (
@@ -63,6 +45,26 @@ const latestPosts = posts.slice(0, 3);
         </div>
       )
     }
+
+    <!-- Interesting Articles Widget -->
+    <div
+      id="daily-widget"
+      class="p-6 border rounded-lg bg-gray-50 dark:bg-gray-800"
+    >
+      <a href="/interesting-articles/" class="hover:underline">
+        <h3 class="font-bold text-lg mb-2">Articles I Find Interesting</h3>
+      </a>
+      <a
+        id="article-title"
+        href="#"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-blue-600 dark:text-blue-400 hover:underline italic"
+      >
+        Loading...
+      </a>
+      <p id="article-author" class="text-sm text-gray-600 dark:text-gray-400 mt-1"></p>
+    </div>
   </div>
 </BaseLayout>
 

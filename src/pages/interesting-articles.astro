@@ -1,0 +1,114 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout>
+  <div class="container">
+    <h1 class="text-4xl font-bold mb-4">Articles I Find Interesting</h1>
+    <p class="mb-8 text-lg text-gray-600 dark:text-gray-400">
+      Research papers and articles I've referenced or found particularly insightful.
+    </p>
+
+    <div class="space-y-8">
+      
+      <div class="p-6 border rounded-lg bg-gray-50 dark:bg-gray-800">
+        <h3 class="text-xl font-bold mb-2">
+          <a href="https://science.sciencemag.org/content/366/6464/447" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline">
+            Dissecting racial bias in an algorithm used to manage the health of populations
+          </a>
+        </h3>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+          Obermeyer, Z., Powers, B., Vogeli, C., & Mullainathan, S. (2019) - Science
+        </p>
+        <p class="text-gray-700 dark:text-gray-300">
+          This groundbreaking study revealed how a widely-used healthcare algorithm was systematically biased against Black patients. The algorithm used healthcare costs as a proxy for health needs, but Black patients historically receive less care and therefore incur lower costs for the same level of illness. This created a feedback loop where the algorithm consistently underestimated their health needs, affecting care decisions for millions of patients.
+        </p>
+      </div>
+
+      <div class="p-6 border rounded-lg bg-gray-50 dark:bg-gray-800">
+        <h3 class="text-xl font-bold mb-2">
+          <a href="https://academic.oup.com/jamia/article/23/5/899/2399304" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline">
+            SMART on FHIR: A standards-based, interoperable apps platform for electronic health records
+          </a>
+        </h3>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+          Mandel, J. C., Kreda, D. A., Mandl, K. D., Kohane, I. S., & Ramoni, R. B. (2016) - Journal of the American Medical Informatics Association
+        </p>
+        <p class="text-gray-700 dark:text-gray-300">
+          This paper describes the SMART on FHIR platform that enables healthcare apps to work across different electronic health record systems. Think of it like creating a universal app store for healthcare - where developers can build apps once and have them work with any hospital's computer system. This standardization has been crucial for healthcare innovation and interoperability.
+        </p>
+      </div>
+
+      <div class="p-6 border rounded-lg bg-gray-50 dark:bg-gray-800">
+        <h3 class="text-xl font-bold mb-2">
+          <a href="https://academic.oup.com/jamia/article/13/1/30/719422" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline">
+            HL7 Clinical Document Architecture, Release 2
+          </a>
+        </h3>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+          Dolin, R. H., Alschuler, L., Boyer, S., et al. (2006) - Journal of the American Medical Informatics Association
+        </p>
+        <p class="text-gray-700 dark:text-gray-300">
+          This technical specification established how healthcare documents should be structured and shared electronically. Before this standard, medical records were like different languages that couldn't talk to each other. HL7 CDA created a common format for things like lab results, discharge summaries, and medical histories, making it possible for different healthcare systems to exchange patient information safely and accurately.
+        </p>
+      </div>
+
+      <div class="p-6 border rounded-lg bg-gray-50 dark:bg-gray-800">
+        <h3 class="text-xl font-bold mb-2">
+          <a href="https://www.healthaffairs.org/doi/10.1377/hlthaff.w5.10" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline">
+            The value of health care information exchange and interoperability
+          </a>
+        </h3>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+          Walker, J., Pan, E., Johnston, D., et al. (2005) - Health Affairs
+        </p>
+        <p class="text-gray-700 dark:text-gray-300">
+          This influential paper made the economic case for why healthcare systems should share data with each other. The authors calculated that better information sharing could save the U.S. healthcare system billions of dollars annually by reducing duplicate tests, preventing medical errors, and improving care coordination. It helped justify the massive investments in healthcare IT infrastructure that followed.
+        </p>
+      </div>
+
+      <div class="p-6 border rounded-lg bg-gray-50 dark:bg-gray-800">
+        <h3 class="text-xl font-bold mb-2">
+          <a href="https://jamanetwork.com/journals/jama/fullarticle/200501" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline">
+            Role of computerized physician order entry systems in facilitating medication errors
+          </a>
+        </h3>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+          Koppel, R., Metlay, J. P., Cohen, A., et al. (2005) - JAMA
+        </p>
+        <p class="text-gray-700 dark:text-gray-300">
+          This surprising study found that electronic prescribing systems, while solving some problems, actually created new types of medication errors. The researchers discovered that poorly designed computer interfaces could lead doctors to accidentally order the wrong medications or doses. It was an important reality check showing that just digitizing healthcare processes isn't automatically better - the design and implementation matter enormously.
+        </p>
+      </div>
+
+      <div class="p-6 border rounded-lg bg-gray-50 dark:bg-gray-800">
+        <h3 class="text-xl font-bold mb-2">
+          <a href="https://psycnet.apa.org/record/1968-07393-001" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline">
+            Bystander intervention in emergencies: Diffusion of responsibility
+          </a>
+        </h3>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+          Darley, J. M., & Latané, B. (1968) - Journal of Personality and Social Psychology
+        </p>
+        <p class="text-gray-700 dark:text-gray-300">
+          This classic psychology experiment revealed the "bystander effect" - the more people who witness an emergency, the less likely any individual is to help. The researchers found that responsibility gets diluted when spread across multiple people. I reference this when discussing how complex healthcare systems with multiple automated decision-makers can obscure accountability when things go wrong.
+        </p>
+      </div>
+
+      <div class="p-6 border rounded-lg bg-gray-50 dark:bg-gray-800">
+        <h3 class="text-xl font-bold mb-2">
+          <a href="https://studenttheses.universiteitleiden.nl/access/item%3A2661526/view" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline">
+            Healthcare Data Interoperability: Challenges and Opportunities in Digital Health Integration
+          </a>
+        </h3>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+          Peterson, L. (2024) - Universiteit Leiden Student Theses
+        </p>
+        <p class="text-gray-700 dark:text-gray-300">
+          This recent thesis provides a comprehensive examination of current challenges in healthcare data sharing and integration. It explores both the technical hurdles (like incompatible data formats) and policy barriers (like privacy regulations) that prevent healthcare systems from seamlessly sharing patient information. The work offers practical recommendations for overcoming these obstacles in modern digital health implementations.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</BaseLayout>
