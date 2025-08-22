@@ -70,7 +70,7 @@ const latestPosts = posts.slice(0, 3);
 </BaseLayout>
 
 <script>
-  // Guaranteed free and accessible resources - no paywalls ever!
+  // Use the same articles that are defined in our centralized data
   const seminalPapers = [
     {
       title: "The Economics of Healthcare Rationing",
@@ -87,13 +87,6 @@ const latestPosts = posts.slice(0, 3);
       url: "https://12factor.net/"
     },
     {
-      title: "Designing Data-Intensive Applications - Free Chapter",
-      authors: "Martin Kleppmann",
-      year: "2020",
-      journal: "O'Reilly (Free Sample)",
-      url: "https://dataintensive.net/"
-    },
-    {
       title: "The System Design Primer",
       authors: "Donne Martin",
       year: "2024",
@@ -106,114 +99,6 @@ const latestPosts = posts.slice(0, 3);
       year: "2016",
       journal: "Medium (Free)",
       url: "https://medium.com/@maximebeauchemin/functional-data-engineering-a-modern-paradigm-for-batch-data-processing-2327ec32c42a"
-    },
-    {
-      title: "Apache Airflow Documentation",
-      authors: "Apache Airflow Community",
-      year: "2024",
-      journal: "Apache Foundation (Free)",
-      url: "https://airflow.apache.org/docs/"
-    },
-    {
-      title: "dbt Documentation - Analytics Engineering",
-      authors: "dbt Labs",
-      year: "2024",
-      journal: "dbt (Free Documentation)",
-      url: "https://docs.getdbt.com/docs/introduction"
-    },
-    {
-      title: "High Scalability Architecture Articles",
-      authors: "Various Contributors",
-      year: "2024",
-      journal: "High Scalability (Free Blog)",
-      url: "http://highscalability.com/"
-    },
-    {
-      title: "AWS Architecture Center",
-      authors: "Amazon Web Services",
-      year: "2024",
-      journal: "AWS (Free)",
-      url: "https://aws.amazon.com/architecture/"
-    },
-    {
-      title: "Google Cloud Architecture Framework",
-      authors: "Google Cloud",
-      year: "2024",
-      journal: "Google Cloud (Free)",
-      url: "https://cloud.google.com/architecture/framework"
-    },
-    {
-      title: "Microsoft Azure Well-Architected Framework",
-      authors: "Microsoft",
-      year: "2024",
-      journal: "Microsoft Azure (Free)",
-      url: "https://docs.microsoft.com/en-us/azure/architecture/framework/"
-    },
-    {
-      title: "Data Engineering Weekly Newsletter Archives",
-      authors: "Ananth Packkildurai",
-      year: "2024",
-      journal: "Newsletter (Free Archive)",
-      url: "https://www.dataengineering.wiki/"
-    },
-    {
-      title: "The Missing Semester of Your CS Education",
-      authors: "MIT",
-      year: "2020",
-      journal: "MIT OpenCourseWare (Free)",
-      url: "https://missing.csail.mit.edu/"
-    }
-  ];
-      url: "https://www.cidrdb.org/cidr2021/papers/cidr2021_paper17.pdf"
-    },
-    {
-      title: "Apache Airflow: A Platform to Programmatically Author, Schedule and Monitor Workflows",
-      authors: "Apache Airflow Community",
-      year: "2020",
-      journal: "Apache Foundation (Open Source)",
-      url: "https://airflow.apache.org/docs/apache-airflow/stable/concepts/overview.html"
-    },
-    {
-      title: "Building Reliable Data Pipelines",
-      authors: "Maxime Beauchemin (Airflow Creator)",
-      year: "2016",
-      journal: "Medium (Free)",
-      url: "https://medium.com/@maximebeauchemin/functional-data-engineering-a-modern-paradigm-for-batch-data-processing-2327ec32c42a"
-    },
-    {
-      title: "The Data Warehouse Toolkit: Dimensional Modeling Techniques",
-      authors: "Ralph Kimball",
-      year: "2013",
-      journal: "Kimball Group (Free Articles)",
-      url: "https://www.kimballgroup.com/data-warehouse-business-intelligence-resources/kimball-techniques/dimensional-modeling-techniques/"
-    },
-    {
-      title: "Apache Kafka: A Distributed Streaming Platform",
-      authors: "Apache Kafka Community",
-      year: "2021",
-      journal: "Apache Foundation (Open Source)",
-      url: "https://kafka.apache.org/documentation/"
-    },
-    {
-      title: "Delta Lake: High-Performance ACID Table Storage",
-      authors: "Databricks Team",
-      year: "2020",
-      journal: "Databricks (Free Whitepaper)",
-      url: "https://delta.io/pdfs/delta-lake-white-paper.pdf"
-    },
-    {
-      title: "What Every Data Engineer Should Know About Database Storage",
-      authors: "Various Contributors",
-      year: "2022",
-      journal: "GitHub Community (Open Source)",
-      url: "https://github.com/donnemartin/system-design-primer#database"
-    },
-    {
-      title: "The Twelve-Factor App Methodology",
-      authors: "Adam Wiggins (Heroku)",
-      year: "2017",
-      journal: "Heroku (Free)",
-      url: "https://12factor.net/"
     }
   ];
 
