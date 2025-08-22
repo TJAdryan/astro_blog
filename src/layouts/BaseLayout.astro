@@ -14,6 +14,11 @@ const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props;
     <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    
+    <!-- Preload critical fonts for better performance -->
+    <link rel="preload" href="/fonts/atkinson-regular.woff" as="font" type="font/woff" crossorigin />
+    <link rel="preload" href="/fonts/atkinson-bold.woff" as="font" type="font/woff" crossorigin />
+    
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
   </head>
@@ -27,6 +32,7 @@ const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props;
       </main>
       <Footer />
     </div>
-     <script is:inline src="/js/dailyWidget.js"></script>
+    <!-- Defer non-critical JavaScript for better performance -->
+    <script is:inline src="/js/dailyWidget.js" defer></script>
   </body>
 </html>
