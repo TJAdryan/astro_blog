@@ -69,56 +69,105 @@ const latestPosts = posts.slice(0, 3);
 </BaseLayout>
 
 <script>
-  // Seminal papers database for "Paper of the Day"
+  // Open access papers database for "Paper of the Day"
   const seminalPapers = [
     {
-      title: "Dissecting racial bias in an algorithm used to manage the health of populations",
-      authors: "Obermeyer, Z., Powers, B., Vogeli, C., & Mullainathan, S.",
-      year: "2019",
-      journal: "Science",
-      url: "https://science.sciencemag.org/content/366/6464/447"
+      title: "A Relational Model of Data for Large Shared Data Banks",
+      authors: "E.F. Codd",
+      year: "1970",
+      journal: "Communications of the ACM",
+      url: "https://www.seas.upenn.edu/~zives/03f/cis550/codd.pdf"
     },
     {
-      title: "SMART on FHIR: A standards-based, interoperable apps platform for electronic health records",
-      authors: "Mandel, J. C., Kreda, D. A., Mandl, K. D., Kohane, I. S., & Ramoni, R. B.",
+      title: "Attention Is All You Need",
+      authors: "Vaswani, A., Shazeer, N., Parmar, N., et al.",
+      year: "2017",
+      journal: "arXiv preprint",
+      url: "https://arxiv.org/abs/1706.03762"
+    },
+    {
+      title: "MapReduce: Simplified Data Processing on Large Clusters",
+      authors: "Dean, J., & Ghemawat, S.",
+      year: "2004",
+      journal: "Google Research",
+      url: "https://research.google/pubs/mapreduce-simplified-data-processing-on-large-clusters/"
+    },
+    {
+      title: "The Anatomy of a Large-Scale Hypertextual Web Search Engine",
+      authors: "Brin, S., & Page, L.",
+      year: "1998",
+      journal: "Stanford InfoLab",
+      url: "http://infolab.stanford.edu/~backrub/google.html"
+    },
+    {
+      title: "Deep Residual Learning for Image Recognition",
+      authors: "He, K., Zhang, X., Ren, S., & Sun, J.",
+      year: "2015",
+      journal: "arXiv preprint",
+      url: "https://arxiv.org/abs/1512.03385"
+    },
+    {
+      title: "The Lakehouse: A New Generation of Open Platforms that Unify Data Warehousing and Advanced Analytics",
+      authors: "Armbrust, M., Ghodsi, A., Xin, R., & Zaharia, M.",
+      year: "2021",
+      journal: "Conference on Innovative Data Systems Research",
+      url: "https://www.cidrdb.org/cidr2021/papers/cidr2021_paper17.pdf"
+    },
+    {
+      title: "Apache Spark: A Unified Engine for Big Data Processing",
+      authors: "Zaharia, M., Xin, R. S., Wendell, P., et al.",
       year: "2016",
-      journal: "Journal of the American Medical Informatics Association",
-      url: "https://academic.oup.com/jamia/article/23/5/899/2399304"
+      journal: "Communications of the ACM",
+      url: "https://dl.acm.org/doi/pdf/10.1145/2934664"
     },
     {
-      title: "HL7 Clinical Document Architecture, Release 2",
-      authors: "Dolin, R. H., Alschuler, L., Boyer, S., et al.",
+      title: "The Google File System",
+      authors: "Ghemawat, S., Gobioff, H., & Leung, S. T.",
+      year: "2003",
+      journal: "ACM SIGOPS Operating Systems Review",
+      url: "https://static.googleusercontent.com/media/research.google.com/en//archive/gfs-sosp2003.pdf"
+    },
+    {
+      title: "Bigtable: A Distributed Storage System for Structured Data",
+      authors: "Chang, F., Dean, J., Ghemawat, S., et al.",
+      year: "2008",
+      journal: "ACM Transactions on Computer Systems",
+      url: "https://static.googleusercontent.com/media/research.google.com/en//archive/bigtable-osdi06.pdf"
+    },
+    {
+      title: "Dynamo: Amazon's Highly Available Key-value Store",
+      authors: "DeCandia, G., Hastorun, D., Jampani, M., et al.",
+      year: "2007",
+      journal: "ACM SIGOPS Operating Systems Review",
+      url: "https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf"
+    },
+    {
+      title: "The Chubby Lock Service for Loosely-Coupled Distributed Systems",
+      authors: "Burrows, M.",
       year: "2006",
-      journal: "Journal of the American Medical Informatics Association",
-      url: "https://academic.oup.com/jamia/article/13/1/30/719422"
+      journal: "USENIX Symposium on Operating Systems Design",
+      url: "https://static.googleusercontent.com/media/research.google.com/en//archive/chubby-osdi06.pdf"
     },
     {
-      title: "The value of health care information exchange and interoperability",
-      authors: "Walker, J., Pan, E., Johnston, D., et al.",
-      year: "2005",
-      journal: "Health Affairs",
-      url: "https://www.healthaffairs.org/doi/10.1377/hlthaff.w5.10"
+      title: "Kafka: a Distributed Messaging System for Log Processing",
+      authors: "Kreps, J., Narkhede, N., Rao, J., et al.",
+      year: "2011",
+      journal: "Proceedings of the NetDB Workshop",
+      url: "https://notes.stephenholiday.com/Kafka.pdf"
     },
     {
-      title: "Role of computerized physician order entry systems in facilitating medication errors",
-      authors: "Koppel, R., Metlay, J. P., Cohen, A., et al.",
-      year: "2005",
-      journal: "JAMA",
-      url: "https://jamanetwork.com/journals/jama/fullarticle/200501"
+      title: "Resilient Distributed Datasets: A Fault-Tolerant Abstraction for In-Memory Cluster Computing",
+      authors: "Zaharia, M., Chowdhury, M., Das, T., et al.",
+      year: "2012",
+      journal: "USENIX Symposium on Networked Systems Design",
+      url: "https://www.usenix.org/system/files/conference/nsdi12/nsdi12-final138.pdf"
     },
     {
-      title: "Bystander intervention in emergencies: Diffusion of responsibility",
-      authors: "Darley, J. M., & Latané, B.",
-      year: "1968",
-      journal: "Journal of Personality and Social Psychology",
-      url: "https://psycnet.apa.org/record/1968-07393-001"
-    },
-    {
-      title: "Healthcare Data Interoperability: Challenges and Opportunities in Digital Health Integration",
-      authors: "Peterson, L.",
-      year: "2024",
-      journal: "Universiteit Leiden Student Theses",
-      url: "https://studenttheses.universiteitleiden.nl/access/item%3A2661526/view"
+      title: "Delta Lake: High-Performance ACID Table Storage over Cloud Object Stores",
+      authors: "Armbrust, M., Ghodsi, A., Xin, R., et al.",
+      year: "2020",
+      journal: "VLDB Endowment",
+      url: "https://databricks.com/wp-content/uploads/2020/08/p975-armbrust.pdf"
     }
   ];
 
