@@ -69,55 +69,93 @@ const latestPosts = posts.slice(0, 3);
 </BaseLayout>
 
 <script>
-  // Open access papers and resources database for "Paper of the Day"
+  // Guaranteed free and accessible resources - no paywalls ever!
   const seminalPapers = [
     {
-      title: "A Relational Model of Data for Large Shared Data Banks",
-      authors: "E.F. Codd",
-      year: "1970",
-      journal: "IBM Research (Free PDF)",
-      url: "https://www.seas.upenn.edu/~zives/03f/cis550/codd.pdf"
-    },
-    {
-      title: "Attention Is All You Need",
-      authors: "Vaswani, A., et al.",
+      title: "The Twelve-Factor App Methodology",
+      authors: "Adam Wiggins",
       year: "2017",
-      journal: "arXiv (Open Access)",
-      url: "https://arxiv.org/abs/1706.03762"
+      journal: "Heroku (Always Free)",
+      url: "https://12factor.net/"
     },
     {
-      title: "MapReduce: Simplified Data Processing on Large Clusters",
-      authors: "Dean, J., & Ghemawat, S.",
-      year: "2004",
-      journal: "Google Research (Free)",
-      url: "https://static.googleusercontent.com/media/research.google.com/en//archive/mapreduce-osdi04.pdf"
+      title: "Designing Data-Intensive Applications - Free Chapter",
+      authors: "Martin Kleppmann",
+      year: "2020",
+      journal: "O'Reilly (Free Sample)",
+      url: "https://dataintensive.net/"
     },
     {
-      title: "The Google File System",
-      authors: "Ghemawat, S., et al.",
-      year: "2003",
-      journal: "Google Research (Free PDF)",
-      url: "https://static.googleusercontent.com/media/research.google.com/en//archive/gfs-sosp2003.pdf"
+      title: "The System Design Primer",
+      authors: "Donne Martin",
+      year: "2024",
+      journal: "GitHub (Open Source)",
+      url: "https://github.com/donnemartin/system-design-primer"
     },
     {
-      title: "Bigtable: A Distributed Storage System for Structured Data",
-      authors: "Chang, F., et al.",
-      year: "2008",
-      journal: "Google Research (Free PDF)",
-      url: "https://static.googleusercontent.com/media/research.google.com/en//archive/bigtable-osdi06.pdf"
+      title: "Functional Data Engineering — A Modern Paradigm",
+      authors: "Maxime Beauchemin",
+      year: "2016",
+      journal: "Medium (Free)",
+      url: "https://medium.com/@maximebeauchemin/functional-data-engineering-a-modern-paradigm-for-batch-data-processing-2327ec32c42a"
     },
     {
-      title: "Dynamo: Amazon's Highly Available Key-value Store",
-      authors: "DeCandia, G., et al.",
-      year: "2007",
-      journal: "Amazon Web Services (Free)",
-      url: "https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf"
+      title: "Apache Airflow Documentation",
+      authors: "Apache Airflow Community",
+      year: "2024",
+      journal: "Apache Foundation (Free)",
+      url: "https://airflow.apache.org/docs/"
     },
     {
-      title: "The Lakehouse: A New Generation of Open Platforms",
-      authors: "Armbrust, M., et al.",
-      year: "2021",
-      journal: "Databricks (Free PDF)",
+      title: "dbt Documentation - Analytics Engineering",
+      authors: "dbt Labs",
+      year: "2024",
+      journal: "dbt (Free Documentation)",
+      url: "https://docs.getdbt.com/docs/introduction"
+    },
+    {
+      title: "High Scalability Architecture Articles",
+      authors: "Various Contributors",
+      year: "2024",
+      journal: "High Scalability (Free Blog)",
+      url: "http://highscalability.com/"
+    },
+    {
+      title: "AWS Architecture Center",
+      authors: "Amazon Web Services",
+      year: "2024",
+      journal: "AWS (Free)",
+      url: "https://aws.amazon.com/architecture/"
+    },
+    {
+      title: "Google Cloud Architecture Framework",
+      authors: "Google Cloud",
+      year: "2024",
+      journal: "Google Cloud (Free)",
+      url: "https://cloud.google.com/architecture/framework"
+    },
+    {
+      title: "Microsoft Azure Well-Architected Framework",
+      authors: "Microsoft",
+      year: "2024",
+      journal: "Microsoft Azure (Free)",
+      url: "https://docs.microsoft.com/en-us/azure/architecture/framework/"
+    },
+    {
+      title: "Data Engineering Weekly Newsletter Archives",
+      authors: "Ananth Packkildurai",
+      year: "2024",
+      journal: "Newsletter (Free Archive)",
+      url: "https://www.dataengineering.wiki/"
+    },
+    {
+      title: "The Missing Semester of Your CS Education",
+      authors: "MIT",
+      year: "2020",
+      journal: "MIT OpenCourseWare (Free)",
+      url: "https://missing.csail.mit.edu/"
+    }
+  ];
       url: "https://www.cidrdb.org/cidr2021/papers/cidr2021_paper17.pdf"
     },
     {
