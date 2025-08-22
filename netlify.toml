@@ -1,0 +1,32 @@
+[build]
+  # Build command - what Netlify runs to build your site
+  command = "npm run build"
+  
+  # Publish directory - where your built files are located
+  publish = "dist"
+  
+  # Node version to use
+  environment = { NODE_VERSION = "18" }
+
+[build.environment]
+  # Set any environment variables here if needed
+  
+# Redirect rules (optional)
+[[redirects]]
+  from = "/sitemap.xml"
+  to = "/sitemap-index.xml"
+  status = 301
+
+# Headers for better SEO and performance
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[headers]]
+  for = "/sitemap-*.xml"
+  [headers.values]
+    Content-Type = "application/xml"
