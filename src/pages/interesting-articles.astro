@@ -1,4 +1,7 @@
 ---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { featuredArticles } from '../data/articles.js';
+---
 import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
@@ -10,54 +13,22 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     </p>
 
     <div class="space-y-8">
-      
-      <div class="p-6 border rounded-lg bg-gray-50 dark:bg-gray-800">
-        <h3 class="text-base font-medium mb-2 whitespace-nowrap overflow-hidden text-ellipsis">
-          <a href="https://12factor.net/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline">
-            The Twelve-Factor App Methodology
-          </a>
-        </h3>
-        <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
-          Adam Wiggins (2017) - Heroku (Always Free)
-        </p>
-        <p class="text-gray-700 dark:text-gray-300">
-          A methodology for building software-as-a-service applications that are portable, scalable, and maintainable. These twelve principles have become fundamental guidelines for modern application development, covering everything from configuration management to process scaling.
-        </p>
-      </div>
-
-      <div class="p-6 border rounded-lg bg-gray-50 dark:bg-gray-800">
-        <h3 class="text-base font-medium mb-2 whitespace-nowrap overflow-hidden text-ellipsis">
-          <a href="https://github.com/donnemartin/system-design-primer" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline">
-            The System Design Primer
-          </a>
-        </h3>
-        <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
-          Donne Martin (2024) - GitHub (Open Source)
-        </p>
-        <p class="text-gray-700 dark:text-gray-300">
-          A comprehensive resource for learning system design concepts with examples, diagrams, and exercises. This repository covers everything from scalability principles to distributed systems architecture, making complex topics accessible through clear explanations and visual aids.
-        </p>
-      </div>
-
-      <div class="p-6 border rounded-lg bg-gray-50 dark:bg-gray-800">
-        <h3 class="text-base font-medium mb-2 whitespace-nowrap overflow-hidden text-ellipsis">
-          <a href="https://medium.com/@maximebeauchemin/functional-data-engineering-a-modern-paradigm-for-batch-data-processing-2327ec32c42a" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline">
-            Functional Data Engineering — A Modern Paradigm
-          </a>
-        </h3>
-        <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
-          Maxime Beauchemin (2016) - Medium (Free)
-        </p>
-        <p class="text-gray-700 dark:text-gray-300">
-          Written by the creator of Apache Airflow, this article outlines principles for building reliable, testable data pipelines. It introduces concepts like idempotency, immutability, and functional programming principles applied to data engineering, which have become foundational to modern data pipeline design.
-        </p>
-      </div>
-        <p class="text-gray-700 dark:text-gray-300">
-          This technical specification established how healthcare documents should be structured and shared electronically. Before this standard, medical records were like different languages that couldn't talk to each other. HL7 CDA created a common format for things like lab results, discharge summaries, and medical histories, making it possible for different healthcare systems to exchange patient information safely and accurately.
-        </p>
-      </div>
-
-      <div class="p-6 border rounded-lg bg-gray-50 dark:bg-gray-800">
+      {featuredArticles.map((article) => (
+        <div class="p-6 border rounded-lg bg-gray-50 dark:bg-gray-800">
+          <h3 class="text-base font-medium mb-2 whitespace-nowrap overflow-hidden text-ellipsis">
+            <a href={article.url} target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline">
+              {article.title}
+            </a>
+          </h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+            {article.authors} ({article.year}) - {article.journal}
+          </p>
+          <p class="text-gray-700 dark:text-gray-300">
+            {article.description}
+          </p>
+        </div>
+      ))}
+    </div>
         <h3 class="text-base font-medium mb-2 whitespace-nowrap overflow-hidden text-ellipsis">
           <a href="https://www.healthaffairs.org/doi/10.1377/hlthaff.w5.10" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline">
             The value of health care information exchange and interoperability

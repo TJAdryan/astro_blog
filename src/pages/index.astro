@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
+import { featuredArticles } from '../data/articles.js';
 
 // 1. Fetch all blog posts
 const posts = await getCollection("blog");
@@ -71,6 +72,13 @@ const latestPosts = posts.slice(0, 3);
 <script>
   // Guaranteed free and accessible resources - no paywalls ever!
   const seminalPapers = [
+    {
+      title: "The Economics of Healthcare Rationing",
+      authors: "Michael Frakes, Matthew Frank, Kyle Rozema",
+      year: "2015",
+      journal: "SSRN (Free)",
+      url: "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2603876"
+    },
     {
       title: "The Twelve-Factor App Methodology",
       authors: "Adam Wiggins",
