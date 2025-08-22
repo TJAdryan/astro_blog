@@ -8,9 +8,6 @@
   # Node version to use
   environment = { NODE_VERSION = "18" }
 
-[build.environment]
-  # Set any environment variables here if needed
-  
 # Redirect rules (optional)
 [[redirects]]
   from = "/sitemap.xml"
