@@ -1,5 +1,5 @@
 ---
-title: HL7 FHIR and Healthcare Data Exchange
+title: Fact and Friction in Healthcare Data
 categories:
 - Healthcare Technology
 - Data Integration
@@ -13,7 +13,7 @@ tags:
 - healthcare interoperability
 - data exchange
 pubDate: 2025-08-10 12:00:00 -0400
-description: A post about HL7 FHIR and Healthcare Data Exchange.
+description: How advanced data integration in healthcare creates powerful capabilities alongside unintended friction for patients and providers.
 ---
 
 **Blackbox Consensus: The Potential for Misalignment in Health Data Integration for Patient Outcomes in Claim Adjudication**
