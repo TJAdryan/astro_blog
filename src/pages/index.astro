@@ -69,45 +69,13 @@ const latestPosts = posts.slice(0, 3);
   </div>
 </BaseLayout>
 
-<script>
-  // Use the same articles that are defined in our centralized data
-  const seminalPapers = [
-    {
-      title: "The Economics of Healthcare Rationing",
-      authors: "Michael Frakes, Matthew Frank, Kyle Rozema",
-      year: "2015",
-      journal: "SSRN (Free)",
-      url: "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2603876"
-    },
-    {
-      title: "The Twelve-Factor App Methodology",
-      authors: "Adam Wiggins",
-      year: "2017",
-      journal: "Heroku (Always Free)",
-      url: "https://12factor.net/"
-    },
-    {
-      title: "The System Design Primer",
-      authors: "Donne Martin",
-      year: "2024",
-      journal: "GitHub (Open Source)",
-      url: "https://github.com/donnemartin/system-design-primer"
-    },
-    {
-      title: "Functional Data Engineering — A Modern Paradigm",
-      authors: "Maxime Beauchemin",
-      year: "2016",
-      journal: "Medium (Free)",
-      url: "https://medium.com/@maximebeauchemin/functional-data-engineering-a-modern-paradigm-for-batch-data-processing-2327ec32c42a"
-    }
-  ];
-
+<script define:vars={{ articles: featuredArticles }}>
   // Function to get today's paper based on date
   function getTodaysPaper() {
     const today = new Date();
     const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
-    const paperIndex = dayOfYear % seminalPapers.length;
-    return seminalPapers[paperIndex];
+    const paperIndex = dayOfYear % articles.length;
+    return articles[paperIndex];
   }
 
   // Load today's paper
