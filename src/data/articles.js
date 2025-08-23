@@ -31,5 +31,53 @@ export const featuredArticles = [
     journal: "Medium (Free)",
     url: "https://medium.com/@maximebeauchemin/functional-data-engineering-a-modern-paradigm-for-batch-data-processing-2327ec32c42a",
     description: "Written by the creator of Apache Airflow, this article outlines principles for building reliable, testable data pipelines. It introduces concepts like idempotency, immutability, and functional programming principles applied to data engineering, which have become foundational to modern data pipeline design."
+  },
+  {
+    title: "Apache Airflow Documentation",
+    authors: "Apache Airflow Community",
+    year: "2024",
+    journal: "Apache Foundation (Free)",
+    url: "https://airflow.apache.org/docs/",
+    description: "Comprehensive documentation for Apache Airflow, the leading open-source platform for developing, scheduling, and monitoring workflows. Essential reading for understanding modern data orchestration patterns and best practices in pipeline automation."
+  },
+  {
+    title: "Building Microservices: Designing Fine-Grained Systems",
+    authors: "Sam Newman",
+    year: "2021",
+    journal: "O'Reilly (Free Chapter)",
+    url: "https://www.oreilly.com/library/view/building-microservices-2nd/9781492034018/",
+    description: "A foundational guide to microservices architecture patterns and practices. This resource covers service decomposition, data management, testing strategies, and deployment approaches that are crucial for building scalable healthcare data platforms."
+  },
+  {
+    title: "High Performance Browser Networking",
+    authors: "Ilya Grigorik",
+    year: "2013",
+    journal: "Google (Free Online)",
+    url: "https://hpbn.co/",
+    description: "A comprehensive guide to network performance optimization and web protocols. Essential for understanding the networking fundamentals that underpin modern cloud-based healthcare data exchange systems and API integrations."
+  },
+  {
+    title: "The Phoenix Project: A Novel About IT, DevOps, and Helping Your Business Win",
+    authors: "Gene Kim, Kevin Behr, George Spafford",
+    year: "2018",
+    journal: "IT Revolution (Sample Chapters Free)",
+    url: "https://itrevolution.com/the-phoenix-project/",
+    description: "A business novel that illustrates DevOps principles and practices through a compelling story. Demonstrates how to transform IT operations and improve business outcomes through better collaboration, automation, and continuous improvement practices."
+  },
+  {
+    title: "Designing Data-Intensive Applications",
+    authors: "Martin Kleppmann",
+    year: "2017",
+    journal: "O'Reilly (Free Excerpts)",
+    url: "https://dataintensive.net/",
+    description: "A deep dive into the fundamentals of data systems design, covering storage engines, replication, partitioning, and distributed systems concepts. Essential reading for anyone building robust data platforms in healthcare or other critical domains."
+  },
+  {
+    title: "Site Reliability Engineering: How Google Runs Production Systems",
+    authors: "Betsy Beyer, Chris Jones, Jennifer Petoff, Niall Richard Murphy",
+    year: "2016",
+    journal: "Google (Free Online)",
+    url: "https://sre.google/sre-book/table-of-contents/",
+    description: "Google's comprehensive guide to Site Reliability Engineering practices, covering monitoring, alerting, capacity planning, and incident response. Invaluable for maintaining reliable healthcare data systems that require high availability and fault tolerance."
   }
 ];
