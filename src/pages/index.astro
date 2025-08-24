@@ -15,10 +15,14 @@ const latestPosts = posts.slice(0, 3);
 
 <BaseLayout>
   <div class="container">
-    <h1 class="text-4xl font-bold mb-4">NextValData</h1>
-    <p class="mb-6 text-lg text-gray-600 dark:text-gray-400">
-      Data insights, analytics, and technical explorations.
-    </p>
+    <div class="hero-section">
+      <h1 class="hero-title">
+        <span class="primary-text">Next</span><span class="accent-text">Val</span><span class="primary-text">Data</span>
+      </h1>
+      <p class="hero-subtitle">
+        Data insights, analytics, and technical explorations.
+      </p>
+    </div>
     
     <!-- Latest Posts Section -->
     {
@@ -94,3 +98,77 @@ const latestPosts = posts.slice(0, 3);
     }
   });
 </script>
+<style>
+  .hero-section {
+    text-align: center;
+    padding: 3rem 0 4rem 0;
+    background: linear-gradient(135deg, rgba(255, 107, 53, 0.05) 0%, rgba(255, 107, 53, 0.02) 50%, transparent 100%);
+    border-radius: 16px;
+    margin-bottom: 3rem;
+  }
+
+  .hero-title {
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, #333 0%, #666 50%, #333 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  .accent-text {
+    background: linear-gradient(135deg, var(--accent) 0%, #ff8c42 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+  }
+
+  .accent-text::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 4px;
+    background: linear-gradient(135deg, var(--accent) 0%, #ff8c42 100%);
+    border-radius: 2px;
+    opacity: 0.7;
+  }
+
+  .hero-subtitle {
+    font-size: clamp(1.125rem, 3vw, 1.5rem);
+    color: rgba(102, 102, 102, 0.9);
+    font-weight: 400;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .primary-text {
+    transition: all 0.3s ease;
+  }
+
+  .hero-title:hover .primary-text {
+    transform: translateY(-2px);
+  }
+
+  .hero-title:hover .accent-text {
+    transform: translateY(-4px) scale(1.05);
+    transition: all 0.3s ease;
+  }
+
+  @media (max-width: 768px) {
+    .hero-section {
+      padding: 2rem 1rem 3rem 1rem;
+    }
+    
+    .hero-title {
+      letter-spacing: -0.01em;
+    }
+  }
+</style>
