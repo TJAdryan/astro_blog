@@ -19,21 +19,27 @@
 }
 
 /* Mermaid diagram styling */
+
 .mermaid {
 	text-align: center;
 	margin: 2rem auto;
 	background: white;
-	border: 1px solid rgb(var(--gray-light));
+	border: 1px solid #ddd;
 	border-radius: 8px;
-	padding: 1rem;
+	padding: 2rem;
 	overflow-x: auto;
+	width: 900px;
+	max-width: 100%;
+	min-height: 500px;
+	font-size: 24px !important;
+	line-height: 1.4;
 }
 
 @media (prefers-color-scheme: dark) {
 	.mermaid {
-		background: rgb(var(--gray-dark));
-		border-color: rgb(var(--gray));
-		color: rgb(var(--gray-light));
+		background: #2d3748;
+		border-color: #4a5568;
+		color: #e2e8f0;
 	}
 }
 @font-face {
@@ -176,76 +182,10 @@ hr {
 }
 
 /* Mermaid diagram styling */
-.mermaid {
-	transform: scale(1.1);
-	transform-origin: center;
-	margin: 2rem 0;
-	cursor: zoom-in;
-	transition: transform 0.2s ease;
-	border: 1px solid #e0e0e0;
-	border-radius: 8px;
-	padding: 1rem;
-	background: white;
-	max-width: 100%;
-	overflow: visible;
-}
+
 
 .mermaid svg {
 	max-width: 100%;
 	height: auto;
 }
 
-.mermaid:hover {
-	transform: scale(1.12);
-}
-
-/* Modal overlay for expanded diagrams */
-.diagram-modal {
-	display: none;
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background: rgba(0,0,0,0.9);
-	z-index: 1000;
-	cursor: zoom-out;
-	padding: 1rem;
-	box-sizing: border-box;
-}
-
-.diagram-modal.active {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.diagram-modal .mermaid {
-	transform: scale(3) !important;
-	max-width: none !important;
-	max-height: none !important;
-	width: auto !important;
-	height: auto !important;
-	overflow: visible !important;
-	cursor: zoom-out;
-	box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-	border: none;
-	border-radius: 12px;
-	padding: 1.5rem;
-	margin: 0;
-	background: white;
-	transform-origin: center !important;
-}
-
-.diagram-modal .mermaid svg {
-	max-width: none !important;
-	max-height: none !important;
-	width: auto !important;
-	height: auto !important;
-	transform: scale(1.5) !important;
-	transform-origin: center !important;
-}
-
-.diagram-modal .mermaid:hover {
-	transform: scale(3) !important;
-}
