@@ -3,6 +3,7 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
 import "../styles/global.css"; // <--- This is the crucial missing line
+import "../styles/custom.css";
 
 const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props;
 ---

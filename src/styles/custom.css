@@ -14,3 +14,42 @@ pre code {
   /* Make the font size slightly smaller for better readability */
   font-size: 0.9rem;
 }
+
+/* Hero title fix for Chrome/Firefox spacing */
+.hero-title {
+  white-space: normal;
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 3em;
+}
+.hero-title .primary-text,
+.hero-title .accent-text {
+  margin-right: 0.15em;
+  display: inline-block;
+}
+.hero-title .primary-text:last-child,
+.hero-title .accent-text:last-child {
+  margin-right: 0;
+}
+
+/* Remove default hover/focus effects on textboxes */
+input:hover, textarea:hover,
+input:focus, textarea:focus {
+  box-shadow: none;
+  border-color: #ccc;
+  outline: none;
+  background: #fff;
+}
+
+/* Override WebKit autofill and transparency effects */
+input,
+textarea {
+  background: #fff !important;
+  color: #222 !important;
+}
+input:-webkit-autofill,
+textarea:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #fff inset !important;
+  box-shadow: 0 0 0 1000px #fff inset !important;
+  -webkit-text-fill-color: #222 !important;
+}
