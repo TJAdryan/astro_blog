@@ -28,11 +28,9 @@
 	border-radius: 8px;
 	padding: 2rem;
 	overflow-x: auto;
-	width: 900px;
-	max-width: 100%;
-	min-height: 500px;
-	font-size: 24px !important;
-	line-height: 1.4;
+	width: 100%;
+	min-height: 400px;
+	font-size: 16px;
 }
 
 @media (prefers-color-scheme: dark) {
