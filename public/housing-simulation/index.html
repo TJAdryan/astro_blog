@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Housing Market Simulation</title>
+    <script type="module" crossorigin src="/assets/index-CREGkYKz.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BeDXVLkF.css">
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Housing Market Simulation</h1>
+        <p>An interactive model for housing market dynamics.</p>
+      </header>
+
+      <div class="controls-container">
+        <div class="top-controls">
+          <div class="left-controls">
+            <div class="parameter-controls">
+              <div>
+                <label for="turnover-rate-input">Turnover Rate (%)</label>
+                <input type="number" id="turnover-rate-input" value="4" min="0" max="100" step="1">
+              </div>
+              <div>
+                <label for="new-homes-input">New Home Construction</label>
+                <input type="number" id="new-homes-input" value="3" min="0" max="20">
+              </div>
+            </div>
+            <div class="sim-controls">
+              <button id="run-simulation-btn">Run Simulation</button>
+              <label for="years-to-run-input">Years to Run:</label>
+              <input id="years-to-run-input" type="number" value="1" min="1" max="100">
+            </div>
+          </div>
+          
+          <div class="action-buttons">
+            <button id="reset-btn">Reset</button>
+            <button id="next-year-btn">Advance Year</button>
+            <h2>Year: <span id="year-display">1</span></h2>
+          </div>
+        </div>
+
+        <div class="bottom-controls">
+          <div id="corporate-policy-group" class="policy-controls">
+            <label>Corporate Policy:</label>
+            <button id="corp-policy-free" class="active">Free Reign</button>
+            <button id="corp-policy-restrict">Restrict to 10%</button>
+          </div>
+          <div id="str-policy-group" class="policy-controls">
+            <label>Short-Term Rental Policy:</label>
+            <button id="str-policy-free" class="active">Free Reign</button>
+            <button id="str-policy-restrict">Restrict to 10%</button>
+          </div>
+        </div>
+      </div>
+
+      <main>
+        <h3>Current Ownership & Market Stats</h3>
+        <div class="dashboard">
+          <div class="card"><label>Homeowner</label><span id="current-homeowner-total">0</span></div>
+          <div class="card"><label>Individual Landlord</label><span id="current-individual-total">0</span></div>
+          <div class="card"><label>Corporate Landlord</label><span id="current-corporate-total">0</span></div>
+          <div class="card"><label>Median Home Price</label><span id="median-home-price">$0</span></div>
+          <div class="card"><label>Median Rent</label><span id="median-rent">$0</span></div>
+          <div class="card"><label>Total Rental Units</label><span id="available-rental-units">0</span></div>
+          <div class="card"><label>Total Homes</label><span id="total-homes">300</span></div>
+        </div>
+
+        <div id="housing-visual-grid"></div>
+        
+        <div class="legend">
+            <div><span class="dot homeowner"></span> Homeowner</div>
+            <div><span class="dot individual"></span> Individual Landlord</div>
+            <div><span class="dot corporate"></span> Corporate Landlord</div>
+            <div><span class="dot shortterm"></span> Short-Term Rental</div>
+        </div>
+        
+        <hr class="divider">
+
+        <h3>Market Activity (Total Purchases Since Start)</h3>
+        <div class="dashboard">
+          <div class="card"><label>Primary Home Purchasers</label><span id="buyer-first-time">0</span></div>
+          <div class="card"><label>Corporate Landlords</label><span id="buyer-corporate">0</span></div>
+          <div class="card"><label>Individual Landlords</label><span id="buyer-individual">0</span></div>
+          <div class="card"><label>Converted to Short-Term Rental</label><span id="conversions-airbnb">0</span></div>
+        </div>
+        <div class="dashboard">
+          <div class="card"><label>% Change Owner-Occupied</label><span id="pct-owner-occupied">0%</span></div>
+          <div class="card"><label>% Change Individual Landlords</label><span id="pct-individual-landlords">0%</span></div>
+          <div class="card"><label>% Change Corporate Landlords</label><span id="pct-corporate-landlords">0%</span></div>
+          <div class="card"><label>% Change Rentals Available</label><span id="pct-apartments-available">0%</span></div>
+        </div>
+      </main>
+    </div>
+
+  </body>
+</html>
