@@ -5,11 +5,14 @@ import sitemap from '@astrojs/sitemap';
 import { defineConfig } from 'astro/config';
 import { remarkMermaid } from './src/remark-mermaid.js';
 
+import react from '@astrojs/react';
+import tailwind from '@astrojs/tailwind';
+
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://nextvaldata.com', // Update this to your real domain
-	integrations: [mdx(), sitemap()],
-	markdown: {
-		remarkPlugins: [remarkMermaid],
-	},
+    site: 'https://nextvaldata.com', // Update this to your real domain
+    integrations: [mdx(), sitemap(), react(), tailwind()],
+    markdown: {
+        remarkPlugins: [remarkMermaid],
+    },
 });
