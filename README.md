@@ -60,3 +60,32 @@ Check out [our documentation](https://docs.astro.build) or jump into our [Discor
 ## Credit
 
 This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
+
+## Bun + Tailwind CSS + Astro Setup
+
+If you are using Bun as your package manager, use the following steps to set up Tailwind CSS and PostCSS:
+
+1. **Install dependencies**
+
+```sh
+bun add -d tailwindcss postcss autoprefixer @tailwindcss/postcss
+```
+
+2. **Configuration files**
+- Ensure you have `tailwind.config.mjs` and `postcss.config.cjs` in your project root.
+- In your main CSS (e.g., `src/styles/global.css`):
+  ```css
+  @tailwind base;
+  @tailwind components;
+  @tailwind utilities;
+  ```
+
+3. **Development**
+- Use Bun to run your dev/build scripts:
+  ```sh
+  bun run dev
+  ```
+
+4. **Troubleshooting**
+- If you see errors about PostCSS plugins, make sure `@tailwindcss/postcss` is installed.
+- Some npm-specific plugins may not work with Bun. Check plugin docs for Bun compatibility.
