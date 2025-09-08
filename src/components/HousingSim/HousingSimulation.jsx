@@ -13,7 +13,7 @@ const RENTAL_TURNOVER_RATE = 0.10;
 const RE_ENTRANT_RATE = 0.75;
 const STR_CONVERSION_CHANCE = 0.05;
 const STR_CAP_RATE = 0.03;
-const MAX_RENT_INCREASE = 0.04;
+const MAX_RENT_INCREASE = 0.06;
 const HOMEOWNER_TO_HOMEOWNER_SALE_CHANCE = 0.90;
 const FORECLOSURE_RATE = 0.15; // 15% of homeowners are foreclosed on during a collapse
 
