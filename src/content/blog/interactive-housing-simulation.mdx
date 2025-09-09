@@ -3,12 +3,15 @@ title: ' Interactive Housing Market Simulation'
 pubDate: 2025-09-07
 description: 'An interactive sandbox to explore the forces of supply, demand, and investment in the housing market.'
 ---
+
 import HousingSimulation from '@/components/HousingSim/HousingSimulation.jsx';
+import SimulationInstructions from '@/components/HousingSim/SimulationInstructions.astro';
 
 
 This is an interactive simulation of a housing market, allowing users to explore various scenarios and their impacts on the market. You can adjust the variables below and run the simulation to see how the market responds in over several years to changes in demand, housing supply, and more.
 
-👉 [View Simulation Instructions](/blog/simulation-instructions)
+
+<SimulationInstructions />
 
 <HousingSimulation client:load />
 
