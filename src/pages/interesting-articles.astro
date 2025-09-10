@@ -10,15 +10,13 @@ import { featuredArticles } from '../data/articles.js';
       Research papers and articles I've referenced or found particularly insightful.
     </p>
 
-    <div class="space-y-8">
+    <div class="space-y-6">
       {featuredArticles.map((article) => (
-        <div class="p-6 border rounded-lg bg-gray-50 dark:bg-gray-800">
-          <h3 class="text-base font-medium mb-2 whitespace-nowrap overflow-hidden text-ellipsis">
-            <a href={article.url} target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline">
-              {article.title}
-            </a>
-          </h3>
-          <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+        <div class="border-b pb-4 last:border-b-0 bg-white dark:bg-slate-900 rounded-lg shadow p-6">
+          <a href={article.url} target="_blank" rel="noopener noreferrer" class="text-xl font-bold text-blue-600 dark:text-blue-400 hover:underline block mb-1">
+            {article.title}
+          </a>
+          <p class="text-sm text-gray-500 mb-1">
             {article.authors} ({article.year}) - {article.journal}
           </p>
           <p class="text-gray-700 dark:text-gray-300">
