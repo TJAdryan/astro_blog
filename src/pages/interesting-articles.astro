@@ -11,21 +11,74 @@ import { featuredArticles } from '../data/articles.js';
     </p>
 
     <section>
-      <ul style="display: flex; flex-wrap: wrap; gap: 2rem; list-style-type: none; margin: 0; padding: 0;">
+      <ul class="article-list">
         {featuredArticles.map((article) => (
-          <li style="width: calc(50% - 1rem);">
-            <a href={article.url} target="_blank" rel="noopener noreferrer"
-              style="display: block; padding: 1.5rem; background: rgba(255,255,255,0.8); border-radius: 12px; border: 1px solid rgba(255, 107, 53, 0.1); box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.3s ease; height: 100%; text-decoration: none;"
-              onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 25px rgba(255, 107, 53, 0.2)'; e.currentTarget.style.borderColor = 'rgba(255, 107, 53, 0.3)'; }}
-              onMouseOut={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)'; e.currentTarget.style.borderColor = 'rgba(255, 107, 53, 0.1)'; }}
-            >
-              <h4 class="title" style="margin: 0; color: rgb(var(--black)); line-height: 1;">{article.title}</h4>
-              <p class="date" style="margin: 0; color: rgb(var(--gray));">{article.authors} ({article.year}) - {article.journal}</p>
-              <p style="color: rgb(var(--black)); margin-top: 0.5em;">{article.description}</p>
+          <li class="article-card">
+            <a href={article.url} target="_blank" rel="noopener noreferrer" class="article-link">
+              <h4 class="title">{article.title}</h4>
+              <p class="date">{article.authors} ({article.year}) - {article.journal}</p>
+              <p class="desc">{article.description}</p>
             </a>
           </li>
         ))}
       </ul>
     </section>
+    <style>
+      .article-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+      }
+      .article-card {
+        width: calc(50% - 1rem);
+      }
+      .article-link {
+        display: block;
+        padding: 1.5rem;
+        background: rgba(255,255,255,0.8);
+        border-radius: 12px;
+        border: 1px solid rgba(255, 107, 53, 0.1);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        height: 100%;
+        text-decoration: none;
+      }
+      .article-link:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(255, 107, 53, 0.2);
+        border-color: rgba(255, 107, 53, 0.3);
+      }
+      .article-link .title {
+        margin: 0;
+        color: rgb(var(--black));
+        line-height: 1;
+        font-size: 1.25rem;
+        font-weight: bold;
+      }
+      .article-link .date {
+        margin: 0;
+        color: rgb(var(--gray));
+        font-size: 0.95rem;
+      }
+      .article-link .desc {
+        color: rgb(var(--black));
+        margin-top: 0.5em;
+      }
+      @media (max-width: 720px) {
+        .article-list {
+          gap: 0.5em;
+        }
+        .article-card {
+          width: 100%;
+          text-align: center;
+        }
+        .article-link .title {
+          font-size: 1.1em;
+        }
+      }
+    </style>
   </div>
 </BaseLayout>
