@@ -10,20 +10,22 @@ import { featuredArticles } from '../data/articles.js';
       Research papers and articles I've referenced or found particularly insightful.
     </p>
 
-    <div class="space-y-6">
-      {featuredArticles.map((article) => (
-        <div class="border-b pb-4 last:border-b-0 bg-white dark:bg-slate-900 rounded-lg shadow p-6">
-          <a href={article.url} target="_blank" rel="noopener noreferrer" class="text-xl font-bold text-blue-600 dark:text-blue-400 hover:underline block mb-1">
-            {article.title}
-          </a>
-          <p class="text-sm text-gray-500 mb-1">
-            {article.authors} ({article.year}) - {article.journal}
-          </p>
-          <p class="text-gray-700 dark:text-gray-300">
-            {article.description}
-          </p>
-        </div>
-      ))}
-    </div>
+    <section>
+      <ul style="display: flex; flex-wrap: wrap; gap: 2rem; list-style-type: none; margin: 0; padding: 0;">
+        {featuredArticles.map((article) => (
+          <li style="width: calc(50% - 1rem);">
+            <a href={article.url} target="_blank" rel="noopener noreferrer"
+              style="display: block; padding: 1.5rem; background: rgba(255,255,255,0.8); border-radius: 12px; border: 1px solid rgba(255, 107, 53, 0.1); box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.3s ease; height: 100%; text-decoration: none;"
+              onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 25px rgba(255, 107, 53, 0.2)'; e.currentTarget.style.borderColor = 'rgba(255, 107, 53, 0.3)'; }}
+              onMouseOut={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)'; e.currentTarget.style.borderColor = 'rgba(255, 107, 53, 0.1)'; }}
+            >
+              <h4 class="title" style="margin: 0; color: rgb(var(--black)); line-height: 1;">{article.title}</h4>
+              <p class="date" style="margin: 0; color: rgb(var(--gray));">{article.authors} ({article.year}) - {article.journal}</p>
+              <p style="color: rgb(var(--black)); margin-top: 0.5em;">{article.description}</p>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
   </div>
 </BaseLayout>
