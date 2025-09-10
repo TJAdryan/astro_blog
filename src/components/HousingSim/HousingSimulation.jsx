@@ -453,18 +453,10 @@ export default function HousingSimulation() {
   // --- Render ---
   return (
     <div className="bg-slate-50 font-sans p-4 sm:p-6 lg:p-8 min-h-screen">
-      <div className="max-w-7xl mx-auto">
+  <div className="max-w-none mx-auto">
         <header className="text-center pb-4 mb-6 border-b">
           <h1 className="text-4xl font-bold text-gray-800">Housing Market Simulation</h1>
           <p className="text-gray-600 mt-2">An interactive model to explore housing market dynamics.</p>
-          <a
-            href="/src/components/HousingSim/INSTRUCTIONS.md"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block mt-2 text-blue-600 underline hover:text-blue-800 text-sm font-medium"
-          >
-            View Simulation Instructions
-          </a>
         </header>
         
         <div className="space-y-4 mb-8">
@@ -534,7 +526,7 @@ export default function HousingSimulation() {
             <Card label="Landlords" value={displayData.landlords} subValue={displayData.pctLandlords} />
           </div>
 
-          <div id="housing-visual-grid" className="grid grid-cols-30 gap-0.5 p-1 bg-gray-300 rounded-lg mx-auto">
+          <div id="housing-visual-grid" className="grid grid-cols-30 gap-0.5 p-4 bg-gray-300 rounded-lg mx-auto w-full overflow-x-auto">
             {[...housingStock]
               .sort((a, b) => {
                 const usageOrder = {'ShortTermRental': 0, 'LongTermRental': 1};

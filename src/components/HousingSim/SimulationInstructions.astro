@@ -2,7 +2,19 @@
 // No props needed
 ---
 
-<section class="simulation-instructions bg-white rounded-lg shadow p-6 mb-8 prose max-w-2xl mx-auto">
+<script>
+  let show = false;
+  function toggleInstructions() {
+    show = !show;
+    document.getElementById('sim-instructions').style.display = show ? 'block' : 'none';
+    document.getElementById('sim-instructions-btn').textContent = show ? 'Hide Instructions' : 'Show Instructions';
+  }
+</script>
+
+<div class="simulation-instructions-toggle mb-4 text-center">
+  <button id="sim-instructions-btn" type="button" class="px-4 py-2 rounded bg-blue-600 text-white font-semibold shadow hover:bg-blue-700 transition-colors" onclick="toggleInstructions()">Show Instructions</button>
+</div>
+<section id="sim-instructions" class="simulation-instructions bg-white rounded-lg shadow p-6 mb-8 prose max-w-2xl mx-auto" style="display: none;">
   <h2 class="text-2xl font-bold mb-4">How to Use the Housing Market Simulation</h2>
   <ol class="list-decimal pl-6 space-y-2">
     <li>

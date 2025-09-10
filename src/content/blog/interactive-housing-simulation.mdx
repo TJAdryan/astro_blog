@@ -5,13 +5,13 @@ description: 'An interactive sandbox to explore the forces of supply, demand, an
 ---
 
 import HousingSimulation from '@/components/HousingSim/HousingSimulation.jsx';
-import SimulationInstructions from '@/components/HousingSim/SimulationInstructions.astro';
+import SimulationInstructions from '@/components/HousingSim/SimulationInstructions.jsx';
 
 
 This is an interactive simulation of a housing market, allowing users to explore various scenarios and their impacts on the market. You can adjust the variables below and run the simulation to see how the market responds in over several years to changes in demand, housing supply, and more.
 
 
-<SimulationInstructions />
+<SimulationInstructions client:load />
 
 <HousingSimulation client:load />
 
