@@ -115,6 +115,7 @@ export default function HousingSimulation() {
     ).length;
     const totalPopulation = housedPopulation + seekers.length;
     const mortgageEligible = seekers.filter(s => s.income * AFFORDABILITY_MULTIPLIER >= medianPrice).length;
+    const shortTermRentals = stock.filter(h => h.usage === 'ShortTermRental').length;
 
   setDisplayData({
       seekerCount: seekers.length,
@@ -136,6 +137,7 @@ export default function HousingSimulation() {
       medianRentBurden,
       totalPopulation,
       mortgageEligible,
+      shortTermRentals,
       landlordConcentration: yearStats.landlordConcentration,
       approvalRate: yearStats.approvalRate,
       supplyDeficit: yearStats.supplyDeficit,
@@ -414,6 +416,7 @@ export default function HousingSimulation() {
             const strRatio = newStock.filter(h => h.usage === 'ShortTermRental').length / newStock.length;
             if (strRatio < STR_CAP_RATE && seededRandom.current() < STR_CONVERSION_CHANCE) {
               home.usage = 'ShortTermRental';
+              marketResults.current.convertedToShortTerm++;
             } else {
               home.usage = 'LongTermRental';
             }
@@ -535,9 +538,9 @@ export default function HousingSimulation() {
     setNewHomes(3);
     setYearsToRun(10);
     setInitialSeekersCount(36);
-    setInitialHomeowners(198);
-    setInitialLandlords(102);
-    setLandlordCap(50);
+    setInitialHomeowners(225);
+    setInitialLandlords(75);
+    setLandlordCap(45);
     setSimulationSpeed(500);
     setupSimulation();
   };
@@ -604,6 +607,7 @@ export default function HousingSimulation() {
             <Card label="Median Home Price" value={`$${Math.round((displayData.medianPrice || 0) / 1000)}k`} subValue={displayData.pctMedianPrice} />
             <Card label="Median Rent" value={`$${Math.round(displayData.medianRent || 0)}`} subValue={displayData.pctMedianRent} />
             <Card label="Vacant Rental Units" value={displayData.vacantRentals} subValue={`${displayData.vacancyRate} Rental Rate`} />
+            <Card label="Short-Term Rentals" value={displayData.shortTermRentals} subValue="Total Units" />
             <Card label="Median Rent Burden" value={displayData.medianRentBurden} subValue="% of Median Seeker Income" />
             <Card label="Median Seeker Income" 
                   value={displayData.seekerCount > 0 ? `$${Math.round((displayData.medianIncome || 0)/1000)}k` : 'N/A'} 
@@ -641,16 +645,29 @@ export default function HousingSimulation() {
           <div id="housing-visual-grid" className="grid grid-cols-30 gap-0.5 p-4 bg-gray-300 rounded-lg mx-auto w-full overflow-x-auto">
             {[...housingStock]
               .sort((a, b) => {
-                const statusOrder = {'OwnerOccupied': 0, 'Occupied': 1, 'Vacant': 2, 'UnsoldNew': 3};
-                return statusOrder[a.status] - statusOrder[b.status];
+                // Group by: OwnerOccupied, Rental Occupied, Rental Vacant, Unsold New, ShortTermRental
+                const getSortPriority = (home) => {
+                  if (home.status === 'OwnerOccupied') return 0;
+                  if (home.usage === 'LongTermRental' && home.status === 'Occupied') return 1;
+                  if (home.usage === 'LongTermRental' && home.status === 'Vacant') return 2;
+                  if (home.status === 'UnsoldNew') return 3;
+                  if (home.usage === 'ShortTermRental') return 4;
+                  return 5;
+                };
+                // Within each group, sort by price descending for visual trend
+                const priA = getSortPriority(a);
+                const priB = getSortPriority(b);
+                if (priA !== priB) return priA - priB;
+                return (b.price || 0) - (a.price || 0);
               })
               .map(home => {
-                let fill = '#9ca3af';
-                if (home.usage === 'ShortTermRental') fill = '#a21caf';
-                else if (home.status === 'OwnerOccupied') fill = '#22c55e';
-                else if (home.status === 'Occupied') fill = '#1e40af';
-                else if (home.status === 'Vacant') fill = '#60a5fa';
-                else if (home.status === 'UnsoldNew') fill = '#ffbf00';
+                // Color palette: group similar types with related shades
+                let fill = '#9ca3af'; // default gray
+                if (home.status === 'OwnerOccupied') fill = '#22c55e'; // green
+                else if (home.usage === 'LongTermRental' && home.status === 'Occupied') fill = '#1e40af'; // dark blue
+                else if (home.usage === 'LongTermRental' && home.status === 'Vacant') fill = '#60a5fa'; // light blue
+                else if (home.status === 'UnsoldNew') fill = '#ffbf00'; // gold
+                else if (home.usage === 'ShortTermRental') fill = '#a21caf'; // purple
                 return (
                   <svg key={home.id} width="36" height="36" viewBox="0 0 24 24" className="mx-auto" style={{height: '2.25rem', width: '2.25rem'}}>
                     <rect x="6" y="10" width="12" height="8" rx="2" fill={fill} />
@@ -661,11 +678,11 @@ export default function HousingSimulation() {
           </div>
 
            <div className="flex justify-center flex-wrap gap-6 mt-4 text-sm p-4 bg-white rounded-lg shadow">
-              <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-green-500"></div>Owner Occupied</div>
-              <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-blue-400"></div>Rental Vacant</div>
-              <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-blue-800"></div>Rental Occupied</div>
-              <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-purple-500"></div>Short-Term Rental</div>
-              <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-[#ffbf00]"></div>Unsold New Construction</div>
+              <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full" style={{background:'#22c55e'}}></div>Owner Occupied</div>
+              <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full" style={{background:'#1e40af'}}></div>Rental Occupied</div>
+              <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full" style={{background:'#60a5fa'}}></div>Rental Vacant</div>
+              <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full" style={{background:'#a21caf'}}></div>Short-Term Rental</div>
+              <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full" style={{background:'#ffbf00'}}></div>Unsold New Construction</div>
            </div>
 
            <hr className="my-10" />
