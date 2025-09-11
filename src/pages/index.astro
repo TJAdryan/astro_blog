@@ -54,16 +54,31 @@ const latestPosts = posts.slice(0, 3);
       )
     }
 
-    <!-- Citations and Resources Widget -->
-    <div
-      id="daily-widget"
-      class="mb-12"
-    >
-      <div class="border-b pb-4 last:border-b-0 bg-white dark:bg-slate-900 rounded-lg shadow p-6">
-        <h3 class="text-xl font-bold mb-2 text-blue-600 dark:text-blue-400">Citations and Resources</h3>
-        <a href="/interesting-articles/" class="text-base font-semibold text-blue-600 dark:text-blue-400 hover:underline">
-          Articles and documentation that I find useful
-        </a>
+    <!-- Citations and Resources Section (styled like blog posts) -->
+    <div class="latest-posts mb-12">
+      <h2 class="text-2xl font-bold mb-4">Citations and Resources</h2>
+      <div class="space-y-4">
+        {featuredArticles.slice(0, 3).map((article) => (
+          <div class="border-b pb-4 last:border-b-0">
+            <a
+              href={article.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-xl font-bold text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              {article.title}
+            </a>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">
+              {article.description}
+            </p>
+            <p class="text-sm text-gray-500 mt-1">
+              {article.authors} ({article.year}) - {article.journal}
+            </p>
+          </div>
+        ))}
+      </div>
+      <div class="mt-6 text-center">
+        <a href="/interesting-articles/" class="inline-block px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold shadow hover:bg-blue-700 transition-colors">View All Citations & Resources</a>
       </div>
     </div>
   </div>
