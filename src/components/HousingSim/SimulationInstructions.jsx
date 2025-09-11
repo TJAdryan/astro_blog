@@ -17,8 +17,7 @@ export default function SimulationInstructions() {
           id="sim-instructions"
           className="prose prose-blue bg-gray-50 border border-gray-200 rounded p-4 shadow-sm w-full max-w-7xl mx-auto px-4"
         >
-          <h1>Housing Market Simulation Instructions</h1>
-          <h2>How to Use the Housing Market Simulation</h2>
+          <h3>How to Use the Housing Market Simulation</h3>
           <ol>
             <li>
               <strong>Adjust Simulation Inputs</strong>

@@ -43,7 +43,7 @@ export default function HousingSimulation() {
   const [initialSeekersCount, setInitialSeekersCount] = useState(36);
   const [initialHomeowners, setInitialHomeowners] = useState(198);
   const [initialLandlords, setInitialLandlords] = useState(102);
-  const [landlordCap, setLandlordCap] = useState(50); // New state for landlord ownership cap
+  const [landlordCap, setLandlordCap] = useState(30); // New state for landlord ownership cap
   
   // --- Simulation State (runs the model) ---
   const [year, setYear] = useState(1);
@@ -57,11 +57,16 @@ export default function HousingSimulation() {
   const [displayData, setDisplayData] = useState({});
 
   // --- Refs ---
+  // Track unsold inventory from previous year
+  const unsoldInventory = useRef([]);
   const marketResults = useRef({});
   const initialStats = useRef({});
   const nextSeekerId = useRef(0);
   const seededRandom = useRef(createSeededRandom(INITIAL_SEED));
   const cumulativeIncomeGrowth = useRef(1.0);
+  // Cumulative landlord capital and return tracking
+  const totalLandlordCapital = useRef(0);
+  const totalLandlordReturn = useRef(0);
 
   // --- Utility Functions ---
   function createSeededRandom(seed) {
@@ -113,38 +118,48 @@ export default function HousingSimulation() {
     const totalPopulation = housedPopulation + seekers.length;
     const mortgageEligible = seekers.filter(s => s.income * AFFORDABILITY_MULTIPLIER >= medianPrice).length;
 
+  // ...existing code...
+
+  // Houses for Sale and Unsold Inventory: always use current refs, not previous displayData
+  const housesForSale = (typeof window !== 'undefined' ? (window._housesForSaleNextYear || 0) : 0);
+
   setDisplayData({
-    seekerCount: seekers.length,
-    vacantRentals,
-    vacancyRate,
-    medianIncome,
-    medianHomeownerIncome,
-    medianPrice,
-    medianRent,
-    homeowners: currentTotals.homeowner,
-    landlords: currentTotals.landlord,
-    totalHomes: stock.length,
-    pctOwnerOccupied: getPercentChange(initial.ownerOccupied, currentTotals.homeowner),
-    pctLandlords: getPercentChange(initial.landlords, currentTotals.landlord),
-    pctMedianPrice: getPercentChange(initial.medianPrice, medianPrice),
-    pctMedianRent: getPercentChange(initial.medianRent, medianRent),
-    pctMedianIncome: getPercentChange(initial.medianIncome, medianIncome),
-    pctMedianHomeownerIncome: getPercentChange(initial.medianHomeownerIncome, medianHomeownerIncome),
-    medianRentBurden,
-    totalPopulation,
-    mortgageEligible,
-  });
+      seekerCount: seekers.length,
+      vacantRentals,
+      vacancyRate,
+      medianIncome,
+      medianHomeownerIncome,
+      medianPrice,
+      medianRent,
+      homeowners: currentTotals.homeowner,
+      landlords: currentTotals.landlord,
+      totalHomes: stock.length,
+      pctOwnerOccupied: getPercentChange(initial.ownerOccupied, currentTotals.homeowner),
+      pctLandlords: getPercentChange(initial.landlords, currentTotals.landlord),
+      pctMedianPrice: getPercentChange(initial.medianPrice, medianPrice),
+      pctMedianRent: getPercentChange(initial.medianRent, medianRent),
+      pctMedianIncome: getPercentChange(initial.medianIncome, medianIncome),
+      pctMedianHomeownerIncome: getPercentChange(initial.medianHomeownerIncome, medianHomeownerIncome),
+      medianRentBurden,
+      totalPopulation,
+      mortgageEligible,
+      housesForSale: housesForSale,
+    });
   }, []);
 
   // --- Core Simulation Logic ---
   const setupSimulation = useCallback(() => {
+  unsoldInventory.current = [];
     nextSeekerId.current = 0;
     seededRandom.current = createSeededRandom(INITIAL_SEED);
     cumulativeIncomeGrowth.current = 1.0;
-    marketResults.current = {
-        purchasesByHomeowner: 0, purchasesByLandlord: 0,
-        convertedToShortTerm: 0, displacements: 0,
-    };
+  marketResults.current = {
+    purchasesByHomeowner: 0, purchasesByLandlord: 0,
+    convertedToShortTerm: 0, displacements: 0,
+  };
+  // Reset cumulative landlord capital and return
+  totalLandlordCapital.current = 0;
+  totalLandlordReturn.current = 0;
     
     const generateTieredIncomes = (count) => {
         const incomes = [];
@@ -212,7 +227,11 @@ export default function HousingSimulation() {
       
       const rentSpread = (price / 350000);
       const rent = 2000 * rentSpread + (seededRandom.current() - 0.5) * 100;
-      return { id: i, ownerType, usage, price, rent, status, ownerIncome };
+      // For landlords, initialize originalPrice and cumulativeRent
+      if (ownerType === 'landlord') {
+        totalLandlordCapital.current += price;
+      }
+      return { id: i, ownerType, usage, price, rent, status, ownerIncome, originalPrice: ownerType === 'landlord' ? price : undefined, cumulativeRent: ownerType === 'landlord' ? 0 : undefined };
     });
     
     const newSeekerPool = Array.from({ length: initialSeekersCount }, (_, i) => ({
@@ -240,8 +259,8 @@ export default function HousingSimulation() {
   }, [initialSeekersCount, initialHomeowners, initialLandlords, computeDisplayData]);
 
   const advanceYear = useCallback(() => {
-    const newStock = structuredClone(housingStock);
-    let newSeekerPool = structuredClone(seekerPool);
+  const newStock = structuredClone(housingStock);
+  let newSeekerPool = structuredClone(seekerPool);
     const randomInRange = (min, max) => min + seededRandom.current() * (max - min);
 
     if (collapseTriggered) {
@@ -296,6 +315,10 @@ export default function HousingSimulation() {
       }
       const homesForSale = Array.from(homesForSaleIndices).map(index => newStock[index]);
 
+      // Add unsold inventory from previous year to this year's for sale list
+      const allForSale = [...homesForSale, ...unsoldInventory.current];
+      unsoldInventory.current = [];
+
       newStock.forEach(home => {
         if (home.ownerType !== 'homeowner' && home.usage === 'LongTermRental' && home.status === 'Occupied' && seededRandom.current() < RENTAL_TURNOVER_RATE) {
             home.status = 'Vacant';
@@ -310,86 +333,133 @@ export default function HousingSimulation() {
         }
       });
 
-      const sellProperty = (home, medianPrice, isProtectedSale = false) => {
+  const sellProperty = (home, medianPrice, isProtectedSale = false) => {
         const originalOwnerType = home.ownerType;
+        // If landlord is selling, realize return and reset capital
+        if (originalOwnerType === 'landlord') {
+          // Only count if originalPrice is defined (should always be for landlords)
+          if (typeof home.originalPrice === 'number') {
+            totalLandlordReturn.current += (home.price - home.originalPrice) + (home.cumulativeRent || 0);
+            // When property is sold, remove the capital invested in this property
+            totalLandlordCapital.current -= home.originalPrice;
+          }
+        }
         const affordableSeekers = newSeekerPool.filter(s => s.income * AFFORDABILITY_MULTIPLIER >= home.price);
         const seekerInTheRunning = affordableSeekers.length > 0;
         
+        // Strict landlord cap enforcement
+        const landlordOwnershipRatio = newStock.filter(h => h.ownerType === 'landlord').length / newStock.length;
+        const landlordAllowed = landlordOwnershipRatio < (landlordCap / 100);
+        if (!landlordAllowed && !seekerInTheRunning) {
+          // Neither can buy, property remains unsold
+          return;
+        }
         let winnerType;
         if (isProtectedSale && seekerInTheRunning) {
           winnerType = 'seeker';
+        } else if (landlordAllowed && !seekerInTheRunning) {
+          winnerType = 'landlord';
+        } else if (!landlordAllowed && seekerInTheRunning) {
+          winnerType = 'seeker';
         } else {
+          // Both allowed, use original logic
           let landlordWinChance;
           if (home.price < medianPrice * 0.85) landlordWinChance = 0.50;
           else if (home.price <= medianPrice * 1.25) landlordWinChance = 0.20;
           else landlordWinChance = 0.05;
           if (seekerInTheRunning) landlordWinChance *= 0.5;
-          winnerType = seekerInTheRunning ? (seededRandom.current() < landlordWinChance ? 'landlord' : 'seeker') : 'landlord';
+          winnerType = seededRandom.current() < landlordWinChance ? 'landlord' : 'seeker';
         }
-        
-        const landlordOwnershipRatio = newStock.filter(h => h.ownerType === 'landlord').length / newStock.length;
-        if (winnerType === 'landlord' && landlordOwnershipRatio >= (landlordCap / 100) && seekerInTheRunning) {
-          winnerType = 'seeker';
+
+    const processWinner = (type) => {
+      const wasOccupiedRental = home.ownerType !== 'homeowner' && home.status === 'Occupied';
+      if (type === 'seeker') {
+        const buyer = affordableSeekers.sort((a,b) => b.income - a.income)[0];
+        home.ownerType = 'homeowner';
+        home.usage = 'LongTermRental';
+        home.status = 'OwnerOccupied';
+        home.ownerIncome = buyer.income;
+        home.originalPrice = home.price; // Update originalPrice on transfer
+        home.cumulativeRent = 0; // Reset cumulative rent for new owner
+        marketResults.current.purchasesByHomeowner++;
+        newSeekerPool = newSeekerPool.filter(s => s.id !== buyer.id);
+        if (wasOccupiedRental) {
+          const roll = seededRandom.current();
+          let baseIncome;
+          if (roll < INCOME_TIERS.top.percent) baseIncome = randomInRange(...INCOME_TIERS.top.range);
+          else if (roll < INCOME_TIERS.top.percent + INCOME_TIERS.middle.percent) baseIncome = randomInRange(...INCOME_TIERS.middle.range);
+          else baseIncome = randomInRange(...INCOME_TIERS.bottom.range);
+          newSeekerPool.push({ id: nextSeekerId.current++, income: baseIncome * cumulativeIncomeGrowth.current });
+          marketResults.current.displacements++;
         }
-    
-        const processWinner = (type) => {
-          const wasOccupiedRental = home.ownerType !== 'homeowner' && home.status === 'Occupied';
-          if (type === 'seeker') {
-              const buyer = affordableSeekers.sort((a,b) => b.income - a.income)[0];
-              home.ownerType = 'homeowner';
-              home.usage = 'LongTermRental';
-              home.status = 'OwnerOccupied';
-              home.ownerIncome = buyer.income;
-              marketResults.current.purchasesByHomeowner++;
-              newSeekerPool = newSeekerPool.filter(s => s.id !== buyer.id);
-              if (wasOccupiedRental) {
-                  const roll = seededRandom.current();
-                  let baseIncome;
-                  if (roll < INCOME_TIERS.top.percent) baseIncome = randomInRange(...INCOME_TIERS.top.range);
-                  else if (roll < INCOME_TIERS.top.percent + INCOME_TIERS.middle.percent) baseIncome = randomInRange(...INCOME_TIERS.middle.range);
-                  else baseIncome = randomInRange(...INCOME_TIERS.bottom.range);
-                  newSeekerPool.push({ id: nextSeekerId.current++, income: baseIncome * cumulativeIncomeGrowth.current });
-                  marketResults.current.displacements++;
-              }
-          } else { 
-              if(home.ownerType !== type) marketResults.current.purchasesByLandlord++;
-              home.ownerType = 'landlord';
-              home.ownerIncome = null;
-              const strRatio = newStock.filter(h => h.usage === 'ShortTermRental').length / newStock.length;
-              if (strRatio < STR_CAP_RATE && seededRandom.current() < STR_CONVERSION_CHANCE) {
-                  home.usage = 'ShortTermRental';
-                  marketResults.current.convertedToShortTerm++;
-              } else {
-                  home.usage = 'LongTermRental';
-              }
-              home.status = wasOccupiedRental ? 'Occupied' : 'Vacant';
-          }
+      } else { 
+        if(home.ownerType !== type) marketResults.current.purchasesByLandlord++;
+        home.ownerType = 'landlord';
+        home.ownerIncome = null;
+        // When a landlord acquires a property, add new capital invested
+        if (typeof home.price === 'number') {
+          totalLandlordCapital.current += home.price;
+        }
+        home.originalPrice = home.price; // Update originalPrice on transfer
+        home.cumulativeRent = 0; // Reset cumulative rent for new owner
+        const strRatio = newStock.filter(h => h.usage === 'ShortTermRental').length / newStock.length;
+        if (strRatio < STR_CAP_RATE && seededRandom.current() < STR_CONVERSION_CHANCE) {
+          home.usage = 'ShortTermRental';
+          marketResults.current.convertedToShortTerm++;
+        } else {
+          home.usage = 'LongTermRental';
+        }
+        home.status = wasOccupiedRental ? 'Occupied' : 'Vacant';
+      }
           
-          if (originalOwnerType === 'homeowner') {
-              const sellerIncome = randomInRange(INCOME_TIERS.middle.range[0], INCOME_TIERS.top.range[0]);
-              newSeekerPool.unshift({ id: nextSeekerId.current++, income: sellerIncome * cumulativeIncomeGrowth.current });
-          }
-        };
+      if (originalOwnerType === 'homeowner') {
+        const sellerIncome = randomInRange(INCOME_TIERS.middle.range[0], INCOME_TIERS.top.range[0]);
+        newSeekerPool.unshift({ id: nextSeekerId.current++, income: sellerIncome * cumulativeIncomeGrowth.current });
+      }
+    };
         processWinner(winnerType);
       };
       
       const currentPrices = newStock.map(h => h.price).sort((a,b)=>a-b);
       const currentMedianPrice = currentPrices.length > 0 ? currentPrices[Math.floor(currentPrices.length/2)] : 0;
 
-      homesForSale.forEach(home => {
+      allForSale.forEach(home => {
+        const beforeOwner = home.ownerType;
+        const beforeStatus = home.status;
+        let sold = false;
         if (home.ownerType === 'homeowner' && seededRandom.current() < HOMEOWNER_TO_HOMEOWNER_SALE_CHANCE) {
           sellProperty(home, currentMedianPrice, true);
         } else {
           sellProperty(home, currentMedianPrice, false);
         }
+        // If ownership and status did not change, consider unsold
+        if (home.ownerType === beforeOwner && home.status === beforeStatus) {
+          unsoldInventory.current.push(home);
+        } else {
+          sold = true;
+        }
       });
 
+      let newHomesList = [];
       for (let i = 0; i < newHomes; i++) {
           const newPrice = 400000 + seededRandom.current() * 250000;
           const newHome = { id: newStock.length + 1, price: newPrice, rent: newPrice * 0.005, status: 'Vacant', ownerIncome: null };
           newStock.push(newHome);
           sellProperty(newHome, currentMedianPrice, false);
+          // If not sold, add to unsold inventory
+          if (newHome.ownerType === undefined || newHome.status === 'Vacant') {
+            unsoldInventory.current.push(newHome);
+          }
+          newHomesList.push(newHome);
       }
+
+      // For next year display: houses for sale = new homes + homes for sale + unsold inventory
+      const housesForSaleNextYear = newHomesList.length + homesForSale.length + unsoldInventory.current.length;
+      // Store in window for access in computeDisplayData
+      if (typeof window !== 'undefined') {
+        window._housesForSaleNextYear = housesForSaleNextYear;
+      }
+      setDisplayData(prev => ({ ...prev }));
     }
 
     const totalRentals = newStock.filter(h => h.ownerType !== 'homeowner' && h.usage === 'LongTermRental').length;
@@ -410,7 +480,13 @@ export default function HousingSimulation() {
     
     newStock.forEach(home => {
       home.price *= (1 + appreciationRate);
-      if (home.ownerType !== 'homeowner') home.rent *= (1 + rentIncreaseRate);
+      if (home.ownerType !== 'homeowner') {
+        home.rent *= (1 + rentIncreaseRate);
+        // Track cumulative rent for landlord properties
+        if (typeof home.cumulativeRent === 'number') {
+          home.cumulativeRent += home.rent;
+        }
+      }
     });
 
     setHousingStock(newStock);
@@ -512,8 +588,7 @@ export default function HousingSimulation() {
             <Card label="Mortgage-Eligible Seekers" value={displayData.mortgageEligible} subValue="Can Afford Median Home" />
             <Card label="Vacant Rental Units" value={displayData.vacantRentals} subValue={`${displayData.vacancyRate} Rate`} />
             <Card label="Median Rent Burden" value={displayData.medianRentBurden} subValue="% of Median Seeker Income" />
-            <Card label="Median Home Price" value={`$${Math.round((displayData.medianPrice || 0) / 1000)}k`} subValue={displayData.pctMedianPrice} />
-            <Card label="Median Rent" value={`$${Math.round(displayData.medianRent || 0).toLocaleString()}`} subValue={displayData.pctMedianRent} />
+
             <Card label="Median Seeker Income" 
                   value={displayData.seekerCount > 0 ? `$${Math.round((displayData.medianIncome || 0)/1000)}k` : 'N/A'} 
                   subValue={displayData.pctMedianIncome} />
@@ -524,6 +599,7 @@ export default function HousingSimulation() {
             />
             <Card label="Homeowners" value={displayData.homeowners} subValue={displayData.pctOwnerOccupied} />
             <Card label="Landlords" value={displayData.landlords} subValue={displayData.pctLandlords} />
+            {/* Removed Avg. Homeowner Appreciation and Landlord Return on Capital */}
           </div>
 
           <div id="housing-visual-grid" className="grid grid-cols-30 gap-0.5 p-4 bg-gray-300 rounded-lg mx-auto w-full overflow-x-auto">
