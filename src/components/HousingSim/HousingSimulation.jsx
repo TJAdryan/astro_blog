@@ -138,6 +138,7 @@ export default function HousingSimulation() {
       totalPopulation,
       mortgageEligible,
       shortTermRentals,
+      unsoldHomes: stock.filter(h => h.status === 'Unsold').length,
       landlordConcentration: yearStats.landlordConcentration,
       approvalRate: yearStats.approvalRate,
       supplyDeficit: yearStats.supplyDeficit,
@@ -609,21 +610,20 @@ export default function HousingSimulation() {
         
         <main>
           <h3 className="text-2xl font-bold text-center mb-4">Current Market Stats</h3>
-          <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8 w-full min-w-0">
+
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-2 w-full min-w-0">
             <Card label="Total Population" value={displayData.totalPopulation} subValue="Housed & Seeking" />
             <Card label="Seeking Housing" value={displayData.seekerCount} />
             <Card label="Mortgage-Eligible Seekers" value={displayData.mortgageEligible} subValue="Can Afford Median Home" />
+            <Card label="Short-Term Rentals" value={displayData.shortTermRentals} subValue="Total Units" />
+            <Card label="Vacant Rental Units" value={displayData.vacantRentals} subValue={`${displayData.vacancyRate} Rental Rate`} />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8 w-full min-w-0">
             <Card label="Median Home Price" value={`$${Math.round((displayData.medianPrice || 0) / 1000)}k`} subValue={displayData.pctMedianPrice} />
             <Card label="Median Rent" value={`$${Math.round(displayData.medianRent || 0)}`} subValue={displayData.pctMedianRent} />
             <Card label="Median Rent Burden" value={displayData.medianRentBurden} subValue="% of Median Seeker Income" />
-            <Card label="Median Seeker Income" 
-                  value={displayData.seekerCount > 0 ? `$${Math.round((displayData.medianIncome || 0)/1000)}k` : 'N/A'} 
-                  subValue={displayData.pctMedianIncome} />
-            <Card 
-              label="Median Homeowner Income" 
-              value={displayData.medianHomeownerIncome > 0 ? `$${Math.round(displayData.medianHomeownerIncome / 1000)}k` : 'N/A'}
-              subValue={displayData.pctMedianHomeownerIncome}
-            />
+            <Card label="Median Seeker Income" value={displayData.seekerCount > 0 ? `$${Math.round((displayData.medianIncome || 0)/1000)}k` : 'N/A'} subValue={displayData.pctMedianIncome} />
+            <Card label="Median Homeowner Income" value={displayData.medianHomeownerIncome > 0 ? `$${Math.round(displayData.medianHomeownerIncome / 1000)}k` : 'N/A'} subValue={displayData.pctMedianHomeownerIncome} />
           </div>
 
           <hr className="my-10" />
@@ -648,13 +648,11 @@ export default function HousingSimulation() {
           <hr className="my-10" />
 
           {/* Homeowners, Landlords, STR, Vacant Rental cards moved here */}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8 w-full min-w-0">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 w-full min-w-0">
             <Card label="Total Housing" value={displayData.totalHomes} />
             <Card label="Homeowners" value={displayData.homeowners} subValue={displayData.pctOwnerOccupied} />
             <Card label="Landlords" value={displayData.landlords} subValue={displayData.pctLandlords} />
             <Card label="Unsold Houses" value={displayData.unsoldHomes} />
-            <Card label="Short-Term Rentals" value={displayData.shortTermRentals} subValue="Total Units" />
-            <Card label="Vacant Rental Units" value={displayData.vacantRentals} subValue={`${displayData.vacancyRate} Rental Rate`} />
           </div>
 
           <div id="housing-visual-grid" className="grid grid-cols-30 gap-0.5 p-4 bg-gray-300 rounded-lg mx-auto w-full overflow-x-auto">
