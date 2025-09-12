@@ -27,10 +27,10 @@ const INCOME_TIERS = {
 
 // --- Helper Components ---
 const Card = ({ label, value, subValue }) => (
-  <div className="bg-white p-3 rounded-lg shadow text-center">
-    <label className="block text-xs text-gray-500 mb-1 font-medium">{label}</label>
-    <span className="text-xl font-bold text-gray-800">{value}</span>
-    {subValue && <span className="block text-sm font-bold text-green-600">{subValue}</span>}
+  <div className="bg-white p-3 rounded-lg shadow text-center flex flex-col min-w-0 w-full h-full">
+    <label className="block text-xs text-gray-500 mb-1 font-medium truncate">{label}</label>
+    <span className="text-xl font-bold text-gray-800 break-words">{value}</span>
+    {subValue && <span className="block text-sm font-bold text-green-600 break-words">{subValue}</span>}
   </div>
 );
 
@@ -546,8 +546,8 @@ export default function HousingSimulation() {
   };
 
   return (
-    <div className="bg-slate-50 font-sans p-4 sm:p-6 lg:p-8 min-h-screen">
-      <div className="max-w-none mx-auto">
+    <div className="bg-slate-50 font-sans p-4 sm:p-6 lg:p-8 min-h-screen w-full">
+      <div className="w-full mx-auto">
         <header className="text-center pb-4 mb-6 border-b">
           <h1 className="text-4xl font-bold text-gray-800">Housing Market Simulation</h1>
           <p className="text-gray-600 mt-2">An interactive model to explore housing market dynamics.</p>
@@ -600,7 +600,7 @@ export default function HousingSimulation() {
         
         <main>
           <h3 className="text-2xl font-bold text-center mb-4">Current Market Stats</h3>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8 w-full min-w-0">
             <Card label="Total Population" value={displayData.totalPopulation} subValue="Housed & Seeking" />
             <Card label="Seeking Housing" value={displayData.seekerCount} />
             <Card label="Mortgage-Eligible Seekers" value={displayData.mortgageEligible} subValue="Can Afford Median Home" />
@@ -645,7 +645,7 @@ export default function HousingSimulation() {
           <div id="housing-visual-grid" className="grid grid-cols-30 gap-0.5 p-4 bg-gray-300 rounded-lg mx-auto w-full overflow-x-auto">
             {[...housingStock]
               .sort((a, b) => {
-                // Group by: OwnerOccupied, Rental Occupied, Rental Vacant, Unsold New, ShortTermRental
+                // Strictly group by type, then by id for stable order
                 const getSortPriority = (home) => {
                   if (home.status === 'OwnerOccupied') return 0;
                   if (home.usage === 'LongTermRental' && home.status === 'Occupied') return 1;
@@ -654,11 +654,11 @@ export default function HousingSimulation() {
                   if (home.usage === 'ShortTermRental') return 4;
                   return 5;
                 };
-                // Within each group, sort by price descending for visual trend
                 const priA = getSortPriority(a);
                 const priB = getSortPriority(b);
                 if (priA !== priB) return priA - priB;
-                return (b.price || 0) - (a.price || 0);
+                // Stable: sort by id within group
+                return a.id - b.id;
               })
               .map(home => {
                 // Color palette: group similar types with related shades
