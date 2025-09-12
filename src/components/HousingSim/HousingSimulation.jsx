@@ -414,7 +414,9 @@ export default function HousingSimulation() {
             home.originalPrice = home.price;
             home.cumulativeRent = 0;
             const strRatio = newStock.filter(h => h.usage === 'ShortTermRental').length / newStock.length;
-            if (strRatio < STR_CAP_RATE && seededRandom.current() < STR_CONVERSION_CHANCE) {
+            if (home.usage === 'ShortTermRental') {
+              // Already a STR, keep it as STR
+            } else if (strRatio < STR_CAP_RATE && seededRandom.current() < STR_CONVERSION_CHANCE) {
               home.usage = 'ShortTermRental';
               marketResults.current.convertedToShortTerm++;
             } else {
@@ -546,16 +548,16 @@ export default function HousingSimulation() {
   };
 
   return (
-    <div className="bg-slate-50 font-sans p-4 sm:p-6 lg:p-8 min-h-screen w-full">
+    <div className="bg-slate-50 font-sans p-2 sm:p-3 lg:p-4 min-h-screen w-full">
       <div className="w-full mx-auto">
-        <header className="text-center pb-4 mb-6 border-b">
+        <header className="text-center pb-2 mb-3 border-b">
           <h1 className="text-4xl font-bold text-gray-800">Housing Market Simulation</h1>
-          <p className="text-gray-600 mt-2">An interactive model to explore housing market dynamics.</p>
+          <p className="text-gray-600 mt-1">An interactive model to explore housing market dynamics.</p>
         </header>
         
-        <div className="space-y-4 mb-8">
-            <div className="flex flex-col items-center gap-4">
-                <div className="flex flex-wrap gap-4 items-center justify-center">
+        <div className="space-y-2 mb-4">
+            <div className="flex flex-col items-center gap-2">
+                <div className="flex flex-wrap gap-2 items-center justify-center">
                     <div className="bg-white p-3 rounded-lg shadow flex gap-4 items-center">
                         <div>
                             <label className="text-xs font-medium text-gray-500 block">Sale Turnover (%)</label>
@@ -599,15 +601,13 @@ export default function HousingSimulation() {
         </div>
         
         <main>
-          <h3 className="text-2xl font-bold text-center mb-4">Current Market Stats</h3>
-          <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8 w-full min-w-0">
+          <h3 className="text-2xl font-bold text-center mb-2">Current Market Stats</h3>
+          <div className="grid grid-cols-2 md:grid-cols-6 gap-2 mb-4 w-full min-w-0">
             <Card label="Total Population" value={displayData.totalPopulation} subValue="Housed & Seeking" />
             <Card label="Seeking Housing" value={displayData.seekerCount} />
             <Card label="Mortgage-Eligible Seekers" value={displayData.mortgageEligible} subValue="Can Afford Median Home" />
             <Card label="Median Home Price" value={`$${Math.round((displayData.medianPrice || 0) / 1000)}k`} subValue={displayData.pctMedianPrice} />
             <Card label="Median Rent" value={`$${Math.round(displayData.medianRent || 0)}`} subValue={displayData.pctMedianRent} />
-            <Card label="Vacant Rental Units" value={displayData.vacantRentals} subValue={`${displayData.vacancyRate} Rental Rate`} />
-            <Card label="Short-Term Rentals" value={displayData.shortTermRentals} subValue="Total Units" />
             <Card label="Median Rent Burden" value={displayData.medianRentBurden} subValue="% of Median Seeker Income" />
             <Card label="Median Seeker Income" 
                   value={displayData.seekerCount > 0 ? `$${Math.round((displayData.medianIncome || 0)/1000)}k` : 'N/A'} 
@@ -617,13 +617,11 @@ export default function HousingSimulation() {
               value={displayData.medianHomeownerIncome > 0 ? `$${Math.round(displayData.medianHomeownerIncome / 1000)}k` : 'N/A'}
               subValue={displayData.pctMedianHomeownerIncome}
             />
-            <Card label="Homeowners" value={displayData.homeowners} subValue={displayData.pctOwnerOccupied} />
-            <Card label="Landlords" value={displayData.landlords} subValue={displayData.pctLandlords} />
           </div>
 
-          <hr className="my-10" />
-          <h3 className="text-2xl font-bold text-center mb-4">Political & Supply Metrics</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <hr className="my-5" />
+          <h3 className="text-2xl font-bold text-center mb-2">Political & Supply Metrics</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-4">
               <Card 
                 label="Landlord Concentration" 
                 value={`${((displayData.landlordConcentration || 0) * 100).toFixed(1)}%`}
@@ -640,9 +638,17 @@ export default function HousingSimulation() {
                 subValue="Potential Homes Not Built"
               />
           </div>
-          <hr className="my-10" />
+          <hr className="my-5" />
 
-          <div id="housing-visual-grid" className="grid grid-cols-30 gap-0.5 p-4 bg-gray-300 rounded-lg mx-auto w-full overflow-x-auto">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-2 mb-4 w-full min-w-0">
+                <Card label="Total Housing" value={displayData.totalHomes} />
+                <Card label="Homeowners" value={displayData.homeowners} subValue={displayData.pctOwnerOccupied} />
+                <Card label="Landlords" value={displayData.landlords} subValue={displayData.pctLandlords} />
+                <Card label="Short-Term Rentals" value={displayData.shortTermRentals} subValue="Total Units" />
+                <Card label="Vacant Rental Units" value={displayData.vacantRentals} subValue={`${displayData.vacancyRate} Rental Rate`} />
+          </div>
+
+          <div id="housing-visual-grid" className="grid grid-cols-30 gap-0.5 p-2 bg-gray-300 rounded-lg mx-auto w-full overflow-x-auto">
             {[...housingStock]
               .sort((a, b) => {
                 // Strictly group by type, then by id for stable order
@@ -677,7 +683,7 @@ export default function HousingSimulation() {
               })}
           </div>
 
-           <div className="flex justify-center flex-wrap gap-6 mt-4 text-sm p-4 bg-white rounded-lg shadow">
+           <div className="flex justify-center flex-wrap gap-3 mt-2 text-sm p-2 bg-white rounded-lg shadow">
               <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full" style={{background:'#22c55e'}}></div>Owner Occupied</div>
               <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full" style={{background:'#1e40af'}}></div>Rental Occupied</div>
               <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full" style={{background:'#60a5fa'}}></div>Rental Vacant</div>
@@ -685,16 +691,23 @@ export default function HousingSimulation() {
               <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full" style={{background:'#ffbf00'}}></div>Unsold New Construction</div>
            </div>
 
-           <hr className="my-10" />
+           <hr className="my-5" />
            
-           <h3 className="text-2xl font-bold text-center mb-4">Cumulative Market Activity</h3>
-           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+           <h3 className="text-2xl font-bold text-center mb-2">Cumulative Market Activity</h3>
+           <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-2">
                <Card label="Homeowner Purchases" value={marketResults.current.purchasesByHomeowner} />
                <Card label="Landlord Purchases" value={marketResults.current.purchasesByLandlord} />
                <Card label="Converted to STR" value={marketResults.current.convertedToShortTerm} />
                <Card label="Displacements" value={marketResults.current.displacements} />
                <Card label="Total Housing Not Built" value={marketResults.current.totalSupplyDeficit} subValue="Due to market power" />
                <Card label="Pushed into Homelessness" value={marketResults.current.pushedToHomelessness} subValue="From displacements" />
+      </div>
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-2 mb-4 w-full min-w-0">
+        <Card label="Total Housing" value={displayData.totalHomes} />
+        <Card label="Homeowners" value={displayData.homeowners} subValue={displayData.pctOwnerOccupied} />
+        <Card label="Landlords" value={displayData.landlords} subValue={displayData.pctLandlords} />
+        <Card label="Short-Term Rentals" value={displayData.shortTermRentals} subValue="Total Units" />
+        <Card label="Vacant Rental Units" value={displayData.vacantRentals} subValue={`${displayData.vacancyRate} Rental Rate`} />
            </div>
         </main>
       </div>
