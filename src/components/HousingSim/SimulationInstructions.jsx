@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 export default function SimulationInstructions() {
   const [show, setShow] = useState(false);
+
   return (
     <div className="mb-8 flex flex-col items-center w-full">
       <button
@@ -15,59 +16,58 @@ export default function SimulationInstructions() {
       {show && (
         <div
           id="sim-instructions"
-          className="prose prose-blue bg-gray-50 border border-gray-200 rounded p-4 shadow-sm w-full max-w-7xl mx-auto px-4"
+          className="prose prose-blue bg-gray-50 border border-gray-200 rounded p-6 shadow-sm w-full max-w-4xl mx-auto"
         >
-          <h3>How to Use the Housing Market Simulation</h3>
+          <h3>Simulation Documentation</h3>
+          <p>
+            This simulation models the economic feedback loops within a closed housing market. It allows for the observation of market dynamics under various initial conditions, rules, and economic pressures.
+          </p>
+          <hr />
+
+          <h4>1. Model Parameters</h4>
+          <p>The initial state and rules of the simulation are controlled by the following inputs:</p>
+          <ul>
+            <li><strong>Sale Turnover (%):</strong> The percentage of the total housing stock that is listed for sale each year due to normal market churn.</li>
+            <li><strong>New Homes / Year:</strong> The target number of new housing units to be introduced into the market annually. The actual number built is subject to the <strong>New Home Approval Rate</strong>.</li>
+            <li><strong>Initial Seekers:</strong> The initial unhoused population seeking housing at the start of the simulation.</li>
+            <li><strong>Landlord Cap (%):</strong> A regulatory ceiling that sets the maximum allowable market share for the investor class (landlords).</li>
+            <li><strong>Homeowners & Landlords:</strong> The initial distribution of property ownership between owner-occupants and investors.</li>
+          </ul>
+
+          <h4>2. Simulation Controls</h4>
+          <ul>
+            <li><strong>Run/Pause:</strong> Toggles the automatic, year-over-year progression of the simulation.</li>
+            <li><strong>Advance Year:</strong> Manually progresses the simulation by a single year.</li>
+            <li><strong>Reset:</strong> Reverts the simulation to the initial parameters defined in the input fields.</li>
+            <li><strong>Trigger Mortgage Collapse:</strong> Introduces a one-time market shock in the next year, characterized by a high rate of homeowner foreclosures.</li>
+          </ul>
+          <hr />
+
+          <h4>3. Dashboard Metrics & Visualization</h4>
+          <h5>Visual Grid & Legend</h5>
+          <p>A color-coded grid represents every housing unit, grouped by status for clear analysis of market composition.</p>
+          <ul>
+            <li><span style={{backgroundColor: '#22c55e', display: 'inline-block', width: '1em', height: '1em', borderRadius: '50%', marginRight: '0.5em', verticalAlign: 'middle'}}></span><strong>Owner Occupied:</strong> Property owned and occupied by the owner.</li>
+            <li><span style={{backgroundColor: '#1e40af', display: 'inline-block', width: '1em', height: '1em', borderRadius: '50%', marginRight: '0.5em', verticalAlign: 'middle'}}></span><strong>Rental Occupied:</strong> Investor-owned property with a tenant.</li>
+            <li><span style={{backgroundColor: '#60a5fa', display: 'inline-block', width: '1em', height: '1em', borderRadius: '50%', marginRight: '0.5em', verticalAlign: 'middle'}}></span><strong>Rental Vacant:</strong> Investor-owned property available for rent.</li>
+            <li><span style={{backgroundColor: '#ffbf00', display: 'inline-block', width: '1em', height: '1em', borderRadius: '50%', marginRight: '0.5em', verticalAlign: 'middle'}}></span><strong>Unsold New Construction:</strong> Newly built units that failed to sell in their first year.</li>
+            <li><span style={{backgroundColor: '#a21caf', display: 'inline-block', width: '1em', height: '1em', borderRadius: '50%', marginRight: '0.5em', verticalAlign: 'middle'}}></span><strong>Short-Term Rental:</strong> Investor-owned property used for short-term lets.</li>
+          </ul>
+          
+          <h5>Key Performance Indicators</h5>
+          <ul>
+              <li><strong>Current Market Stats:</strong> Displays primary indicators such as <strong>Median Home Price</strong>, <strong>Median Rent</strong>, and <strong>Median Rent Burden</strong>.</li>
+              <li><strong>Political & Supply Metrics:</strong> Tracks variables related to supply constraints, including <strong>Landlord Concentration</strong> and the resulting <strong>New Home Approval Rate</strong>.</li>
+              <li><strong>Cumulative Market Activity:</strong> Tracks aggregate outcomes, including tenant <strong>Displacements</strong> and the probabilistic <strong>Pushed into Homelessness</strong> metric.</li>
+          </ul>
+          <hr />
+
+          <h4>4. Key Dynamics to Observe</h4>
+          <p>The simulation is designed to model the interaction between several key variables. As you run scenarios, pay particular attention to the following relationships:</p>
           <ol>
-            <li>
-              <strong>Adjust Simulation Inputs</strong>
-              <ul>
-                <li><strong>Sale Turnover (%)</strong>: The percent of homes that go up for sale each year.</li>
-                <li><strong>New Homes / Year</strong>: How many new homes are built each year.</li>
-                <li><strong>Initial Seekers</strong>: Number of people/families looking for housing at the start.</li>
-                <li><strong>Landlord Cap (%)</strong>: The maximum percent of homes that can be owned by landlords.</li>
-                <li><strong>Homeowners</strong>: Initial number of homes owned by homeowners.</li>
-                <li><strong>Landlords</strong>: Initial number of homes owned by landlords.</li>
-                <li><strong>Years to Run</strong>: How many years the simulation will run when started.</li>
-              </ul>
-            </li>
-            <li>
-              <strong>Run or Pause the Simulation</strong>
-              <ul>
-                <li>Click the <strong>Run</strong> button to start the simulation. The button will change to <strong>Pause</strong> while running.</li>
-                <li>Click <strong>Pause</strong> to stop the simulation at any time.</li>
-              </ul>
-            </li>
-            <li>
-              <strong>Advance Year or Reset</strong>
-              <ul>
-                <li>Use <strong>Advance Year</strong> to step forward one year at a time (only when paused).</li>
-                <li>Use <strong>Reset</strong> to return all settings and the simulation to their starting values.</li>
-              </ul>
-            </li>
-            <li>
-              <strong>Trigger Mortgage Collapse</strong>
-              <ul>
-                <li>Click <strong>Trigger Mortgage Collapse</strong> to simulate a year with a high rate of foreclosures (only available when paused).</li>
-              </ul>
-            </li>
-            <li>
-              <strong>View Results</strong>
-              <ul>
-                <li>The dashboard shows:</li>
-                <ul>
-                  <li>Current market stats (population, seekers, home prices, rents, incomes, etc.).</li>
-                  <li>A visual grid of all homes, color-coded by status and type.</li>
-                  <li>Cumulative market activity (purchases, conversions, displacements).</li>
-                </ul>
-              </ul>
-            </li>
-            <li>
-              <strong>Legend</strong>
-              <ul>
-                <li>Colored dots explain the meaning of each home type/status in the visual grid.</li>
-              </ul>
-            </li>
+            <li>The correlation between the size of the <strong>Seeking Housing</strong> pool and the annual <strong>price/rent appreciation rates</strong>.</li>
+            <li>The effect of rising <strong>Landlord Concentration</strong> on the <strong>New Home Approval Rate</strong> and the resulting <strong>Supply Deficit</strong>.</li>
+            <li>The relationship between the <strong>Displacements</strong> metric and the <strong>Pushed into Homelessness</strong> outcome.</li>
           </ol>
         </div>
       )}
