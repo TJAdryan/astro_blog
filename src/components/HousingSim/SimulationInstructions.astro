@@ -1,8 +1,6 @@
----
-// No props needed
----
-
 <script>
+  // This Javascript function is for a simple show/hide toggle.
+  // No changes are needed here.
   let show = false;
   function toggleInstructions() {
     show = !show;
@@ -14,54 +12,51 @@
 <div class="simulation-instructions-toggle mb-4 text-center">
   <button id="sim-instructions-btn" type="button" class="px-4 py-2 rounded bg-blue-600 text-white font-semibold shadow hover:bg-blue-700 transition-colors" onclick="toggleInstructions()">Show Instructions</button>
 </div>
-<section id="sim-instructions" class="simulation-instructions bg-white rounded-lg shadow p-6 mb-8 prose max-w-2xl mx-auto" style="display: none;">
-  <h2 class="text-2xl font-bold mb-4">How to Use the Housing Market Simulation</h2>
+
+<section id="sim-instructions" class="simulation-instructions bg-white rounded-lg shadow p-6 mb-8 prose max-w-3xl mx-auto" style="display: none;">
+  <h2 class="text-2xl font-bold mb-4">Exploring the Simulation: A Guide</h2>
+  <p>This isn't just a game; it's a model of the feedback loops that can lead to a housing crisis. By adjusting the inputs, you can see how different market conditions and policy choices create vastly different outcomes for the people living in the economy.</p>
+
+  <h3 class="text-xl font-semibold mt-6 mb-2">1. The Controls: Setting the Scenario</h3>
+  <ul class="list-disc pl-6 space-y-2">
+    <li><strong>New Homes / Year</strong>: Sets the <em>potential</em> number of new homes the market tries to build. As you'll see, this is not always how many actually get built.</li>
+    <li><strong>Landlord Cap (%)</strong>: The "Investor Monopoly Cap." This models the regulatory or political ceiling that prevents one class of owner from completely taking over the market.</li>
+    <li><strong>Sale Turnover (%)</strong>: The percentage of existing homes that go up for sale each year from normal life events.</li>
+    <li><strong>Initial Seekers, Homeowners, Landlords</strong>: These set the starting conditions of the market.</li>
+  </ul>
+  
+  <h3 class="text-xl font-semibold mt-6 mb-2">2. The Dashboard: Reading the Results</h3>
+  <p>The metrics are grouped to tell a story. Watch how the sections influence each other.</p>
+  <ul class="list-disc pl-6 space-y-3">
+    <li>
+      <strong>Current Market Stats</strong>: This is the high-level overview. Pay close attention to <strong>Seeking Housing</strong> (the number of households left behind) and the <strong>Median Rent Burden</strong> (the affordability crisis).
+    </li>
+    <li>
+      <strong>Political & Supply Metrics</strong>: This is the engine of the crisis. Watch how a rising <strong>Landlord Concentration</strong> directly causes the <strong>New Home Approval Rate</strong> to fall, creating an <strong>Annual Supply Deficit</strong>.
+    </li>
+    <li>
+      <strong>Cumulative Market Activity</strong>: This section tracks the long-term consequences. <strong>Total Housing Not Built</strong> shows the permanent scar tissue on the housing supply, while <strong>Displacements</strong> and <strong>Pushed into Homelessness</strong> represent the human cost of market instability.
+    </li>
+  </ul>
+
+  <h3 class="text-xl font-semibold mt-6 mb-2">3. The Visual Grid & Legend</h3>
+  <p>The grid provides an at-a-glance view of the entire housing stock, grouped by type. The legend is as follows:</p>
+  <ul class="list-disc pl-6 grid grid-cols-1 sm:grid-cols-2 gap-x-4">
+      <li><span class="inline-block w-4 h-4 rounded-full bg-green-500 mr-2 align-middle"></span>Owner Occupied</li>
+      <li><span class="inline-block w-4 h-4 rounded-full bg-blue-800 mr-2 align-middle"></span>Rental Occupied</li>
+      <li><span class="inline-block w-4 h-4 rounded-full bg-blue-400 mr-2 align-middle"></span>Rental Vacant</li>
+      <li><span class="inline-block w-4 h-4 rounded-full bg-[#ffbf00] mr-2 align-middle"></span>Unsold New Construction</li>
+      <li><span class="inline-block w-4 h-4 rounded-full bg-purple-500 mr-2 align-middle"></span>Short-Term Rental</li>
+  </ul>
+  <p class="mt-2">The "Unsold New Construction" category is critical. It represents a stalled development pipeline—homes built at a price point the general population can no longer afford.</p>
+
+  <h3 class="text-xl font-semibold mt-6 mb-2">What to Watch For</h3>
+  <p>To see the core feedback loop, try this: set the <strong>Landlord Cap</strong> high (e.g., 45%) and run the simulation for 30+ years. You will likely see:</p>
   <ol class="list-decimal pl-6 space-y-2">
-    <li>
-      <strong>Adjust Simulation Inputs</strong>
-      <ul class="list-disc pl-6">
-        <li><strong>Sale Turnover (%)</strong>: The percent of homes that go up for sale each year.</li>
-        <li><strong>New Homes / Year</strong>: How many new homes are built each year.</li>
-        <li><strong>Initial Seekers</strong>: Number of people/families looking for housing at the start.</li>
-        <li><strong>Landlord Cap (%)</strong>: The maximum percent of homes that can be owned by landlords.</li>
-        <li><strong>Homeowners</strong>: Initial number of homes owned by homeowners.</li>
-        <li><strong>Landlords</strong>: Initial number of homes owned by landlords.</li>
-        <li><strong>Years to Run</strong>: How many years the simulation will run when started.</li>
-      </ul>
-    </li>
-    <li>
-      <strong>Run or Pause the Simulation</strong>
-      <ul class="list-disc pl-6">
-        <li>Click the <strong>Run</strong> button to start the simulation. The button will change to <strong>Pause</strong> while running.</li>
-        <li>Click <strong>Pause</strong> to stop the simulation at any time.</li>
-      </ul>
-    </li>
-    <li>
-      <strong>Advance Year or Reset</strong>
-      <ul class="list-disc pl-6">
-        <li>Use <strong>Advance Year</strong> to step forward one year at a time (only when paused).</li>
-        <li>Use <strong>Reset</strong> to return all settings and the simulation to their starting values.</li>
-      </ul>
-    </li>
-    <li>
-      <strong>Trigger Mortgage Collapse</strong>
-      <ul class="list-disc pl-6">
-        <li>Click <strong>Trigger Mortgage Collapse</strong> to simulate a year with a high rate of foreclosures (only available when paused).</li>
-      </ul>
-    </li>
-    <li>
-      <strong>View Results</strong>
-      <ul class="list-disc pl-6">
-        <li>The dashboard shows current market stats (population, seekers, home prices, rents, incomes, etc.).</li>
-        <li>A visual grid of all homes, color-coded by status and type.</li>
-        <li>Cumulative market activity (purchases, conversions, displacements).</li>
-      </ul>
-    </li>
-    <li>
-      <strong>Legend</strong>
-      <ul class="list-disc pl-6">
-        <li>Colored dots explain the meaning of each home type/status in the visual grid.</li>
-      </ul>
-    </li>
+      <li>Landlords use their "cash offer" advantage to acquire more property, increasing their <strong>Concentration</strong>.</li>
+      <li>This concentration suppresses the <strong>New Home Approval Rate</strong>.</li>
+      <li>The lack of new supply causes the <strong>Seeking Housing</strong> pool to swell.</li>
+      <li>The huge number of seekers causes <strong>Median Home Price</strong> and <strong>Median Rent</strong> to skyrocket, completely detaching from incomes.</li>
+      <li>This results in a "failed market" with high vacancy, high prices, and a massive population unable to find a home.</li>
   </ol>
 </section>
