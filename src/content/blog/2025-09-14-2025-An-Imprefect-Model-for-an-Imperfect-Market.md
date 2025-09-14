@@ -38,17 +38,15 @@ If you want to run the simulation locally:
 
 You only need the code in `src/components/HousingSim/HousingSimulation.jsx` to experiment with the simulation logic, but running the full project gives you the interactive UI.
 
+
 The Widening Gaps: From Credentials to Housing
 The struggle for housing doesn't happen in a vacuum. It’s a symptom of a larger economic reality defined by two powerful trends: the rising bar for entry and the shifting psychological rewards for clearing it.
 
-First, we face "credential inflation." More and more jobs now require a bachelor's degree, not because the work has become more complex, but because the degree itself has become a screening tool in a crowded labor market. This forces individuals to invest heavily in a credential that may not increase their on-the-job performance, simply to get a foot in the door.
+First, we face "credential inflation." More jobs now require a bachelor's degree, even when the work hasn't become more complex. Research from Harvard Business School, such as the ["Dismissed by Degrees" report](https://www.hbs.edu/managing-the-future-of-work/Documents/dismissed-by-degrees.pdf), shows that this often functions as a screening tool in a crowded labor market, rather than a true measure of skill, creating costly barriers for individuals without improving performance.
 
-Second, the psychological engine driving this competition has been thrown into overdrive by inequality. For years, the prevailing wisdom came from a 2010 study by Daniel Kahneman and Angus Deaton, which found that emotional well-being, or day-to-day happiness, tended to plateau at an income of around $75,000. Beyond that, more money didn't seem to make people happier.
+Second, the psychological engine driving this competition has been thrown into overdrive by inequality. For years, the prevailing wisdom came from a 2010 study by Daniel Kahneman and Angus Deaton ([see the original PNAS study](https://www.pnas.org/doi/10.1073/pnas.1011492107)). They found that while life satisfaction continued to rise with income, day-to-day emotional well-being tended to plateau at around $75,000 per year.
 
-However, a more recent 2023 study by Kahneman and Matthew Killingsworth refined this view. They found that for most people, happiness does continue to rise with income. The critical context is inequality. The Relative Income Hypothesis suggests our happiness is deeply tied to our economic standing relative to others. In a society with vast wealth gaps, each additional dollar has a higher "happiness utility" because it buys insulation from precarity and a greater sense of status and security. The goalposts for a "good life" keep moving.
-
-Case Study: When Shelter Becomes a Financial Asset
-These pressures—the need for credentials to get ahead and the psychological drive for a higher relative income—converge with devastating effect in the housing market. Here, the conflict between a home's utility as shelter and its function as a financial asset becomes painfully clear.
+However, a more recent 2023 study by Kahneman and Matthew Killingsworth refined this view, finding that for most people, happiness does continue to rise with income. ([See the study in PNAS](https://www.pnas.org/doi/10.1073/pnas.2208661120)) The critical context is inequality. The Relative Income Hypothesis suggests our happiness is deeply tied to our economic standing relative to others. In a society with vast wealth gaps, each additional dollar has a higher "happiness utility" because it buys insulation from precarity and a greater sense of status and security.
 
 The Appreciation Trap: The model shows home prices rising, creating "paper wealth." But this rising price doesn't improve the home's utility. For those who own the asset, their balance sheet looks great. For those who need the shelter, the asset's rising cost creates an ever-higher barrier, forcing them into a more precarious and expensive race.
 
