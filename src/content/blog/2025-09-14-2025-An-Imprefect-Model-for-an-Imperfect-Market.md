@@ -10,6 +10,29 @@ This simulation is an attempt to model how this process unfolds specifically wit
 You can run the simulation and test these scenarios yourself here:
 Interactive Housing Simulation
 
+If you want to download the code:
+https://github.com/TJAdryan/astro_blog/blob/main/src/components/HousingSim/HousingSimulation.jsx
+
+If you want to run the simulation locally:
+
+1. Make sure you have [Node.js](https://nodejs.org/) and npm installed.
+2. Download the code above or clone the repository:
+   ```bash
+   git clone https://github.com/TJAdryan/astro_blog.git
+   cd astro_blog
+   ```
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
+4. Start the development server:
+   ```bash
+   npm run dev
+   ```
+5. Open your browser to the local address shown in the terminal (usually http://localhost:3000).
+
+You only need the code in `src/components/HousingSim/HousingSimulation.jsx` to experiment with the simulation logic, but running the full project gives you the interactive UI.
+
 The Widening Gaps: From Credentials to Housing
 The struggle for housing doesn't happen in a vacuum. It’s a symptom of a larger economic reality defined by two powerful trends: the rising bar for entry and the shifting psychological rewards for clearing it.
 
