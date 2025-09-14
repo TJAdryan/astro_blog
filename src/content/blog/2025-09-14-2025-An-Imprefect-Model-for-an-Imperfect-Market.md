@@ -1,4 +1,9 @@
-An Imperfect Model for an Imperfect Market
+---
+title: "An Imperfect Model for an Imperfect Market"
+description: "A simulation-based exploration of how market forces affect housing utility and affordability."
+pubDate: 2025-09-14
+---
+
 We all want the best lives we can have. That’s a fundamental human drive. We work hard, we save, and we try to make decisions that will give us and our families stability and security. For generations, owning a home was the cornerstone of that dream.
 
 But what happens when the very market forces that seem to reward our efforts start to work against the community as a whole? A rising home value feels like a personal win. The ability to sell your property quickly to the highest bidder feels like an efficient market. None of these actions are malicious. They are rational, individual choices.
