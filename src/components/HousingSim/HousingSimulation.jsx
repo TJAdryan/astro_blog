@@ -559,56 +559,56 @@ export default function HousingSimulation() {
                     <div className="bg-white p-3 rounded-lg shadow flex gap-4 items-center">
                         <div>
                             <label className="text-xs font-medium text-gray-500 block">Sale Turnover (%)</label>
-                            <input type="number" value={turnoverRate} onChange={e => setTurnoverRate(Number(e.target.value))} className="w-24 p-1 border rounded-md text-center"/>
+                            <input type="number" value={turnoverRate} onChange={e => setTurnoverRate(Math.max(0, Number(e.target.value)))} className="w-24 p-1 border rounded-md text-center"/>
                         </div>
                         <div>
                             <label className="text-xs font-medium text-gray-500 block">New Homes / Year</label>
-                            <input type="number" value={newHomes} onChange={e => setNewHomes(Number(e.target.value))} className="w-24 p-1 border rounded-md text-center"/>
+                            <input type="number" value={newHomes} onChange={e => setNewHomes(Math.max(0, Number(e.target.value)))} className="w-24 p-1 border rounded-md text-center"/>
                         </div>
                         <div>
                             <label className="text-xs font-medium text-gray-500 block">Initial Seekers</label>
-                            <input type="number" value={initialSeekersCount} onChange={e => setInitialSeekersCount(Number(e.target.value))} className="w-24 p-1 border rounded-md text-center"/>
+                            <input type="number" value={initialSeekersCount} onChange={e => setInitialSeekersCount(Math.max(0, Number(e.target.value)))} className="w-24 p-1 border rounded-md text-center"/>
                         </div>
                         <div>
                             <label className="text-xs font-medium text-gray-500 block">Landlord Cap (%)</label>
-                            <input type="number" value={landlordCap} onChange={e => setLandlordCap(Number(e.target.value))} className="w-24 p-1 border rounded-md text-center"/>
+                            <input type="number" value={landlordCap} onChange={e => setLandlordCap(Math.max(0, Number(e.target.value)))} className="w-24 p-1 border rounded-md text-center"/>
                         </div>
                     </div>
                      <div className="bg-white p-3 rounded-lg shadow flex gap-4 items-center">
                         <div>
                             <label className="text-xs font-medium text-gray-500 block">Homeowners</label>
-                            <input type="number" value={initialHomeowners} min={0} max={HOMES_TOTAL} onChange={e => setInitialHomeowners(Number(e.target.value))} className="w-24 p-1 border rounded-md text-center" />
+                            <input type="number" value={initialHomeowners} min={0} max={HOMES_TOTAL} onChange={e => setInitialHomeowners(Math.max(0, Number(e.target.value)))} className="w-24 p-1 border rounded-md text-center" />
                         </div>
                         <div>
                             <label className="text-xs font-medium text-gray-500 block">Landlords</label>
-                            <input type="number" value={initialLandlords} min={0} max={HOMES_TOTAL} onChange={e => setInitialLandlords(Number(e.target.value))} className="w-24 p-1 border rounded-md text-center" />
+                            <input type="number" value={initialLandlords} min={0} max={HOMES_TOTAL} onChange={e => setInitialLandlords(Math.max(0, Number(e.target.value)))} className="w-24 p-1 border rounded-md text-center" />
                         </div>
                     </div>
                 </div>
-                <div className="flex gap-3 items-center justify-center mt-2">
-                    <button onClick={handleRunSimulation} className={`font-bold px-4 py-2 rounded-md text-white ${simulationRunning ? 'bg-orange-500 hover:bg-orange-600' : 'bg-green-600 hover:bg-green-700'}`}>{simulationRunning ? 'Pause' : 'Run'}</button>
-                    <input type="number" value={yearsToRun} onChange={e => setYearsToRun(Number(e.target.value))} className="w-16 p-1 border rounded-md text-center" />
-                </div>
+          </div>
+          <div className="flex justify-center flex-wrap gap-6 mt-4 text-sm p-4 bg-white rounded-lg shadow">
+            <div className="flex gap-3 items-center justify-center">
+              <button onClick={handleRunSimulation} className={`font-bold px-4 py-2 rounded-md text-white ${simulationRunning ? 'bg-orange-500 hover:bg-orange-600' : 'bg-green-600 hover:bg-green-700'}`}>{simulationRunning ? 'Pause' : 'Run'}</button>
+              <input type="number" value={yearsToRun} onChange={e => setYearsToRun(Math.max(0, Number(e.target.value)))} className="w-16 p-1 border rounded-md text-center" />
             </div>
             <div className="flex items-center gap-4 justify-center mt-2">
-                <button onClick={handleReset} disabled={simulationRunning} className="border border-gray-400 px-3 py-2 rounded-md bg-white hover:bg-gray-100">Reset</button>
-                <button onClick={advanceYear} disabled={simulationRunning} className="border border-gray-400 px-3 py-2 rounded-md bg-white hover:bg-gray-100">Advance Year</button>
-                <button onClick={() => setCollapseTriggered(true)} disabled={simulationRunning || collapseTriggered} className="font-bold border border-red-500 text-red-600 px-3 py-2 rounded-md bg-white hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed">Trigger Mortgage Collapse</button>
-                <div className="text-2xl font-bold">Year: <span>{year}</span></div>
+              <button onClick={handleReset} disabled={simulationRunning} className="border border-gray-400 px-3 py-2 rounded-md bg-white hover:bg-gray-100">Reset</button>
+              <button onClick={advanceYear} disabled={simulationRunning} className="border border-gray-400 px-3 py-2 rounded-md bg-white hover:bg-gray-100">Advance Year</button>
+              <button onClick={() => setCollapseTriggered(true)} disabled={simulationRunning || collapseTriggered} className="font-bold border border-red-500 text-red-600 px-3 py-2 rounded-md bg-white hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed">Trigger Mortgage Collapse</button>
+              <div className="text-2xl font-bold">Year: <span>{year}</span></div>
             </div>
+          </div>
         </div>
         
         <main>
           <h3 className="text-2xl font-bold text-center mb-4">Current Market Stats</h3>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8">
             <Card label="Total Population" value={displayData.totalPopulation} subValue="Housed & Seeking" />
             <Card label="Seeking Housing" value={displayData.seekerCount} />
+            <Card label="Homeowners" value={displayData.homeowners} subValue={displayData.pctOwnerOccupied} />
+            <Card label="Landlords" value={displayData.landlords} subValue={displayData.pctLandlords} />
             <Card label="Mortgage-Eligible Seekers" value={displayData.mortgageEligible} subValue="Can Afford Median Home" />
             <Card label="Median Home Price" value={`$${Math.round((displayData.medianPrice || 0) / 1000)}k`} subValue={displayData.pctMedianPrice} />
-            <Card label="Median Rent" value={`$${Math.round(displayData.medianRent || 0)}`} subValue={displayData.pctMedianRent} />
-            <Card label="Vacant Rental Units" value={displayData.vacantRentals} subValue={`${displayData.vacancyRate} Rental Rate`} />
-            <Card label="Short-Term Rentals" value={displayData.shortTermRentals} subValue="Total Units" />
-            <Card label="Median Rent Burden" value={displayData.medianRentBurden} subValue="% of Median Seeker Income" />
             <Card label="Median Seeker Income" 
                   value={displayData.seekerCount > 0 ? `$${Math.round((displayData.medianIncome || 0)/1000)}k` : 'N/A'} 
                   subValue={displayData.pctMedianIncome} />
@@ -617,30 +617,13 @@ export default function HousingSimulation() {
               value={displayData.medianHomeownerIncome > 0 ? `$${Math.round(displayData.medianHomeownerIncome / 1000)}k` : 'N/A'}
               subValue={displayData.pctMedianHomeownerIncome}
             />
-            <Card label="Homeowners" value={displayData.homeowners} subValue={displayData.pctOwnerOccupied} />
-            <Card label="Landlords" value={displayData.landlords} subValue={displayData.pctLandlords} />
+            <Card label="Median Rent" value={`$${Math.round(displayData.medianRent || 0)}`} subValue={displayData.pctMedianRent} />
+            <Card label="Median Rent Burden" value={displayData.medianRentBurden} subValue="% of Median Seeker Income" />
+            <Card label="Vacant Rental Units" value={displayData.vacantRentals} subValue={`${displayData.vacancyRate} Rental Rate`} />
+            <Card label="Short-Term Rentals" value={displayData.shortTermRentals} subValue="Total Units" />
           </div>
 
-          <hr className="my-10" />
-          <h3 className="text-2xl font-bold text-center mb-4">Political & Supply Metrics</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-              <Card 
-                label="Landlord Concentration" 
-                value={`${((displayData.landlordConcentration || 0) * 100).toFixed(1)}%`}
-                subValue="% of Total Housing Stock"
-              />
-              <Card 
-                label="New Home Approval Rate" 
-                value={`${((displayData.approvalRate || 0) * 100).toFixed(1)}%`}
-                subValue="Chance New Homes Are Built"
-              />
-              <Card 
-                label="Annual Supply Deficit" 
-                value={displayData.supplyDeficit}
-                subValue="Potential Homes Not Built"
-              />
-          </div>
-          <hr className="my-10" />
+
 
           <div id="housing-visual-grid" className="grid grid-cols-30 gap-0.5 p-4 bg-gray-300 rounded-lg mx-auto w-full overflow-x-auto">
             {[...housingStock]
@@ -693,8 +676,7 @@ export default function HousingSimulation() {
                <Card label="Landlord Purchases" value={marketResults.current.purchasesByLandlord} />
                <Card label="Converted to STR" value={marketResults.current.convertedToShortTerm} />
                <Card label="Displacements" value={marketResults.current.displacements} />
-               <Card label="Total Housing Not Built" value={marketResults.current.totalSupplyDeficit} subValue="Due to market power" />
-               <Card label="Pushed into Homelessness" value={marketResults.current.pushedToHomelessness} subValue="From displacements" />
+
            </div>
         </main>
       </div>
