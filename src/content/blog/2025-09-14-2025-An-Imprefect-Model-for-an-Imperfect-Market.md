@@ -57,7 +57,5 @@ Maximizing Returns, Reducing Shelter: The clearest example is converting a home 
 The Dashboard of the Divide
 The simulation's dashboard reveals the measurable outcomes of these dynamics. You can watch the Median Homeowner Income (the asset owners) pull away from the Median Seeker Income (those seeking the utility of shelter). The rising Median Rent Burden shows the direct cost of renting a home's utility when you cannot afford to buy the asset itself. It is the real-time measurement of the market decoupling from the community it's meant to serve.
 
-Realigning Price and Purpose
-This model, I hope doesn't have a conclusion. I built it to help me think through something I was trying to understand better. 
-
-But this is just one interpretation—an imperfect model for an imperfect market. If you find flaws in my logic, I would love to hear them, I know I have bias, as much as I like to see myself as logical and clear minded.  I sincerely ask you to consider where my thinking might be wrong, where the model falls short, and how we can all better understand these complex forces. Please share your thoughts in the comments and help me see what I'm missing.
+Too Longs Don't Make an Argument
+This model, I hope doesn't have a conclusion. I built it to help me think through something I was trying to understand better, an interpretation—an imperfect model for an imperfect market. If you find flaws in my logic, I would love to hear them, I know I have bias, as much as I like to see myself as logical and clear minded.  I sincerely ask you to consider where my thinking might be wrong, where the model falls short, and how we can all better understand these complex forces. Please share your thoughts in the comments and help me see what I'm missing.
