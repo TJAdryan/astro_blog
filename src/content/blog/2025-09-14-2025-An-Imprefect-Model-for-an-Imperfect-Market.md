@@ -96,10 +96,7 @@ It is the real-time measurement of the market decoupling from the community it's
 
 ---
 
-<<<<<<< HEAD
-Too Longs Don't Make an Argument
-This model, I hope doesn't have a conclusion. I built it to help me think through something I was trying to understand better, an interpretation—an imperfect model for an imperfect market. If you find flaws in my logic, I would love to hear them, I know I have bias, as much as I like to see myself as logical and clear minded.  I sincerely ask you to consider where my thinking might be wrong, where the model falls short, and how we can all better understand these complex forces. Please share your thoughts in the comments and help me see what I'm missing.
-=======
+
 ### Realigning Price and Purpose
 
 This model, I hope, doesn't have a conclusion. I built it to help as tool to broaden my understanding.  If it fails to that for you, I regret that.   That is why I included the code. I would love to see other people's models.  I think at the very least this is a good place for anyone trying to better understand how markets work.  
@@ -109,4 +106,3 @@ But this is just one interpretation—an imperfect model for an imperfect market
 
 Best,
 Dominick
->>>>>>> 25a2dd9 (updating imperfect post)
