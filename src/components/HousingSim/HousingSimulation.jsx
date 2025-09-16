@@ -550,50 +550,6 @@ export default function HousingSimulation() {
         </header>
         
         <div className="space-y-4 mb-8">
-            <div className="flex flex-col items-center gap-4">
-                <div className="flex flex-wrap gap-4 items-center justify-center">
-                    <div className="bg-white p-3 rounded-lg shadow flex gap-4 items-center">
-                        <div>
-                            <label className="text-xs font-medium text-gray-500 block">Sale Turnover (%)</label>
-                            <input type="number" value={turnoverRate} onChange={e => setTurnoverRate(Math.max(0, Number(e.target.value)))} className="w-24 p-1 border rounded-md text-center"/>
-                        </div>
-                        <div>
-                            <label className="text-xs font-medium text-gray-500 block">New Homes / Year</label>
-                            <input type="number" value={newHomes} onChange={e => setNewHomes(Math.max(0, Number(e.target.value)))} className="w-24 p-1 border rounded-md text-center"/>
-                        </div>
-                        <div>
-                            <label className="text-xs font-medium text-gray-500 block">Initial Seekers</label>
-                            <input type="number" value={initialSeekersCount} onChange={e => setInitialSeekersCount(Math.max(0, Number(e.target.value)))} className="w-24 p-1 border rounded-md text-center"/>
-                        </div>
-                        <div>
-                            <label className="text-xs font-medium text-gray-500 block">Landlord Cap (%)</label>
-                            <input type="number" value={landlordCap} onChange={e => setLandlordCap(Math.max(0, Number(e.target.value)))} className="w-24 p-1 border rounded-md text-center"/>
-                        </div>
-                    </div>
-                     <div className="bg-white p-3 rounded-lg shadow flex gap-4 items-center">
-                        <div>
-                            <label className="text-xs font-medium text-gray-500 block">Homeowners</label>
-                            <input type="number" value={initialHomeowners} min={0} max={HOMES_TOTAL} onChange={e => setInitialHomeowners(Math.max(0, Number(e.target.value)))} className="w-24 p-1 border rounded-md text-center" />
-                        </div>
-                        <div>
-                            <label className="text-xs font-medium text-gray-500 block">Landlords</label>
-                            <input type="number" value={initialLandlords} min={0} max={HOMES_TOTAL} onChange={e => setInitialLandlords(Math.max(0, Number(e.target.value)))} className="w-24 p-1 border rounded-md text-center" />
-                        </div>
-                    </div>
-                </div>
-          </div>
-          <div className="flex justify-center flex-wrap gap-6 mt-4 text-sm p-4 bg-white rounded-lg shadow">
-            <div className="flex gap-3 items-center justify-center">
-              <button onClick={handleRunSimulation} className={`font-bold px-4 py-2 rounded-md text-white ${simulationRunning ? 'bg-orange-500 hover:bg-orange-600' : 'bg-green-600 hover:bg-green-700'}`}>{simulationRunning ? 'Pause' : 'Run'}</button>
-              <input type="number" value={yearsToRun} onChange={e => setYearsToRun(Math.max(0, Number(e.target.value)))} className="w-16 p-1 border rounded-md text-center" />
-            </div>
-            <div className="flex items-center gap-4 justify-center mt-2">
-              <button onClick={handleReset} disabled={simulationRunning} className="border border-gray-400 px-3 py-2 rounded-md bg-white hover:bg-gray-100">Reset</button>
-              <button onClick={advanceYear} disabled={simulationRunning} className="border border-gray-400 px-3 py-2 rounded-md bg-white hover:bg-gray-100">Advance Year</button>
-              <button onClick={() => setCollapseTriggered(true)} disabled={simulationRunning || collapseTriggered} className="font-bold border border-red-500 text-red-600 px-3 py-2 rounded-md bg-white hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed">Trigger Mortgage Collapse</button>
-              <div className="text-2xl font-bold">Year: <span>{year}</span></div>
-            </div>
-          </div>
         </div>
         
         <main>
@@ -657,6 +613,18 @@ export default function HousingSimulation() {
           </div>
 
            <div className="flex justify-center flex-wrap gap-6 mt-4 text-sm p-4 bg-white rounded-lg shadow">
+           <div className="flex justify-center flex-wrap gap-6 mt-4 text-sm p-4 bg-white rounded-lg shadow">
+            <div className="flex gap-3 items-center justify-center">
+              <button onClick={handleRunSimulation} className={`font-bold px-4 py-2 rounded-md text-white ${simulationRunning ? 'bg-orange-500 hover:bg-orange-600' : 'bg-green-600 hover:bg-green-700'}`}>{simulationRunning ? 'Pause' : 'Run'}</button>
+              <input type="number" value={yearsToRun} onChange={e => setYearsToRun(Math.max(0, Number(e.target.value)))} className="w-16 p-1 border rounded-md text-center" />
+            </div>
+            <div className="flex items-center gap-4 justify-center mt-2">
+              <button onClick={handleReset} disabled={simulationRunning} className="border border-gray-400 px-3 py-2 rounded-md bg-white hover:bg-gray-100">Reset</button>
+              <button onClick={advanceYear} disabled={simulationRunning} className="border border-gray-400 px-3 py-2 rounded-md bg-white hover:bg-gray-100">Advance Year</button>
+              <button onClick={() => setCollapseTriggered(true)} disabled={simulationRunning || collapseTriggered} className="font-bold border border-red-500 text-red-600 px-3 py-2 rounded-md bg-white hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed">Trigger Mortgage Collapse</button>
+              <div className="text-2xl font-bold">Year: <span>{year}</span></div>
+            </div>
+          </div>
               <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full" style={{background:'#22c55e'}}></div>Owner Occupied</div>
               <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full" style={{background:'#1e40af'}}></div>Rental Occupied</div>
               <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full" style={{background:'#60a5fa'}}></div>Rental Vacant</div>
@@ -664,8 +632,9 @@ export default function HousingSimulation() {
               <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full" style={{background:'#ffbf00'}}></div>Unsold New Construction</div>
            </div>
 
+
            <hr className="my-10" />
-           
+
            <h3 className="text-2xl font-bold text-center mb-4">Cumulative Market Activity</h3>
            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
                <Card label="Homeowner Purchases" value={marketResults.current.purchasesByHomeowner} />
