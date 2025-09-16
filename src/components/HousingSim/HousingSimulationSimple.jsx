@@ -535,11 +535,13 @@ export default function HousingSimulationSimple() {
             <div style={{marginTop: '1em'}}>
               <b>Unsold Homes (ID, Price):</b>
               <ul>
-                {[...unsoldHomes]
-                  .sort((a, b) => Math.round(b.price) - Math.round(a.price))
-                  .map(h => (
-                    <li key={h.id}>ID: {h.id}, Price: {Math.round(h.price).toLocaleString()}</li>
-                  ))}
+                  {[...unsoldHomes]
+                    .sort((a, b) => Math.round(b.price) - Math.round(a.price))
+                    .map(h => (
+                      <li key={h.id} style={{background: '#fffbe6', color: '#a67c00', fontWeight: 'bold'}}>
+                        ID: {h.id}, Price: {Math.round(h.price).toLocaleString()}
+                      </li>
+                    ))}
               </ul>
             </div>
             <div style={{marginTop: '1em'}}>

@@ -464,10 +464,10 @@ export default function HousingSimulation() {
               const newHome = { id: newStock.length + 1 + i, price: newPrice, rent: newPrice * 0.005, status: 'Vacant', ownerIncome: null };
               newStock.push(newHome);
               sellProperty(newHome, currentMedianPrice, false);
-              if (newHome.ownerType === undefined || newHome.status === 'Vacant') {
-                  newHome.status = 'UnsoldNew';
-                  unsoldInventory.current.push(newHome);
-              }
+        if (newHome.ownerType === undefined || newHome.status === 'Vacant') {
+          newHome.status = 'Unsold';
+          unsoldInventory.current.push(newHome);
+        }
           }
       }
       supplyDeficit = newHomes - actualHomesBuilt;
@@ -486,9 +486,18 @@ export default function HousingSimulation() {
     });
 
     const unhousedSeekers = newSeekerPool.length;
-    const appreciationRate = BASE_APPRECIATION + (unhousedSeekers * 0.0005) + ((3 - newHomes) * 0.01);
-    let rentIncreaseRate = appreciationRate + (unhousedSeekers * 0.001);
-    if (rentIncreaseRate > MAX_RENT_INCREASE) rentIncreaseRate = MAX_RENT_INCREASE;
+    // Appreciation rate is variable: for every 3 unsold homes, homes depreciate 1%
+    const unsoldCount = unsoldInventory.current.length;
+    let appreciationRate;
+    if (unsoldCount === 0) {
+      appreciationRate = BASE_APPRECIATION + 0.01 + (unhousedSeekers * 0.0005) + ((3 - newHomes) * 0.01);
+    } else {
+      appreciationRate = BASE_APPRECIATION - 0.005 * Math.floor(unsoldCount / 3) + (unhousedSeekers * 0.0005) + ((3 - newHomes) * 0.01);
+      if (appreciationRate < -0.01) appreciationRate = -0.01;
+    }
+  let rentIncreaseRate = appreciationRate + (unhousedSeekers * 0.001);
+  if (rentIncreaseRate < 0) rentIncreaseRate = 0;
+  if (rentIncreaseRate > MAX_RENT_INCREASE) rentIncreaseRate = MAX_RENT_INCREASE;
     
     newStock.forEach(home => {
       home.price *= (1 + appreciationRate);
@@ -550,6 +559,38 @@ export default function HousingSimulation() {
         </header>
         
         <div className="space-y-4 mb-8">
+      <div className="flex flex-col items-center gap-4">
+        <div className="flex flex-wrap gap-4 items-center justify-center">
+          <div className="bg-white p-3 rounded-lg shadow flex gap-4 items-center">
+            <div>
+              <label className="text-xs font-medium text-gray-500 block">Sale Turnover (%)</label>
+              <input type="number" value={turnoverRate} onChange={e => setTurnoverRate(Math.max(0, Number(e.target.value)))} className="w-24 p-1 border rounded-md text-center"/>
+            </div>
+            <div>
+              <label className="text-xs font-medium text-gray-500 block">New Homes / Year</label>
+              <input type="number" value={newHomes} onChange={e => setNewHomes(Math.max(0, Number(e.target.value)))} className="w-24 p-1 border rounded-md text-center"/>
+            </div>
+            <div>
+              <label className="text-xs font-medium text-gray-500 block">Initial Seekers</label>
+              <input type="number" value={initialSeekersCount} onChange={e => setInitialSeekersCount(Math.max(0, Number(e.target.value)))} className="w-24 p-1 border rounded-md text-center"/>
+            </div>
+            <div>
+              <label className="text-xs font-medium text-gray-500 block">Landlord Cap (%)</label>
+              <input type="number" value={landlordCap} onChange={e => setLandlordCap(Math.max(0, Number(e.target.value)))} className="w-24 p-1 border rounded-md text-center"/>
+            </div>
+          </div>
+           <div className="bg-white p-3 rounded-lg shadow flex gap-4 items-center">
+            <div>
+              <label className="text-xs font-medium text-gray-500 block">Homeowners</label>
+              <input type="number" value={initialHomeowners} min={0} max={HOMES_TOTAL} onChange={e => setInitialHomeowners(Math.max(0, Number(e.target.value)))} className="w-24 p-1 border rounded-md text-center" />
+            </div>
+            <div>
+              <label className="text-xs font-medium text-gray-500 block">Landlords</label>
+              <input type="number" value={initialLandlords} min={0} max={HOMES_TOTAL} onChange={e => setInitialLandlords(Math.max(0, Number(e.target.value)))} className="w-24 p-1 border rounded-md text-center" />
+            </div>
+          </div>
+        </div>
+      </div>
         </div>
         
         <main>
@@ -632,10 +673,9 @@ export default function HousingSimulation() {
               <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full" style={{background:'#ffbf00'}}></div>Unsold New Construction</div>
            </div>
 
+           <hr className="my-5" />
 
-           <hr className="my-10" />
-
-           <h3 className="text-2xl font-bold text-center mb-4">Cumulative Market Activity</h3>
+           <h3 className="text-2xl font-bold text-center mb-2">Current Market Stats</h3>
            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
                <Card label="Homeowner Purchases" value={marketResults.current.purchasesByHomeowner} />
                <Card label="Landlord Purchases" value={marketResults.current.purchasesByLandlord} />
