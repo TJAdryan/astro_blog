@@ -32,6 +32,10 @@ How do these individual, logical decisions create complex feedback loops that dr
 > **Try It Yourself: Interactive Housing Simulation**  
 > [Interactive Housing Simulation](https://github.com/TJAdryan/astro_blog/blob/main/src/components/HousingSim/HousingSimulation.jsx)
 
+> **Simulation Parameters:**  
+> The weights and constants used in the simulation are available in  
+> [`housing_weights.json`](https://github.com/TJAdryan/astro_blog/blob/main/src/components/HousingSim/housing_weights.json)
+
 ---
 
 #### **Download & Run the Simulation Locally**

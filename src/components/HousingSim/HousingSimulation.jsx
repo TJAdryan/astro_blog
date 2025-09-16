@@ -1,28 +1,24 @@
+
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import './App.css';
+import weights from './housing_weights.json';
 
-// --- Constants ---
-const HOMES_TOTAL = 300;
-const INITIAL_SEED = 12345;
-const POPULATION_GROWTH_RATE = 0.04;
-const INCOME_GROWTH_RATE = 0.025;
-const AFFORDABILITY_MULTIPLIER = 3;
-const BASE_APPRECIATION = 0.015;
-const INITIAL_VACANCY_RATE = 0.05;
-const RENTAL_TURNOVER_RATE = 0.10;
-const RE_ENTRANT_RATE = 0.75;
-const STR_CONVERSION_CHANCE = 0.05;
-const STR_CAP_RATE = 0.03;
-const MAX_RENT_INCREASE = 0.06;
-const HOMEOWNER_TO_HOMEOWNER_SALE_CHANCE = 0.90;
-const FORECLOSURE_RATE = 0.15; // 15% of homeowners are foreclosed on during a collapse
-
-// --- Income Distribution Constants ---
-const INCOME_TIERS = {
-  bottom: { percent: 0.70, range: [40000, 80000] },
-  middle: { percent: 0.25, range: [80001, 150000] },
-  top:    { percent: 0.05, range: [150001, 500000] }
-};
+// --- Constants from JSON ---
+const HOMES_TOTAL = weights.HOMES_TOTAL;
+const INITIAL_SEED = weights.INITIAL_SEED;
+const POPULATION_GROWTH_RATE = weights.POPULATION_GROWTH_RATE;
+const INCOME_GROWTH_RATE = weights.INCOME_GROWTH_RATE;
+const AFFORDABILITY_MULTIPLIER = weights.AFFORDABILITY_MULTIPLIER;
+const BASE_APPRECIATION = weights.BASE_APPRECIATION;
+const INITIAL_VACANCY_RATE = weights.INITIAL_VACANCY_RATE;
+const RENTAL_TURNOVER_RATE = weights.RENTAL_TURNOVER_RATE;
+const RE_ENTRANT_RATE = weights.RE_ENTRANT_RATE;
+const STR_CONVERSION_CHANCE = weights.STR_CONVERSION_CHANCE;
+const STR_CAP_RATE = weights.STR_CAP_RATE;
+const MAX_RENT_INCREASE = weights.MAX_RENT_INCREASE;
+const HOMEOWNER_TO_HOMEOWNER_SALE_CHANCE = weights.HOMEOWNER_TO_HOMEOWNER_SALE_CHANCE;
+const FORECLOSURE_RATE = weights.FORECLOSURE_RATE;
+const INCOME_TIERS = weights.INCOME_TIERS;
 
 
 // --- Helper Components ---

@@ -1,0 +1,21 @@
+{
+  "HOMES_TOTAL": 300,
+  "INITIAL_SEED": 12345,
+  "POPULATION_GROWTH_RATE": 0.04,
+  "INCOME_GROWTH_RATE": 0.025,
+  "AFFORDABILITY_MULTIPLIER": 3,
+  "BASE_APPRECIATION": 0.015,
+  "INITIAL_VACANCY_RATE": 0.05,
+  "RENTAL_TURNOVER_RATE": 0.10,
+  "RE_ENTRANT_RATE": 0.75,
+  "STR_CONVERSION_CHANCE": 0.05,
+  "STR_CAP_RATE": 0.03,
+  "MAX_RENT_INCREASE": 0.06,
+  "HOMEOWNER_TO_HOMEOWNER_SALE_CHANCE": 0.90,
+  "FORECLOSURE_RATE": 0.15,
+  "INCOME_TIERS": {
+    "bottom": { "percent": 0.70, "range": [40000, 80000] },
+    "middle": { "percent": 0.25, "range": [80001, 150000] },
+    "top":    { "percent": 0.05, "range": [150001, 500000] }
+  }
+}
