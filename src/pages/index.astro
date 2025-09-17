@@ -11,6 +11,7 @@ posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
 // 3. Get the 3 most recent posts
 const latestPosts = posts.slice(0, 3);
+const housingPosts = posts.filter(post => post.data.tags && post.data.tags.includes('housing-simulation'));
 ---
 
 <BaseLayout>
@@ -37,13 +38,14 @@ const latestPosts = posts.slice(0, 3);
                 Explore the housing market simulation or read about the reasoning and build process behind it.
               </p>
               <div class="flex flex-col sm:flex-row gap-2 mt-2">
-                <a href="/blog/interactive-housing-simulation/" class="text-blue-600 dark:text-blue-400 hover:underline">Try the Simulator</a>
-                <span class="mx-2">|</span>
-                <a href="/blog/2025-09-14-2025-An-Imprefect-Model-for-an-Imperfect-Market/" class="text-blue-600 dark:text-blue-400 hover:underline">Read My Reasoning & Build Process</a>
+                {housingPosts.map(post => (
+                  <a href={`/blog/${post.slug}/`} class="text-blue-600 dark:text-blue-400 hover:underline" key={post.slug}>{post.data.title}</a>
+                ))}
               </div>
               <div class="flex flex-col gap-1 mt-2">
-                <span class="text-sm text-gray-500">Latest: {latestPosts[0].data.title} ({new Date(latestPosts[0].data.pubDate).toLocaleDateString()})</span>
-                <span class="text-sm text-gray-500">Previous: {latestPosts[1].data.title} ({new Date(latestPosts[1].data.pubDate).toLocaleDateString()})</span>
+                {housingPosts.map(post => (
+                  <span class="text-sm text-gray-500" key={post.slug}>{post.data.title}: {new Date(post.data.pubDate).toLocaleDateString()}</span>
+                ))}
               </div>
             </div>
           </div>

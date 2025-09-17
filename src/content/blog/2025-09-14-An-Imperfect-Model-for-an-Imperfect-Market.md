@@ -1,7 +1,8 @@
 ---
 title: "An Imperfect Model for an Imperfect Market"
 description: "A simulation-based exploration of how market forces affect housing utility and affordability."
-pubDate: 2025-09-14
+pubDate: "2025-09-14"
+tags: ["housing-simulation"]
 ---
 
 > **Homeownership: A Shifting Foundation**  
@@ -78,13 +79,13 @@ However, a more recent 2023 study by Kahneman and Matthew Killingsworth refined 
 ---
 
 
-## The Appreciation Trap
+### The Appreciation Trap
 
 Home prices rise, creating "paper wealth" for owners, but this increase does not improve a home's utility as shelter. Owners often oppose development that could make housing more affordable, seeking to protect their appreciation. Meanwhile, investors with a cash advantage win bidding wars, efficiently turning homes into vehicles for rental income rather than family shelter. The conversion of homes to short-term rentals further maximizes financial returns but reduces the supply of long-term housing, increasing scarcity and raising costs for the broader community.
 
 ---
 
-### The Dashboard of the Divide
+#### The Dashboard of the Divide
 
 The simulation's dashboard reveals the measurable outcomes of these dynamics:
 
@@ -97,7 +98,7 @@ It is the real-time measurement of the market decoupling from the community it's
 ---
 
 
-### Realigning Price and Purpose
+#### Realigning Price and Purpose
 
 This model, I hope, doesn't have a conclusion. I built it to help as tool to broaden my understanding.  If it fails to that for you, I regret that.   That is why I included the code. I would love to see other people's models.  I think at the very least this is a good place for anyone trying to better understand how markets work.  
 
