@@ -642,7 +642,7 @@ export default function HousingSimulation() {
                 if (home.status === 'OwnerOccupied') fill = '#22c55e'; // green
                 else if (home.usage === 'LongTermRental' && home.status === 'Occupied') fill = '#1e40af'; // dark blue
                 else if (home.usage === 'LongTermRental' && home.status === 'Vacant') fill = '#60a5fa'; // light blue
-                else if (home.status === 'UnsoldNew') fill = '#ffbf00'; // gold
+                else if (home.status === 'UnsoldNew' || home.status === 'Unsold') fill = '#ffbf00'; // yellow for all unsold homes
                 else if (home.usage === 'ShortTermRental') fill = '#a21caf'; // purple
                 return (
                   <svg key={home.id} width="36" height="36" viewBox="0 0 24 24" className="mx-auto" style={{height: '2.25rem', width: '2.25rem'}}>
@@ -670,7 +670,7 @@ export default function HousingSimulation() {
               <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full" style={{background:'#1e40af'}}></div>Rental Occupied</div>
               <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full" style={{background:'#60a5fa'}}></div>Rental Vacant</div>
               <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full" style={{background:'#a21caf'}}></div>Short-Term Rental</div>
-              <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full" style={{background:'#ffbf00'}}></div>Unsold New Construction</div>
+              <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full" style={{background:'#ffbf00'}}></div>Unsold Homes</div>
            </div>
 
            <hr className="my-5" />

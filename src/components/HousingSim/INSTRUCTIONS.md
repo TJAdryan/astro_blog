@@ -34,7 +34,7 @@ A color-coded grid represents every housing unit in the simulation, grouped by s
 
 <span class="inline-block w-4 h-4 rounded-full bg-blue-400 mr-2 align-middle"></span>Rental Vacant: Investor-owned property available for rent.
 
-<span class="inline-block w-4 h-4 rounded-full bg-[#ffbf00] mr-2 align-middle"></span>Unsold New Construction: Newly built units that failed to sell in their first year.
+<span class="inline-block w-4 h-4 rounded-full bg-[#ffbf00] mr-2 align-middle"></span>Unsold Homes: Newly built units that failed to sell in their first year.
 
 <span class="inline-block w-4 h-4 rounded-full bg-purple-500 mr-2 align-middle"></span>Short-Term Rental: Investor-owned property used for short-term lets.
 
