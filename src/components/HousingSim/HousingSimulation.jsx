@@ -552,7 +552,7 @@ export default function HousingSimulation() {
 
   return (
     <div className="bg-slate-50 font-sans p-4 sm:p-6 lg:p-8 min-h-screen">
-      <div className="max-w-none mx-auto">
+  <div className="max-w-7xl mx-auto">
         <header className="text-center pb-4 mb-6 border-b">
           <h1 className="text-4xl font-bold text-gray-800">Housing Market Simulation</h1>
           <p className="text-gray-600 mt-2">An interactive model to explore housing market dynamics.</p>
@@ -675,14 +675,14 @@ export default function HousingSimulation() {
 
            <hr className="my-5" />
 
-           <h3 className="text-2xl font-bold text-center mb-2">Current Market Stats</h3>
-           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
-               <Card label="Homeowner Purchases" value={marketResults.current.purchasesByHomeowner} />
-               <Card label="Landlord Purchases" value={marketResults.current.purchasesByLandlord} />
-               <Card label="Converted to STR" value={marketResults.current.convertedToShortTerm} />
-               <Card label="Displacements" value={marketResults.current.displacements} />
-
-           </div>
+          <h3 className="text-2xl font-bold text-center mb-2">Simulation Results</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-4 mb-4">
+            <Card label="Total Unsold Homes" value={unsoldInventory.current.length} />
+            <Card label="Homeowner Purchases" value={marketResults.current.purchasesByHomeowner} />
+            <Card label="Landlord Purchases" value={marketResults.current.purchasesByLandlord} />
+            <Card label="Converted to STR" value={marketResults.current.convertedToShortTerm} />
+            <Card label="Displacements" value={marketResults.current.displacements} />
+          </div>
         </main>
       </div>
     </div>
