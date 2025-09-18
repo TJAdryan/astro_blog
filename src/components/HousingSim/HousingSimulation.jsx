@@ -553,12 +553,9 @@ export default function HousingSimulation() {
   return (
     <div className="bg-slate-50 font-sans p-4 sm:p-6 lg:p-8 min-h-screen">
   <div className="max-w-7xl mx-auto">
-        <header className="text-center pb-4 mb-6 border-b">
-          <h1 className="text-4xl font-bold text-gray-800">Housing Market Simulation</h1>
-          <p className="text-gray-600 mt-2">An interactive model to explore housing market dynamics.</p>
-        </header>
+
         
-        <div className="space-y-4 mb-8">
+  <div className="space-y-2 mb-4">
       <div className="flex flex-col items-center gap-4">
         <div className="flex flex-wrap gap-4 items-center justify-center">
           <div className="bg-white p-3 rounded-lg shadow flex gap-4 items-center">
@@ -595,7 +592,7 @@ export default function HousingSimulation() {
         
         <main>
           <h3 className="text-2xl font-bold text-center mb-4">Current Market Stats</h3>
-          <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8 w-full">
             <Card label="Total Population" value={displayData.totalPopulation} subValue="Housed & Seeking" />
             <Card label="Seeking Housing" value={displayData.seekerCount} />
             <Card label="Homeowners" value={displayData.homeowners} subValue={displayData.pctOwnerOccupied} />
@@ -676,7 +673,7 @@ export default function HousingSimulation() {
            <hr className="my-5" />
 
           <h3 className="text-2xl font-bold text-center mb-2">Simulation Results</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-4 mb-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 mt-4 mb-4 w-full">
             <Card label="Total Unsold Homes" value={unsoldInventory.current.length} />
             <Card label="Homeowner Purchases" value={marketResults.current.purchasesByHomeowner} />
             <Card label="Landlord Purchases" value={marketResults.current.purchasesByLandlord} />
