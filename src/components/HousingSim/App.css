@@ -3,7 +3,7 @@
   grid-template-columns: repeat(30, minmax(0, 1fr));
 }
 #root {
-  max-width: 1280px;
+  max-width: 1800px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
@@ -49,5 +49,5 @@
 .grid-block {
   width: 100%;
   aspect-ratio: 1 / 1;
-  border: 1px solid #fff;
+  border: 1px solid #1e0707;
 }
