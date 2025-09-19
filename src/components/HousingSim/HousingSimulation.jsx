@@ -246,7 +246,18 @@ export default function HousingSimulation() {
       ownerOccupied, landlords, medianPrice, medianRent, medianIncome, medianHomeownerIncome,
     };
 
-    setHousingStock(newHousingStock);
+    // Sort for color order: green, dark blue, light blue, purple
+    const colorOrderSort = (a, b) => {
+      const getColorOrder = (home) => {
+        if (home.status === 'OwnerOccupied') return 0; // green
+        if (home.usage === 'LongTermRental' && home.status === 'Occupied') return 1; // dark blue
+        if (home.usage === 'LongTermRental' && home.status === 'Vacant') return 2; // light blue
+        if (home.usage === 'ShortTermRental') return 3; // purple
+        return 4;
+      };
+      return getColorOrder(a) - getColorOrder(b);
+    };
+    setHousingStock(newHousingStock.sort(colorOrderSort));
     setSeekerPool(newSeekerPool);
 
     const landlordConcentration = newHousingStock.filter(h => h.ownerType === 'landlord').length / newHousingStock.length;
@@ -536,23 +547,12 @@ export default function HousingSimulation() {
 
   const handleRunSimulation = () => setSimulationRunning(prev => !prev);
   const handleReset = () => {
-    setSimulationRunning(false);
-    setCollapseTriggered(false);
-    setYear(1);
-    setTurnoverRate(4);
-    setNewHomes(3);
-    setYearsToRun(10);
-    setInitialSeekersCount(36);
-    setInitialHomeowners(225);
-    setInitialLandlords(75);
-    setLandlordCap(45);
-    setSimulationSpeed(500);
-    setupSimulation();
+  window.location.reload();
   };
 
   return (
-    <div className="bg-slate-50 font-sans p-4 sm:p-6 lg:p-8 min-h-screen">
-  <div className="max-w-7xl mx-auto">
+  <div className="bg-slate-50 font-sans min-h-screen">
+  <div>
 
         
   <div className="space-y-2 mb-4">
@@ -615,23 +615,18 @@ export default function HousingSimulation() {
 
 
 
-          <div id="housing-visual-grid" className="grid grid-cols-30 gap-0.5 p-4 bg-gray-300 rounded-lg mx-auto w-full overflow-x-auto">
-            {[...housingStock]
+          <div id="housing-visual-grid" className="housing-grid-centered grid grid-cols-50 gap-0.5 p-4 bg-gray-300 rounded-lg overflow-x-auto">
+            {housingStock
+              .slice() // create a copy
               .sort((a, b) => {
-                // Group by: OwnerOccupied, Rental Occupied, Rental Vacant, Unsold New, ShortTermRental
-                const getSortPriority = (home) => {
-                  if (home.status === 'OwnerOccupied') return 0;
-                  if (home.usage === 'LongTermRental' && home.status === 'Occupied') return 1;
-                  if (home.usage === 'LongTermRental' && home.status === 'Vacant') return 2;
-                  if (home.status === 'UnsoldNew') return 3;
-                  if (home.usage === 'ShortTermRental') return 4;
-                  return 5;
+                const getColorOrder = (home) => {
+                  if (home.status === 'OwnerOccupied') return 0; // green
+                  if (home.usage === 'LongTermRental' && home.status === 'Occupied') return 1; // dark blue
+                  if (home.usage === 'LongTermRental' && home.status === 'Vacant') return 2; // light blue
+                  if (home.usage === 'ShortTermRental') return 3; // purple
+                  return 4;
                 };
-                // Within each group, sort by price descending for visual trend
-                const priA = getSortPriority(a);
-                const priB = getSortPriority(b);
-                if (priA !== priB) return priA - priB;
-                return (b.price || 0) - (a.price || 0);
+                return getColorOrder(a) - getColorOrder(b);
               })
               .map(home => {
                 // Color palette: group similar types with related shades
@@ -642,7 +637,7 @@ export default function HousingSimulation() {
                 else if (home.status === 'UnsoldNew' || home.status === 'Unsold') fill = '#ffbf00'; // yellow for all unsold homes
                 else if (home.usage === 'ShortTermRental') fill = '#a21caf'; // purple
                 return (
-                  <svg key={home.id} width="36" height="36" viewBox="0 0 24 24" className="mx-auto" style={{height: '2.25rem', width: '2.25rem'}}>
+                  <svg key={home.id} width="27" height="27" viewBox="0 0 24 24" className="mx-auto" style={{height: '1.6875rem', width: '1.6875rem'}}>
                     <rect x="6" y="10" width="12" height="8" rx="2" fill={fill} />
                     <polygon points="12,4 4,12 20,12" fill={fill} />
                   </svg>
