@@ -1,20 +1,17 @@
-/* Centered, extra-wide housing grid container */
-.housing-grid-centered {
-  max-width: 8800px;
-  margin: 0 auto;
+/* Housing grid styles */
+#housing-visual-grid {
+  max-width: none;
   width: 100%;
+  padding: 1rem;
 }
-/* Custom grid-cols-30 for housing grid */
-.grid-cols-30 {
-  grid-template-columns: repeat(30, minmax(0, 1fr));
+
+/* Grid block styles */
+#housing-visual-grid > div {
+  aspect-ratio: 1;
+  width: 100%;
+  min-width: 10px;
+  border-radius: 1px;
 }
-.grid-cols-50 {
-  grid-template-columns: repeat(50, minmax(0, 1fr));
-}
-.grid-cols-50 {
-  grid-template-columns: repeat(50, minmax(0, 1fr));
-}
-/* Increase max-width for housing grid container to fit 50 columns */
 #root {
   width: 100%;
   text-align: center;

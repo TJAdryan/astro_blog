@@ -615,7 +615,7 @@ export default function HousingSimulation() {
 
 
 
-          <div id="housing-visual-grid" className="housing-grid-centered grid grid-cols-50 gap-0.5 p-4 bg-gray-300 rounded-lg overflow-x-auto">
+          <div id="housing-visual-grid" className="grid grid-cols-[repeat(50,1fr)] gap-[1px] p-4 bg-gray-200 rounded-lg overflow-x-auto shadow-inner">
             {housingStock
               .slice() // create a copy
               .sort((a, b) => {
