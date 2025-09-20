@@ -39,12 +39,12 @@ const housingPosts = posts.filter(post => post.data.tags && post.data.tags.inclu
               </p>
               <div class="flex flex-col sm:flex-row gap-2 mt-2">
                 {housingPosts.map(post => (
-                  <a href={`/blog/${post.slug}/`} class="text-blue-600 dark:text-blue-400 hover:underline" key={post.slug}>{post.data.title}</a>
+                  <a href={`/blog/${post.slug}/`} class="text-blue-600 dark:text-blue-400 hover:underline">{post.data.title}</a>
                 ))}
               </div>
               <div class="flex flex-col gap-1 mt-2">
                 {housingPosts.map(post => (
-                  <span class="text-sm text-gray-500" key={post.slug}>{post.data.title}: {new Date(post.data.pubDate).toLocaleDateString()}</span>
+                  <span class="text-sm text-gray-500">{post.data.title}: {new Date(post.data.pubDate).toLocaleDateString()}</span>
                 ))}
               </div>
             </div>
