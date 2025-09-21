@@ -1,6 +1,8 @@
+---
 import WideLayout from "../layouts/WideLayout.astro";
-import HousingSimulation from "../components/HousingSim/HousingSimulation.jsx";
+import HousingSimulationComponent from "../components/HousingSim/HousingSimulation.jsx";
+---
 
 <WideLayout title="Housing Simulation">
-  <HousingSimulation client:load />
+  <HousingSimulationComponent client:only="react" />
 </WideLayout>
