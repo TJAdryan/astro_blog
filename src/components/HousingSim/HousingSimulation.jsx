@@ -31,15 +31,26 @@ const Card = ({ label, value, subValue }) => (
 );
 
 // --- Main App Component ---
+// Default values for simulation
+const DEFAULT_VALUES = {
+  initialHomeowners: 225,
+  initialLandlords: 75,
+  initialSeekersCount: 36,
+  newHomes: 3,
+  turnoverRate: 4,
+  landlordCap: 45,
+  yearsToRun: 10
+};
+
 export default function HousingSimulation() {
   // --- Simulation Variables ---
-  const [initialHomeowners, setInitialHomeowners] = useState(225);
-  const [initialLandlords, setInitialLandlords] = useState(75);
-  const [initialSeekersCount, setInitialSeekersCount] = useState(36);
-  const [newHomes, setNewHomes] = useState(3);
-  const [turnoverRate, setTurnoverRate] = useState(4);
-  const [landlordCap, setLandlordCap] = useState(45);
-  const [yearsToRun, setYearsToRun] = useState(10);
+  const [initialHomeowners, setInitialHomeowners] = useState(DEFAULT_VALUES.initialHomeowners);
+  const [initialLandlords, setInitialLandlords] = useState(DEFAULT_VALUES.initialLandlords);
+  const [initialSeekersCount, setInitialSeekersCount] = useState(DEFAULT_VALUES.initialSeekersCount);
+  const [newHomes, setNewHomes] = useState(DEFAULT_VALUES.newHomes);
+  const [turnoverRate, setTurnoverRate] = useState(DEFAULT_VALUES.turnoverRate);
+  const [landlordCap, setLandlordCap] = useState(DEFAULT_VALUES.landlordCap);
+  const [yearsToRun, setYearsToRun] = useState(DEFAULT_VALUES.yearsToRun);
 
   // Function to handle balanced updates between homeowners and landlords
   const updateBalancedOwnership = useCallback((type, newValue) => {
@@ -782,34 +793,7 @@ export default function HousingSimulation() {
   <div className="space-y-2 mb-4">
       <div className="flex flex-col items-center gap-4">
         <div className="flex flex-wrap gap-4 items-center justify-center">
-          <div className="bg-white p-3 rounded-lg shadow flex gap-4 items-center">
-            <div>
-              <label className="text-xs font-medium text-gray-500 block">Sale Turnover (%)</label>
-              <input type="number" value={turnoverRate} onChange={e => setTurnoverRate(Math.max(0, Number(e.target.value)))} className="w-24 p-1 border rounded-md text-center"/>
-            </div>
-            <div>
-              <label className="text-xs font-medium text-gray-500 block">New Homes / Year</label>
-              <input type="number" value={newHomes} onChange={e => setNewHomes(Math.max(0, Number(e.target.value)))} className="w-24 p-1 border rounded-md text-center"/>
-            </div>
-            <div>
-              <label className="text-xs font-medium text-gray-500 block">Initial Seekers</label>
-              <input type="number" value={initialSeekersCount} onChange={e => setInitialSeekersCount(Math.max(0, Number(e.target.value)))} className="w-24 p-1 border rounded-md text-center"/>
-            </div>
-            <div>
-              <label className="text-xs font-medium text-gray-500 block">Landlord Cap (%)</label>
-              <input type="number" value={landlordCap} onChange={e => setLandlordCap(Math.max(0, Number(e.target.value)))} className="w-24 p-1 border rounded-md text-center"/>
-            </div>
-          </div>
-           <div className="bg-white p-3 rounded-lg shadow flex gap-4 items-center">
-            <div>
-              <label className="text-xs font-medium text-gray-500 block">Homeowners</label>
-              <input type="number" value={initialHomeowners} min={0} max={HOMES_TOTAL} onChange={e => setInitialHomeowners(Math.max(0, Number(e.target.value)))} className="w-24 p-1 border rounded-md text-center" />
-            </div>
-            <div>
-              <label className="text-xs font-medium text-gray-500 block">Landlords</label>
-              <input type="number" value={initialLandlords} min={0} max={HOMES_TOTAL} onChange={e => setInitialLandlords(Math.max(0, Number(e.target.value)))} className="w-24 p-1 border rounded-md text-center" />
-            </div>
-          </div>
+          <div></div>
         </div>
       </div>
         </div>
