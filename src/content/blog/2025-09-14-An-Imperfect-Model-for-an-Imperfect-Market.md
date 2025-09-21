@@ -5,6 +5,8 @@ pubDate: "2025-09-14"
 tags: ["housing-simulation"]
 ---
 
+*Want to try the simulation? [Try it here](https://nextvaldata.com/blog/interactive-housing-simulation/). Instructions for downloading and running locally are provided below.*
+
 > **Homeownership: A Shifting Foundation**  
 > For generations, homeownership has been a cornerstone of the American narrative—a key marker of financial stability and a primary vehicle for building wealth. The 2008 financial crisis, however, fundamentally reshaped this landscape, and its aftershocks continue to define the market today.
 

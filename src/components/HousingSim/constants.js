@@ -15,15 +15,19 @@ export const INCOME_GROWTH_RATE = 0.03;
 
 export const INCOME_TIERS = {
     top: {
-        percent: 0.20,
-        range: [120000, 250000]
+        percent: 0.05,  // 95th percentile and up
+        range: [150000, 400000]
     },
-    middle: {
-        percent: 0.50,
-        range: [60000, 119999]
+    upper_middle: {
+        percent: 0.24,  // 71-94th percentile
+        range: [81000, 149999]
+    },
+    lower_middle: {
+        percent: 0.41,  // 30-70th percentile
+        range: [50000, 80999]
     },
     bottom: {
-        percent: 0.30,
-        range: [30000, 59999]
+        percent: 0.30,  // 0-29th percentile
+        range: [30000, 49999]
     }
 };
