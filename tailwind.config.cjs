@@ -1,10 +1,13 @@
+/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    './src/**/*.{astro,js,jsx,ts,tsx,vue}',
-    './public/**/*.html',
+    './src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}',
   ],
+  darkMode: 'class',
   theme: {
-    extend: {},
+    extend: {
+      // Add any theme extensions here
+    },
   },
   plugins: [],
 };

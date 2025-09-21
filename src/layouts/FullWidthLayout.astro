@@ -1,0 +1,60 @@
+---
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
+import "../styles/global.css";
+import "../styles/custom.css";
+const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preload" href="/fonts/atkinson-regular.woff" as="font" type="font/woff" crossorigin />
+    <link rel="preload" href="/fonts/atkinson-bold.woff" as="font" type="font/woff" crossorigin />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <style is:global>
+      /* Reset any default max-width constraints */
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        max-width: 100vw;
+      }
+      
+      /* Remove any margin/width constraints from main containers */
+      main, div[data-astro-cid], .content-wrapper {
+        width: 100% !important;
+        max-width: 100vw !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      /* Ensure the housing simulation takes full width */
+      #housing-visual-grid {
+        width: 100%;
+        max-width: none;
+        margin: 0;
+      }
+
+      /* Override any Astro default container styles */
+      .container, .astro-container {
+        max-width: none !important;
+        width: 100% !important;
+        margin: 0 !important;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-slate-50">
+    <Header title={SITE_TITLE} />
+    <main class="w-full max-w-none p-0 m-0">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

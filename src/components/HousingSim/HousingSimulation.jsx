@@ -32,14 +32,28 @@ const Card = ({ label, value, subValue }) => (
 
 // --- Main App Component ---
 export default function HousingSimulation() {
-  // --- Input State (configurable by user) ---
-  const [turnoverRate, setTurnoverRate] = useState(4);
-  const [newHomes, setNewHomes] = useState(3);
-  const [yearsToRun, setYearsToRun] = useState(10); 
-  const [initialSeekersCount, setInitialSeekersCount] = useState(36);
+  // --- Simulation Variables ---
   const [initialHomeowners, setInitialHomeowners] = useState(225);
   const [initialLandlords, setInitialLandlords] = useState(75);
+  const [initialSeekersCount, setInitialSeekersCount] = useState(36);
+  const [newHomes, setNewHomes] = useState(3);
+  const [turnoverRate, setTurnoverRate] = useState(4);
   const [landlordCap, setLandlordCap] = useState(45);
+  const [yearsToRun, setYearsToRun] = useState(10);
+
+  // Function to handle balanced updates between homeowners and landlords
+  const updateBalancedOwnership = useCallback((type, newValue) => {
+    const totalHomes = HOMES_TOTAL;
+    newValue = Math.max(0, Math.min(newValue, totalHomes)); // Ensure value is between 0 and total homes
+    
+    if (type === 'homeowners') {
+      setInitialHomeowners(newValue);
+      setInitialLandlords(totalHomes - newValue);
+    } else if (type === 'landlords') {
+      setInitialLandlords(newValue);
+      setInitialHomeowners(totalHomes - newValue);
+    }
+  }, []);
   
   // --- Simulation State (runs the model) ---
   const [year, setYear] = useState(1);
@@ -173,6 +187,7 @@ export default function HousingSimulation() {
         const incomes = [];
         const randomInRange = (min, max) => min + seededRandom.current() * (max - min);
 
+        const { INCOME_TIERS } = weights;
         const topCount = Math.floor(count * INCOME_TIERS.top.percent);
         const middleCount = Math.floor(count * INCOME_TIERS.middle.percent);
         const bottomCount = count - topCount - middleCount;
@@ -187,41 +202,95 @@ export default function HousingSimulation() {
     const generateHomeownerIncomes = (count) => {
         const incomes = [];
         const randomInRange = (min, max) => min + seededRandom.current() * (max - min);
-        const topCount = Math.floor(count * 0.50);
-        const middleCount = count - topCount;
-        for (let i = 0; i < topCount; i++) incomes.push(randomInRange(...INCOME_TIERS.top.range));
-        for (let i = 0; i < middleCount; i++) incomes.push(randomInRange(...INCOME_TIERS.middle.range));
-        return incomes.sort((a, b) => a - b);
+        const { INCOME_TIERS } = weights;
+        
+        // Calculate exact counts for each tier
+        const topCount = Math.floor(count * INCOME_TIERS.top.percent);
+        const middleCount = Math.floor(count * INCOME_TIERS.middle.percent);
+        const bottomCount = count - topCount - middleCount;
+        
+        // Generate exact number of incomes for each tier
+        for (let i = 0; i < topCount; i++) {
+            incomes.push(randomInRange(...INCOME_TIERS.top.range));
+        }
+        for (let i = 0; i < middleCount; i++) {
+            incomes.push(randomInRange(...INCOME_TIERS.middle.range));
+        }
+        for (let i = 0; i < bottomCount; i++) {
+            incomes.push(randomInRange(...INCOME_TIERS.bottom.range));
+        }
+        
+        // Return unsorted incomes to avoid sequential assignment bias
+        return incomes;
     };
 
-    const generateSortedData = (count, median, spread) => {
-        const data = [median];
-        for(let i = 1; i <= Math.floor((count - 1) / 2); i++) {
-            data.push(median + seededRandom.current() * i * spread);
-            data.unshift(median - seededRandom.current() * i * spread);
+    const generateRandomData = (count, median, spread) => {
+        const data = [];
+        for(let i = 0; i < count; i++) {
+            // Generate more evenly distributed prices around the median
+            const deviation = (seededRandom.current() - 0.5) * 2 * spread;
+            data.push(Math.max(median + deviation, median * 0.5)); // Ensure no prices below 50% of median
         }
-        if (count % 2 === 0) {
-           data.push(median + seededRandom.current() * (count/2) * spread);
-        }
-        return data.sort((a,b) => a-b);
+        return data;
     };
 
-    const initialPrices = generateSortedData(HOMES_TOTAL, 350000, 1000);
+    const initialPrices = generateRandomData(HOMES_TOTAL, 350000, 100000);
     const initialIncomes = generateTieredIncomes(initialSeekersCount);
     
     let adjHomeowners = initialHomeowners;
     let adjLandlords = initialLandlords;
+    
+    // Shuffle the array of indices to randomly assign properties
+    const indices = Array.from({length: HOMES_TOTAL}, (_, i) => i);
+    for (let i = indices.length - 1; i > 0; i--) {
+        const j = Math.floor(seededRandom.current() * (i + 1));
+        [indices[i], indices[j]] = [indices[j], indices[i]];
+    }
+    
+    // Split indices into landlord and homeowner groups
+    const landlordIndices = indices.slice(0, adjLandlords);
+    const homeownerIndices = indices.slice(adjLandlords);
     if (adjHomeowners + adjLandlords !== HOMES_TOTAL) {
       adjLandlords = HOMES_TOTAL - adjHomeowners;
     }
     
-    const initialHomeownerIncomes = generateHomeownerIncomes(adjHomeowners);
+    // Use a different distribution for initial homeowners (40/45/15 split)
+    const generateInitialHomeownerIncomes = (count) => {
+        const incomes = [];
+        const randomInRange = (min, max) => min + seededRandom.current() * (max - min);
+        const { INCOME_TIERS } = weights;
+        
+        // Different percentages for homeowners
+        const topCount = Math.floor(count * 0.15);  // 15% high income
+        const middleCount = Math.floor(count * 0.45); // 45% middle income
+        const bottomCount = count - topCount - middleCount; // 40% lower income
+        
+        for (let i = 0; i < topCount; i++) incomes.push(randomInRange(...INCOME_TIERS.top.range));
+        for (let i = 0; i < middleCount; i++) incomes.push(randomInRange(...INCOME_TIERS.middle.range));
+        for (let i = 0; i < bottomCount; i++) incomes.push(randomInRange(...INCOME_TIERS.bottom.range));
+        
+        return incomes;
+    };
+    
+    const initialHomeownerIncomes = generateInitialHomeownerIncomes(adjHomeowners);
+
     let homeownerIncomeIndex = 0;
 
+    // Create an array of indices and shuffle it for random assignment of properties
+    const shuffledIndices = Array.from({ length: HOMES_TOTAL }, (_, i) => i);
+    for (let i = shuffledIndices.length - 1; i > 0; i--) {
+        const j = Math.floor(seededRandom.current() * (i + 1));
+        [shuffledIndices[i], shuffledIndices[j]] = [shuffledIndices[j], shuffledIndices[i]];
+    }
+
+    // Use the first adjLandlords indices for landlord properties
+    const randomLandlordIndices = shuffledIndices.slice(0, adjLandlords);
+
     const newHousingStock = Array.from({ length: HOMES_TOTAL }, (_, i) => {
-      const ownerType = i < adjLandlords ? 'landlord' : 'homeowner';
+      const isLandlord = randomLandlordIndices.includes(i);
+      const ownerType = isLandlord ? 'landlord' : 'homeowner';
       const price = initialPrices[i];
-      const usage = (ownerType === 'landlord' && i < 3) ? 'ShortTermRental' : 'LongTermRental';
+      const usage = (isLandlord && randomLandlordIndices.indexOf(i) < 3) ? 'ShortTermRental' : 'LongTermRental';
       let status;
       let ownerIncome = null;
 
@@ -244,7 +313,7 @@ export default function HousingSimulation() {
       } else {
         // Regular long-term rental calculation
         const rentSpread = (price / 350000);
-        rent = 2000 * rentSpread + (seededRandom.current() - 0.5) * 100;
+        rent = 1800 * rentSpread + (seededRandom.current() - 0.5) * 100;
       }
       
       if (ownerType === 'landlord') {
@@ -314,7 +383,6 @@ export default function HousingSimulation() {
     let supplyDeficit = 0;
 
     if (collapseTriggered) {
-        console.log("--- MORTGAGE COLLAPSE YEAR TRIGGERED ---");
         const collapseAffordabilityMultiplier = 1.5;
         
         const foreclosedHomes = newStock.filter(h => h.ownerType === 'homeowner' && seededRandom.current() < FORECLOSURE_RATE);
@@ -404,13 +472,6 @@ export default function HousingSimulation() {
       const currentMedianPrice = marketPrices.length > 0 ? marketPrices[Math.floor(marketPrices.length/2)] : 0;
       
       const sellProperty = (home, medianPrice, isProtectedSale = false) => {
-        console.log('Attempting to sell home:', {
-          price: home.price,
-          status: home.status,
-          seekerCount: newSeekerPool.length,
-          affordableSeekerCount: newSeekerPool.filter(s => s.income * AFFORDABILITY_MULTIPLIER >= home.price).length
-        });
-
         const originalOwnerType = home.ownerType;
         if (originalOwnerType === 'landlord') {
           if (typeof home.originalPrice === 'number') {
@@ -471,21 +532,8 @@ export default function HousingSimulation() {
         }
         // If we get here and no winner determined, we can't process the sale
         else {
-          console.log('No winner determined:', {
-            landlordAllowed,
-            seekerInTheRunning,
-            isProtectedSale,
-            medianPrice,
-            homePrice: home.price
-          });
           return;
         }
-
-        console.log('Winner determined:', {
-          winnerType,
-          price: home.price,
-          affordableSeekers: affordableSeekers.length
-        });
 
         const processWinner = (type) => {
           const wasOccupiedRental = home.ownerType !== 'homeowner' && home.status === 'Occupied';
@@ -727,8 +775,8 @@ export default function HousingSimulation() {
   };
 
   return (
-  <div className="bg-slate-50 font-sans min-h-screen">
-  <div>
+  <div style={{ width: '100%', maxWidth: '100vw', margin: 0, padding: 0 }} className="bg-slate-50 font-sans min-h-screen">
+  <div style={{ width: '100%', maxWidth: '100vw', margin: 0, padding: 0 }}>
 
         
   <div className="space-y-2 mb-4">
@@ -789,7 +837,7 @@ export default function HousingSimulation() {
             <Card label="Short-Term Rentals" value={displayData.shortTermRentals} subValue="Total Units" />
           </div>
 
-          <div id="housing-visual-grid" className="grid grid-cols-[repeat(40,1fr)] gap-0 p-4 bg-gray-200 rounded-lg overflow-x-auto shadow-inner">
+          <div id="housing-visual-grid" className="grid grid-cols-[repeat(40,1fr)] gap-2 p-4 bg-gray-200 rounded-lg overflow-x-auto shadow-inner w-full max-w-none">
             {housingStock
               .slice() // create a copy
               .sort((a, b) => {
@@ -856,6 +904,70 @@ export default function HousingSimulation() {
               <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full" style={{background:'#60a5fa'}}></div>Rental Vacant</div>
               <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full" style={{background:'#a21caf'}}></div>Short-Term Rental</div>
               <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full" style={{background:'#ffbf00'}}></div>Unsold Homes</div>
+           </div>
+
+           <div className="bg-gray-50 p-2 rounded-lg shadow mt-2">
+            <h4 className="text-base font-semibold text-center mb-2">Simulation Variables</h4>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
+              <div className="flex flex-col">
+                <label className="text-xs text-gray-600">Initial Homeowners</label>
+                <input
+                  type="number"
+                  value={initialHomeowners}
+                  onChange={e => updateBalancedOwnership('homeowners', Number(e.target.value))}
+                  className="mt-0.5 px-1 py-0.5 border rounded text-sm w-full"
+                  min="0"
+                  max={HOMES_TOTAL}
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="text-xs text-gray-600">Initial Landlords</label>
+                <input
+                  type="number"
+                  value={initialLandlords}
+                  onChange={e => updateBalancedOwnership('landlords', Number(e.target.value))}
+                  className="mt-0.5 px-1 py-0.5 border rounded text-sm w-full"
+                  min="0"
+                  max={HOMES_TOTAL}
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="text-xs text-gray-600">Initial Seekers</label>
+                <input
+                  type="number"
+                  value={initialSeekersCount}
+                  onChange={e => setInitialSeekersCount(Number(e.target.value))}
+                  className="mt-0.5 px-1 py-0.5 border rounded text-sm w-full"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="text-xs text-gray-600">New Homes/Year</label>
+                <input
+                  type="number"
+                  value={newHomes}
+                  onChange={e => setNewHomes(Number(e.target.value))}
+                  className="mt-0.5 px-1 py-0.5 border rounded text-sm w-full"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="text-xs text-gray-600">Turnover (%)</label>
+                <input
+                  type="number"
+                  value={turnoverRate}
+                  onChange={e => setTurnoverRate(Number(e.target.value))}
+                  className="mt-0.5 px-1 py-0.5 border rounded text-sm w-full"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="text-xs text-gray-600">Landlord Cap (%)</label>
+                <input
+                  type="number"
+                  value={landlordCap}
+                  onChange={e => setLandlordCap(Number(e.target.value))}
+                  className="mt-0.5 px-1 py-0.5 border rounded text-sm w-full"
+                />
+              </div>
+            </div>
            </div>
 
            <hr className="my-5" />

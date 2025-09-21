@@ -5,9 +5,27 @@
  */
 /* src/styles/global.css */
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* If you are not using Tailwind, remove these lines. If you are, ensure your build tool is configured for Tailwind. */
+/* @tailwind base; */
+/* @tailwind components; */
+/* @tailwind utilities; */
+
+/* Housing simulation specific styles */
+.housing-simulation-page {
+  #housing-visual-grid {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+  }
+  
+  /* Only apply full width to the housing simulation container */
+  .housing-simulation-container {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}
 
 /* Font declarations */
 @font-face {

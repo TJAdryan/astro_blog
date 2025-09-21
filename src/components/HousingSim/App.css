@@ -1,14 +1,14 @@
 /* Housing grid styles */
 #housing-visual-grid {
-  max-width: none;
-  width: 100%;
+  max-width: none !important;
+  width: 100% !important;
   padding: 1rem;
 }
 
 /* Grid block styles */
 #housing-visual-grid > div {
   aspect-ratio: 1;
-  width: 100%;
+  width: 200%;
   min-width: 8px;
   border-radius: 0;
 }
