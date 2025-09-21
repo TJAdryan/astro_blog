@@ -48,6 +48,7 @@ export default function HousingSimulation() {
   const [simulationRunning, setSimulationRunning] = useState(false);
   const [simulationSpeed, setSimulationSpeed] = useState(500);
   const [collapseTriggered, setCollapseTriggered] = useState(false);
+  const nextHomeId = useRef(HOMES_TOTAL);  // Start after initial homes
 
   // --- Display State (shown on screen) ---
   const [displayData, setDisplayData] = useState({});
@@ -110,7 +111,20 @@ export default function HousingSimulation() {
       (h.status === 'OwnerOccupied' || h.status === 'Occupied')
     ).length;
     const totalPopulation = housedPopulation + seekers.length;
-    const mortgageEligible = seekers.filter(s => s.income * AFFORDABILITY_MULTIPLIER >= medianPrice).length;
+    // Calculate real mortgage eligibility considering market conditions
+    const landlordOwnershipRatio = stock.filter(h => h.ownerType === 'landlord').length / stock.length;
+    const canBuyersPurchase = landlordOwnershipRatio < (landlordCap / 100);
+    
+    // Calculate affordability based on lowest-priced available homes
+    const availableHomes = stock.filter(h => h.status === 'Unsold' || h.status === 'UnsoldNew');
+    const lowestPrice = availableHomes.length > 0 
+      ? Math.min(...availableHomes.map(h => h.price))
+      : medianPrice;
+    
+    // Only count mortgage eligible if they can actually buy (landlord cap not reached AND can afford cheapest home)
+    const mortgageEligible = canBuyersPurchase ? 
+      seekers.filter(s => s.income * AFFORDABILITY_MULTIPLIER >= lowestPrice).length : 0;
+    
     const shortTermRentals = stock.filter(h => h.usage === 'ShortTermRental').length;
 
   setDisplayData({
@@ -219,16 +233,39 @@ export default function HousingSimulation() {
         else status = seededRandom.current() < INITIAL_VACANCY_RATE ? 'Vacant' : 'Occupied';
       }
       
-      const rentSpread = (price / 350000);
-      const rent = 2000 * rentSpread + (seededRandom.current() - 0.5) * 100;
+      let rent;
+      if (usage === 'ShortTermRental') {
+        // STR rent calculation:
+        // Base nightly rate is roughly 0.1% of home value
+        const nightlyRate = price * 0.001;
+        // Assume 65% occupancy (typical for STR)
+        const avgNightsPerMonth = 19.5; // 65% of 30 days
+        rent = nightlyRate * avgNightsPerMonth;
+      } else {
+        // Regular long-term rental calculation
+        const rentSpread = (price / 350000);
+        rent = 2000 * rentSpread + (seededRandom.current() - 0.5) * 100;
+      }
+      
       if (ownerType === 'landlord') {
         totalLandlordCapital.current += price;
       }
-      return { id: i, ownerType, usage, price, rent, status, ownerIncome, originalPrice: ownerType === 'landlord' ? price : undefined, cumulativeRent: ownerType === 'landlord' ? 0 : undefined };
+      return { 
+        id: `h_${i}`, 
+        ownerType, 
+        usage, 
+        price, 
+        rent, 
+        status, 
+        ownerIncome, 
+        originalPrice: ownerType === 'landlord' ? price : undefined, 
+        cumulativeRent: ownerType === 'landlord' ? 0 : undefined,
+        nightlyRate: usage === 'ShortTermRental' ? rent / 19.5 : undefined 
+      };
     });
     
     const newSeekerPool = Array.from({ length: initialSeekersCount }, (_, i) => ({
-        id: nextSeekerId.current++,
+        id: `s_${nextSeekerId.current++}`,
         income: initialIncomes[i]
     }));
     
@@ -283,7 +320,7 @@ export default function HousingSimulation() {
         const foreclosedHomes = newStock.filter(h => h.ownerType === 'homeowner' && seededRandom.current() < FORECLOSURE_RATE);
 
         foreclosedHomes.forEach(home => {
-            newSeekerPool.push({ id: nextSeekerId.current++, income: randomInRange(...INCOME_TIERS.bottom.range) });
+            newSeekerPool.push({ id: `s_${nextSeekerId.current++}`, income: randomInRange(...INCOME_TIERS.bottom.range) });
             const affordableSeekers = newSeekerPool.filter(s => s.income * collapseAffordabilityMultiplier >= home.price);
             const landlordWins = seededRandom.current() < 0.80; 
 
@@ -325,14 +362,27 @@ export default function HousingSimulation() {
         newSeekerPool.push({ id: nextSeekerId.current++, income: baseIncome * cumulativeIncomeGrowth.current });
       }
 
+      // Always include all unsold homes in the for-sale pool
+      const unsoldHomes = newStock.filter(h => h.status === 'Unsold' || h.status === 'UnsoldNew');
+      
+      // Calculate homes that could newly enter the market
       const homesForSaleIndices = new Set();
-      const homesForSaleCount = Math.floor(newStock.length * (turnoverRate / 100));
-      while (homesForSaleIndices.size < homesForSaleCount && homesForSaleIndices.size < newStock.length) {
-        homesForSaleIndices.add(Math.floor(seededRandom.current() * newStock.length));
+      const newListingsCount = Math.floor(newStock.length * (turnoverRate / 100));
+      while (homesForSaleIndices.size < newListingsCount && homesForSaleIndices.size < newStock.length) {
+        const idx = Math.floor(seededRandom.current() * newStock.length);
+        // Only add if it's not already unsold
+        if (!unsoldHomes.includes(newStock[idx])) {
+          homesForSaleIndices.add(idx);
+        }
       }
-      const homesForSale = Array.from(homesForSaleIndices).map(index => newStock[index]);
+      const newListings = Array.from(homesForSaleIndices).map(index => newStock[index]);
 
-      const allForSale = [...homesForSale, ...unsoldInventory.current];
+      // Calculate current median price for market context
+      const currentPrices = [...newStock].map(h => h.price).sort((a,b) => a-b);
+      const medianHomePrice = currentPrices[Math.floor(currentPrices.length/2)];
+
+      // Combine new listings with existing unsold inventory
+      const allForSale = [...newListings, ...unsoldHomes];
       unsoldInventory.current = [];
 
       newStock.forEach(home => {
@@ -344,15 +394,23 @@ export default function HousingSimulation() {
               if (roll < INCOME_TIERS.top.percent) baseIncome = randomInRange(...INCOME_TIERS.top.range);
               else if (roll < INCOME_TIERS.top.percent + INCOME_TIERS.middle.percent) baseIncome = randomInRange(...INCOME_TIERS.middle.range);
               else baseIncome = randomInRange(...INCOME_TIERS.bottom.range);
-              newSeekerPool.push({ id: nextSeekerId.current++, income: baseIncome * cumulativeIncomeGrowth.current });
+              newSeekerPool.push({ id: `s_${nextSeekerId.current++}`, income: baseIncome * cumulativeIncomeGrowth.current });
             }
         }
       });
 
-      const currentPrices = newStock.map(h => h.price).sort((a,b)=>a-b);
-      const currentMedianPrice = currentPrices.length > 0 ? currentPrices[Math.floor(currentPrices.length/2)] : 0;
+      // Calculate current market metrics
+      const marketPrices = newStock.map(h => h.price).sort((a,b)=>a-b);
+      const currentMedianPrice = marketPrices.length > 0 ? marketPrices[Math.floor(marketPrices.length/2)] : 0;
       
       const sellProperty = (home, medianPrice, isProtectedSale = false) => {
+        console.log('Attempting to sell home:', {
+          price: home.price,
+          status: home.status,
+          seekerCount: newSeekerPool.length,
+          affordableSeekerCount: newSeekerPool.filter(s => s.income * AFFORDABILITY_MULTIPLIER >= home.price).length
+        });
+
         const originalOwnerType = home.ownerType;
         if (originalOwnerType === 'landlord') {
           if (typeof home.originalPrice === 'number') {
@@ -360,30 +418,74 @@ export default function HousingSimulation() {
             totalLandlordCapital.current -= home.originalPrice;
           }
         }
-        const affordableSeekers = newSeekerPool.filter(s => s.income * AFFORDABILITY_MULTIPLIER >= home.price);
+        // First, determine who can afford the home
+        const affordableSeekers = newSeekerPool.filter(s => {
+          const canAfford = s.income * AFFORDABILITY_MULTIPLIER >= home.price;
+          // More lenient payment ratio check - using net price after down payment
+          const downPayment = home.price * 0.20; // Assume 20% down payment
+          const loanAmount = home.price - downPayment;
+          const monthlyPayment = (loanAmount / AFFORDABILITY_MULTIPLIER) / 12;
+          const monthlyIncome = s.income / 12;
+          const paymentRatio = monthlyPayment / monthlyIncome;
+          return canAfford && paymentRatio <= 0.36; // 36% DTI ratio max, more standard
+        });
+        
         const seekerInTheRunning = affordableSeekers.length > 0;
         
         const landlordOwnershipRatio = newStock.filter(h => h.ownerType === 'landlord').length / newStock.length;
         const landlordAllowed = landlordOwnershipRatio < (landlordCap / 100);
 
+        // Determine winner based on market conditions
         let winnerType;
 
-        if (isProtectedSale && seekerInTheRunning) {
+        // Always prioritize seeker if they can afford it and landlords are at cap
+        if (!landlordAllowed && seekerInTheRunning) {
           winnerType = 'seeker';
-        } else if (!landlordAllowed && seekerInTheRunning) {
+        }
+        // Protected sales (like foreclosures) strongly favor seekers
+        else if (isProtectedSale && seekerInTheRunning) {
           winnerType = 'seeker';
-        } else if (landlordAllowed && !seekerInTheRunning) {
+        }
+        // If landlords are allowed and home is significantly above median, they have advantage
+        else if (landlordAllowed && home.price > currentMedianPrice * 1.2) {
+          // But seekers still have a decent chance
+          winnerType = seekerInTheRunning && seededRandom.current() > 0.7 ? 'seeker' : 'landlord';
+        }
+        // If no seekers can afford it and landlords can buy, it goes to landlord
+        else if (landlordAllowed && !seekerInTheRunning) {
           winnerType = 'landlord';
-        } else if (landlordAllowed && seekerInTheRunning) {
-          const CASH_OFFER_ADVANTAGE = 0.75;
-          if (seededRandom.current() < CASH_OFFER_ADVANTAGE) {
+        }
+        // If landlords are restricted, treat all homes equally in seeker competition
+        else if (!landlordAllowed && seekerInTheRunning) {
+          winnerType = 'seeker';
+        }
+        // Normal competitive situation - give seekers better odds
+        else if (landlordAllowed && seekerInTheRunning) {
+          const CASH_OFFER_ADVANTAGE = 0.4; // Reduced from 0.6 to give seekers much better chance
+          // Landlords only have advantage on more expensive homes
+          if (seededRandom.current() < CASH_OFFER_ADVANTAGE && home.price > currentMedianPrice) {
             winnerType = 'landlord';
           } else {
             winnerType = 'seeker';
           }
-        } else {
+        }
+        // If we get here and no winner determined, we can't process the sale
+        else {
+          console.log('No winner determined:', {
+            landlordAllowed,
+            seekerInTheRunning,
+            isProtectedSale,
+            medianPrice,
+            homePrice: home.price
+          });
           return;
         }
+
+        console.log('Winner determined:', {
+          winnerType,
+          price: home.price,
+          affordableSeekers: affordableSeekers.length
+        });
 
         const processWinner = (type) => {
           const wasOccupiedRental = home.ownerType !== 'homeowner' && home.status === 'Occupied';
@@ -441,7 +543,7 @@ export default function HousingSimulation() {
               
           if (originalOwnerType === 'homeowner') {
             const sellerIncome = randomInRange(INCOME_TIERS.middle.range[0], INCOME_TIERS.top.range[0]);
-            newSeekerPool.unshift({ id: nextSeekerId.current++, income: sellerIncome * cumulativeIncomeGrowth.current });
+            newSeekerPool.unshift({ id: `s_${nextSeekerId.current++}`, income: sellerIncome * cumulativeIncomeGrowth.current });
           }
         };
         processWinner(winnerType);
@@ -471,12 +573,21 @@ export default function HousingSimulation() {
       for (let i = 0; i < newHomes; i++) {
           if (seededRandom.current() < zoningApprovalChance) {
               actualHomesBuilt++;
-              const newPrice = currentMedianPrice * 1.15;
-              const newHome = { id: newStock.length + 1 + i, price: newPrice, rent: newPrice * 0.005, status: 'Vacant', ownerIncome: null };
+              // Price new homes at median market price
+              const newPrice = currentMedianPrice;
+              const newHome = { 
+                id: `h_${nextHomeId.current++}`, 
+                price: newPrice, 
+                rent: newPrice * 0.005, 
+                status: 'UnsoldNew',
+                ownerType: null,
+                ownerIncome: null 
+              };
               newStock.push(newHome);
-              sellProperty(newHome, currentMedianPrice, false);
-        if (newHome.ownerType === undefined || newHome.status === 'Vacant') {
-          newHome.status = 'Unsold';
+              // If landlords are at cap, treat new homes like protected sales to favor seekers
+              const isProtected = landlordOwnershipRatio >= (landlordCap / 100);
+              sellProperty(newHome, currentMedianPrice, isProtected);
+        if (!newHome.ownerType || newHome.status === 'UnsoldNew') {
           unsoldInventory.current.push(newHome);
         }
           }
@@ -498,22 +609,87 @@ export default function HousingSimulation() {
 
     const unhousedSeekers = newSeekerPool.length;
     // Appreciation rate is variable: for every 3 unsold homes, homes depreciate 1%
-    const unsoldCount = unsoldInventory.current.length;
-    let appreciationRate;
-    if (unsoldCount === 0) {
-      appreciationRate = BASE_APPRECIATION + 0.01 + (unhousedSeekers * 0.0005) + ((3 - newHomes) * 0.01);
-    } else {
-      appreciationRate = BASE_APPRECIATION - 0.005 * Math.floor(unsoldCount / 3) + (unhousedSeekers * 0.0005) + ((3 - newHomes) * 0.01);
-      if (appreciationRate < -0.01) appreciationRate = -0.01;
+     const unsoldCount = unsoldInventory.current.length;
+    // Calculate market conditions
+    const landlordFactor = newStock.filter(h => h.ownerType === 'landlord').length / newStock.length;
+    const canAddLandlords = landlordFactor < (landlordCap / 100);
+    const unsoldRatio = unsoldCount / newStock.length;
+    const seekerRatio = seekerPool.length / newStock.length;
+
+    // Calculate how many seekers can actually buy
+    const medianHomePrice = [...newStock].sort((a,b) => a.price - b.price)[Math.floor(newStock.length/2)].price;
+    const qualifiedBuyers = seekerPool.filter(s => s.income * AFFORDABILITY_MULTIPLIER >= medianHomePrice).length;
+    const qualifiedRatio = qualifiedBuyers / seekerPool.length;
+    
+    // Different rates for different market conditions
+    const baseAppreciation = BASE_APPRECIATION;
+    let depreciationRate = -0.05; // Start with 5% base depreciation
+    
+    // Make depreciation more severe when market is stuck
+    if (!canAddLandlords) {
+      depreciationRate = -0.10; // 10% depreciation when landlords are capped
+      if (qualifiedBuyers === 0) {
+        depreciationRate = -0.15; // 15% depreciation when no one can buy
+      }
     }
-  let rentIncreaseRate = appreciationRate + (unhousedSeekers * 0.001);
-  if (rentIncreaseRate < 0) rentIncreaseRate = 0;
-  if (rentIncreaseRate > MAX_RENT_INCREASE) rentIncreaseRate = MAX_RENT_INCREASE;
+    
+    // Calculate appreciation based on market conditions
+    let marketAppreciation = baseAppreciation;
+    
+    // Add appreciation based on market pressure
+    if (canAddLandlords && qualifiedBuyers > 0) {
+      // Add up to 5% based on ratio of qualified buyers
+      marketAppreciation += qualifiedRatio * 0.05;
+      
+      // Add up to 3% based on seeker demand
+      marketAppreciation += Math.min(0.03, seekerRatio * 0.1);
+      
+      // Add up to 4% for low inventory
+      if (unsoldRatio < 0.05) {
+        marketAppreciation += 0.04;
+      } else if (unsoldRatio < 0.1) {
+        marketAppreciation += 0.02;
+      }
+      
+      // Population growth pressure
+      const populationGrowth = POPULATION_GROWTH_RATE * cumulativeIncomeGrowth.current;
+      marketAppreciation += populationGrowth * 0.5; // Add up to 2% based on population growth
+    }
+    
+    // Cap the appreciation
+    if (marketAppreciation > 0.12) marketAppreciation = 0.12; // Max 12% appreciation
+    
+    // Calculate rent changes
+    let rentIncreaseRate = marketAppreciation + (unhousedSeekers * 0.001);
+    if (rentIncreaseRate < 0) rentIncreaseRate = 0;
+    if (rentIncreaseRate > MAX_RENT_INCREASE) rentIncreaseRate = MAX_RENT_INCREASE;
     
     newStock.forEach(home => {
-      home.price *= (1 + appreciationRate);
+      if (home.status === 'Unsold' || home.status === 'UnsoldNew') {
+        // Unsold homes depreciate
+        home.price *= (1 + depreciationRate);
+      } else {
+        // Other homes appreciate based on market conditions
+        home.price *= (1 + marketAppreciation);
+      }
+      
+      // Handle rent adjustments
       if (home.ownerType !== 'homeowner') {
-        home.rent *= (1 + rentIncreaseRate);
+        if (home.usage === 'ShortTermRental') {
+          // Recalculate STR rates based on new home value and seasonal factors
+          const baseNightlyRate = home.price * 0.001;
+          const seasonalMultiplier = 1 + (Math.sin(year * Math.PI / 6) * 0.2); // ±20% seasonal variation
+          home.nightlyRate = baseNightlyRate * seasonalMultiplier;
+          // Adjust occupancy rate based on market conditions (65% base)
+          const baseNights = 19.5; // 65% of 30 days
+          const occupancyMultiplier = Math.max(0.8, Math.min(1.2, 1 + (unhousedSeekers / newStock.length))); // ±20% based on demand
+          const avgNightsPerMonth = baseNights * occupancyMultiplier;
+          home.rent = home.nightlyRate * avgNightsPerMonth;
+        } else {
+          // Regular rental increases
+          home.rent *= (1 + rentIncreaseRate);
+        }
+        
         if (typeof home.cumulativeRent === 'number') {
           home.cumulativeRent += home.rent;
         }
@@ -613,9 +789,7 @@ export default function HousingSimulation() {
             <Card label="Short-Term Rentals" value={displayData.shortTermRentals} subValue="Total Units" />
           </div>
 
-
-
-          <div id="housing-visual-grid" className="grid grid-cols-[repeat(50,1fr)] gap-[1px] p-4 bg-gray-200 rounded-lg overflow-x-auto shadow-inner">
+          <div id="housing-visual-grid" className="grid grid-cols-[repeat(40,1fr)] gap-0 p-4 bg-gray-200 rounded-lg overflow-x-auto shadow-inner">
             {housingStock
               .slice() // create a copy
               .sort((a, b) => {
@@ -636,11 +810,30 @@ export default function HousingSimulation() {
                 else if (home.usage === 'LongTermRental' && home.status === 'Vacant') fill = '#60a5fa'; // light blue
                 else if (home.status === 'UnsoldNew' || home.status === 'Unsold') fill = '#ffbf00'; // yellow for all unsold homes
                 else if (home.usage === 'ShortTermRental') fill = '#a21caf'; // purple
+                const formatPrice = (price) => `$${Math.round(price).toLocaleString()}`;
+                const getTooltipText = (home) => {
+                  let text = `ID: ${home.id}\nPrice: ${formatPrice(home.price)}`;
+                  if (home.ownerType === 'landlord' && home.rent) {
+                    if (home.usage === 'ShortTermRental') {
+                      text += `\nNightly Rate: ${formatPrice(home.nightlyRate)}`;
+                      text += `\nMonthly Revenue: ${formatPrice(home.rent)}`;
+                    } else {
+                      text += `\nRent: ${formatPrice(home.rent)}/month`;
+                    }
+                  }
+                  return text;
+                };
+                
                 return (
-                  <svg key={home.id} width="27" height="27" viewBox="0 0 24 24" className="mx-auto" style={{height: '1.6875rem', width: '1.6875rem'}}>
-                    <rect x="6" y="10" width="12" height="8" rx="2" fill={fill} />
-                    <polygon points="12,4 4,12 20,12" fill={fill} />
-                  </svg>
+                  <div key={home.id} className="group relative">
+                    <svg width="27" height="27" viewBox="0 0 24 24" className="mx-auto" style={{height: '1.6875rem', width: '1.6875rem'}}>
+                      <rect x="6" y="10" width="12" height="8" rx="2" fill={fill} />
+                      <polygon points="12,4 4,12 20,12" fill={fill} />
+                    </svg>
+                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded whitespace-pre opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                      {getTooltipText(home)}
+                    </div>
+                  </div>
                 );
               })}
           </div>

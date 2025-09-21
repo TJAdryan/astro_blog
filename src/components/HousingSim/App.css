@@ -9,8 +9,8 @@
 #housing-visual-grid > div {
   aspect-ratio: 1;
   width: 100%;
-  min-width: 10px;
-  border-radius: 1px;
+  min-width: 8px;
+  border-radius: 0;
 }
 #root {
   width: 100%;
