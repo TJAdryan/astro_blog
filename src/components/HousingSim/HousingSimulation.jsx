@@ -17,7 +17,12 @@ const STR_CONVERSION_CHANCE = weights.STR_CONVERSION_CHANCE;
 const STR_CAP_RATE = weights.STR_CAP_RATE;
 const MAX_RENT_INCREASE = weights.MAX_RENT_INCREASE;
 const HOMEOWNER_TO_HOMEOWNER_SALE_CHANCE = weights.HOMEOWNER_TO_HOMEOWNER_SALE_CHANCE;
-const FORECLOSURE_RATE = weights.FORECLOSURE_RATE;
+const FORECLOSURE_RATE = weights.FORECLOSURE_RATE        
+
+// Remove this misplaced JSX and code fragment.
+// If you want to show this content, move it inside the return statement of your component.
+// Also, fix the typo: "st INCOME_TIERS = weights.INCOME_TIERS;" should be "const INCOME_TIERS = weights.INCOME_TIERS;" and placed with other constants.
+
 const INCOME_TIERS = weights.INCOME_TIERS;
 
 
@@ -788,7 +793,11 @@ export default function HousingSimulation() {
   return (
   <div style={{ width: '100%', maxWidth: '100vw', margin: 0, padding: 0 }} className="bg-slate-50 font-sans min-h-screen">
   <div style={{ width: '100%', maxWidth: '100vw', margin: 0, padding: 0 }}>
-
+    <div className="text-center py-4 bg-white border-b border-gray-100">
+      <p className="text-gray-600">
+        To read about this simulation and get the code to run it locally, <a href="https://nextvaldata.com/blog/2025-09-14-an-imperfect-model-for-an-imperfect-market/" className="text-blue-600 hover:text-blue-800 underline" target="_blank" rel="noopener noreferrer">click here</a>.
+      </p>
+    </div>
         
   <div className="space-y-2 mb-4">
       <div className="flex flex-col items-center gap-4">
@@ -957,6 +966,11 @@ export default function HousingSimulation() {
            <hr className="my-5" />
 
           <h3 className="text-2xl font-bold text-center mb-2">Simulation Results</h3>
+                    <div className="text-center mb-4">
+            <p className="text-gray-600">
+              To read about this simulation and get the code to run it locally, <a href="https://nextvaldata.com/blog/2025-09-14-an-imperfect-model-for-an-imperfect-market/" className="text-blue-600 hover:text-blue-800 underline" target="_blank" rel="noopener noreferrer">click here</a>.
+            </p>
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 mt-4 mb-4 w-full">
             <Card label="Total Unsold Homes" value={housingStock.filter(h => h.status === 'Unsold' || h.status === 'UnsoldNew').length} />
             <Card label="Homeowner Purchases" value={marketResults.current.purchasesByHomeowner} />
