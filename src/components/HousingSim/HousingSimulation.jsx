@@ -1004,11 +1004,6 @@ export default function HousingSimulation() {
            <hr className="my-5" />
 
           <h3 className="text-2xl font-bold text-center mb-2">Simulation Results</h3>
-                    <div className="text-center mb-4">
-            <p className="text-gray-600">
-              To read about this simulation and get the code to run it locally, <a href="https://nextvaldata.com/blog/2025-09-14-an-imperfect-model-for-an-imperfect-market/" className="text-blue-600 hover:text-blue-800 underline" target="_blank" rel="noopener noreferrer">click here</a>.
-            </p>
-          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 mt-4 mb-4 w-full">
             <Card label="Total Unsold Homes" value={housingStock.filter(h => h.status === 'Unsold' || h.status === 'UnsoldNew').length} />
             <Card label="Homeowner Purchases" value={marketResults.current.purchasesByHomeowner} />
