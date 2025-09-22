@@ -48,6 +48,37 @@ const DEFAULT_VALUES = {
 };
 
 export default function HousingSimulation() {
+  // --- Sort State ---
+  const [sortBy, setSortBy] = useState('color'); // 'color', 'price', 'id'
+  
+  const sortHouses = useCallback((houses, sortType) => {
+    const sortedHouses = [...houses];
+    switch (sortType) {
+      case 'color':
+        return sortedHouses.sort((a, b) => {
+          // Color order: green (OwnerOccupied), dark blue (LTR-Occupied), light blue (LTR-Vacant), purple (STR)
+          const getColorOrder = (home) => {
+            if (home.status === 'OwnerOccupied') return 0;
+            if (home.usage === 'LongTermRental' && home.status === 'Occupied') return 1;
+            if (home.usage === 'LongTermRental' && home.status === 'Vacant') return 2;
+            if (home.usage === 'ShortTermRental') return 3;
+            return 4;
+          };
+          return getColorOrder(a) - getColorOrder(b);
+        });
+      case 'price':
+        return sortedHouses.sort((a, b) => a.price - b.price);
+      case 'id':
+        return sortedHouses.sort((a, b) => {
+          const idA = parseInt(a.id.split('_')[1]);
+          const idB = parseInt(b.id.split('_')[1]);
+          return idA - idB;
+        });
+      default:
+        return sortedHouses;
+    }
+  }, []);
+
   // --- Simulation Variables ---
   const [initialHomeowners, setInitialHomeowners] = useState(DEFAULT_VALUES.initialHomeowners);
   const [initialLandlords, setInitialLandlords] = useState(DEFAULT_VALUES.initialLandlords);
@@ -368,18 +399,7 @@ export default function HousingSimulation() {
       ownerOccupied, landlords, medianPrice, medianRent, medianIncome, medianHomeownerIncome,
     };
 
-    // Sort for color order: green, dark blue, light blue, purple
-    const colorOrderSort = (a, b) => {
-      const getColorOrder = (home) => {
-        if (home.status === 'OwnerOccupied') return 0; // green
-        if (home.usage === 'LongTermRental' && home.status === 'Occupied') return 1; // dark blue
-        if (home.usage === 'LongTermRental' && home.status === 'Vacant') return 2; // light blue
-        if (home.usage === 'ShortTermRental') return 3; // purple
-        return 4;
-      };
-      return getColorOrder(a) - getColorOrder(b);
-    };
-    setHousingStock(newHousingStock.sort(colorOrderSort));
+    setHousingStock(sortHouses(newHousingStock, sortBy));
     setSeekerPool(newSeekerPool);
 
     const landlordConcentration = newHousingStock.filter(h => h.ownerType === 'landlord').length / newHousingStock.length;
@@ -760,7 +780,7 @@ export default function HousingSimulation() {
       }
     });
 
-    setHousingStock(newStock);
+    setHousingStock(sortHouses(newStock, sortBy));
     setSeekerPool(newSeekerPool);
     setYear(prevYear => prevYear + 1);
 
@@ -831,19 +851,7 @@ export default function HousingSimulation() {
           </div>
 
           <div id="housing-visual-grid" className="grid grid-cols-[repeat(40,1fr)] gap-2 p-4 bg-gray-200 rounded-lg overflow-x-auto shadow-inner w-full max-w-none">
-            {housingStock
-              .slice() // create a copy
-              .sort((a, b) => {
-                const getColorOrder = (home) => {
-                  if (home.status === 'OwnerOccupied') return 0; // green
-                  if (home.usage === 'LongTermRental' && home.status === 'Occupied') return 1; // dark blue
-                  if (home.usage === 'LongTermRental' && home.status === 'Vacant') return 2; // light blue
-                  if (home.usage === 'ShortTermRental') return 3; // purple
-                  return 4;
-                };
-                return getColorOrder(a) - getColorOrder(b);
-              })
-              .map(home => {
+            {housingStock.map(home => {
                 // Color palette: group similar types with related shades
                 let fill = '#9ca3af'; // default gray
                 if (home.status === 'OwnerOccupied') fill = '#22c55e'; // green
@@ -897,6 +905,36 @@ export default function HousingSimulation() {
               <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full" style={{background:'#60a5fa'}}></div>Rental Vacant</div>
               <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full" style={{background:'#a21caf'}}></div>Short-Term Rental</div>
               <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full" style={{background:'#ffbf00'}}></div>Unsold Homes</div>
+           </div>
+           <div className="flex justify-center gap-4 py-3 bg-white border-t border-gray-200">
+             <span className="text-gray-600">Sort by:</span>
+             <button 
+               onClick={() => {
+                 setSortBy('color');
+                 setHousingStock(prev => sortHouses([...prev], 'color'));
+               }}
+               className={`px-3 py-1 rounded transition-colors ${sortBy === 'color' ? 'bg-blue-600 text-white' : 'bg-gray-100 hover:bg-gray-200'}`}
+             >
+               Color
+             </button>
+             <button 
+               onClick={() => {
+                 setSortBy('price');
+                 setHousingStock(prev => sortHouses([...prev], 'price'));
+               }}
+               className={`px-3 py-1 rounded transition-colors ${sortBy === 'price' ? 'bg-blue-600 text-white' : 'bg-gray-100 hover:bg-gray-200'}`}
+             >
+               Price
+             </button>
+             <button 
+               onClick={() => {
+                 setSortBy('id');
+                 setHousingStock(prev => sortHouses([...prev], 'id'));
+               }}
+               className={`px-3 py-1 rounded transition-colors ${sortBy === 'id' ? 'bg-blue-600 text-white' : 'bg-gray-100 hover:bg-gray-200'}`}
+             >
+               ID
+             </button>
            </div>
 
            <div className="bg-gray-50 p-2 rounded-lg shadow mt-2">
