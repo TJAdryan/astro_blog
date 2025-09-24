@@ -1,8 +1,9 @@
 ---
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import PostHogAnalytics from "../components/PostHogAnalytics.astro";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
-import "../styles/global.css"; // <--- This is the crucial missing line
+import "../styles/global.css";
 import "../styles/custom.css";
 
 const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props;
@@ -35,5 +36,6 @@ const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props;
     </div>
     <!-- Defer non-critical JavaScript for better performance -->
     <script is:inline src="/js/dailyWidget.js" defer></script>
+    <PostHogAnalytics apiKey={import.meta.env.PUBLIC_POSTHOG_API_KEY} />
   </body>
 </html>
