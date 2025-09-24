@@ -1,6 +1,14 @@
 // Centralized article data - maintain once, use everywhere
 export const featuredArticles = [
   {
+    title: "The Rigged Monopoly Game: Observer's Attributions and Reactions to Unequal Allocation of Resources",
+    authors: "Nitert, M. G.",
+    year: "2022",
+    journal: "Leiden University Student Repository",
+    url: "https://studenttheses.universiteitleiden.nl/access/item%3A2661526/view",
+    description: "This study examines how observers perceive and react to unequal resource allocation through the lens of a rigged Monopoly game, providing insights into attitudes towards economic inequality and resource distribution."
+  },
+  {
     title: "The Economics of Healthcare Rationing",
     authors: "Michael Frakes, Matthew Frank, Kyle Rozema",
     year: "2015",
