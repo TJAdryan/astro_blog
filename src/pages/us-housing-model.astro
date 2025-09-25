@@ -1,5 +1,8 @@
 ---
+import PostHogLayout from '../layouts/PostHogLayout.astro';
 import HousingSimulation from '../components/HousingSim/HousingSimulation.jsx';
 ---
 
-<HousingSimulation client:load />
+<PostHogLayout>
+  <HousingSimulation client:load />
+</PostHogLayout>

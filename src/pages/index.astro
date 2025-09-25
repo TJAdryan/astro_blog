@@ -1,5 +1,5 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
+import PostHogLayout from "../layouts/PostHogLayout.astro";
 import { getCollection } from "astro:content";
 import { featuredArticles } from '../data/articles.js';
 
@@ -14,7 +14,7 @@ const latestPosts = posts.slice(0, 3);
 const housingPosts = posts.filter(post => post.data.tags && post.data.tags.includes('housing-simulation'));
 ---
 
-<BaseLayout>
+<PostHogLayout>
   <div class="container">
     <div class="hero-section">
       <h1 class="hero-title">
@@ -100,7 +100,7 @@ const housingPosts = posts.filter(post => post.data.tags && post.data.tags.inclu
       </div>
     </div>
   </div>
-</BaseLayout>
+</PostHogLayout>
 
 <script define:vars={{ articles: featuredArticles }}>
   // Function to get today's paper based on date

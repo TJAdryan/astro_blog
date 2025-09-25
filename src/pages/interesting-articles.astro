@@ -1,84 +1,87 @@
 ---
+import PostHogLayout from '../layouts/PostHogLayout.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { featuredArticles } from '../data/articles.js';
 ---
 
-<BaseLayout>
-  <div class="container">
-    <h1 class="text-4xl font-bold mb-4">Interesting Articles</h1>
-    <p class="mb-8 text-lg text-gray-600 dark:text-gray-400">
-      Research papers and articles I've referenced or found particularly insightful.
-    </p>
+<PostHogLayout>
+  <BaseLayout>
+    <div class="container">
+      <h1 class="text-4xl font-bold mb-4">Interesting Articles</h1>
+      <p class="mb-8 text-lg text-gray-600 dark:text-gray-400">
+        Research papers and articles I've referenced or found particularly insightful.
+      </p>
 
-    <section>
-      <ul class="article-list">
-        {featuredArticles.map((article) => (
-          <li class="article-card">
-            <a href={article.url} target="_blank" rel="noopener noreferrer" class="article-link">
-              <h4 class="title">{article.title}</h4>
-              <p class="date">{article.authors} ({article.year}) - {article.journal}</p>
-              <p class="desc">{article.description}</p>
-            </a>
-          </li>
-        ))}
-      </ul>
-    </section>
-    <style>
-      .article-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 2rem;
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-      }
-      .article-card {
-        width: calc(50% - 1rem);
-      }
-      .article-link {
-        display: block;
-        padding: 1.5rem;
-        background: rgba(255,255,255,0.8);
-        border-radius: 12px;
-        border: 1px solid rgba(255, 107, 53, 0.1);
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        transition: all 0.3s ease;
-        height: 100%;
-        text-decoration: none;
-      }
-      .article-link:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(255, 107, 53, 0.2);
-        border-color: rgba(255, 107, 53, 0.3);
-      }
-      .article-link .title {
-        margin: 0;
-        color: rgb(var(--black));
-        line-height: 1;
-        font-size: 1.25rem;
-        font-weight: bold;
-      }
-      .article-link .date {
-        margin: 0;
-        color: rgb(var(--gray));
-        font-size: 0.95rem;
-      }
-      .article-link .desc {
-        color: rgb(var(--black));
-        margin-top: 0.5em;
-      }
-      @media (max-width: 720px) {
+      <section>
+        <ul class="article-list">
+          {featuredArticles.map((article) => (
+            <li class="article-card">
+              <a href={article.url} target="_blank" rel="noopener noreferrer" class="article-link">
+                <h4 class="title">{article.title}</h4>
+                <p class="date">{article.authors} ({article.year}) - {article.journal}</p>
+                <p class="desc">{article.description}</p>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+      <style>
         .article-list {
-          gap: 0.5em;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 2rem;
+          list-style-type: none;
+          margin: 0;
+          padding: 0;
         }
         .article-card {
-          width: 100%;
-          text-align: center;
+          width: calc(50% - 1rem);
+        }
+        .article-link {
+          display: block;
+          padding: 1.5rem;
+          background: rgba(255,255,255,0.8);
+          border-radius: 12px;
+          border: 1px solid rgba(255, 107, 53, 0.1);
+          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+          transition: all 0.3s ease;
+          height: 100%;
+          text-decoration: none;
+        }
+        .article-link:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 25px rgba(255, 107, 53, 0.2);
+          border-color: rgba(255, 107, 53, 0.3);
         }
         .article-link .title {
-          font-size: 1.1em;
+          margin: 0;
+          color: rgb(var(--black));
+          line-height: 1;
+          font-size: 1.25rem;
+          font-weight: bold;
         }
-      }
-    </style>
-  </div>
-</BaseLayout>
+        .article-link .date {
+          margin: 0;
+          color: rgb(var(--gray));
+          font-size: 0.95rem;
+        }
+        .article-link .desc {
+          color: rgb(var(--black));
+          margin-top: 0.5em;
+        }
+        @media (max-width: 720px) {
+          .article-list {
+            gap: 0.5em;
+          }
+          .article-card {
+            width: 100%;
+            text-align: center;
+          }
+          .article-link .title {
+            font-size: 1.1em;
+          }
+        }
+      </style>
+    </div>
+  </BaseLayout>
+</PostHogLayout>
