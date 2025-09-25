@@ -3,18 +3,15 @@
 const { apiKey } = Astro.props;
 ---
 
-<Fragment>
-  <script async src="https://app.posthog.com/static/array.js"></script>
-  <script define:vars={{ apiKey }} type="text/javascript">
-    window.posthog = window.posthog || function(...args) { (window.posthog.q = window.posthog.q || []).push(args); };
-    window.posthog.loaded = false;
-    posthog.init(apiKey, {
-      api_host: 'https://app.posthog.com',
-      loaded: function(posthog) {
-        // Capture page view
-        posthog.capture('$pageview');
-      }
-    });
-  </script>
-</Fragment>
+
+<script async src="https://app.posthog.com/static/array.js"></script>
+<script type="text/javascript">
+  window.posthog = window.posthog || function(...args) { (window.posthog.q = window.posthog.q || []).push(args); };
+  window.posthog.loaded = false;
+  posthog.init("{apiKey}", {
+    api_host: 'https://app.posthog.com',
+    loaded: function(posthog) {
+      posthog.capture('$pageview');
+    }
+  });
 </script>
