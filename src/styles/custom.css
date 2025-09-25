@@ -47,6 +47,28 @@ textarea {
   background: #fff !important;
   color: #222 !important;
 }
+
+/* Reset layout */
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+  position: relative;
+}
+
+main {
+  display: block;
+  position: relative;
+  width: 100%;
+}
+
+/* Ensure content stays centered */
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 input:-webkit-autofill,
 textarea:-webkit-autofill {
   -webkit-box-shadow: 0 0 0 1000px #fff inset !important;

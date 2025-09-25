@@ -23,19 +23,17 @@ const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props;
     
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
+    <PostHogAnalytics apiKey={import.meta.env.PUBLIC_POSTHOG_API_KEY} />
   </head>
   <body
     class="min-h-screen bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-50"
   >
-    <div class="flex flex-col min-h-screen">
-      <Header />
-      <main class="flex-grow px-4 py-8 max-w-3xl mx-auto w-full">
-        <slot /> <!-- Your page content will go here -->
-      </main>
-      <Footer />
-    </div>
+    <Header />
+    <main class="max-w-3xl mx-auto px-4 py-8">
+      <slot /> <!-- Your page content will go here -->
+    </main>
+    <Footer />
     <!-- Defer non-critical JavaScript for better performance -->
     <script is:inline src="/js/dailyWidget.js" defer></script>
-    <PostHogAnalytics apiKey={import.meta.env.PUBLIC_POSTHOG_API_KEY} />
   </body>
 </html>

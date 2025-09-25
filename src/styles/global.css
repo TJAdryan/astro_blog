@@ -10,6 +10,52 @@
 /* @tailwind components; */
 /* @tailwind utilities; */
 
+/* Reset default styles */
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* Header styles */
+header {
+  margin: 0;
+  padding: 1em;
+  background: white;
+  box-shadow: 0 2px 8px rgba(var(--black), 5%);
+}
+
+header nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1em;
+}
+
+.site-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  text-decoration: none;
+  color: inherit;
+}
+
+.site-logo {
+  width: 32px;
+  height: 32px;
+}
+
+.internal-links {
+  display: flex;
+  gap: 1em;
+}
+
+.social-links {
+  display: flex;
+  gap: 1em;
+}
+
 /* Housing simulation specific styles */
 .housing-simulation-page {
   #housing-visual-grid {
