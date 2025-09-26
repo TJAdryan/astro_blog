@@ -61,6 +61,6 @@ What we thought was a single file is actually a nested folder structure.
 
 Now the weird changes in file size and why some (relatively) small XLSX files take so long to open almost makes sense. When I heard it was the Microsoft standard since 2007, I instantly assumed it was some nefarious plot to consolidate their market share. But actually, it opened up Excel from a proprietary to an open format called [Office Open XML (OOXML)](https://en.wikipedia.org/wiki/Office_Open_XML). My bad Microsoft. I guess I should have read the [ISO/IEC 29500:2008](https://www.iso.org/standard/39574.html) standard before jumping to conclusions.
 
-## XML Forever?
+### XML Forever?
 
 XML (eXtensible Markup Language) was created in the late 1990s to replace SGML which I am guessing was a replacement for something else. JSON (JavaScript Object Notation) is a lighter weight alternative but obviously ther are still many applications where XML is the better choice. Or in the case of XLSX, the only choice.
