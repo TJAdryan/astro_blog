@@ -4,6 +4,7 @@ import './App.css';
 import weights from './housing_weights.json';
 
 // --- Constants from JSON ---
+// --- Updates to JSON need to be reflected
 const HOMES_TOTAL = weights.HOMES_TOTAL;
 const INITIAL_SEED = weights.INITIAL_SEED;
 const POPULATION_GROWTH_RATE = weights.POPULATION_GROWTH_RATE;
