@@ -7,12 +7,9 @@ tags: ["Data Science", "Medallion Architecture", "GWAS Catalog", "Data Engineeri
 image: "/images/trait_counts_chart.png" # Replace with the actual path to your cover image
 draft: false
 ---
-
-
-
 ### From Raw Data to Polished Insights: A Guide to the Medallion Architecture
 
-When you look at the way raw scientific data is collected, it's amazing that any insights are ever drawn from it. It's often messy, inconsistent, and full of gaps. This is why much of the rigor in data science comes from taking the time to draw out insights over several repeatable, tested, and reliable processes. This is the essence of the **Medallion Architecture**, a design pattern that can be thought of as a “data polishing” pipeline that refines data at every step.
+When you look at the way raw scientific data is collected, it's amazing that any insights are ever drawn from it. It's often messy, inconsistent, and full of gaps. This is why much of the rigor in data science comes from taking the time to draw out insights over several repeatable, tested, and reliable processes. This is the essence of the **Medallion Architecture**, a design pattern that can be thought of as a "data polishing" pipeline that refines data at every step.
 
 The Medallion Architecture organizes a data lake into three distinct layers. Each layer adds more structure and value to the data, transforming it from a raw, chaotic state into a clean, trustworthy resource.
 
@@ -20,9 +17,11 @@ The Medallion Architecture organizes a data lake into three distinct layers. Eac
 
 ### The Bronze Layer: The Raw Collection
 
-The Bronze layer is where all the raw materials arrive. For a project like ours using the **GWAS Catalog**, its initial value is in its sheer scale. This catalog is a massive, centralized repository of thousands of genetic studies, saving scientists from having to manually sift through countless scientific papers.
+The Bronze layer is where all the raw materials arrive. For our project, we used the **GWAS Catalog**, a public database of published genetic research findings from the European Bioinformatics Institute and the National Human Genome Research Institute.
 
-However, the raw data still needs to be polished. The GWAS Catalog pulls findings from many different sources, which can lead to inconsistencies. Some records might be missing data, others might have formatting errors, and since genotyping using new array technologies is often associated with spurious results, the data needs a rigorous quality control check. The Bronze layer ensures we have a complete, untouched copy of the raw data before any cleaning begins, which is the first step toward reproducibility.
+The raw data is remarkably versatile and can be used for countless abstractions because it contains the most granular level of detail possible. A single record has a comprehensive set of fields, including the specific **genetic variant**, the **p-value** of the association, the **disease or trait** it is linked to, the **journal** it was published in, and much more. This raw, detailed information is the foundation for all the insights that follow.
+
+However, because it’s sourced from so many different studies, the raw data is full of inconsistencies and needs a rigorous quality control check before any analysis. The Bronze layer ensures we have a complete, untouched copy of the raw data before any cleaning begins, which is the first step toward reproducibility.
 
 ***
 
@@ -43,15 +42,14 @@ By the end of this stage, the data is in a clean, structured format, ready for a
 
 The Gold layer is the final stage, where the data is polished to perfection and made ready for scientific inquiry. The goal here is to answer specific questions by aggregating the cleaned data. This layer is optimized for analysis and reporting, ensuring that you can get your answers quickly and reliably.
 
-In our project, we took the clean data from the Silver layer and aggregated it to find the number of published studies for each genetic trait. This transformation gave us our key insight: a list of the most-studied traits in the entire GWAS Catalog. The final output is a small, easy-to-use file that is perfect for generating a chart or for a final report.
+The real value here is that we can now use this clean data to get key insights that would have been impossible to see in the raw data. We chose two specific insights to abstract from the data:
+
+* **Most Studied Traits:** We counted the number of studies for each disease or trait. This gives us a high-level view of where research is most concentrated in the field of genomics.
+* **Most Prolific Journals:** We counted the number of studies published in each journal. This tells us which publications are the most influential in this research space.
 
 The Medallion Architecture isn't just about moving data; it's about adding a layer of scientific rigor and trust at every stage, turning a chaotic pile of raw data into a set of reliable, valuable insights.
 
-Bronze vs. Gold: A Visual Comparison
-This is a great way to highlight the value added by each layer of the Medallion Architecture.
-
-The raw data from the Bronze layer is a single, unstructured string of text. It's difficult to read and nearly impossible to analyze without extensive cleaning. It contains a mix of dates, journal names, numbers, and long descriptions. The value is there, but it's buried in chaos.
-
+You can find all the code for this project on my GitHub repository here: [https://github.com/TJAdryan/medallion_project.git](https://github.com/TJAdryan/medallion_project.git)
 Here's a sample of what a single record in the raw data looks like:
 ```
 2016-10-04	26482879	Paternoster L	2015-10-19	Nat Genet	www.ncbi.nlm.nih.gov/pubmed/26482879	Multi-ancestry genome-wide association study of 21,000 cases and 95,000 controls identifies new risk loci for atopic dermatitis.	Atopic dermatitis	18,900 European ancestry cases, 1,472 Japanese ancestry cases, 422 African American cases, 300 Latino cases, 305 cases, 84,166 European ancestry controls, 7,966 Japanese ancestry controls, 844 African American controls, 1,592 Latino controls, 896 controls	 30,588 European ancestry cases, 459 African American cases, 1,012 Chinese ancestry cases, 226,537 European ancestry controls, 729 African American controls, 1,362 Chinese ancestry controls		19p13.2 19		8679458 ADAMTS10, ACTL9 NFILZ					ENSG00000268480					rs2918307-G	rs2918307	0	2918307 3_prime_UTR_variant		0	0.16	5E-12	11.301029995663981	 (EA, fixed effects)	1.12	[1.08–1.16]	Illumina [15539996] (imputed)	N	atopic eczema	http://www.ebi.ac.uk/efo/EFO_0000274	 GCST003184 Genome-wide genotyping array
