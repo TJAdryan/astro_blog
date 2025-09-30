@@ -18,13 +18,9 @@ const STR_CONVERSION_CHANCE = weights.STR_CONVERSION_CHANCE;
 const STR_CAP_RATE = weights.STR_CAP_RATE;
 const MAX_RENT_INCREASE = weights.MAX_RENT_INCREASE;
 const HOMEOWNER_TO_HOMEOWNER_SALE_CHANCE = weights.HOMEOWNER_TO_HOMEOWNER_SALE_CHANCE;
-const FORECLOSURE_RATE = weights.FORECLOSURE_RATE        
-
-// Remove this misplaced JSX and code fragment.
-// If you want to show this content, move it inside the return statement of your component.
-// Also, fix the typo: "st INCOME_TIERS = weights.INCOME_TIERS;" should be "const INCOME_TIERS = weights.INCOME_TIERS;" and placed with other constants.
-
+const FORECLOSURE_RATE = weights.FORECLOSURE_RATE;
 const INCOME_TIERS = weights.INCOME_TIERS;
+
 
 
 // --- Helper Components ---

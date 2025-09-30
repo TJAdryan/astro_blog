@@ -3,7 +3,6 @@ import PostHogLayout from '../layouts/PostHogLayout.astro';
 import FullWidthLayout from '../layouts/FullWidthLayout.astro';
 import HousingSimulationComponent from '../components/HousingSim/HousingSimulation.jsx';
 ---
-
 <PostHogLayout>
   <FullWidthLayout title="Housing Simulation">
     <div class="housing-simulation-page">
@@ -13,3 +12,8 @@ import HousingSimulationComponent from '../components/HousingSim/HousingSimulati
     </div>
   </FullWidthLayout>
 </PostHogLayout>
+<style>
+  .housing-simulation-container {
+    width: 100%;
+  }
+</style>
