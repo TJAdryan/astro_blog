@@ -14,9 +14,11 @@ description: 'A post about Sometimes Selenium Works Best: Web Automation in Pyth
 ---
 
 
-# Quick Intro: Web Automation with Selenium
-It took me a while before I was able to interact with the pop-up on the website I was trying to scrape. I know people swear by Playwright, but I feel like Selenium was just there for me when I needed it. 
-## Why Selenium?
+## Quick Intro: Web Automation with Selenium
+Automation of scraping can be tricky. I remember an early roadblock was trying to interact with the pop-up on the website, the pop up would stop the script. Once I learned how to switch the focus to the pop up and close it, a whole world opened up to me.  I know people swear by Playwright, but I feel like Selenium was just there for me when I needed it. 
+
+### Why Selenium?
+
 It's invaluable for:
 
 - Automated testing of web applications.
