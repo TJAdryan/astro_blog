@@ -848,7 +848,7 @@ export default function HousingSimulation() {
           </div>
 
           <div id="housing-visual-grid" className="grid grid-cols-[repeat(40,1fr)] gap-2 p-4 bg-gray-200 rounded-lg overflow-x-auto shadow-inner w-full max-w-none">
-            {housingStock.map(home => {
+            {housingStock.map((home, idx) => {
                 // Color palette: group similar types with related shades
                 let fill = '#9ca3af'; // default gray
                 if (home.status === 'OwnerOccupied') fill = '#22c55e'; // green
@@ -870,13 +870,15 @@ export default function HousingSimulation() {
                   return text;
                 };
                 
+                // Show tooltip below for top row (first 40 houses)
+                const isTopRow = idx < 40;
                 return (
                   <div key={home.id} className="group relative">
                     <svg width="27" height="27" viewBox="0 0 24 24" className="mx-auto" style={{height: '1.6875rem', width: '1.6875rem'}}>
                       <rect x="6" y="10" width="12" height="8" rx="2" fill={fill} />
                       <polygon points="12,4 4,12 20,12" fill={fill} />
                     </svg>
-                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded whitespace-pre opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                    <div className={`absolute z-10 ${isTopRow ? 'top-full mt-2' : 'bottom-full mb-2'} left-1/2 transform -translate-x-1/2 px-2 py-1 bg-gray-900 text-white text-xs rounded whitespace-pre opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none`}>
                       {getTooltipText(home)}
                     </div>
                   </div>
