@@ -1,0 +1,80 @@
+[
+  {
+    "title": "A Relational Model of Data for Large Shared Data Banks",
+    "author": "E.F. Codd (1970)",
+    "url": "https://www.seas.upenn.edu/~zives/03f/cis550/codd.pdf",
+    "area": "Databases"
+  },
+  {
+    "title": "Attention Is All You Need",
+    "author": "Vaswani et al. (2017)",
+    "url": "https://arxiv.org/abs/1706.03762",
+    "area": "AI"
+  },
+  {
+    "title": "MapReduce: Simplified Data Processing on Large Clusters",
+    "author": "Dean & Ghemawat (2004)",
+    "url": "https://research.google/pubs/pub-2789/",
+    "area": "Databases"
+  },
+  {
+    "title": "The Anatomy of a Large-Scale Hypertextual Web Search Engine",
+    "author": "Brin & Page (1998)",
+    "url": "http://infolab.stanford.edu/~backrub/google.html",
+    "area": "Databases"
+  },
+  {
+    "title": "Deep Residual Learning for Image Recognition",
+    "author": "He et al. (2015)",
+    "url": "https://arxiv.org/abs/1512.03385",
+    "area": "AI"
+  },
+  {
+    "title": "The Rigged Monopoly Game: Observer's Attributions and Reactions to Unequal Allocation of Resources",
+    "author": "Nitert, M. G. (2022)",
+    "url": "https://studenttheses.universiteitleiden.nl/handle/1887/3271867",
+    "area": "Social Science"
+  },
+  {
+    "title": "The Economics of Healthcare Rationing",
+    "author": "Michael Frakes, Matthew Frank, Kyle Rozema (2015)",
+    "url": "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2620707",
+    "area": "Economics"
+  },
+  {
+    "title": "The Google File System",
+    "author": "Sanjay Ghemawat, Howard Gobioff, and Shun-Tak Leung (2003)",
+    "url": "https://static.googleusercontent.com/media/research.google.com/en//archive/gfs-sosp2003.pdf",
+    "area": "Distributed Systems"
+  },
+  {
+    "title": "MapReduce: Simplified Data Processing on Large Clusters",
+    "author": "Jeffrey Dean and Sanjay Ghemawat (2004)",
+    "url": "https://static.googleusercontent.com/media/research.google.com/en//archive/mapreduce-osdi04.pdf",
+    "area": "Distributed Systems"
+  },
+  {
+    "title": "Bigtable: A Distributed Storage System for Structured Data",
+    "author": "Fay Chang, Jeffrey Dean, Sanjay Ghemawat, Wilson C. Hsieh, Deborah A. Wallach, Mike Burrows, Tushar Chandra, Andrew Fikes, and Robert E. Gruber (2006)",
+    "url": "https://static.googleusercontent.com/media/research.google.com/en//archive/bigtable-osdi06.pdf",
+    "area": "Distributed Systems"
+  },
+  {
+    "title": "Dynamo: Amazon’s Highly Available Key-value Store",
+    "author": "Giuseppe DeCandia, Deniz Hastorun, Madan Jampani, Gunavardhan Kakulapati, Avinash Lakshman, Alex Pilchin, Swaminathan Sivasubramanian, Peter Vosshall, and Werner Vogels (2007)",
+    "url": "https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf",
+    "area": "Distributed Systems"
+  },
+  {
+    "title": "Dremel: Interactive Analysis of Web-Scale Datasets",
+    "author": "Sergey Melnik, Andrey Gubarev, Jing Jing Long, Geoffrey Romer, Shiva Shivakumar, Matt Tolton, and Theo Vassilakis (2010)",
+    "url": "https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/36632.pdf",
+    "area": "Distributed Systems"
+  },
+  {
+    "title": "Resilient Distributed Datasets: A Fault-Tolerant Abstraction for In-Memory Cluster Computing",
+    "author": "Matei Zaharia, Mosharaf Chowdhury, Michael J. Franklin, Scott Shenker, and Ion Stoica (2012)",
+    "url": "https://www.usenix.org/system/files/conference/nsdi12/nsdi12-final138.pdf",
+    "area": "Distributed Systems"
+  }
+]

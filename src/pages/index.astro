@@ -1,7 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
-import { featuredArticles } from '../data/articles.js';
 
 // 1. Fetch all blog posts
 const posts = await getCollection("blog");
@@ -12,6 +11,8 @@ posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 // 3. Get the 3 most recent posts
 const latestPosts = posts.slice(0, 3);
 const housingPosts = posts.filter(post => post.data.tags && post.data.tags.includes('housing-simulation'));
+
+// Remove the shuffle function and randomizedArticles assignment
 ---
 
 <BaseLayout>
@@ -25,7 +26,6 @@ const housingPosts = posts.filter(post => post.data.tags && post.data.tags.inclu
       </p>
     </div>
 
-    
     <!-- Latest Posts Section -->
     {
       latestPosts.length > 1 && (
@@ -56,58 +56,49 @@ const housingPosts = posts.filter(post => post.data.tags && post.data.tags.inclu
       )
     }
 
-    <!-- Citations and Resources Section (styled like blog posts) -->
-    <div class="latest-posts mb-12">
-      <h2 class="text-2xl font-bold mb-4">Citations and Resources</h2>
-      <div class="space-y-4">
-        {featuredArticles.slice(0, 3).map((article) => (
-          <div class="border-b pb-4 last:border-b-0">
-            <a
-              href={article.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-xl font-bold text-blue-600 dark:text-blue-400 hover:underline"
-            >
-              {article.title}
-            </a>
-            <p class="mt-2 text-gray-700 dark:text-gray-300">
-              {article.description}
-            </p>
-            <p class="text-sm text-gray-500 mt-1">
-              {article.authors} ({article.year}) - {article.journal}
-            </p>
-          </div>
-        ))}
-      </div>
+    <!-- Interesting Articles Section -->
+    <section id="all-articles" class="mb-12">
+      <h2 class="text-2xl font-bold mb-4">Interesting Articles</h2>
+      <ul id="articles-list" class="list-disc pl-5 space-y-2">
+        <!-- Articles will be rendered by client-side JS -->
+      </ul>
       <div class="mt-6 text-center">
-        <a href="/interesting-articles/" class="inline-block px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold shadow hover:bg-blue-700 transition-colors">View All Citations & Resources</a>
+        <a href="/interesting-articles/" class="inline-block px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold shadow hover:bg-blue-700 transition-colors">
+          View All Articles
+        </a>
       </div>
-    </div>
+    </section>
   </div>
 </BaseLayout>
 
-<script define:vars={{ articles: featuredArticles }}>
-  // Function to get today's paper based on date
-  function getTodaysPaper() {
-    const today = new Date();
-    const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
-    const paperIndex = dayOfYear % articles.length;
-    return articles[paperIndex];
-  }
-
-  // Load today's paper
+<script is:inline>
+  // Ensure shuffling happens on every page load and after DOM is ready
   document.addEventListener('DOMContentLoaded', function() {
-    const paper = getTodaysPaper();
-    const titleElement = document.getElementById('article-title');
-    const authorElement = document.getElementById('article-author');
-    
-    if (titleElement && authorElement) {
-      titleElement.textContent = paper.title;
-      titleElement.href = paper.url;
-      authorElement.textContent = `${paper.authors} (${paper.year}) - ${paper.journal}`;
-    }
+    fetch('/data/articles.json')
+      .then(res => res.json())
+      .then(articles => {
+        function shuffle(array) {
+          let arr = array.slice();
+          for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+          }
+          return arr;
+        }
+        const shuffled = shuffle(articles);
+        const ul = document.getElementById('articles-list');
+        if (ul) {
+          ul.innerHTML = '';
+          shuffled.forEach(article => {
+            const li = document.createElement('li');
+            li.innerHTML = `<a href="${article.url}" target="_blank" rel="noopener" class="text-blue-600 dark:text-blue-400 hover:underline">${article.title}</a><span class="text-gray-500 dark:text-gray-400"> — ${article.author} [${article.area}]</span>`;
+            ul.appendChild(li);
+          });
+        }
+      });
   });
 </script>
+
 <style>
   .hero-section {
     text-align: center;
