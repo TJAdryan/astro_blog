@@ -59,9 +59,12 @@ const housingPosts = posts.filter(post => post.data.tags && post.data.tags.inclu
     <!-- Interesting Articles Section -->
     <section id="all-articles" class="mb-12">
       <h2 class="text-2xl font-bold mb-4">Interesting Articles</h2>
-      <ul id="articles-list" class="list-disc pl-5 space-y-2">
-        <!-- 3 random articles will be rendered by client-side JS -->
-      </ul>
+
+      <!-- Use same block structure as blog posts for consistent styling -->
+      <div id="articles-list" class="space-y-4">
+        <!-- Articles will be rendered by client-side JS -->
+      </div>
+
       <div class="mt-6 text-center">
         <a href="/interesting-articles/" class="inline-block px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold shadow hover:bg-blue-700 transition-colors">
           View All Articles
@@ -72,7 +75,7 @@ const housingPosts = posts.filter(post => post.data.tags && post.data.tags.inclu
 </BaseLayout>
 
 <script is:inline>
-  // Show only 3 random articles on the main page
+  // Ensure shuffling happens on every page load and after DOM is ready
   document.addEventListener('DOMContentLoaded', function() {
     fetch('/data/articles.json')
       .then(res => res.json())
@@ -85,14 +88,54 @@ const housingPosts = posts.filter(post => post.data.tags && post.data.tags.inclu
           }
           return arr;
         }
+
+        // show 3 random articles on main page
         const shuffled = shuffle(articles).slice(0, 3);
-        const ul = document.getElementById('articles-list');
-        if (ul) {
-          ul.innerHTML = '';
+        const container = document.getElementById('articles-list');
+        if (container) {
+          container.innerHTML = '';
           shuffled.forEach(article => {
-            const li = document.createElement('li');
-            li.innerHTML = `<a href="${article.url}" target="_blank" rel="noopener" class="text-blue-600 dark:text-blue-400 hover:underline">${article.title}</a><span class="text-gray-500 dark:text-gray-400"> — ${article.author} [${article.area}]</span>`;
-            ul.appendChild(li);
+            const wrapper = document.createElement('div');
+            wrapper.className = 'border-b pb-4 last:border-b-0';
+
+            // Title (styled like blog post titles)
+            const a = document.createElement('a');
+            a.href = article.url;
+            a.target = '_blank';
+            a.rel = 'noopener';
+            a.className = 'text-xl font-bold text-blue-600 dark:text-blue-400 hover:underline';
+            a.textContent = article.title;
+            wrapper.appendChild(a);
+
+            // Optional description / author line
+            if (article.description) {
+              const pDesc = document.createElement('p');
+              pDesc.className = 'mt-2 text-gray-700 dark:text-gray-300';
+              pDesc.textContent = article.description;
+              wrapper.appendChild(pDesc);
+            } else if (article.author) {
+              const pAuthor = document.createElement('p');
+              pAuthor.className = 'mt-2 text-gray-700 dark:text-gray-300';
+              pAuthor.textContent = article.author;
+              wrapper.appendChild(pAuthor);
+            }
+
+            // Meta line (area / journal etc.)
+            const meta = document.createElement('p');
+            meta.className = 'text-sm text-gray-500 mt-1';
+            const areaText = article.area ? ` — ${article.area}` : '';
+            // If article has authors/year/journal fields (from featuredArticles), prefer them
+            if (article.authors || article.year || article.journal) {
+              const authors = article.authors ? article.authors : '';
+              const year = article.year ? ` (${article.year})` : '';
+              const journal = article.journal ? ` - ${article.journal}` : '';
+              meta.textContent = `${authors}${year}${journal}`;
+            } else {
+              meta.textContent = areaText.trim() ? areaText.substring(3) : ''; // remove leading " — " if present
+            }
+            if (meta.textContent) wrapper.appendChild(meta);
+
+            container.appendChild(wrapper);
           });
         }
       });
