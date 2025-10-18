@@ -88,4 +88,32 @@ export const featuredArticles = [
     url: "https://sre.google/sre-book/table-of-contents/",
     description: "Google's comprehensive guide to Site Reliability Engineering practices, covering monitoring, alerting, capacity planning, and incident response. Invaluable for maintaining reliable healthcare data systems that require high availability and fault tolerance."
   }
+  ,
+  {
+    title: "CUDA-X Data Science / RAPIDS",
+    authors: "NVIDIA",
+    year: "2025",
+    journal: "NVIDIA Developer",
+    url: "https://developer.nvidia.com/rapids",
+    description: "An overview of the CUDA-X Data Science libraries (cuDF, cuML, cuGraph, RAFT, and more) and starter kits for accelerating PyData workflows on GPUs with minimal code changes.",
+    tags: ["rapids", "gpu", "cudf", "cuml", "dataframe", "tutorial"]
+  },
+  {
+    title: "PyTorch: Tensors and GPU",
+    authors: "PyTorch Documentation",
+    year: "2025",
+    journal: "PyTorch",
+    url: "https://pytorch.org/docs/stable/notes/cuda.html",
+    description: "Official PyTorch documentation covering moving tensors and models to GPUs, best practices for training on single and multiple GPUs, and guidance on mixed precision and performance tuning.",
+    tags: ["pytorch", "gpu", "deep-learning", "amp", "profiling"]
+  },
+  {
+    title: "TensorFlow: Guide to using GPUs",
+    authors: "TensorFlow Documentation",
+    year: "2025",
+    journal: "TensorFlow",
+    url: "https://www.tensorflow.org/guide/gpu",
+    description: "Official TensorFlow guide for GPU usage: device placement, multi-GPU strategies, performance tips, and recommended settings for training and inference on GPUs.",
+    tags: ["tensorflow", "gpu", "device-placement", "multi-gpu"]
+  }
 ];
