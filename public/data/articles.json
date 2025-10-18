@@ -77,4 +77,26 @@
     "url": "https://www.usenix.org/system/files/conference/nsdi12/nsdi12-final138.pdf",
     "area": "Distributed Systems"
   }
+  ,
+  {
+    "title": "CUDA-X Data Science / RAPIDS",
+    "author": "NVIDIA (2025)",
+    "url": "https://developer.nvidia.com/rapids",
+    "area": "GPU / Data Science",
+    "description": "Overview of RAPIDS libraries (cuDF, cuML, cuGraph, RAFT) and starter kits for accelerating PyData workflows on GPUs."
+  },
+  {
+    "title": "PyTorch: Tensors and GPU",
+    "author": "PyTorch Documentation (2025)",
+    "url": "https://pytorch.org/docs/stable/notes/cuda.html",
+    "area": "GPU / Deep Learning",
+    "description": "Official PyTorch guide on using CUDA: moving tensors/models to GPUs, multi-GPU usage, mixed precision, and performance tips."
+  },
+  {
+    "title": "TensorFlow: Guide to using GPUs",
+    "author": "TensorFlow Documentation (2025)",
+    "url": "https://www.tensorflow.org/guide/gpu",
+    "area": "GPU / Deep Learning",
+    "description": "TensorFlow's guide on GPUs, device placement, distribution strategies, and performance recommendations for training and inference."
+  }
 ]
