@@ -7,7 +7,7 @@ image: "/images/gpu-vs-cpu-performance.png" # Replace with the actual path to yo
 draft: false
 ---
 
-I began to run some of my own tests after seeing some incredible performance figures from NVIDIA's open-source data processing efforts using tools like RAPIDS and cuDF, which you can explore further here: [NVIDIA RAPIDS Open Source for Data Processing](https://rapids.ai/). It occurred to me that many of my existing data pipelines often completed within their scheduled time parameters, suggesting they might not be fully exploiting the potential of the CPU. I needed a true baseline to understand the limits of my existing hardware before pursuing specialized solutions.
+I began to run some of my own tests after seeing some incredible performance figures from NVIDIA's open-source data processing efforts using tools like RAPIDS and cuDF, which you can explore further here: [NVIDIA RAPIDS Open Source for Data Processing](https://rapids.ai/). It occurred to me that while my existing data pipelines complete within the expected time frame, maybe I wasn't getting all performance I could be from utilizing multithreading on the cpu.  I needed a true baseline to understand the limits of my existing hardware before pursuing specialized solutions.
 
 **The complete code and benchmarks from this analysis are available in my [GitHub repository: gpu_rapids_demo](https://github.com/TJAdryan/gpu_rapids_demo).** I hope it helps people get started with their own GPU acceleration experiments, though there are many other excellent resources and tutorials available on this topic as well.
 
@@ -20,7 +20,7 @@ My initial test of the core ETL workflow resulted in a **2.79-second execution t
 
 ## The GPU Challenge: Understanding Architectural Prerequisites
 
-Initially, the GPU appeared slower than this optimized CPU time, leading to early skepticism. This misleading result forced a critical realization: the initial code was built on a CPU-centric architecture, and the GPU was not failing; it was being misused.
+Initially, the GPU appeared slower than this optimized CPU time, leading to early disappointment: I was not seeing the expected gains. Taking a step back it was me who needed to change. The initial code was built on a CPU-centric architecture, and the GPU was not failing; it was being tested to the wrong standard.
 
 The seemingly poor GPU performance was caused by two major bottlenecks that were inadvertently included in the timer:
 
