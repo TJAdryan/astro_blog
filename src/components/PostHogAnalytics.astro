@@ -3,12 +3,11 @@
 const { apiKey } = Astro.props;
 ---
 
-
 <script async src="https://app.posthog.com/static/array.js"></script>
-<script type="text/javascript">
+<script type="text/javascript" define:vars={{ apiKey }}>
   window.posthog = window.posthog || function(...args) { (window.posthog.q = window.posthog.q || []).push(args); };
   window.posthog.loaded = false;
-  posthog.init("{apiKey}", {
+  posthog.init(apiKey, {
     api_host: 'https://app.posthog.com',
     loaded: function(posthog) {
       posthog.capture('$pageview');
