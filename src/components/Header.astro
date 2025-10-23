@@ -7,8 +7,8 @@ import HeaderLink from './HeaderLink.astro';
 	<nav>
 		<!-- START: EDITED SECTION -->
 		<a href="/" class="site-title">
-			<img src="/img/nvdlogo.svg" alt="NextValData logo" class="site-logo" width="72" height="72" />
-			<span class="font-bold">{SITE_TITLE}</span>
+			<img src="/img/nvdlogo.svg" alt="NextValData logo" class="site-logo" width="90" height="90" />
+			<span class="site-title-text"><strong>Next<span class="accent">Val</span>Data</strong></span>
 		</a>
 		<!-- END: EDITED SECTION -->
 
@@ -70,8 +70,16 @@ import HeaderLink from './HeaderLink.astro';
 		color: rgb(var(--black));
 	}
 	.site-logo {
-		width: 72px;
-		height: 72px;
+		width: 90px;
+		height: 90px;
+	}
+	.site-title .site-title-text {
+		font-size: 1.25rem;
+		line-height: 1;
+		font-weight: 700;
+	}
+	.site-title .site-title-text .accent {
+		color: var(--accent);
 	}
 	.site-title span {
 		overflow: hidden;
@@ -96,8 +104,8 @@ import HeaderLink from './HeaderLink.astro';
 		color: rgb(var(--black));
 	}
 	.site-logo {
-		width: 72px;
-		height: 72px;
+		width: 90px;
+		height: 90px;
 	}
 	/* END: EDITED STYLES */
 	
