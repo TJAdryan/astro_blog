@@ -29,6 +29,17 @@ import Layout from '../layouts/BlogPost.astro';
 			</div>
 		</div>
 
+			<div style="margin-bottom: 2rem; padding: 1.5rem; border-radius: 8px; background: #fff; border: 1px solid rgba(0,0,0,0.03);">
+				<h3 style="color: var(--accent); margin-top: 0;">GPU / CUDA work</h3>
+				<p>Recently I've been exploring GPU-accelerated data processing to speed up ETL and analytics workloads. See my write-up <a href="/blog/2025-10-20-Getting -70x-Data-Processing-Speed-with-GPU-vs-CPU">"Getting -70x Data Processing Speed with GPU vs CPU"</a> for benchmarks, links to the <a href="https://developer.nvidia.com/cuda-toolkit">CUDA Toolkit</a>, and recommended tooling such as <a href="https://rapids.ai/">RAPIDS</a> and <a href="https://triton-lang.org/">Triton</a>. If you'd like to reproduce my environment locally, I include example conda commands and a RAPIDS-compatible environment in that post.</p>
+			</div>
+
+			<div style="margin-bottom: 2rem; padding: 1.5rem; border-radius: 8px; background: #fff; border: 1px solid rgba(0,0,0,0.03);">
+				<h3 style="color: var(--accent); margin-top: 0;">Interactive Housing Simulation (React)</h3>
+				<p>I built an interactive housing market simulation as a small React app embedded in this site. It demonstrates agent-based dynamics and lets you tweak parameters to see how supply, demand, and simple policy changes affect outcomes. The simulation lives in <code>src/components/HousingSim/HousingSimulation.jsx</code> and is mounted on the page <a href="/housing_simulation">Housing Simulation</a>. You can also view the component source on GitHub: <a href="https://github.com/TJAdryan/astro_blog/blob/main/src/components/HousingSim/HousingSimulation.jsx">HousingSimulation.jsx</a>.</p>
+				<p>To run the simulation locally: clone the repo, install dependencies, and run the dev server. The simulation uses the Astro + React integration and is mounted with client-only React hydration so the UI is interactive in the browser.</p>
+			</div>
+
 		<div style="text-align: center; margin-top: 2rem;">
 			<a href="/more-about-me/" style="display: inline-block; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%); color: white; text-decoration: none; border-radius: 8px; margin-right: 1rem; box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3); transition: all 0.3s ease; font-weight: 500;">I Want to Know More About Dominick</a>
 			<a href="https://www.google.com" style="display: inline-block; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, rgb(var(--gray)) 0%, rgb(var(--gray-dark)) 100%); color: white; text-decoration: none; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); transition: all 0.3s ease; font-weight: 500;">I've Heard Enough</a>
