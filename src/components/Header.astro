@@ -107,6 +107,30 @@ import HeaderLink from './HeaderLink.astro';
 		width: 90px;
 		height: 90px;
 	}
+	.logo-container {
+		position: relative;
+		width: 90px;
+		height: 90px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	.site-logo-bg {
+		width: 90px;
+		height: 90px;
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+	.logo-overlay {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		z-index: 10;
+		font-size: 1.2rem;
+		font-weight: bold;
+	}
 	/* END: EDITED STYLES */
 	
 	h2 {

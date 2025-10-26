@@ -1,0 +1,93 @@
+---
+export interface Props {
+  class?: string;
+}
+
+const { class: className = "" } = Astro.props;
+---
+
+<div class={`text-logo ${className}`}>
+  <span class="letter letter-n">N</span>
+  <span class="letter letter-v">V</span>
+  <span class="letter letter-d">D</span>
+</div>
+
+<style>
+  .text-logo {
+    display: inline-flex;
+    align-items: center;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 900;
+    font-size: 2rem;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    user-select: none;
+  }
+
+  .letter {
+    display: inline-block;
+    transition: all 0.3s ease;
+  }
+
+  .letter-n,
+  .letter-d {
+    color: #000000;
+    font-weight: 900;
+  }
+
+  .letter-v {
+    color: var(--accent);
+    font-weight: 900;
+  }
+
+  /* Hover effects */
+  .text-logo:hover .letter {
+    transform: translateY(-2px);
+  }
+
+  .text-logo:hover .letter-v {
+    color: var(--accent-dark);
+    text-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
+  }
+
+  /* Animation delay for staggered effect */
+  .letter-n {
+    transition-delay: 0ms;
+  }
+
+  .letter-v {
+    transition-delay: 50ms;
+  }
+
+  .letter-d {
+    transition-delay: 100ms;
+  }
+
+  /* Responsive sizing */
+  @media (max-width: 768px) {
+    .text-logo {
+      font-size: 1.5rem;
+    }
+  }
+
+  /* Alternative styles you can use */
+  .text-logo.bold {
+    font-weight: 900;
+  }
+
+  .text-logo.gradient-v .letter-v {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .text-logo.shadow {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .text-logo.outline .letter-v {
+    -webkit-text-stroke: 2px var(--accent);
+    -webkit-text-fill-color: transparent;
+  }
+</style>
