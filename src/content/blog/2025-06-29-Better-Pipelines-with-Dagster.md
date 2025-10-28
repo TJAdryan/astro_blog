@@ -15,11 +15,11 @@ description: 'A post about Building Data Pipelines with Dagster: Practical.'
 ---
 
 
-I am always looking for ways to improve my data pipelines, and Dagster has been really good to me so far.  I am definitely planning on diving further into it in the future but my initial experiences have been favorable.  Of course, I ran into a a few issues.  But mostly I was able to get things up and running, without too much trouble, and get value from using it right away.
+I am always looking for ways to improve my data pipelines, and Dagster has been really good to me so far.  I am definitely planning on using it in the future  Of course, I ran into a a few issues.  But mostly I was able to get things up and running, without too much trouble, and I see some real value in using Dagster for more pipelines.  I have used Airflow in the past, and while it is great too. Dagster just seems easier to use and better at delivering results quickly.
 
+Getting started with any orhestration tool can be difficult and no matter how good your current set up is, trying to retro fit it to an orchestrator is going to be a challenge. Here I built a relatively simple pipeline that pulls data from the NYC Open Data API, processes it, and then visualizes it using both static PNG charts and a dynamic Streamlit dashboard.
 
-I tried to keep it simple, flowing from the NYC Open Data API through various Dagster assets, eventually feeding into both static PNG charts and the dynamic Streamlit dashboard. 
-Dagster updates the information and then it is displayed in the Streamlit app.  Here is an exmple of what the output looks like:
+Here is an exmple of what the output looks like:
 
 <img src="/img/streamdagster.png" alt="Dagster streamlit image" width="600px">
 
