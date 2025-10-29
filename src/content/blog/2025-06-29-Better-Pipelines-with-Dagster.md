@@ -28,7 +28,7 @@ The output from Dagster is no slouch when it comes to visualizations either.  Be
 <img src="/img/full_pipeline.png" alt="Dagster streamlit image" width="600px">
 
 
-Also the way Dagster displays the logs and allows you to trace back any issues is super helpful too.  Once you start a job you can move over to the runs tab, or you can follow the link that gets generated when you run a job.  
+Also the way Dagster displays the logs and allows you to trace back any issues is super helpful.  Once you start a job you can move over to the runs tab, or you can follow the link that is generated when you run a job.  
 <img src="/img/Run_dagster.png" alt="Dagster streamlit image" width="600px">
 
 
