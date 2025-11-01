@@ -21,6 +21,9 @@ const housingPosts = posts.filter(post => post.data.tags && post.data.tags.inclu
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2" />
   <!-- optional: mobile theme color -->
   <meta name="theme-color" content="#ffffff" />
+  <!-- Add other common icons if you have them -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=2" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=2" />
 </head>
 
 <BaseLayout>
@@ -148,6 +151,49 @@ const housingPosts = posts.filter(post => post.data.tags && post.data.tags.inclu
         }
       });
   });
+
+  // Force browser to reload favicon(s) at runtime and clear service worker / caches if present.
+  (function refreshFavicons() {
+    function addOrUpdateLink(rel, type, href) {
+      // Remove existing links that match rel+type to avoid duplicates
+      document.querySelectorAll(`link[rel="${rel}"][type="${type}"]`).forEach(el => el.remove());
+      const link = document.createElement('link');
+      link.rel = rel;
+      link.type = type;
+      link.href = href;
+      document.head.appendChild(link);
+    }
+
+    // List of favicon paths to refresh (keep these in sync with files in /public)
+    const favicons = [
+      { rel: 'icon', type: 'image/x-icon', path: '/favicon.ico' },
+      { rel: 'icon', type: 'image/png', path: '/favicon-32x32.png' },
+      { rel: 'icon', type: 'image/png', path: '/favicon-16x16.png' },
+      { rel: 'apple-touch-icon', type: 'image/png', path: '/apple-touch-icon.png' }
+    ];
+
+    // Append a timestamp query param to force re-fetch
+    const stamp = `?v=${Date.now()}`;
+    favicons.forEach(f => {
+      // Only add the tag if the file likely exists (no network check here)
+      addOrUpdateLink(f.rel, f.type, `${f.path}${stamp}`);
+    });
+
+    // Remove older favicon links without query params (optional cleanup)
+    document.querySelectorAll('link[rel="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]').forEach(l => {
+      if (!l.href.includes('?v=')) l.remove();
+    });
+
+    // If a service worker is active it may be serving cached assets; try to unregister it and clear caches.
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(regs => {
+        regs.forEach(reg => reg.unregister());
+      }).catch(() => {/* ignore */});
+    }
+    if (window.caches && window.caches.keys) {
+      caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k)))).catch(() => {/* ignore */});
+    }
+  })();
 </script>
 
 <style>
