@@ -38,5 +38,30 @@
       }),
       (e.__SV = 1));
   })(document, window.posthog || []);
-  posthog.init('phc_vdYLX21Ll0XCkaFOVXiCfzRE9w4WJ7Hfi6vXwsRKfPU', { api_host: 'https://us.i.posthog.com', defaults: '2025-05-24' });
+  posthog.init('phc_vdYLX21Ll0XCkaFOVXiCfzRE9w4WJ7Hfi6vXwsRKfPU', { api_host: 'https://us.i.posthog.com' });
+
+  // --- START: runtime verification / test event ---
+  (function() {
+    function sendTestEvent() {
+      try {
+        if (window.posthog && typeof posthog.capture === 'function') {
+          posthog.capture('posthog_snippet_initialized', { ts: Date.now() });
+          console.info('PostHog: snippet initialized — test event sent');
+        } else {
+          console.warn('PostHog: snippet loaded but API not available yet');
+        }
+      } catch (err) {
+        console.error('PostHog: test event failed', err);
+      }
+    }
+
+    // Attempt to send test event on load, and also after a short delay in case array.js finishes later
+    if (document.readyState === 'complete') {
+      sendTestEvent();
+    } else {
+      window.addEventListener('load', sendTestEvent);
+      setTimeout(sendTestEvent, 3000);
+    }
+  })();
+  // --- END: runtime verification / test event ---
 </script>
