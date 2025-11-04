@@ -270,4 +270,20 @@ const housingPosts = posts.filter(post => post.data.tags && post.data.tags.inclu
       letter-spacing: -0.01em;
     }
   }
+
+  /* New: ensure Twitter / X icon uses the site accent color */
+  /* targets anchors linking to twitter.com or x.com and their SVGs */
+  a[href*="twitter.com"],
+  a[href*="x.com"] {
+    color: var(--accent, #ff8c42);
+  }
+
+  /* Apply accent to SVG icons (fill + stroke). Use specificity to override utility classes if needed */
+  a[href*="twitter.com"] svg,
+  a[href*="x.com"] svg,
+  a[href*="twitter.com"] .icon,
+  a[href*="x.com"] .icon {
+    fill: currentColor !important;
+    stroke: currentColor !important;
+  }
 </style>
