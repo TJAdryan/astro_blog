@@ -271,19 +271,46 @@ const housingPosts = posts.filter(post => post.data.tags && post.data.tags.inclu
     }
   }
 
-  /* New: ensure Twitter / X icon uses the site accent color */
-  /* targets anchors linking to twitter.com or x.com and their SVGs */
-  a[href*="twitter.com"],
-  a[href*="x.com"] {
-    color: var(--accent, #ff8c42);
+  /* Ensure Twitter / X icon uses the site accent color (more specific selectors) */
+  /* Target inline SVG shapes inside twitter/x links */
+  a[href*="twitter.com"] svg * ,
+  a[href*="x.com"] svg * ,
+  a[href*="twitter.com"].twitter svg * ,
+  a[href*="x.com"].twitter svg * {
+    fill: var(--accent, #ff8c42) !important;
+    stroke: var(--accent, #ff8c42) !important;
+    color: var(--accent, #ff8c42) !important;
   }
 
-  /* Apply accent to SVG icons (fill + stroke). Use specificity to override utility classes if needed */
-  a[href*="twitter.com"] svg,
-  a[href*="x.com"] svg,
-  a[href*="twitter.com"] .icon,
-  a[href*="x.com"] .icon {
-    fill: currentColor !important;
-    stroke: currentColor !important;
+  /* If the icon is wrapped in a span or has a class */
+  .social a.twitter svg * ,
+  .social a.x svg * {
+    fill: var(--accent, #ff8c42) !important;
+    stroke: var(--accent, #ff8c42) !important;
+  }
+
+  /* Fallback for <img> icons (approximate orange tint via filter) */
+  a[href*="twitter.com"] img,
+  a[href*="x.com"] img,
+  .social a.twitter img,
+  .social a.x img {
+    /* Adjust filter values if needed to match exact orange */
+    filter: invert(46%) sepia(56%) saturate(500%) hue-rotate(6deg) brightness(100%) contrast(95%) !important;
+  }
+
+  /* If the icon uses background-image, tint via mask (for monochrome svg masks) */
+  .social a.twitter,
+  .social a.x {
+    color: var(--accent, #ff8c42);
+  }
+  .social a.twitter::before,
+  .social a.x::before {
+    /* only applies if you use a masked SVG as background; keeps rules safe otherwise */
+    background-color: currentColor;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    display: inline-block;
   }
 </style>
