@@ -82,5 +82,23 @@
     "author": "Eagon Meng & Daniel Jackson (2025)",
     "url": "https://arxiv.org/html/2508.14511v2",
     "area": "Software Engineering"
+  },
+  {
+    "title": "Data Structures for Statistical Computing in Python",
+    "author": "Wes McKinney (2010)",
+    "url": "https://conference.scipy.org/proceedings/scipy2010/pdfs/mckinney.pdf",
+    "area": "Data Analysis / Python"
+  },
+  {
+    "title": "Python for Data Analysis (2nd ed.)",
+    "author": "Wes McKinney (2017)",
+    "url": "https://www.oreilly.com/library/view/python-for-data/9781491957653/",
+    "area": "Data Analysis / Book"
+  },
+  {
+    "title": "pandas (project)",
+    "author": "pandas-dev (orig. Wes McKinney)",
+    "url": "https://pandas.pydata.org/",
+    "area": "Data Analysis / Tools"
   }
 ]
