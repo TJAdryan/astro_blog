@@ -100,5 +100,11 @@
     "author": "pandas-dev (orig. Wes McKinney)",
     "url": "https://pandas.pydata.org/",
     "area": "Data Analysis / Tools"
+  },
+  {
+    "title": "A Programmable Dual-RNA–Guided DNA Endonuclease in Adaptive Bacterial Immunity",
+    "author": "Jinek et al. (2012)",
+    "url": "https://doi.org/10.1126/science.1225829",
+    "area": "Genomics / CRISPR"
   }
 ]
