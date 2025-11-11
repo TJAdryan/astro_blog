@@ -1,0 +1,29 @@
+[
+  {
+    "id": 1,
+    "license": null,
+    "plate": null,
+    "violation": "Speeding 65 mph",
+    "location": "Broadway & 5th Ave",
+    "date": "2025-10-01T10:15:00Z",
+    "fine": "100"
+  },
+  {
+    "id": 2,
+    "license": "",
+    "plate": "NY-1234",
+    "violation": "Speeding - highway",
+    "location": "I-95",
+    "date": "2025-09-28T08:30:00Z",
+    "fine": "150"
+  },
+  {
+    "id": 3,
+    "license": "A1234567",
+    "plate": "NY-9999",
+    "violation": "Illegal parking",
+    "location": "7th St",
+    "date": "2025-09-20T12:00:00Z",
+    "fine": "50"
+  }
+]

@@ -1,0 +1,99 @@
+<div class="nyc-widget-dark">
+  <h3>"Jerk's Car" Violations</h3>
+  <p>Loading today's count...</p>
+  <div class="stat-container">
+    <strong id="unknown-plate-count">...</strong>
+    <span>speed camera violations filed today with an unknown plate</span>
+  </div>
+</div>
+
+<script>
+  // Helper to get today's date in YYYY-MM-DD format
+  function getTodayDate() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, '0');
+    const day = today.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  // Async function to fetch the data
+  async function fetchUnknownPlateCount() {
+    const today = getTodayDate();
+    const widgetElement = document.getElementById('unknown-plate-count');
+    const dataset = 'nc67-uf89'; // This is the "Open Parking and Camera Violations" dataset
+
+    // --- The Socrata (SODA) API Query ---
+    // 1. $select=count(*) - We just want a count.
+    // 2. date_trunc_ymd(issue_date)='${today}' - Filters for violations issued today.
+    // 3. violation_description='SPEED CAMERA VIOLATION' - Only get speed camera violations.
+    // 4. plate IS NULL - Only get records where the 'plate' field is empty (NULL).
+    
+    const soqlQuery = `$select=count(*)&$where=date_trunc_ymd(issue_date)='${today}' AND violation_description='SPEED CAMERA VIOLATION' AND plate IS NULL`;
+    
+    // We must encode the query to be safely used in a URL
+    const encodedQuery = encodeURIComponent(soqlQuery);
+    const apiEndpoint = `https://data.cityofnewyork.us/resource/${dataset}.json?${encodedQuery}`;
+
+    try {
+      const response = await fetch(apiEndpoint);
+      if (!response.ok) throw new Error('Network response was not ok');
+      
+      const data = await response.json();
+
+      if (data && data.length > 0) {
+        // The API returns a count as a string, e.g., "15"
+        const count = parseInt(data[0].count).toLocaleString();
+        widgetElement.textContent = count;
+      } else {
+        widgetElement.textContent = '0';
+      }
+
+    } catch (error) {
+      console.error('Failed to fetch violation data:', error);
+      widgetElement.textContent = 'Error';
+    }
+  }
+
+  // Run the function when the script loads
+  fetchUnknownPlateCount();
+</script>
+
+<style>
+  .nyc-widget-dark {
+    background-color: #333;
+    border: 1px solid #555;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    font-family: sans-serif;
+    color: #f0f0f0;
+  }
+  .nyc-widget-dark h3 {
+    margin-top: 0;
+    color: #fff;
+  }
+  .nyc-widget-dark p {
+    /* Hide the "Loading" text once the count is fetched */
+  }
+  .stat-container {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    flex-wrap: wrap; /* Allows text to wrap on small screens */
+  }
+  #unknown-plate-count {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #ffc107; /* A yellow/gold for the stat */
+    line-height: 1;
+  }
+  .stat-container span {
+    font-size: 1rem;
+    color: #ccc;
+  }
+
+  /* When the widget loads, hide the loading paragraph */
+  #unknown-plate-count:not(:empty) ~ p {
+    display: none;
+  }
+</style>
