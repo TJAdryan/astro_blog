@@ -8,7 +8,7 @@ tags: [xml, excel, soap, file-formats, python]
 
 # It's XML All the Way Down
 
-A few years ago I was tasked to use an API with poor documentation that was only available in SOAP. Fortunately, there is a Python library called Zeep ([docs.python-zeep.org/](https://docs.python-zeep.org/)) – without it, I would have been completely lost. I grumbled through this task, feeling like I was working on something that if not already obsolete was well on its way.
+A few years ago I was tasked to use an API with poor documentation that was only available in SOAP. Fortunately, there is a Python library called Zeep ([docs.python-zeep.org/](https://docs.python-zeep.org/)) – without it, I would have been completely lost. I grumbled through this task, feeling like I was working on something that if not already obsolete was well on its way. This is a good example of how everything can be a learning experience.  Even if you don't want to learn it.  
 
 Only recently, I learned that XLSX files are actually zipped XML files. So let's take one apart:
 
