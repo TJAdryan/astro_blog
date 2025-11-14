@@ -8,9 +8,9 @@ tags: [xml, excel, soap, file-formats, python]
 
 # It's XML All the Way Down
 
-A few years ago I was tasked to use an API with poor documentation that was only available in SOAP. Fortunately, there is a Python library called Zeep ([docs.python-zeep.org/](https://docs.python-zeep.org/)) – without it, I would have been completely lost. I grumbled through this task, feeling like I was working on something that if not already obsolete was well on its way. This is a good example of how everything can be a learning experience.  Even if you don't want to learn it.  
+A few years ago I was tasked to use an API with poor documentation that was only available in SOAP. Fortunately, there is a Python library called Zeep ([docs.python-zeep.org/](https://docs.python-zeep.org/)) – without it, I would have been completely lost. I grumbled through this task, feeling like I was working on something that if not already obsolete was well on its way. This is a good example of how everything can be a learning experience.  Even if it wasn't the thing you set out to learn. 
 
-Only recently, I learned that XLSX files are actually zipped XML files. So let's take one apart:
+This is how I learned that XLSX files are actually zipped XML files. And even though I had not not set out to learn that, taking it apart taught me something. So let's take one apart:
 
 ### 1. Initial CSV File
 Starting with a CSV file has about 1200 rows and 17 columns comes to 210 KB.
