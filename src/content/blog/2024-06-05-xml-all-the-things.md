@@ -3,7 +3,7 @@ title: "XLSX are Just Text Files in a Trench Coat"
 description: "An exploration of the XML structure behind modern Excel files."
 pubDate: "2024-06-05 12:00:00 -0400"
 categories: [Technology, Data]
-tags: [xml, excel, soap, file-formats, python]
+tags: [xml, excel, file-formats, python]
 ---
 
 # It's XML All the Way Down
