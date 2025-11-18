@@ -64,3 +64,23 @@ Now the weird changes in file size and why some (relatively) small XLSX files ta
 ### XML Forever?
 
 XML (eXtensible Markup Language) was created in the late 1990s to replace SGML which I am guessing was a replacement for something else. JSON (JavaScript Object Notation) is a lighter weight alternative but obviously ther are still many applications where XML is the better choice. Or in the case of XLSX, the only choice.
+
+## Practical tips
+
+- When sharing Excel data, consider providing it as a CSV file for simplicity and wider accessibility.
+- Use Excel's "Inspect Document" feature to see what XML data is embedded in your XLSX files.
+- Explore using Python's `openpyxl` or `pandas` libraries for advanced Excel file manipulations beyond the XML structure.
+
+## Recommended diagram — CRISPR mechanics
+
+For a clear, well-labeled diagram that demonstrates CRISPR mechanics (target recognition, guide RNA, and nuclease cutting), see this figure from IJMS:
+
+[CRISPR mechanism diagram — IJMS Fig.1](https://www.mdpi.com/ijms/ijms-26-04420/article_deploy/html/images/ijms-26-04420-g001.png)
+
+This diagram is a useful reference when explaining how guide RNAs direct nucleases to specific DNA sequences.
+
+---
+
+## Conclusion
+
+Understanding the underlying XML structure of XLSX files can demystify many of the oddities encountered when working with Excel data. It also provides a powerful tool for data manipulation and analysis, opening up new possibilities for automation and integration with other data processing workflows.
