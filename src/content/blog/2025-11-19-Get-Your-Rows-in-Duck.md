@@ -9,10 +9,10 @@ draft: false
 
 In September, the pg_duckdb extension reached version 1.0. For teams heavily invested in the PostgreSQL ecosystem, this release offers a specific, practical utility: it allows the DuckDB engine to run within the Postgres process.
 
-At first I didn't know what to make of it not just the release the whole project.  DuckDB and Postgres already can interoperate via FDW and other methods, so what does embedding DuckDB inside Postgres really gain you?
+At first I didn't know what to make of it not just the release the whole project.  DuckDB and Postgres already can interoperate via FDW and other methods, so what does embedding DuckDB inside Postgres really gain you?  Well I was able to identify a couple, so there are probably more.
 
-Here is an assessment of why it is useful and how to implement it. Well I was able to identify a couple, so there are probably more.
 
+Here is an assessment of why it is useful and how to implement it.
 ## The Core Value: Vectorized Execution in Postgres
 
 PostgreSQL is designed for row-based processing. It is excellent at retrieving single records but inefficient at aggregating millions of rows (e.g., calculating average revenue per user over five years).
@@ -46,7 +46,9 @@ JOIN read_parquet('s3://archive-bucket/logs/2024/*.parquet') h
     ON u.customer_id = h.user_id
 WHERE u.status = 'active'
 GROUP BY u.customer_id, u.signup_date;
+
 ``` 
+
 
 ### When to Use It
 
