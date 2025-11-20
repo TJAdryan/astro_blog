@@ -13,6 +13,8 @@ At first I didn't know what to make of it not just the release the whole project
 
 
 Here is an assessment of why it is useful and how to implement it.
+
+If you feel I fall short or want to learn more you can access the release notes here: [pg_duckdb release notes](https://motherduck.com/blog/pg-duckdb-release/).
 ## The Core Value: Vectorized Execution in Postgres
 
 PostgreSQL is designed for row-based processing. It is excellent at retrieving single records but inefficient at aggregating millions of rows (e.g., calculating average revenue per user over five years).
