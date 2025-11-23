@@ -15,6 +15,19 @@ At first I didn't know what to make of it not just the release the whole project
 Here is an assessment of why it is useful and how to implement it.
 
 If you feel I fall short or want to learn more you can access the release notes here: [pg_duckdb release notes](https://motherduck.com/blog/pg-duckdb-release/).
+
+### Getting Started: Installing the Extension
+
+Adding pg_duckdb to your PostgreSQL instance is straightforward. The extension is available through standard PostgreSQL package managers and can be installed directly from source.
+
+For most users, the quickest path is through your system's package manager or by using the precompiled binaries from the official releases. Once installed, enabling it in your database is a simple SQL command:
+
+```sql
+CREATE EXTENSION pg_duckdb;
+```
+
+After installation, you can verify it's working by checking the available extensions or running a simple test query with DuckDB's vectorized processing enabled.
+
 ### The Core Value: Vectorized Execution in Postgres
 
 PostgreSQL is designed for row-based processing. It is excellent at retrieving single records but inefficient at aggregating millions of rows (e.g., calculating average revenue per user over five years).
