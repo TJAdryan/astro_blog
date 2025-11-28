@@ -9,7 +9,7 @@ draft: false
 
 In September, the pg_duckdb extension reached version 1.0. For teams heavily invested in the PostgreSQL ecosystem, this release offers a specific, practical utility: it allows the DuckDB engine to run within the Postgres process.
 
-At first I didn't know what to make of it not just the release the whole project.  DuckDB and Postgres already can interoperate via FDW and other methods, so what does embedding DuckDB inside Postgres really gain you?  Well I was able to identify a couple, so there are probably more.
+At first, I didn't know what to make of it, not just the release the whole project.  DuckDB and Postgres already can interoperate via FDW and other methods, so what does embedding DuckDB inside Postgres really gain you? I was wildly off, it turns out it can give you a lot of gain.  FDW (Foreign Data Wrappers) lose the columnar advantage instantly, the data needs to get translated into rows to be read.  My newfound nderstanding of that distinction humbled me, and I began to wonder what else I was missing.
 
 
 Here is an assessment of why it is useful and how to implement it.
