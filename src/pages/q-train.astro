@@ -1,0 +1,16 @@
+---
+import Layout from '../layouts/BaseLayout.astro';
+import QTrainTracker from '../components/QTrainTracker.jsx';
+
+const title = "Q Train Status";
+const description = "Real-time status updates for the Q train.";
+---
+
+<Layout title={title} description={description}>
+  <main className="container mx-auto px-4 py-12">
+    <h1 className="text-4xl font-bold text-center mb-8">{title}</h1>
+    <div className="flex justify-center">
+      <QTrainTracker client:load />
+    </div>
+  </main>
+</Layout>
