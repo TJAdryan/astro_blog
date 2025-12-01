@@ -1,5 +1,5 @@
 ---
-title: "Google Scholar Gets Even Better: Why I'm Excited About the Latest Updates"
+title: "Google Scholar Gets Better: What to Know About the Latest Updates"
 description: "A look at the recent improvements to Google Scholar and why they matter for researchers and data professionals."
 pubDate: "2025-11-24T00:00:00Z"
 tags: ["research", "tools", "AI", "academic"]
@@ -9,7 +9,9 @@ draft: false
 
 I've used Google Scholar intermittently over the years, typically when I need to dig deeper into a topic than surface-level articles allow. The recent updates to the platform address some long-standing limitations and represent meaningful progress in academic search functionality.
 
-In an era where "doing your own research" often means reading headlines and social media posts, tools that actually connect people with peer-reviewed literature matter more than ever. The gap between academic research and public discourse continues to widen, partly because scholarly work remains largely inaccessible to general audiences. Scholar's improvements, particularly its AI features, offer some hope for bridging this divide—though the old adage that a lie can travel halfway around the world before the truth finishes tying its shoes has never felt more relevant.
+In an era where "doing your own research" often means reading headlines and social media posts, tools that actually connect people with peer-reviewed literature matter more than ever. The gap between academic research and public discourse continues to widen, partly because scholarly work remains largely inaccessible to general audiences. Academic paywalls are a significant part of this problem—many important papers remain locked behind expensive journal subscriptions that most people can't afford.
+
+This is why I often turn to open-access alternatives like [SSRN](https://papers.ssrn.com/sol3/DisplayJournalBrowse.cfm) for social sciences and economics research, or [arXiv](https://arxiv.org/) for technical and scientific papers. These platforms demonstrate that high-quality academic work can be freely accessible. Scholar's improvements, particularly its AI features, offer some hope for bridging this accessibility divide—though the old adage that a lie can travel halfway around the world before the truth finishes tying its shoes has never felt more relevant.
 
 ### The AI Search Addition
 
