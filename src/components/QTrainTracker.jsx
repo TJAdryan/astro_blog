@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import stationMap from '../data/stations.json';
+import trainLog from '../data/train_log.json';
 
 const QTrainTracker = () => {
   const [status, setStatus] = useState('loading');
@@ -17,14 +18,24 @@ const QTrainTracker = () => {
 
       setData(result);
 
-      // Determine status based on goodservice.io response
-      // 'status' field usually contains "Good Service", "Service Change", "Delays", etc.
-      if (result.status === 'Good Service') {
-        setStatus('good');
+      // Determine status based on detailed fields rather than just the top-level string
+      const hasServiceChanges = result.service_change_summaries?.both?.length > 0 ||
+        result.service_change_summaries?.north?.length > 0 ||
+        result.service_change_summaries?.south?.length > 0;
+
+      const hasDelays = result.service_irregularity_summaries?.north ||
+        result.service_irregularity_summaries?.south;
+
+      if (hasServiceChanges) {
+        setStatus('service-change');
+      } else if (hasDelays) {
+        setStatus('delays');
       } else if (result.status === 'Not Scheduled') {
         setStatus('inactive');
       } else {
-        setStatus('delays'); // Assume anything else is a delay or change
+        // Default to good if no specific negative flags found, even if status says "Not Good"
+        // This handles minor fluctuations that don't have associated alert text
+        setStatus('good');
       }
 
       setLastUpdated(new Date());
@@ -43,6 +54,7 @@ const QTrainTracker = () => {
   const getStatusColor = () => {
     switch (status) {
       case 'good': return 'bg-green-100 text-green-800 border-green-200';
+      case 'service-change': return 'bg-orange-100 text-orange-800 border-orange-200';
       case 'delays': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
       case 'inactive': return 'bg-gray-100 text-gray-800 border-gray-200';
       case 'error': return 'bg-red-100 text-red-800 border-red-200';
@@ -53,7 +65,8 @@ const QTrainTracker = () => {
   const getStatusText = () => {
     switch (status) {
       case 'good': return 'Good Service';
-      case 'delays': return data?.status || 'Delays / Service Change';
+      case 'service-change': return 'Service Change';
+      case 'delays': return 'Delays';
       case 'inactive': return 'Not Scheduled';
       case 'error': return 'Unable to load status';
       default: return 'Loading...';
@@ -130,9 +143,8 @@ const QTrainTracker = () => {
         <div className={`p-4 rounded-lg border ${getStatusColor()} transition-colors duration-300`}>
           <div className="font-bold text-lg mb-1">{getStatusText()}</div>
 
-          {status === 'delays' && data && (
+          {status === 'service-change' && data && (
             <div className="space-y-2 mt-2">
-              {/* Display Service Change Summaries */}
               {data.service_change_summaries?.both?.map((text, i) => (
                 <p key={`both-${i}`} className="text-sm">{text}</p>
               ))}
@@ -142,20 +154,17 @@ const QTrainTracker = () => {
               {data.service_change_summaries?.south?.map((text, i) => (
                 <p key={`south-${i}`} className="text-sm">Southbound: {text}</p>
               ))}
+            </div>
+          )}
 
-              {/* Display Irregularity Summaries if no main service changes but still delays */}
-              {(!data.service_change_summaries?.both?.length &&
-                !data.service_change_summaries?.north?.length &&
-                !data.service_change_summaries?.south?.length) && (
-                  <>
-                    {data.service_irregularity_summaries?.north && (
-                      <p className="text-sm">Northbound: {data.service_irregularity_summaries.north}</p>
-                    )}
-                    {data.service_irregularity_summaries?.south && (
-                      <p className="text-sm">Southbound: {data.service_irregularity_summaries.south}</p>
-                    )}
-                  </>
-                )}
+          {status === 'delays' && data && (
+            <div className="space-y-2 mt-2">
+              {data.service_irregularity_summaries?.north && (
+                <p className="text-sm">Northbound: {data.service_irregularity_summaries.north}</p>
+              )}
+              {data.service_irregularity_summaries?.south && (
+                <p className="text-sm">Southbound: {data.service_irregularity_summaries.south}</p>
+              )}
             </div>
           )}
 
@@ -170,6 +179,38 @@ const QTrainTracker = () => {
         <div className="space-y-6">
           {renderTripList(getTrips('north'), 'north')}
           {renderTripList(getTrips('south'), 'south')}
+        </div>
+      )}
+
+      {/* Daily Log Section */}
+      {trainLog && trainLog.length > 0 && (
+        <div className="p-6 bg-white rounded-xl shadow-md space-y-4">
+          <h3 className="text-lg font-bold text-gray-800 border-b pb-2">Service History</h3>
+          <div className="space-y-4">
+            {trainLog.map((entry, index) => (
+              <div key={index} className="text-sm">
+                <div className="flex justify-between items-center mb-1">
+                  <span className="font-semibold text-gray-700">
+                    {new Date(entry.date).toLocaleDateString()}
+                  </span>
+                  <span className={`px-2 py-0.5 rounded text-xs font-medium ${entry.status === 'Good Service' ? 'bg-green-100 text-green-800' :
+                      entry.status === 'Service Change' ? 'bg-orange-100 text-orange-800' :
+                        entry.status === 'Delays' ? 'bg-yellow-100 text-yellow-800' :
+                          'bg-gray-100 text-gray-800'
+                    }`}>
+                    {entry.status}
+                  </span>
+                </div>
+                {entry.details && entry.details.length > 0 && (
+                  <ul className="list-disc list-inside text-gray-600 pl-2">
+                    {entry.details.map((detail, i) => (
+                      <li key={i}>{detail}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
