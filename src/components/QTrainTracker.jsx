@@ -115,12 +115,19 @@ const QTrainTracker = () => {
     );
   };
 
-  // Flatten trips from the nested structure
+  // Flatten trips from the nested structure and filter for close trains
   const getTrips = (direction) => {
     if (!data?.trips?.[direction]) return [];
-    // data.trips.north is an object where keys are route segments, values are arrays of trips
-    // We need to combine all arrays
-    return Object.values(data.trips[direction]).flat().sort((a, b) => a.upcoming_stop_arrival_time - b.upcoming_stop_arrival_time);
+
+    return Object.values(data.trips[direction])
+      .flat()
+      .filter(trip => {
+        // Filter for trains 5 minutes (300 seconds) or less away
+        // Some trips might have null time, we'll exclude them to be safe or include if we want to be generous.
+        // User asked for "5 minutes or less", so we'll be strict.
+        return trip.time_behind_next_train !== null && trip.time_behind_next_train <= 300;
+      })
+      .sort((a, b) => a.upcoming_stop_arrival_time - b.upcoming_stop_arrival_time);
   };
 
   return (
@@ -194,9 +201,9 @@ const QTrainTracker = () => {
                     {new Date(entry.date).toLocaleDateString()}
                   </span>
                   <span className={`px-2 py-0.5 rounded text-xs font-medium ${entry.status === 'Good Service' ? 'bg-green-100 text-green-800' :
-                      entry.status === 'Service Change' ? 'bg-orange-100 text-orange-800' :
-                        entry.status === 'Delays' ? 'bg-yellow-100 text-yellow-800' :
-                          'bg-gray-100 text-gray-800'
+                    entry.status === 'Service Change' ? 'bg-orange-100 text-orange-800' :
+                      entry.status === 'Delays' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-gray-100 text-gray-800'
                     }`}>
                     {entry.status}
                   </span>
