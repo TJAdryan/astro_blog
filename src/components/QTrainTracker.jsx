@@ -93,7 +93,7 @@ const QTrainTracker = () => {
       <div className="mb-6">
         <h3 className="font-bold text-lg mb-2 text-gray-800 border-b pb-1">{title} Trains</h3>
         {tripsByStation.size === 0 ? (
-          <p className="text-gray-500 italic">No trains arriving in the next 5 mins.</p>
+          <p className="text-gray-500 italic">No trains arriving in the next 10 mins.</p>
         ) : (
           <div className="space-y-2">
             {Array.from(tripsByStation.entries()).map(([stationId, stationTrips]) => {
@@ -107,20 +107,40 @@ const QTrainTracker = () => {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    {stationTrips.map(trip => {
-                      const destination = stationMap[trip.destination_stop] || trip.destination_stop;
-                      return (
-                        <div key={trip.id} className="flex justify-between items-center bg-gray-50 p-2 rounded">
-                          <div className="text-gray-600">
-                            <span className="text-xs font-medium uppercase tracking-wide text-gray-400 mr-2">To</span>
-                            {destination}
+                    {(() => {
+                      // Group trips by destination within this station
+                      const tripsByDest = new Map();
+                      stationTrips.forEach(trip => {
+                        const dest = stationMap[trip.destination_stop] || trip.destination_stop;
+                        if (!tripsByDest.has(dest)) {
+                          tripsByDest.set(dest, []);
+                        }
+                        tripsByDest.get(dest).push(trip);
+                      });
+
+                      return Array.from(tripsByDest.entries()).map(([destination, destTrips]) => {
+                        // Sort times for this destination
+                        const times = destTrips
+                          .map(t => Math.max(0, Math.round(t.secondsUntilArrival / 60)))
+                          .sort((a, b) => a - b);
+
+                        return (
+                          <div key={destination} className="flex justify-between items-center bg-gray-50 p-2 rounded">
+                            <div className="text-gray-600">
+                              <span className="text-xs font-medium uppercase tracking-wide text-gray-400 mr-2">To</span>
+                              {destination}
+                            </div>
+                            <div className="flex gap-1">
+                              {times.map((time, i) => (
+                                <span key={i} className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded border border-blue-100">
+                                  {time} min
+                                </span>
+                              ))}
+                            </div>
                           </div>
-                          <div className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded border border-blue-100">
-                            {Math.max(0, Math.round(trip.secondsUntilArrival / 60))} min
-                          </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      });
+                    })()}
                   </div>
                 </div>
               );
