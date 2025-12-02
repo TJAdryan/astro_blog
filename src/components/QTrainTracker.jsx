@@ -91,7 +91,7 @@ const QTrainTracker = () => {
 
     return (
       <div className="mb-6">
-        <h3 className="font-bold text-lg mb-2 text-gray-800 border-b pb-1">{title} Trains</h3>
+        <h3 className="font-bold text-2xl mb-4 text-gray-800 border-b-2 pb-2">{title} Trains</h3>
         {tripsByStation.size === 0 ? (
           <p className="text-gray-500 italic">No trains arriving in the next 10 mins.</p>
         ) : (
@@ -100,13 +100,13 @@ const QTrainTracker = () => {
               const nextStop = stationMap[stationId] || stationId;
 
               return (
-                <div key={stationId} className="bg-white p-3 rounded border border-gray-200 text-sm shadow-sm">
-                  <div className="flex justify-between items-start mb-2">
-                    <div className="font-semibold text-gray-700 text-base">
+                <div key={stationId} className="bg-white p-4 rounded border border-gray-200 shadow-sm">
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="font-bold text-gray-800 text-2xl">
                       {nextStop}
                     </div>
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     {(() => {
                       // Group trips by destination within this station
                       const tripsByDest = new Map();
@@ -125,14 +125,14 @@ const QTrainTracker = () => {
                           .sort((a, b) => a - b);
 
                         return (
-                          <div key={destination} className="flex justify-between items-center bg-gray-50 p-2 rounded">
-                            <div className="text-gray-600">
-                              <span className="text-xs font-medium uppercase tracking-wide text-gray-400 mr-2">To</span>
-                              {destination}
+                          <div key={destination} className="flex justify-between items-center bg-gray-50 p-3 rounded">
+                            <div className="text-gray-700">
+                              <span className="text-sm font-bold uppercase tracking-wide text-gray-400 mr-2">To</span>
+                              <span className="text-xl font-semibold">{destination}</span>
                             </div>
-                            <div className="flex gap-1">
+                            <div className="flex gap-2">
                               {times.map((time, i) => (
-                                <span key={i} className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded border border-blue-100">
+                                <span key={i} className="text-lg font-bold text-blue-700 bg-blue-100 px-3 py-1 rounded border border-blue-200">
                                   {time} min
                                 </span>
                               ))}
