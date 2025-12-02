@@ -101,7 +101,7 @@ const QTrainTracker = () => {
                     <span className="font-semibold text-gray-700">Next Stop:</span> {nextStop}
                   </div>
                   <div className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                    {Math.round(trip.time_behind_next_train / 60) || '?'} min away
+                    {Math.max(0, Math.round(trip.secondsUntilArrival / 60))} min away
                   </div>
                 </div>
                 <div className="mt-1 text-gray-600">
@@ -115,19 +115,52 @@ const QTrainTracker = () => {
     );
   };
 
-  // Flatten trips from the nested structure and filter for close trains
+  // Flatten trips, deduplicate, filter, and sort geographically
   const getTrips = (direction) => {
     if (!data?.trips?.[direction]) return [];
 
-    return Object.values(data.trips[direction])
-      .flat()
-      .filter(trip => {
-        // Filter for trains 5 minutes (300 seconds) or less away
-        // Some trips might have null time, we'll exclude them to be safe or include if we want to be generous.
-        // User asked for "5 minutes or less", so we'll be strict.
-        return trip.time_behind_next_train !== null && trip.time_behind_next_train <= 300;
+    const now = Math.floor(Date.now() / 1000); // Use local time for countdown, or could use data.timestamp
+
+    // Get station order for geographical sorting
+    // We use the first routing as the primary order
+    const stationOrder = data.actual_routings?.[direction]?.[0] || [];
+    const stationIndexMap = {};
+    stationOrder.forEach((stationId, index) => {
+      stationIndexMap[stationId] = index;
+    });
+
+    // 1. Flatten and Deduplicate
+    const uniqueTrips = new Map();
+    Object.values(data.trips[direction]).flat().forEach(trip => {
+      if (!uniqueTrips.has(trip.id)) {
+        uniqueTrips.set(trip.id, trip);
+      }
+    });
+
+    return Array.from(uniqueTrips.values())
+      .map(trip => {
+        const arrivalTime = trip.upcoming_stop_arrival_time;
+        const secondsUntilArrival = arrivalTime - now;
+        return { ...trip, secondsUntilArrival };
       })
-      .sort((a, b) => a.upcoming_stop_arrival_time - b.upcoming_stop_arrival_time);
+      .filter(trip => {
+        // Filter for trains arriving within 5 minutes
+        if (trip.secondsUntilArrival <= -60 || trip.secondsUntilArrival > 300) return false;
+
+        // Filter out trains arriving at the last stop
+        // Northbound: 96 St (Q05)
+        // Southbound: Coney Island (D43)
+        if (direction === 'north' && trip.upcoming_stop === 'Q05') return false;
+        if (direction === 'south' && trip.upcoming_stop === 'D43') return false;
+
+        return true;
+      })
+      .sort((a, b) => {
+        // Sort by station index (geographical order)
+        const indexA = stationIndexMap[a.upcoming_stop] ?? 9999;
+        const indexB = stationIndexMap[b.upcoming_stop] ?? 9999;
+        return indexA - indexB;
+      });
   };
 
   return (
