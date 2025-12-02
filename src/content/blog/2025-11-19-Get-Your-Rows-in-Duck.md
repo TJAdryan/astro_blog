@@ -11,10 +11,7 @@ In September, the pg_duckdb extension reached version 1.0. For teams heavily inv
 
 At first, I didn't know what to make of it, not just the release the whole project.  DuckDB and Postgres already can interoperate via FDW and other methods, so what does embedding DuckDB inside Postgres really gain you? I was wildly off, it turns out it can give you a lot of gain.  FDW (Foreign Data Wrappers) lose the columnar advantage instantly, the data needs to get translated into rows to be read.  My newfound understanding of that distinction humbled me, and I began to wonder what else I was missing.
 
-
-Here is an assessment of why it is useful and how to implement it.
-
-If you feel I fall short or want to learn more you can access the release notes here: [pg_duckdb release notes](https://motherduck.com/blog/pg-duckdb-release/).
+You can follow along with my tutorial but if you want to learn more you can access the release notes here: [pg_duckdb release notes](https://motherduck.com/blog/pg-duckdb-release/).
 
 ### Getting Started: Installing the Extension
 
