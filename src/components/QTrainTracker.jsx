@@ -76,41 +76,57 @@ const QTrainTracker = () => {
   const getStationName = (id) => stationMap[id] || id;
 
   const renderTripList = (trips, direction) => {
-    if (!trips || trips.length === 0) return null;
+    // Group trips by station
+    const tripsByStation = new Map();
+    if (trips) {
+      trips.forEach(trip => {
+        if (!tripsByStation.has(trip.upcoming_stop)) {
+          tripsByStation.set(trip.upcoming_stop, []);
+        }
+        tripsByStation.get(trip.upcoming_stop).push(trip);
+      });
+    }
+
+    const title = direction === 'north' ? 'Northbound' : 'Southbound';
 
     return (
-      <div className="mt-4">
-        <h3 className="font-bold text-md mb-2 capitalize">{direction}bound Trains</h3>
-        <div className="space-y-3">
-          {trips.map((trip) => {
-            // Trip ID format often contains info, but we rely on explicit fields if available
-            // goodservice.io trips usually have 'upcoming_stop', 'destination_stop'
-            // We can try to parse origin from the trip ID or route info if needed, 
-            // but goodservice.io doesn't explicitly give "origin" in the trip object easily.
-            // However, the trip ID is often like "114850_Q..N16X026" where "N" is direction.
-            // We'll focus on Destination and Next Stop as requested.
-            // "First stop" is harder without full schedule, but we can show Destination.
+      <div className="mb-6">
+        <h3 className="font-bold text-lg mb-2 text-gray-800 border-b pb-1">{title} Trains</h3>
+        {tripsByStation.size === 0 ? (
+          <p className="text-gray-500 italic">No trains arriving in the next 5 mins.</p>
+        ) : (
+          <div className="space-y-2">
+            {Array.from(tripsByStation.entries()).map(([stationId, stationTrips]) => {
+              const nextStop = stationMap[stationId] || stationId;
 
-            const nextStop = getStationName(trip.upcoming_stop);
-            const destination = getStationName(trip.destination_stop);
-
-            return (
-              <div key={trip.id} className="bg-white p-3 rounded border border-gray-200 text-sm shadow-sm">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <span className="font-semibold text-gray-700">Next Stop:</span> {nextStop}
+              return (
+                <div key={stationId} className="bg-white p-3 rounded border border-gray-200 text-sm shadow-sm">
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="font-semibold text-gray-700 text-base">
+                      {nextStop}
+                    </div>
                   </div>
-                  <div className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                    {Math.max(0, Math.round(trip.secondsUntilArrival / 60))} min away
+                  <div className="space-y-2">
+                    {stationTrips.map(trip => {
+                      const destination = stationMap[trip.destination_stop] || trip.destination_stop;
+                      return (
+                        <div key={trip.id} className="flex justify-between items-center bg-gray-50 p-2 rounded">
+                          <div className="text-gray-600">
+                            <span className="text-xs font-medium uppercase tracking-wide text-gray-400 mr-2">To</span>
+                            {destination}
+                          </div>
+                          <div className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded border border-blue-100">
+                            {Math.max(0, Math.round(trip.secondsUntilArrival / 60))} min
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
-                <div className="mt-1 text-gray-600">
-                  <span className="font-medium">To:</span> {destination}
-                </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     );
   };
@@ -144,14 +160,28 @@ const QTrainTracker = () => {
         return { ...trip, secondsUntilArrival };
       })
       .filter(trip => {
-        // Filter for trains arriving within 5 minutes
-        if (trip.secondsUntilArrival <= -60 || trip.secondsUntilArrival > 300) return false;
+        // Filter for trains arriving within 10 minutes
+        if (trip.secondsUntilArrival <= -60 || trip.secondsUntilArrival > 600) return false;
 
         // Filter out trains arriving at the last stop
         // Northbound: 96 St (Q05)
         // Southbound: Coney Island (D43)
         if (direction === 'north' && trip.upcoming_stop === 'Q05') return false;
         if (direction === 'south' && trip.upcoming_stop === 'D43') return false;
+
+        // Filter for specific stops requested by user
+        const INTERESTING_STOPS = [
+          'D35', // Kings Highway
+          'D34', // Avenue M
+          'D31', // Newkirk Plaza
+          'D26', // Prospect Park
+          'R30', // DeKalb Av
+          'Q01', // Canal St
+          'R20', // 14 St - Union Sq
+          'R16'  // Times Sq - 42 St
+        ];
+
+        if (!INTERESTING_STOPS.includes(trip.upcoming_stop)) return false;
 
         return true;
       })
