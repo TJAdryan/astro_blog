@@ -9,9 +9,7 @@ draft: false
 ## We Privatized the Truth and Socialized the Lie
 
 
-They say [a lie gets halfway around the world before the truth finishes tying its sneakers](https://quoteinvestigator.com/2014/07/13/truth/).
-
-Today, we have effectively institutionalized that dynamic. We have created an ecosystem where misinformation is frictionless. Lies are free, optimized for engagement, and delivered to your phone with algorithmic precision. Meanwhile, the truth—specifically rigorous, peer-reviewed scientific truth—is usually locked behind a $35 paywall or buried under density and jargon that requires a PhD to decrypt.
+They say [a lie gets halfway around the world before the truth finishes tying its sneakers](https://quoteinvestigator.com/2014/07/13/truth/) Today, we have effectively institutionalized that dynamic. We have created an ecosystem where misinformation is frictionless. Lies are free, optimized for engagement, and delivered to your phone with algorithmic precision. Meanwhile, the truth—specifically rigorous, peer-reviewed scientific truth—is usually locked behind a $35 paywall or buried under density and jargon that requires a PhD to decrypt.
 
 I’ve been thinking about this asymmetry a lot. We constantly hear people claim they’ve "done their own research." Usually, that’s a euphemism for watching a confirmation-bias-fueled video. But I find it hard to blame them entirely. When we make the truth expensive and difficult to read, is it any wonder misinformation is winning?
 
