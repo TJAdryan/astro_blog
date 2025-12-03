@@ -125,7 +125,7 @@ const QTrainTracker = () => {
                           .sort((a, b) => a - b);
 
                         return (
-                          <div key={destination} className="flex justify-between items-center bg-gray-50 p-3 rounded">
+                          <div key={destination} className="flex flex-wrap justify-between items-center bg-gray-50 p-3 rounded gap-2">
                             <div className="text-gray-700">
                               <span className="text-sm font-bold uppercase tracking-wide text-gray-400 mr-2">To</span>
                               <span className="text-xl font-semibold">{destination}</span>
