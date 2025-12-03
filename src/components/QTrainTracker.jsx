@@ -9,8 +9,8 @@ const QTrainTracker = () => {
 
   const fetchData = async () => {
     try {
-      // Fetch from our local proxy
-      const response = await fetch('/api/q-train.json');
+      // Fetch directly from the API (CORS is enabled)
+      const response = await fetch('https://api.subwaynow.app/routes/Q');
       if (!response.ok) {
         throw new Error('Failed to fetch data');
       }
