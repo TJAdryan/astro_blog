@@ -6,7 +6,7 @@
   publish = "dist"
   
   # Node version to use
-  environment = { NODE_VERSION = "18" }
+  environment = { NODE_VERSION = "18", SECRETS_SCAN_OMIT_KEYS = "PUBLIC_CLERK_PUBLISHABLE_KEY" }
 
 # Redirect rules (optional)
 [[redirects]]
