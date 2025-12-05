@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout>
+  <div class="container">
+    <h1 class="text-3xl font-bold mb-4">Interesting Articles</h1>
+    <p class="text-gray-600 dark:text-gray-300 mb-8">
+      A collection of seminal articles, recent innovations, and other papers I found interesting.
+    </p>
+    <ul id="all-articles-list" class="list-disc pl-5 space-y-2">
+      <!-- All articles will be rendered by client-side JS -->
+    </ul>
+  </div>
+</BaseLayout>
+
+<script is:inline>
+  // Fetch and render ALL articles from the JSON file
+  document.addEventListener('DOMContentLoaded', function() {
+    fetch('/data/articles.json')
+      .then(res => res.json())
+      .then(articles => {
+        const ul = document.getElementById('all-articles-list');
+        if (ul) {
+          ul.innerHTML = '';
+          articles.forEach(article => {
+            const li = document.createElement('li');
+            li.innerHTML = `<a href="${article.url}" target="_blank" rel="noopener" class="text-blue-600 dark:text-blue-400 hover:underline">${article.title}</a><span class="text-gray-500 dark:text-gray-400"> — ${article.author} [${article.area}]</span>`;
+            ul.appendChild(li);
+          });
+        }
+      });
+  });
+</script>
