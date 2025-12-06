@@ -72,6 +72,32 @@ async function fetchPubmedPaper() {
     };
 }
 
+async function fetchPythonPaper() {
+    // Search for Python in CS
+    const query = 'cat:cs.SE+AND+ti:"python"';
+    const url = `http://export.arxiv.org/api/query?search_query=${query}&start=0&max_results=10&sortBy=submittedDate&sortOrder=descending`;
+
+    const response = await fetch(url);
+    const xml = await response.text();
+    const result = await parseStringPromise(xml);
+
+    const entries = result.feed.entry;
+    if (!entries || entries.length === 0) return null;
+
+    // Pick a random one
+    const entry = entries[Math.floor(Math.random() * entries.length)];
+
+    return {
+        id: entry.id[0],
+        title: entry.title[0].replace(/\n/g, ' ').trim(),
+        summary: entry.summary[0].trim(),
+        link: entry.id[0],
+        source: 'arXiv',
+        topic: 'Python',
+        dateAdded: new Date().toISOString()
+    };
+}
+
 async function run() {
     console.log('Fetching articles...');
 
@@ -98,6 +124,16 @@ async function run() {
         }
     } catch (e) {
         console.error('Error fetching PubMed:', e);
+    }
+
+    try {
+        const pythonPaper = await fetchPythonPaper();
+        if (pythonPaper) {
+            console.log(`Found Python paper: ${pythonPaper.title}`);
+            queue.push(pythonPaper);
+        }
+    } catch (e) {
+        console.error('Error fetching Python arXiv:', e);
     }
 
     fs.writeFileSync(QUEUE_FILE, JSON.stringify(queue, null, 2));
