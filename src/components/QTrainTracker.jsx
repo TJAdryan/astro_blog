@@ -93,7 +93,7 @@ const QTrainTracker = () => {
       <div className="mb-6">
         <h3 className="font-bold text-2xl mb-4 text-gray-800 border-b-2 pb-2">{title} Trains</h3>
         {tripsByStation.size === 0 ? (
-          <p className="text-gray-500 italic">No trains arriving in the next 10 mins.</p>
+          <p className="text-gray-500 italic">No trains arriving in the next 30 mins.</p>
         ) : (
           <div className="space-y-2">
             {Array.from(tripsByStation.entries()).map(([stationId, stationTrips]) => {
@@ -181,7 +181,7 @@ const QTrainTracker = () => {
       })
       .filter(trip => {
         // Filter for trains arriving within 10 minutes
-        if (trip.secondsUntilArrival <= -60 || trip.secondsUntilArrival > 600) return false;
+        if (trip.secondsUntilArrival <= -60 || trip.secondsUntilArrival > 1800) return false;
 
         // Filter out trains arriving at the last stop
         // Northbound: 96 St (Q05)
