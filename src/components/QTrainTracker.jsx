@@ -173,14 +173,15 @@ const QTrainTracker = () => {
       }
     });
 
-    return Array.from(uniqueTrips.values())
+    // 2. Process and pre-filter for validity and interest
+    let candidates = Array.from(uniqueTrips.values())
       .map(trip => {
         const arrivalTime = trip.upcoming_stop_arrival_time;
         const secondsUntilArrival = arrivalTime - now;
         return { ...trip, secondsUntilArrival };
       })
       .filter(trip => {
-        // Filter for trains arriving within 10 minutes
+        // Hard cutoff for past trains or very far future (> 30 mins)
         if (trip.secondsUntilArrival <= -60 || trip.secondsUntilArrival > 1800) return false;
 
         // Filter out trains arriving at the last stop
@@ -204,7 +205,17 @@ const QTrainTracker = () => {
         if (!INTERESTING_STOPS.includes(trip.upcoming_stop)) return false;
 
         return true;
-      })
+      });
+
+    // 3. Smart Filter: If we have trains < 10 mins, only show those.
+    // Otherwise show whatever we have (which handles the > 10 min case).
+    const hasNearTrains = candidates.some(t => t.secondsUntilArrival <= 600);
+
+    if (hasNearTrains) {
+      candidates = candidates.filter(t => t.secondsUntilArrival <= 600);
+    }
+
+    return candidates
       .sort((a, b) => {
         // Sort by station index (geographical order)
         const indexA = stationIndexMap[a.upcoming_stop] ?? 9999;
