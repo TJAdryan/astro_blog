@@ -19,8 +19,10 @@ export const POST = async ({ request, redirect }) => {
         return new Response('Summary too short', { status: 400 });
     }
 
+    let stage = 'Initiating';
     try {
         // 1. Authenticate with Google
+        stage = 'Google Auth';
         const auth = new google.auth.GoogleAuth({
             credentials: JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON),
             scopes: ['https://www.googleapis.com/auth/documents', 'https://www.googleapis.com/auth/drive'],
@@ -30,6 +32,7 @@ export const POST = async ({ request, redirect }) => {
         const drive = google.drive({ version: 'v3', auth });
 
         // 2. Create Doc
+        stage = 'Google Docs Create';
         const createResponse = await docs.documents.create({
             requestBody: {
                 title: `Summary: ${articleTitle}`,
@@ -38,6 +41,7 @@ export const POST = async ({ request, redirect }) => {
         const documentId = createResponse.data.documentId;
 
         // 3. Write Content
+        stage = 'Google Docs Write';
         await docs.documents.batchUpdate({
             documentId,
             requestBody: {
@@ -59,6 +63,7 @@ export const POST = async ({ request, redirect }) => {
         // For now, we'll just log it. To make it persistent, we need the GitHub API approach.
 
         // 5. Remove from Queue via GitHub API
+        stage = 'GitHub Queue Update';
         const repoOwner = 'TJAdryan';
         const repoName = 'astro_blog';
         const filePath = 'src/data/article_queue.json';
@@ -115,7 +120,7 @@ export const POST = async ({ request, redirect }) => {
 
         return redirect('/private?success=true');
     } catch (error) {
-        console.error('Error saving summary:', error);
-        return new Response(`Error: ${error.message}`, { status: 500 });
+        console.error(`Error in stage ${stage}:`, error);
+        return new Response(`Error in stage [${stage}]: ${error.message}`, { status: 500 });
     }
 };
