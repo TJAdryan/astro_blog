@@ -28,17 +28,17 @@ export const POST = async ({ request, redirect }) => {
             scopes: ['https://www.googleapis.com/auth/documents', 'https://www.googleapis.com/auth/drive'],
         });
 
-        const docs = google.docs({ version: 'v1', auth });
-        const drive = google.drive({ version: 'v3', auth });
-
         // 2. Create Doc
-        stage = 'Google Docs Create';
-        const createResponse = await docs.documents.create({
-            requestBody: {
-                title: `Summary: ${articleTitle}`,
+        stage = 'Google Drive Create';
+        // Use Drive API directly to create the file. This often avoids "Docs API not enabled" confusion.
+        const createResponse = await drive.files.create({
+            resource: {
+                name: `Summary: ${articleTitle}`,
+                mimeType: 'application/vnd.google-apps.document'
             },
+            fields: 'id'
         });
-        const documentId = createResponse.data.documentId;
+        const documentId = createResponse.data.id;
 
         // 3. Write Content
         stage = 'Google Docs Write';
