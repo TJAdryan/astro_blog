@@ -56,14 +56,14 @@ import { SignedIn, SignedOut, UserButton } from "@clerk/astro/react";
                   <input type="hidden" name="articleTitle" value="${article.title}" />
                   <input type="hidden" name="articleLink" value="${article.link}" />
                   
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Your Summary (min 1000 chars)</label>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Your Summary (min 500 chars)</label>
                   <textarea 
                     name="summary" 
                     rows="6" 
                     class="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-sm"
                     placeholder="Write your summary here..."
                     required
-                    minlength="1000"
+                    minlength="500"
                   ></textarea>
                   <div class="flex justify-end mt-2">
                     <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors text-sm font-medium">

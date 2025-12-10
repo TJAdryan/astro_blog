@@ -15,7 +15,7 @@ export const POST = async ({ request, redirect }) => {
     const articleTitle = data.get('articleTitle');
     const articleLink = data.get('articleLink');
 
-    if (!summary || summary.length < 1000) {
+    if (!summary || summary.length < 500) {
         return new Response('Summary too short', { status: 400 });
     }
 
