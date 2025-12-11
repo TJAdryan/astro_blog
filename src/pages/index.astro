@@ -12,8 +12,16 @@ const latestPosts = posts.slice(0, 3);
 <BaseLayout>
   <div class="container">
     <div class="hero-section">
-      <h1 class="hero-title">
-        <span class="primary-text">Next</span><span class="accent-text">Val</span><span class="primary-text">Data</span>
+      <h1 class="hero-title relative z-10" id="hero-title-shake-zone">
+        <span class="primary-text">Next</span>
+        <!-- Val Door Wrapper -->
+        <span class="val-door-wrapper relative inline-block align-bottom">
+            <a href="/login" id="login-secret" class="login-secret absolute inset-0 flex items-center justify-center opacity-0 pointer-events-none z-0">
+                <img src="/img/cartoon_door.png" alt="Login Door" class="h-24 w-auto hover:brightness-110 transition-all" />
+            </a>
+            <span id="swing-val" class="accent-text relative z-10 cursor-help inline-block origin-left">Val</span>
+        </span>
+        <span class="primary-text">Data</span>
       </h1>
       <p class="hero-subtitle">
         Data insights, analytics, and technical explorations.
@@ -62,6 +70,65 @@ const latestPosts = posts.slice(0, 3);
 
 <script is:inline>
   document.addEventListener('DOMContentLoaded', function() {
+    // ---------------------------------------------------------
+    // 1. Easter Egg: Shake "Val" to Open Door
+    // ---------------------------------------------------------
+    const shakeZone = document.getElementById('hero-title-shake-zone');
+    const valDoor = document.getElementById('swing-val');
+    const secretLink = document.getElementById('login-secret');
+    
+    let lastX = 0;
+    let shakeCount = 0;
+    let lastDir = 0; // -1 left, 1 right
+    let resetTimer = null;
+    let isOpen = false;
+
+    if (shakeZone && valDoor && secretLink) {
+        shakeZone.addEventListener('mousemove', (e) => {
+            if (isOpen) return;
+
+            const currentX = e.clientX;
+            const delta = currentX - lastX;
+            const direction = delta > 0 ? 1 : -1;
+
+            // Detect fast movement direction change (Shake)
+            if (Math.abs(delta) > 5) { // Minimum speed
+                if (direction !== lastDir) {
+                    shakeCount++;
+                    lastDir = direction;
+                    
+                    // Reset count if stopped shaking
+                    clearTimeout(resetTimer);
+                    resetTimer = setTimeout(() => { shakeCount = 0; }, 300);
+
+                    // TRIGGER: 5 shakes in 300ms
+                    if (shakeCount > 5) {
+                        triggerOpen();
+                    }
+                }
+            }
+            lastX = currentX;
+        });
+
+        function triggerOpen() {
+            isOpen = true;
+            valDoor.classList.add('door-open');
+            secretLink.classList.remove('opacity-0', 'pointer-events-none');
+            secretLink.classList.add('opacity-100', 'pointer-events-auto');
+            
+            // Auto close after 5 seconds if not interacted
+            setTimeout(() => {
+                // valDoor.classList.remove('door-open');
+                // secretLink.classList.add('opacity-0', 'pointer-events-none');
+                // secretLink.classList.remove('opacity-100', 'pointer-events-auto');
+                // isOpen = false;
+            }, 5000); 
+        }
+    }
+
+    // ---------------------------------------------------------
+    // 2. Fetch Articles Logic
+    // ---------------------------------------------------------
     fetch('/data/articles.json')
       .then(res => res.ok ? res.json() : Promise.reject(new Error('articles.json not found')))
       .then(articles => {
@@ -136,6 +203,10 @@ const latestPosts = posts.slice(0, 3);
     line-height: 1.02;
     color: #222;
     display: inline-block;
+    /* ensure GPU compositing for smoother transforms */
+    transform: translateZ(0);
+    /* Important for Shake Detection zone */
+    cursor: default;
   }
 
   /* Slightly smaller, more compact subtitle */
@@ -149,6 +220,98 @@ const latestPosts = posts.slice(0, 3);
 
   /* CTA spacing minor tweak */
   .hero-ctas { display:flex; gap:0.6rem; justify-content:center; margin-top:0.65rem; }
+
+  /* ------------------------------- */
+  /* EASTER EGG STYLES ("Val" Door) */
+  /* ------------------------------- */
+  .val-door-wrapper {
+      perspective: 1000px; /* Essential for 3D Swing */
+      display: inline-block; /* Fix layout */
+  }
+  
+  /* The Hidden Link */
+  .login-secret {
+      transition: opacity 0.5s ease 0.3s; /* Delay visibility slightly */
+  }
+  /* ------------------------------- */
+
+
+  .hero-title .primary-text {
+    /* darker neutral gradient */
+    background: linear-gradient(90deg, #2b2b2b 0%, #4a4a4a 50%, #2b2b2b 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero-title .accent-text {
+    /* accent gradient used across the site */
+    background: linear-gradient(90deg, var(--accent, #ff8c42) 0%, #ffb07a 60%, var(--accent, #ff8c42) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    display: inline-block;
+    position: relative;
+    
+    /* Animation & Door Physics */
+    transform-origin: 0% 50%; /* Hinge on Left */
+    transition: transform 2.0s cubic-bezier(1.0, -0.6, 0.2, 1.5), opacity 250ms ease;
+    will-change: transform, opacity;
+  }
+
+  /* subtle floating animation for the accent piece on load */
+  @keyframes accentFloat {
+    0% { transform: translateY(0) scale(1); opacity: 0.9; }
+    50% { transform: translateY(-3px) scale(1.02); opacity: 1; }
+    100% { transform: translateY(0) scale(1); opacity: 0.98; }
+  }
+  
+  /* Only animate float if NOT open */
+  .hero-title .accent-text:not(.door-open) {
+    animation: accentFloat 2.6s ease-in-out 0.2s both;
+  }
+
+  /* The "Open" State - Overrides Float */
+  .hero-title .accent-text.door-open {
+      transform: rotateY(-130deg) !important; /* Swing open towards screen left */
+      animation: none;
+  }
+
+  /* hover/interaction — gentle lift (only if not open) */
+  .hero-title:hover .primary-text,
+  .hero-title:hover .accent-text:not(.door-open) {
+    transform: translateY(-2px) scale(1.03);
+  }
+
+  /* small decorative underline for accent (keeps it subtle) */
+  .hero-title .accent-text::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -8px;
+    width: 60%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent, #ff8c42), #ffb07a);
+    border-radius: 2px;
+    opacity: 0.75;
+    pointer-events: none; /* Let clicks pass through */
+  }
+
+  /* Respect users who prefer reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .hero-title .accent-text,
+    .hero-title .primary-text {
+      transition: none !important;
+      animation: none !important;
+      transform: none !important;
+    }
+    .hero-title:hover .primary-text,
+    .hero-title:hover .accent-text {
+      transform: none !important;
+    }
+  }
 
   /* Latest Posts — keep titles prominent but not huge */
   .latest-posts h2 { font-size: 1.25rem; margin-bottom: 0.75rem; }
@@ -186,11 +349,6 @@ const latestPosts = posts.slice(0, 3);
     #articles-list .border-b a { font-size: 1rem; }
   }
 
-  /* Respect reduced motion */
-  @media (prefers-reduced-motion: reduce) {
-    .hero-title, .hero-ctas, .latest-posts a { transition: none !important; animation: none !important; }
-  }
-
   /* Tighter hero */
   .hero-section {
     text-align:center;
@@ -198,86 +356,5 @@ const latestPosts = posts.slice(0, 3);
     background: linear-gradient(135deg, rgba(255,107,53,0.05), transparent);
     border-radius:16px;
     margin-bottom:2rem;
-  }
-  .hero-title {
-    font-size: clamp(3rem, 8vw, 5rem);
-    font-weight: 900;
-    margin-bottom: 1rem;
-    line-height: 0.98;
-    /* fallback color for environments that don't support background-clip */
-    color: #222;
-    display: inline-block;
-    /* ensure GPU compositing for smoother transforms */
-    transform: translateZ(0);
-  }
-
-  .hero-title .primary-text {
-    /* darker neutral gradient */
-    background: linear-gradient(90deg, #2b2b2b 0%, #4a4a4a 50%, #2b2b2b 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  .hero-title .accent-text {
-    /* accent gradient used across the site */
-    background: linear-gradient(90deg, var(--accent, #ff8c42) 0%, #ffb07a 60%, var(--accent, #ff8c42) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-
-    display: inline-block;
-    position: relative;
-    transition: transform 250ms ease, opacity 250ms ease;
-    will-change: transform, opacity;
-  }
-
-  /* subtle floating animation for the accent piece on load */
-  @keyframes accentFloat {
-    0% { transform: translateY(0) scale(1); opacity: 0.9; }
-    50% { transform: translateY(-3px) scale(1.02); opacity: 1; }
-    100% { transform: translateY(0) scale(1); opacity: 0.98; }
-  }
-  .hero-title .accent-text {
-    animation: accentFloat 2.6s ease-in-out 0.2s both;
-  }
-
-  /* hover/interaction — gentle lift */
-  .hero-title:hover .primary-text,
-  .hero-title:hover .accent-text {
-    transform: translateY(-2px) scale(1.03);
-  }
-
-  /* small decorative underline for accent (keeps it subtle) */
-  .hero-title .accent-text::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    bottom: -8px;
-    width: 60%;
-    height: 3px;
-    background: linear-gradient(90deg, var(--accent, #ff8c42), #ffb07a);
-    border-radius: 2px;
-    opacity: 0.75;
-  }
-
-  /* Respect users who prefer reduced motion */
-  @media (prefers-reduced-motion: reduce) {
-    .hero-title .accent-text,
-    .hero-title .primary-text {
-      transition: none !important;
-      animation: none !important;
-      transform: none !important;
-    }
-    .hero-title:hover .primary-text,
-    .hero-title:hover .accent-text {
-      transform: none !important;
-    }
-  }
-
-  /* Latest Posts */
-  .latest-posts .title {
-    font-weight:700;
   }
 </style>

@@ -17,6 +17,7 @@
     "@astrojs/rss": "^4.0.12",
     "@astrojs/sitemap": "^3.5.0",
     "@clerk/astro": "^2.16.4",
+    "@clerk/clerk-react": "^5.58.1",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "astro": "^5.13.2",

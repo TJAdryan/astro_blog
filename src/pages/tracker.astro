@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import TrackerDashboard from '../components/TrackerDashboard.jsx';
+import fs from 'node:fs';
+import path from 'node:path';
+
+// Data Loading
+let history = [];
+
+try {
+    // Load Tracker History
+    const trackerPath = path.resolve('./src/data/tracker_log.json');
+    if (fs.existsSync(trackerPath)) {
+        const data = fs.readFileSync(trackerPath, 'utf-8');
+        history = JSON.parse(data);
+    }
+} catch (e) {
+    console.error('Error loading tracker data:', e);
+}
+---
+
+<BaseLayout>
+    <TrackerDashboard client:load history={history} />
+</BaseLayout>

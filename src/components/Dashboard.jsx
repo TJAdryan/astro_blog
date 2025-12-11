@@ -8,7 +8,7 @@ export default function Dashboard({ queue, stats }) {
         <div className="container max-w-4xl mx-auto p-6">
             <div className="hero-section text-center py-9 bg-gradient-to-br from-orange-50/5 to-transparent rounded-2xl mb-8">
                 <SignedIn>
-                    <h1 className="hero-title text-4xl md:text-5xl font-black mb-2 text-gray-900 leading-tight">
+                    <h1 className="hero-title text-4xl md:text-5xl font-black mb-2 text-gray-900 leading-tight justify-center">
                         <span className="bg-clip-text text-transparent bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800">Article</span> <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-orange-300 inline-block">Review</span> <span className="bg-clip-text text-transparent bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800">Page</span>
                     </h1>
                     <p className="hero-subtitle text-gray-500 max-w-2xl mx-auto text-lg">
