@@ -1,14 +1,5 @@
 [
   {
-    "id": "http://arxiv.org/abs/2505.21575v1",
-    "title": "StreamLink: Large-Language-Model Driven Distributed Data Engineering System",
-    "summary": "Large Language Models (LLMs) have shown remarkable proficiency in natural language understanding (NLU), opening doors for innovative applications. We introduce StreamLink - an LLM-driven distributed data system designed to improve the efficiency and accessibility of data engineering tasks. We build StreamLink on top of distributed frameworks such as Apache Spark and Hadoop to handle large data at scale. One of the important design philosophies of StreamLink is to respect user data privacy by utilizing local fine-tuned LLMs instead of a public AI service like ChatGPT. With help from domain-adapted LLMs, we can improve our system's understanding of natural language queries from users in various scenarios and simplify the procedure of generating database queries like the Structured Query Language (SQL) for information processing. We also incorporate LLM-based syntax and security checkers to guarantee the reliability and safety of each generated query. StreamLink illustrates the potential of merging generative LLMs with distributed data processing for comprehensive and user-centric data engineering. With this architecture, we allow users to interact with complex database systems at different scales in a user-friendly and security-ensured manner, where the SQL generation reaches over 10\\% of execution accuracy compared to baseline methods, and allow users to find the most concerned item from hundreds of millions of items within a few seconds using natural language.",
-    "link": "http://arxiv.org/abs/2505.21575v1",
-    "source": "arXiv",
-    "topic": "Data Engineering",
-    "dateAdded": "2025-12-05T18:27:54.836Z"
-  },
-  {
     "id": "39630060",
     "title": "Genetic engineering of RuBisCO by multiplex CRISPR editing small subunits in rice.",
     "summary": "No abstract available via summary API. Please click link to read.",

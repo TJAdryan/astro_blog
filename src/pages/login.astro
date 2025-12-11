@@ -1,10 +1,17 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SignIn } from '@clerk/astro/components';
+import completedLog from '../data/completed_log.json';
+
+const count = completedLog.length;
 ---
 
 <BaseLayout>
-  <div className="flex justify-center items-center min-h-[60vh]">
+  <div className="flex flex-col justify-center items-center min-h-[60vh]">
+    <div className="mb-8 text-center">
+        <h2 className="text-2xl font-bold text-gray-800">{count}</h2>
+        <p className="text-gray-600">Articles Completed</p>
+    </div>
     <SignIn path="/login" routing="path" signUpUrl="/login" />
   </div>
 </BaseLayout>

@@ -1,12 +1,15 @@
 export const prerender = false;
 
 import { google } from 'googleapis';
-
+import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const QUEUE_FILE = path.join(__dirname, '../../../src/data/article_queue.json');
+// Adjusted path to point correctly to src/data from src/pages/api
+// Adjusted path to point correctly to src/data from src/pages/api
+const QUEUE_FILE = path.resolve(__dirname, '../../data/article_queue.json');
+const LOG_FILE = path.resolve(__dirname, '../../data/completed_log.json');
 
 export const POST = async ({ request, redirect }) => {
     const data = await request.formData();
@@ -20,58 +23,92 @@ export const POST = async ({ request, redirect }) => {
     }
 
     let stage = 'Initiating';
+    let documentId = 'SKIPPED_LOCAL_DEV';
+
+    // Declare variables in broader scope
+    let auth = null;
+    let driveService = null;
+    let docs = null;
+
     try {
         // 1. Authenticate with Google
         stage = 'Google Auth';
-        const auth = new google.auth.GoogleAuth({
-            credentials: JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON),
-            scopes: ['https://www.googleapis.com/auth/documents', 'https://www.googleapis.com/auth/drive'],
-        });
+        if (process.env.GOOGLE_SERVICE_ACCOUNT_JSON) {
+            try {
+                // Parse credentials
+                const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON);
 
-        // 2. Create Doc
-        stage = 'Google Drive Create';
-        // Use Drive API directly to create the file. This often avoids "Docs API not enabled" confusion.
-        const createResponse = await drive.files.create({
-            resource: {
-                name: `Summary: ${articleTitle}`,
-                mimeType: 'application/vnd.google-apps.document'
-            },
-            fields: 'id'
-        });
-        const documentId = createResponse.data.id;
+                auth = new google.auth.GoogleAuth({
+                    credentials,
+                    scopes: ['https://www.googleapis.com/auth/documents', 'https://www.googleapis.com/auth/drive'],
+                });
 
-        // 3. Write Content
-        stage = 'Google Docs Write';
-        await docs.documents.batchUpdate({
-            documentId,
-            requestBody: {
-                requests: [
-                    {
-                        insertText: {
-                            location: { index: 1 },
-                            text: `${articleTitle}\n\nLink: ${articleLink}\n\nSummary:\n${summary}\n`,
-                        },
+                // Initialize APIs
+                docs = google.docs({ version: 'v1', auth });
+                driveService = google.drive({ version: 'v3', auth });
+
+                stage = 'Google Drive Create Setup';
+                if (!driveService) {
+                    throw new Error('Failed to initialize Google Drive service');
+                }
+
+                stage = 'Google Drive Create';
+                // Use Drive API directly to create the file
+                const createResponse = await driveService.files.create({
+                    resource: {
+                        name: `Summary: ${articleTitle}`,
+                        mimeType: 'application/vnd.google-apps.document'
                     },
-                ],
-            },
-        });
+                    fields: 'id'
+                });
 
-        // 4. Remove from Queue
-        // Note: In a real production environment with a read-only file system (like Netlify),
-        // we can't write to the file directly. We would need a database.
-        // However, for this "challenge", we can simulate it or use the GitHub API to commit the change.
-        // For now, we'll just log it. To make it persistent, we need the GitHub API approach.
+                if (!createResponse.data || !createResponse.data.id) {
+                    throw new Error('Drive create response missing ID');
+                }
 
-        // 5. Remove from Queue via GitHub API
-        stage = 'GitHub Queue Update';
-        const repoOwner = 'TJAdryan';
-        const repoName = 'astro_blog';
-        const filePath = 'src/data/article_queue.json';
+                documentId = createResponse.data.id;
+
+                stage = 'Google Docs Write';
+                if (!docs) {
+                    throw new Error('Failed to initialize Google Docs service');
+                }
+
+                await docs.documents.batchUpdate({
+                    documentId,
+                    requestBody: {
+                        requests: [
+                            {
+                                insertText: {
+                                    location: { index: 1 },
+                                    text: `${articleTitle}\n\nLink: ${articleLink}\n\nSummary:\n${summary}\n`,
+                                },
+                            },
+                        ],
+                    },
+                });
+            } catch (googleError) {
+                console.error(`Google Integration Error [Stage: ${stage}]:`, googleError);
+                if (googleError.stack) console.error(googleError.stack);
+                // Proceed so we can at least update the queue
+            }
+        } else {
+            console.warn('GOOGLE_SERVICE_ACCOUNT_JSON not found. Skipping Google Docs creation.');
+        }
+
+        // 2. Remove from Queue
+        stage = 'Queue Update';
+
+        // Try GitHub API first if token exists
+        let queueUpdated = false;
         const githubToken = process.env.GITHUB_TOKEN;
 
         if (githubToken) {
+            stage = 'GitHub Queue Update';
             try {
-                // Get current file to get SHA
+                const repoOwner = 'TJAdryan';
+                const repoName = 'astro_blog';
+                const filePath = 'src/data/article_queue.json';
+
                 const getUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`;
                 const getResponse = await fetch(getUrl, {
                     headers: {
@@ -85,11 +122,8 @@ export const POST = async ({ request, redirect }) => {
                     const fileData = await getResponse.json();
                     const content = Buffer.from(fileData.content, 'base64').toString('utf-8');
                     const queue = JSON.parse(content);
-
-                    // Filter out the COMPLETED article
                     const updatedQueue = queue.filter(item => item.id !== articleId);
 
-                    // Commit back
                     const updateResponse = await fetch(getUrl, {
                         method: 'PUT',
                         headers: {
@@ -106,16 +140,53 @@ export const POST = async ({ request, redirect }) => {
                         })
                     });
 
-                    if (!updateResponse.ok) {
+                    if (updateResponse.ok) {
+                        queueUpdated = true;
+                    } else {
                         console.error('GitHub Commit Failed:', await updateResponse.text());
-                        // Don't fail the whole request if queue update fails, but log it
                     }
                 }
             } catch (ghError) {
                 console.error('GitHub API Error:', ghError);
             }
-        } else {
-            console.warn('GITHUB_TOKEN not found, skipping queue update.');
+        }
+
+        // Fallback to local file system if GitHub failed or token missing
+        if (!queueUpdated) {
+            stage = 'Local File System Update';
+            console.log('Attempting local file system update...');
+
+            // Re-verify path exists
+            if (fs.existsSync(QUEUE_FILE)) {
+                const fileContent = fs.readFileSync(QUEUE_FILE, 'utf-8');
+                const queue = JSON.parse(fileContent);
+                const updatedQueue = queue.filter(item => item.id !== articleId);
+
+                fs.writeFileSync(QUEUE_FILE, JSON.stringify(updatedQueue, null, 2));
+                queueUpdated = true;
+                console.log('Successfully updated local queue file.');
+            } else {
+                console.error(`Queue file not found at: ${QUEUE_FILE}`);
+            }
+        }
+
+        // Log completion locally if successful
+        if (queueUpdated) {
+            try {
+                let log = [];
+                if (fs.existsSync(LOG_FILE)) {
+                    log = JSON.parse(fs.readFileSync(LOG_FILE, 'utf-8'));
+                }
+                log.push({
+                    id: articleId,
+                    title: articleTitle,
+                    completedAt: new Date().toISOString()
+                });
+                fs.writeFileSync(LOG_FILE, JSON.stringify(log, null, 2));
+                console.log('Logged completion to local file.');
+            } catch (logError) {
+                console.error('Failed to update completed log:', logError);
+            }
         }
 
         return redirect('/private?success=true');
