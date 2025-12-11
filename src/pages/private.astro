@@ -2,6 +2,20 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import LoginButton from '../components/LoginButton.jsx';
 import { SignedIn, SignedOut, UserButton } from "@clerk/astro/react";
+import fs from 'node:fs';
+import path from 'node:path';
+
+let count = 0;
+try {
+  const logPath = path.resolve('./src/data/completed_log.json');
+  if (fs.existsSync(logPath)) {
+    const data = fs.readFileSync(logPath, 'utf-8');
+    const log = JSON.parse(data);
+    count = log.length;
+  }
+} catch (e) {
+  console.error('Error reading completed log:', e);
+}
 ---
 
 <BaseLayout>
@@ -23,7 +37,12 @@ import { SignedIn, SignedOut, UserButton } from "@clerk/astro/react";
       </div>
 
       <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
-        <h2 className="text-2xl font-bold mb-6">Weekly Reading Challenge</h2>
+        <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold">Weekly Reading Challenge</h2>
+            <div className="text-sm bg-green-100 text-green-800 py-1 px-3 rounded-full font-medium">
+                {count} Completed
+            </div>
+        </div>
         
         {/* We will load the queue here dynamically in the next step */}
         <div id="reading-challenge-root"></div>

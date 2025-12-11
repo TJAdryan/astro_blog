@@ -1,9 +1,20 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SignIn } from '@clerk/astro/components';
-import completedLog from '../data/completed_log.json';
+import fs from 'node:fs';
+import path from 'node:path';
 
-const count = completedLog.length;
+let count = 0;
+try {
+  const logPath = path.resolve('./src/data/completed_log.json');
+  if (fs.existsSync(logPath)) {
+    const data = fs.readFileSync(logPath, 'utf-8');
+    const log = JSON.parse(data);
+    count = log.length;
+  }
+} catch (e) {
+  console.error('Error reading completed log:', e);
+}
 ---
 
 <BaseLayout>

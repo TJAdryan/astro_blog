@@ -1,1 +1,7 @@
-[]
+[
+  {
+    "id": "http://arxiv.org/abs/2511.07663v2",
+    "title": "Cortex AISQL: A Production SQL Engine for Unstructured Data",
+    "completedAt": "2025-12-11T02:03:33.337Z"
+  }
+]
