@@ -19,4 +19,9 @@ export default defineConfig({
     markdown: {
         remarkPlugins: [remarkMermaid],
     },
+    vite: {
+        resolve: {
+            dedupe: ['react', 'react-dom'],
+        },
+    },
 });

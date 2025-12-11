@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import LoginButton from '../components/LoginButton.jsx';
-import { SignedIn, SignedOut, UserButton } from "@clerk/astro/react";
+import Dashboard from '../components/Dashboard.jsx';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -10,6 +9,7 @@ let count = 0;
 let days = 0;
 let avgPerWeek = "0.0";
 let hasStarted = false;
+let queue = [];
 
 try {
   const logPath = path.resolve('./src/data/completed_log.json');
@@ -35,158 +35,22 @@ try {
         avgPerWeek = rawAvg.toFixed(1);
     }
   }
+
+  // Load Queue
+  const queuePath = path.resolve('./src/data/article_queue.json');
+  if (fs.existsSync(queuePath)) {
+      const queueData = fs.readFileSync(queuePath, 'utf-8');
+      queue = JSON.parse(queueData);
+  }
+
 } catch (e) {
-  console.error('Error reading completed log:', e);
+  console.error('Error reading data for dashboard:', e);
 }
+
+const stats = { count, days, avgPerWeek };
 ---
 
 <BaseLayout>
-  <div class="container">
-    
-    <SignedIn client:load>
-        <div class="hero-section">
-            <h1 class="hero-title">
-                <span class="primary-text">Article</span> <span class="accent-text">Review</span> <span class="primary-text">Page</span>
-            </h1>
-            <p class="hero-subtitle">
-                Clerk authentication successful
-            </p>
-             <div class="mt-4 flex justify-center">
-                 <LoginButton client:load />
-             </div>
-        </div>
-
-        <div class="stats-container mb-12">
-            <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 text-center">
-                <h2 class="text-2xl font-bold mb-2">Welcome back to the Challenge!</h2>
-                <div class="flex flex-col gap-2 mt-4 text-lg text-gray-700">
-                    <p>
-                        You have completed <span class="font-bold text-blue-600">{count}</span> articles in <span class="font-bold text-blue-600">{days}</span> days
-                    </p>
-                    <p class="text-gray-500 text-base">
-                        you are averaging <span class="font-semibold text-green-600">{avgPerWeek}</span> articles per week
-                    </p>
-                </div>
-            </div>
-        </div>
-
-      <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
-        <h2 class="text-2xl font-bold mb-6">Weekly Reading Challenge</h2>
-        
-        <div id="reading-challenge-root"></div>
-        <script>
-          import queue from '../data/article_queue.json';
-          
-          const root = document.getElementById('reading-challenge-root');
-          if (queue.length === 0) {
-            root.innerHTML = '<p class="text-gray-500 italic">No articles in the queue. Wait for Monday!</p>';
-          } else {
-            const html = queue.map((article, index) => `
-              <div class="border-b border-gray-100 last:border-0 py-4">
-                <div class="flex justify-between items-start mb-2">
-                  <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">${article.topic}</span>
-                  <span class="text-gray-400 text-xs">${new Date(article.dateAdded).toLocaleDateString()}</span>
-                </div>
-                <h3 class="text-lg font-semibold mb-2">
-                  <a href="${article.link}" target="_blank" class="text-blue-600 hover:underline flex items-center gap-1">
-                    ${article.title}
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                    </svg>
-                  </a>
-                </h3>
-                <p class="text-gray-600 text-sm mb-4 line-clamp-3">${article.summary}</p>
-                
-                <form action="/api/submit-summary" method="POST" class="mt-4">
-                  <input type="hidden" name="articleId" value="${article.id}" />
-                  <input type="hidden" name="articleTitle" value="${article.title}" />
-                  <input type="hidden" name="articleLink" value="${article.link}" />
-                  
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Your Summary (min 500 chars)</label>
-                  <textarea 
-                    name="summary" 
-                    rows="6" 
-                    class="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-sm"
-                    placeholder="Write your summary here..."
-                    required
-                    minlength="500"
-                  ></textarea>
-                  <div class="flex justify-end mt-2">
-                    <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors text-sm font-medium">
-                      Complete & Save to Drive
-                    </button>
-                  </div>
-                </form>
-              </div>
-            `).join('');
-            root.innerHTML = html;
-          }
-        </script>
-      </div>
-    </SignedIn>
-
-    <SignedOut client:load>
-        <div class="hero-section">
-            <h1 class="hero-title">
-                <span class="primary-text">Access</span> <span class="accent-text">Denied</span>
-            </h1>
-            <p class="hero-subtitle text-red-600">
-                You must be logged in to view this page.
-            </p>
-             <div class="mt-6 flex justify-center">
-                 <LoginButton client:load />
-             </div>
-        </div>
-    </SignedOut>
-  </div>
+    <Dashboard client:load queue={queue} stats={stats} />
 </BaseLayout>
 
-<style>
-  /* Match Main Page Styling */
-  .container {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 0 1rem;
-  }
-
-  .hero-section {
-    text-align: center;
-    padding: 2.25rem 0 2.75rem 0;
-    background: linear-gradient(135deg, rgba(255,107,53,0.05), transparent);
-    border-radius: 16px;
-    margin-bottom: 2rem;
-  }
-
-  .hero-title {
-    font-size: clamp(2.25rem, 6vw, 3.25rem);
-    font-weight: 900;
-    margin-bottom: 0.6rem;
-    line-height: 1.02;
-    color: #222;
-    display: inline-block;
-  }
-
-  .hero-subtitle {
-    max-width: 680px;
-    margin: 0.25rem auto 0.75rem auto;
-    font-size: clamp(0.98rem, 1.9vw, 1.05rem);
-    color: rgba(102,102,102,0.9);
-    line-height: 1.45;
-  }
-
-  /* Gradient Text Logic */
-  .hero-title .primary-text {
-    background: linear-gradient(90deg, #2b2b2b 0%, #4a4a4a 50%, #2b2b2b 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  .hero-title .accent-text {
-    background: linear-gradient(90deg, var(--accent, #ff8c42) 0%, #ffb07a 60%, var(--accent, #ff8c42) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    display: inline-block;
-  }
-</style>
