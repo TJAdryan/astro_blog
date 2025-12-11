@@ -109,8 +109,12 @@ async function run() {
     try {
         const arxivPaper = await fetchArxivPaper();
         if (arxivPaper) {
-            console.log(`Found arXiv paper: ${arxivPaper.title}`);
-            queue.push(arxivPaper);
+            if (!queue.some(p => p.id === arxivPaper.id)) {
+                console.log(`Found arXiv paper: ${arxivPaper.title}`);
+                queue.push(arxivPaper);
+            } else {
+                console.log(`Duplicate arXiv paper found, skipping: ${arxivPaper.title}`);
+            }
         }
     } catch (e) {
         console.error('Error fetching arXiv:', e);
@@ -119,8 +123,12 @@ async function run() {
     try {
         const pubmedPaper = await fetchPubmedPaper();
         if (pubmedPaper) {
-            console.log(`Found PubMed paper: ${pubmedPaper.title}`);
-            queue.push(pubmedPaper);
+            if (!queue.some(p => p.id === pubmedPaper.id)) {
+                console.log(`Found PubMed paper: ${pubmedPaper.title}`);
+                queue.push(pubmedPaper);
+            } else {
+                console.log(`Duplicate PubMed paper found, skipping: ${pubmedPaper.title}`);
+            }
         }
     } catch (e) {
         console.error('Error fetching PubMed:', e);
@@ -129,8 +137,12 @@ async function run() {
     try {
         const pythonPaper = await fetchPythonPaper();
         if (pythonPaper) {
-            console.log(`Found Python paper: ${pythonPaper.title}`);
-            queue.push(pythonPaper);
+            if (!queue.some(p => p.id === pythonPaper.id)) {
+                console.log(`Found Python paper: ${pythonPaper.title}`);
+                queue.push(pythonPaper);
+            } else {
+                console.log(`Duplicate Python paper found, skipping: ${pythonPaper.title}`);
+            }
         }
     } catch (e) {
         console.error('Error fetching Python arXiv:', e);
