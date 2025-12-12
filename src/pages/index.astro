@@ -110,6 +110,39 @@ const latestPosts = posts.slice(0, 3);
             lastX = currentX;
         });
 
+        // ---------------------------------------------------------
+        // mobile swipe support
+        // ---------------------------------------------------------
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        shakeZone.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        }, { passive: true });
+
+        shakeZone.addEventListener('touchmove', (e) => {
+            if (isOpen) return;
+            // We don't block scroll (passive: true), but we detect the gesture
+        }, { passive: true });
+
+        shakeZone.addEventListener('touchend', (e) => {
+            if (isOpen) return;
+            
+            const touchEndX = e.changedTouches[0].screenX;
+            const touchEndY = e.changedTouches[0].screenY;
+            
+            const deltaX = touchEndX - touchStartX;
+            const deltaY = touchEndY - touchStartY;
+
+            // Thresholds:
+            // 1. Horizontal distance > 50px
+            // 2. Vertical distance < 50px (to ensure it's a swipe, not a scroll)
+            if (Math.abs(deltaX) > 50 && Math.abs(deltaY) < 50) {
+                triggerOpen();
+            }
+        });
+
         function triggerOpen() {
             isOpen = true;
             valDoor.classList.add('door-open');
