@@ -1,6 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { SignedIn, SignedOut, UserButton } from "@clerk/astro/react";
+
+                 
+import { SignedIn, SignedOut, UserButton, SignOutButton } from "@clerk/astro/react";
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -43,12 +45,28 @@ try {
             <p class="text-xl text-gray-600 max-w-2xl mx-auto font-light leading-relaxed">
                 Welcome back. Access your learning tools and tracking metrics.
             </p>
-            <div class="mt-8 flex justify-center">
+            <div class="mt-8 flex justify-center gap-4">
                  <div class="inline-flex items-center gap-2 px-6 py-2 bg-white rounded-full shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
                     <UserButton />
                     <span class="text-sm font-medium text-gray-500">Authenticated Session</span>
                  </div>
+                 
+                 <button 
+                    id="sign-out-trigger"
+                    class="px-6 py-2 bg-white text-red-500 rounded-full shadow-sm border border-red-100 hover:bg-red-50 hover:shadow-md transition-all text-sm font-semibold cursor-pointer"
+                 >
+                    Sign Out
+                 </button>
             </div>
+            
+            <script is:inline>
+                document.getElementById('sign-out-trigger')?.addEventListener('click', async () => {
+                   if (window.Clerk) {
+                       await window.Clerk.signOut();
+                       window.location.href = '/login';
+                   }
+                });
+            </script>
         </div>
 
         {/* Action Grid */}
