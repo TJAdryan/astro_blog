@@ -1,0 +1,96 @@
+---
+
+---
+
+<button
+    id="holiday-toggle"
+    class="holiday-toggle"
+    aria-label="Toggle Holiday Mode"
+    hidden
+>
+    🎄 Holiday Mode
+</button>
+
+<div id="holiday-decorations" hidden>
+    <div class="ornaments-right"></div>
+</div>
+
+<script>
+    function initHolidayMode() {
+        const toggleBtn = document.getElementById("holiday-toggle");
+        const decorations = document.getElementById("holiday-decorations");
+        if (!toggleBtn || !decorations) return;
+
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const start = new Date(currentYear, 11, 10); // Dec 10
+        const end = new Date(currentYear, 11, 31, 23, 59, 59); // Dec 31 end of day
+
+        // Check if within date range
+        if (now >= start && now <= end) {
+            toggleBtn.hidden = false;
+
+            // Check stored preference
+            const isHolidayMode =
+                localStorage.getItem("holiday-mode") === "true";
+            if (isHolidayMode) {
+                enableHolidayMode();
+            }
+
+            toggleBtn.addEventListener("click", () => {
+                const isActive =
+                    document.documentElement.classList.contains("holiday-mode");
+                if (isActive) {
+                    disableHolidayMode();
+                } else {
+                    enableHolidayMode();
+                }
+            });
+        }
+
+        function enableHolidayMode() {
+            document.documentElement.classList.add("holiday-mode");
+            localStorage.setItem("holiday-mode", "true");
+            toggleBtn!.classList.add("active");
+        }
+
+        function disableHolidayMode() {
+            document.documentElement.classList.remove("holiday-mode");
+            localStorage.setItem("holiday-mode", "false");
+            toggleBtn!.classList.remove("active");
+        }
+    }
+
+    // Run on load
+    initHolidayMode();
+
+    // Re-run on view transitions if enabled
+    document.addEventListener("astro:page-load", initHolidayMode);
+</script>
+
+<style is:global>
+    /* Toggle Button Styles */
+    .holiday-toggle {
+        background: transparent;
+        border: none;
+        padding: 0.5em 1em;
+        font-size: 0.9em;
+        cursor: pointer;
+        font-family: inherit;
+        color: inherit;
+        transition: all 0.2s;
+        margin-left: 1em;
+    }
+
+    .holiday-toggle:hover {
+        background: rgba(46, 139, 87, 0.1); /* Subtle green tint */
+        border-color: #2e8b57;
+        color: #2e8b57;
+    }
+
+    .holiday-toggle.active {
+        background: #2e8b57; /* Forest Green for a more classic look */
+        color: white;
+        border-color: #2e8b57;
+    }
+</style>
