@@ -180,7 +180,9 @@ export const POST = async ({ request, redirect }) => {
                 log.push({
                     id: articleId,
                     title: articleTitle,
-                    completedAt: new Date().toISOString()
+                    completedAt: new Date().toISOString(),
+                    googleDocId: documentId !== 'SKIPPED_LOCAL_DEV' ? documentId : null,
+                    googleDocLink: documentId !== 'SKIPPED_LOCAL_DEV' ? `https://docs.google.com/document/d/${documentId}` : null
                 });
                 fs.writeFileSync(LOG_FILE, JSON.stringify(log, null, 2));
                 console.log('Logged completion to local file.');
