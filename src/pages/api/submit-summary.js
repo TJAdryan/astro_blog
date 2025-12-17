@@ -33,10 +33,11 @@ export const POST = async ({ request, redirect }) => {
     try {
         // 1. Authenticate with Google
         stage = 'Google Auth';
-        if (process.env.GOOGLE_SERVICE_ACCOUNT_JSON) {
+        if (process.env.GOOGLE_SERVICE_ACCOUNT_JSON || process.env.GOOGLE_SERVICES_ACCOUNT_JSON) {
             try {
-                // Parse credentials
-                const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON);
+                // Parse credentials - support both correct and common typo variables
+                const jsonVar = process.env.GOOGLE_SERVICE_ACCOUNT_JSON || process.env.GOOGLE_SERVICES_ACCOUNT_JSON;
+                const credentials = JSON.parse(jsonVar);
 
                 auth = new google.auth.GoogleAuth({
                     credentials,
