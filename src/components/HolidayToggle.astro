@@ -51,13 +51,73 @@
         function enableHolidayMode() {
             document.documentElement.classList.add("holiday-mode");
             localStorage.setItem("holiday-mode", "true");
-            toggleBtn!.classList.add("active");
+            toggleBtn.classList.add("active");
+            startSnow();
         }
 
         function disableHolidayMode() {
             document.documentElement.classList.remove("holiday-mode");
             localStorage.setItem("holiday-mode", "false");
-            toggleBtn!.classList.remove("active");
+            toggleBtn.classList.remove("active");
+        }
+
+        function startSnow() {
+            // Avoid duplicate snow if already snowing
+            if (document.getElementById("snow-container")) return;
+
+            const snowContainer = document.createElement("div");
+            snowContainer.id = "snow-container";
+            Object.assign(snowContainer.style, {
+                position: "fixed",
+                top: "0",
+                left: "0",
+                width: "100%",
+                height: "100%",
+                pointerEvents: "none",
+                zIndex: "9999",
+                overflow: "hidden",
+            });
+
+            // Add keyframes if not exists
+            if (!document.getElementById("snow-keyframes")) {
+                const style = document.createElement("style");
+                style.id = "snow-keyframes";
+                style.textContent = `
+                    @keyframes fall {
+                        0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+                        100% { transform: translateY(100vh) rotate(360deg); opacity: 0.7; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+
+            const numberOfSnowflakes = 50;
+            for (let i = 0; i < numberOfSnowflakes; i++) {
+                const snowflake = document.createElement("div");
+                snowflake.textContent = "❄";
+                Object.assign(snowflake.style, {
+                    position: "absolute",
+                    top: "-20px",
+                    left: Math.random() * 100 + "%",
+                    opacity: Math.random(),
+                    fontSize: Math.random() * 20 + 10 + "px",
+                    color: "#aaddff", // Light blue, visible on generic backgrounds
+                    textShadow: "0 0 2px rgba(0,0,0,0.3)",
+                    animation: `fall ${Math.random() * 3 + 2}s linear infinite`,
+                });
+                snowContainer.appendChild(snowflake);
+            }
+
+            document.body.appendChild(snowContainer);
+
+            // Remove after 5 seconds (5000ms)
+            setTimeout(() => {
+                snowContainer.style.transition = "opacity 1s";
+                snowContainer.style.opacity = "0";
+                setTimeout(() => {
+                    snowContainer.remove();
+                }, 1000);
+            }, 5000);
         }
     }
 
