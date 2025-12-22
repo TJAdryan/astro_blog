@@ -299,14 +299,15 @@ const latestPosts = posts.slice(0, 3);
   }
 
   /* Holiday Mode Background Garland */
+  /* Holiday Mode Background Garland */
   :global(html.holiday-mode) .hero-title::before {
     content: "";
     position: absolute;
-    top: 50%;
+    top: 48%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 140%; /* Wider than text to frame it */
-    height: 140%;
+    width: 210%; /* Extended width */
+    height: 250%; /* Extended height */
     background-image: url("/img/holiday/garland.png");
     background-position: center;
     background-repeat: no-repeat;
@@ -314,7 +315,6 @@ const latestPosts = posts.slice(0, 3);
     z-index: -1;
     opacity: 0.9;
     pointer-events: none;
-    /* Blend slightly if possible, though 'multiply' might lose detail on dark bg */
     mix-blend-mode: multiply;
   }
 
