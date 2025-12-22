@@ -30,10 +30,9 @@
         if (now >= start && now <= end) {
             toggleBtn.hidden = false;
 
-            // Check stored preference
-            const isHolidayMode =
-                localStorage.getItem("holiday-mode") === "true";
-            if (isHolidayMode) {
+            // Check stored preference. Default to true if not explicitly disabled.
+            const storedMode = localStorage.getItem("holiday-mode");
+            if (storedMode !== "false") {
                 enableHolidayMode();
             }
 
