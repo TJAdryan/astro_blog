@@ -11,15 +11,10 @@
     🎄 Holiday Mode
 </button>
 
-<div id="holiday-decorations" hidden>
-    <div class="ornaments-right"></div>
-</div>
-
 <script>
     function initHolidayMode() {
         const toggleBtn = document.getElementById("holiday-toggle");
-        const decorations = document.getElementById("holiday-decorations");
-        if (!toggleBtn || !decorations) return;
+        if (!toggleBtn) return;
 
         const now = new Date();
         const currentYear = now.getFullYear();

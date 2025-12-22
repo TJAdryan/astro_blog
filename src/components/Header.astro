@@ -150,7 +150,36 @@ import HolidayToggle from "./HolidayToggle.astro";
 		font-size: 1em;
 		text-decoration: none;
 		color: rgb(var(--black));
+		position: relative;
 	}
+
+	.site-title .site-title-text {
+		font-size: 2rem;
+		line-height: 1;
+		font-weight: 700;
+		letter-spacing: -0.05em; /* Tighten letters as requested */
+		position: relative;
+		z-index: 2;
+	}
+
+	/* Holiday Mode Background Decoration */
+	:global(.holiday-mode) .site-title-text::before {
+		content: "";
+		position: absolute;
+		top: 55%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 140%;
+		height: 100%;
+		background-image: url("/img/holiday/garland.png");
+		background-position: center;
+		background-repeat: no-repeat;
+		background-size: contain;
+		z-index: -1;
+		opacity: 0.9;
+		pointer-events: none;
+	}
+
 	.site-logo {
 		width: 90px;
 		height: 90px;
@@ -178,6 +207,45 @@ import HolidayToggle from "./HolidayToggle.astro";
 		z-index: 10;
 		font-size: 1.2rem;
 		font-weight: bold;
+	}
+
+	/* Mobile Optimization */
+	@media (max-width: 768px) {
+		.site-title .site-title-text {
+			font-size: 1.4rem;
+			white-space: nowrap; /* Prevent "Val" from dropping */
+		}
+		.site-logo {
+			width: 50px;
+			height: 50px;
+		}
+		.logo-container,
+		.site-logo-bg {
+			width: 50px;
+			height: 50px;
+		}
+		.site-title {
+			gap: 0.25em;
+		}
+
+		/* Ensure header contents don't overflow */
+		header nav {
+			flex-wrap: wrap; /* Allow wrapping if absolutely necessary, but try to keep top bar tight */
+			justify-content: center;
+			gap: 1em;
+		}
+
+		/* Adjust internal links for mobile */
+		.internal-links {
+			width: 100%;
+			justify-content: center;
+			margin-top: 0.5em; /* Push links to a second row cleanly if they don't fit */
+			flex-wrap: wrap;
+		}
+		.internal-links a {
+			padding: 0.5em;
+			font-size: 0.9rem;
+		}
 	}
 	/* END: EDITED STYLES */
 
