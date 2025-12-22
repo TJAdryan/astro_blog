@@ -13,14 +13,6 @@ const latestPosts = posts.slice(0, 3);
   <div class="container">
     <div class="hero-section">
       <h1 class="hero-title relative z-10" id="hero-title-shake-zone">
-        <!-- Holiday Garland Left -->
-        <img
-          src="/img/holiday/garland.png"
-          alt=""
-          class="hero-garland left-garland"
-          hidden
-        />
-
         <span class="primary-text">Next</span>
         <!-- Val Door Wrapper -->
         <span class="val-door-wrapper relative inline-block align-bottom">
@@ -42,14 +34,6 @@ const latestPosts = posts.slice(0, 3);
           >
         </span>
         <span class="primary-text">Data</span>
-
-        <!-- Holiday Garland Right -->
-        <img
-          src="/img/holiday/garland.png"
-          alt=""
-          class="hero-garland right-garland"
-          hidden
-        />
       </h1>
       <p class="hero-subtitle">
         Data insights, analytics, and technical explorations.
@@ -309,6 +293,29 @@ const latestPosts = posts.slice(0, 3);
     transform: translateZ(0);
     /* Important for Shake Detection zone */
     cursor: default;
+    /* Tighter letter spacing as requested */
+    letter-spacing: -0.05em;
+    position: relative;
+  }
+
+  /* Holiday Mode Background Garland */
+  :global(html.holiday-mode) .hero-title::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 140%; /* Wider than text to frame it */
+    height: 140%;
+    background-image: url("/img/holiday/garland.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    z-index: -1;
+    opacity: 0.9;
+    pointer-events: none;
+    /* Blend slightly if possible, though 'multiply' might lose detail on dark bg */
+    mix-blend-mode: multiply;
   }
 
   /* Slightly smaller, more compact subtitle */
@@ -508,27 +515,5 @@ const latestPosts = posts.slice(0, 3);
     display: block;
     max-width: 250px; /* Adjust size to fit header area properly */
     height: auto;
-  }
-
-  /* Hero Garland Styles */
-  .hero-garland {
-    display: none;
-    height: 1.6em;
-    width: auto;
-    object-fit: contain;
-    vertical-align: middle;
-    /* Force background to pure white then blend it away */
-    filter: brightness(1.1) contrast(1.1);
-    mix-blend-mode: multiply;
-    opacity: 0.95;
-  }
-  .left-garland {
-    margin-right: 0.5em;
-  }
-  .right-garland {
-    margin-left: 0.5em;
-  }
-  :global(html.holiday-mode) .hero-garland {
-    display: inline-block;
   }
 </style>

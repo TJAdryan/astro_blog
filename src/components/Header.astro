@@ -162,23 +162,7 @@ import HolidayToggle from "./HolidayToggle.astro";
 		z-index: 2;
 	}
 
-	/* Holiday Mode Background Decoration */
-	:global(.holiday-mode) .site-title-text::before {
-		content: "";
-		position: absolute;
-		top: 55%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		width: 140%;
-		height: 100%;
-		background-image: url("/img/holiday/garland.png");
-		background-position: center;
-		background-repeat: no-repeat;
-		background-size: contain;
-		z-index: -1;
-		opacity: 0.9;
-		pointer-events: none;
-	}
+	/* Holiday Mode Background Decoration REMOVED (moved to Hero) */
 
 	.site-logo {
 		width: 90px;
