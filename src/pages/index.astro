@@ -300,24 +300,6 @@ const latestPosts = posts.slice(0, 3);
 
   /* Holiday Mode Background Garland */
   /* Holiday Mode Background Garland */
-  :global(html.holiday-mode) .hero-title::before {
-    content: "";
-    position: absolute;
-    top: 48%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 210%; /* Extended width */
-    height: 250%; /* Extended height */
-    background-image: url("/img/holiday/garland.png");
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: contain;
-    z-index: -1;
-    opacity: 0.9;
-    pointer-events: none;
-    mix-blend-mode: multiply;
-    filter: contrast(1.5) brightness(1.2);
-  }
 
   /* Slightly smaller, more compact subtitle */
   .hero-subtitle {
@@ -514,6 +496,33 @@ const latestPosts = posts.slice(0, 3);
   :global(html.holiday-mode) .hero-section {
     background: white;
     box-shadow: none;
+    position: relative;
+    overflow: hidden; /* Ensure garland doesn't spill out */
+  }
+
+  /* New End-to-End Garland */
+  :global(html.holiday-mode) .hero-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("/img/holiday/garland.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100% auto; /* Stretch across width */
+    z-index: 0;
+    opacity: 0.9;
+    pointer-events: none;
+    mix-blend-mode: multiply;
+    filter: contrast(1.5) brightness(1.2);
+  }
+
+  /* Ensure content sits above garland */
+  :global(html.holiday-mode) .hero-section > * {
+    position: relative;
+    z-index: 10;
   }
   :global(html.holiday-mode) .default-title {
     display: none;
