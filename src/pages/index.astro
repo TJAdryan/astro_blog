@@ -342,6 +342,14 @@ const latestPosts = posts.slice(0, 3);
     -webkit-text-fill-color: transparent;
   }
 
+  /* In Holiday Mode, make even the primary text orange to match the "Next Val Data" branding color */
+  :global(html.holiday-mode) .hero-title .primary-text {
+    background: var(--accent, #ff8c42);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
   .hero-title .accent-text {
     /* accent gradient used across the site */
     background: linear-gradient(
