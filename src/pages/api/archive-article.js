@@ -193,16 +193,31 @@ export const POST = async ({ request, redirect }) => {
             }
         }
 
-        if (!queueUpdated) {
-            stage = 'Local File System Update';
+        // Local File System Update - ALWAYS update locals in dev mode
+        stage = 'Local File System Update';
+        try {
             if (fs.existsSync(QUEUE_FILE)) {
                 const fileContent = fs.readFileSync(QUEUE_FILE, 'utf-8');
                 const queue = JSON.parse(fileContent);
-                const updatedQueue = queue.filter(item => item.id !== articleId);
+
+                // Debug logging
+                console.log(`Attempting to remove articleId: [${articleId}]`);
+
+                const updatedQueue = queue.filter(item => {
+                    const itemId = String(item.id).trim();
+                    const targetId = String(articleId).trim();
+                    const match = itemId === targetId;
+                    if (match) {
+                        console.log(`Match found and removed: [${itemId}]`);
+                    }
+                    return !match;
+                });
 
                 fs.writeFileSync(QUEUE_FILE, JSON.stringify(updatedQueue, null, 2));
-                queueUpdated = true;
+                console.log('Successfully updated local queue file.');
             }
+        } catch (localError) {
+            console.error('Local File Update Error:', localError);
         }
 
         return redirect('/private?success=archived');
