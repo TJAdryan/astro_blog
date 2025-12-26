@@ -67,6 +67,29 @@ export default function Dashboard({ queue, stats }) {
                                     <div className="flex justify-between items-start mb-2">
                                         <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">{article.topic}</span>
                                         <span className="text-gray-400 text-xs">{new Date(article.dateAdded).toLocaleDateString()}</span>
+                                        <form action="/api/archive-article" method="POST" className="ml-2">
+                                            <input type="hidden" name="articleId" value={article.id} />
+                                            <input type="hidden" name="articleTitle" value={article.title} />
+                                            <input type="hidden" name="articleLink" value={article.link} />
+                                            <input type="hidden" name="articleDescription" value={article.summary} />
+                                            <button
+                                                type="submit"
+                                                className="group flex items-center gap-1 text-gray-400 hover:text-red-600 transition-colors text-xs"
+                                                title="Archive this article"
+                                                onClick={(e) => {
+                                                    if (!confirm('Archive this article to \'archived-old papers\'?')) {
+                                                        e.preventDefault();
+                                                    }
+                                                }}
+                                            >
+                                                <div className="w-4 h-4 border border-gray-300 rounded flex items-center justify-center group-hover:border-red-400">
+                                                    <svg className="w-3 h-3 opacity-0 group-hover:opacity-100 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+                                                    </svg>
+                                                </div>
+                                                <span>Archive</span>
+                                            </button>
+                                        </form>
                                     </div>
                                     <h3 className="text-lg font-semibold mb-2">
                                         <a href={article.link} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline flex items-center gap-1">
