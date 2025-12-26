@@ -1,7 +1,6 @@
-import React from 'react';
 import { SignedIn, SignedOut, UserButton, SignInButton } from "@clerk/astro/react";
 
-export default function Dashboard({ queue, stats }) {
+export default function Dashboard({ queue, stats, userEmail }) {
     const { count, days, avgPerWeek } = stats;
 
     return (
@@ -58,6 +57,28 @@ export default function Dashboard({ queue, stats }) {
                         </div>
                     </div>
 
+                    {/* Add Article Toolbar */}
+                    <div className="flex gap-4 mb-6">
+                        <form action="/api/add-article" method="POST">
+                            <input type="hidden" name="topic" value="data-engineering" />
+                            <button type="submit" className="bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium py-2 px-4 rounded border border-blue-200 text-sm flex items-center gap-2 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                </svg>
+                                Add Data Engineering
+                            </button>
+                        </form>
+                        <form action="/api/add-article" method="POST">
+                            <input type="hidden" name="topic" value="crispr" />
+                            <button type="submit" className="bg-purple-50 hover:bg-purple-100 text-purple-700 font-medium py-2 px-4 rounded border border-purple-200 text-sm flex items-center gap-2 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                                </svg>
+                                Add CRISPR / Genetics
+                            </button>
+                        </form>
+                    </div>
+
                     <div id="reading-challenge-list">
                         {queue.length === 0 ? (
                             <p className="text-gray-500 italic">No articles in the queue. Wait for Monday!</p>
@@ -67,29 +88,61 @@ export default function Dashboard({ queue, stats }) {
                                     <div className="flex justify-between items-start mb-2">
                                         <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">{article.topic}</span>
                                         <span className="text-gray-400 text-xs">{new Date(article.dateAdded).toLocaleDateString()}</span>
-                                        <form action="/api/archive-article" method="POST" className="ml-2">
-                                            <input type="hidden" name="articleId" value={article.id} />
-                                            <input type="hidden" name="articleTitle" value={article.title} />
-                                            <input type="hidden" name="articleLink" value={article.link} />
-                                            <input type="hidden" name="articleDescription" value={article.summary} />
-                                            <button
-                                                type="submit"
-                                                className="group flex items-center gap-1 text-gray-400 hover:text-red-600 transition-colors text-xs"
-                                                title="Archive this article"
-                                                onClick={(e) => {
-                                                    if (!confirm('Archive this article to \'archived-old papers\'?')) {
-                                                        e.preventDefault();
-                                                    }
-                                                }}
-                                            >
-                                                <div className="w-4 h-4 border border-gray-300 rounded flex items-center justify-center group-hover:border-red-400">
-                                                    <svg className="w-3 h-3 opacity-0 group-hover:opacity-100 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
-                                                    </svg>
-                                                </div>
-                                                <span>Archive</span>
-                                            </button>
-                                        </form>
+                                        <div className="ml-2 flex gap-2">
+                                            {/* Already Read Button */}
+                                            <form action="/api/archive-article" method="POST">
+                                                <input type="hidden" name="articleId" value={article.id} />
+                                                <input type="hidden" name="articleTitle" value={article.title} />
+                                                <input type="hidden" name="articleLink" value={article.link} />
+                                                <input type="hidden" name="articleDescription" value={article.summary} />
+                                                <input type="hidden" name="archiveType" value="read" />
+                                                <input type="hidden" name="userEmail" value={userEmail} />
+                                                <button
+                                                    type="submit"
+                                                    className="group flex items-center gap-1 text-gray-400 hover:text-green-600 transition-colors text-xs"
+                                                    title="Mark as Already Read"
+                                                    onClick={(e) => {
+                                                        if (!confirm('Mark this article as \'Already Read\'? It will be moved to \'already-read papers\'.')) {
+                                                            e.preventDefault();
+                                                        }
+                                                    }}
+                                                >
+                                                    <div className="w-4 h-4 border border-gray-300 rounded flex items-center justify-center group-hover:border-green-400">
+                                                        <svg className="w-3 h-3 opacity-0 group-hover:opacity-100 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                    </div>
+                                                    <span>Read</span>
+                                                </button>
+                                            </form>
+
+                                            {/* Archive Button */}
+                                            <form action="/api/archive-article" method="POST">
+                                                <input type="hidden" name="articleId" value={article.id} />
+                                                <input type="hidden" name="articleTitle" value={article.title} />
+                                                <input type="hidden" name="articleLink" value={article.link} />
+                                                <input type="hidden" name="articleDescription" value={article.summary} />
+                                                <input type="hidden" name="archiveType" value="archive" />
+                                                <input type="hidden" name="userEmail" value={userEmail} />
+                                                <button
+                                                    type="submit"
+                                                    className="group flex items-center gap-1 text-gray-400 hover:text-red-600 transition-colors text-xs"
+                                                    title="Archive this article"
+                                                    onClick={(e) => {
+                                                        if (!confirm('Archive this article to \'archived-old papers\'?')) {
+                                                            e.preventDefault();
+                                                        }
+                                                    }}
+                                                >
+                                                    <div className="w-4 h-4 border border-gray-300 rounded flex items-center justify-center group-hover:border-red-400">
+                                                        <svg className="w-3 h-3 opacity-0 group-hover:opacity-100 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M6 18L18 6M6 6l12 12" />
+                                                        </svg>
+                                                    </div>
+                                                    <span>Skip</span>
+                                                </button>
+                                            </form>
+                                        </div>
                                     </div>
                                     <h3 className="text-lg font-semibold mb-2">
                                         <a href={article.link} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline flex items-center gap-1">

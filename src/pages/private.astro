@@ -1,8 +1,8 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Dashboard from '../components/Dashboard.jsx';
-import fs from 'node:fs';
-import path from 'node:path';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Dashboard from "../components/Dashboard.jsx";
+import fs from "node:fs";
+import path from "node:path";
 
 // Stats Calculation
 let count = 0;
@@ -12,45 +12,50 @@ let hasStarted = false;
 let queue = [];
 
 try {
-  const logPath = path.resolve('./src/data/completed_log.json');
+  const logPath = path.resolve("./src/data/completed_log.json");
   if (fs.existsSync(logPath)) {
-    const data = fs.readFileSync(logPath, 'utf-8');
+    const data = fs.readFileSync(logPath, "utf-8");
     const log = JSON.parse(data);
     count = log.length;
-    
-    if (count > 0) {
-        hasStarted = true;
-        // Find the earliest date
-        const sortedLog = log.sort((a, b) => new Date(a.completedAt).valueOf() - new Date(b.completedAt).valueOf());
-        const firstDate = new Date(sortedLog[0].completedAt);
-        const now = new Date();
-        
-        // Calculate days elapsed (min 1 day to avoid divide by zero)
-        const diffTime = Math.abs(now.valueOf() - firstDate.valueOf());
-        days = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-        if (days < 1) days = 1;
 
-        // Calculate average
-        const rawAvg = (count / days) * 7;
-        avgPerWeek = rawAvg.toFixed(1);
+    if (count > 0) {
+      hasStarted = true;
+      // Find the earliest date
+      const sortedLog = log.sort(
+        (a, b) =>
+          new Date(a.completedAt).valueOf() - new Date(b.completedAt).valueOf(),
+      );
+      const firstDate = new Date(sortedLog[0].completedAt);
+      const now = new Date();
+
+      // Calculate days elapsed (min 1 day to avoid divide by zero)
+      const diffTime = Math.abs(now.valueOf() - firstDate.valueOf());
+      days = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      if (days < 1) days = 1;
+
+      // Calculate average
+      const rawAvg = (count / days) * 7;
+      avgPerWeek = rawAvg.toFixed(1);
     }
   }
 
   // Load Queue
-  const queuePath = path.resolve('./src/data/article_queue.json');
+  const queuePath = path.resolve("./src/data/article_queue.json");
   if (fs.existsSync(queuePath)) {
-      const queueData = fs.readFileSync(queuePath, 'utf-8');
-      queue = JSON.parse(queueData);
+    const queueData = fs.readFileSync(queuePath, "utf-8");
+    queue = JSON.parse(queueData);
   }
-
 } catch (e) {
-  console.error('Error reading data for dashboard:', e);
+  console.error("Error reading data for dashboard:", e);
 }
 
 const stats = { count, days, avgPerWeek };
+
+// Get user info
+const user = await Astro.locals.currentUser();
+const userEmail = user?.emailAddresses?.[0]?.emailAddress || "";
 ---
 
 <BaseLayout>
-    <Dashboard client:load queue={queue} stats={stats} />
+  <Dashboard client:load queue={queue} stats={stats} userEmail={userEmail} />
 </BaseLayout>
-

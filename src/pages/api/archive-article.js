@@ -15,7 +15,17 @@ export const POST = async ({ request, redirect }) => {
     const articleLink = data.get('articleLink');
     const articleDescription = data.get('articleDescription') || 'No description provided';
 
-    let stage = 'Initiating Archive';
+    const archiveType = data.get('archiveType') || 'archive'; // 'archive' or 'read'
+
+    let targetDocName = 'archived-old papers';
+    let logPrefix = 'ARCHIVED';
+
+    if (archiveType === 'read') {
+        targetDocName = 'already-read papers';
+        logPrefix = 'ALREADY READ';
+    }
+
+    let stage = `Initiating ${archiveType}`;
     let auth = null;
     let driveService = null;
     let docs = null;
@@ -37,38 +47,81 @@ export const POST = async ({ request, redirect }) => {
                 docs = google.docs({ version: 'v1', auth });
                 driveService = google.drive({ version: 'v3', auth });
 
-                stage = 'Finding Archive Document';
-                // Search for the document "archived-old papers"
+                stage = 'Finding/Creating Folder: reading summaries';
+                let folderId = null;
+                const folderQuery = "mimeType = 'application/vnd.google-apps.folder' and name = 'reading summaries' and trashed = false";
+                const folderRes = await driveService.files.list({
+                    q: folderQuery,
+                    spaces: 'drive',
+                    fields: 'files(id, name)'
+                });
+
+                if (folderRes.data.files && folderRes.data.files.length > 0) {
+                    folderId = folderRes.data.files[0].id;
+                    console.log(`Found existing folder: reading summaries (${folderId})`);
+                } else {
+                    const folderCreateRes = await driveService.files.create({
+                        resource: {
+                            name: 'reading summaries',
+                            mimeType: 'application/vnd.google-apps.folder'
+                        },
+                        fields: 'id'
+                    });
+                    folderId = folderCreateRes.data.id;
+                    console.log(`Created new folder: reading summaries (${folderId})`);
+                }
+
+                // Share the folder if possible
+                const userEmail = data.get('userEmail');
+                if (userEmail && folderId) {
+                    try {
+                        await driveService.permissions.create({
+                            fileId: folderId,
+                            requestBody: { role: 'writer', type: 'user', emailAddress: userEmail }
+                        });
+                        console.log(`Shared folder with ${userEmail}`);
+                    } catch (e) {
+                        // Ignore if already shared
+                        console.log(`Folder sharing note: ${e.message}`);
+                    }
+                }
+
+                stage = `Finding Document: ${targetDocName}`;
+                // Search for the target document INSIDE the folder
                 const searchRes = await driveService.files.list({
-                    q: "name = 'archived-old papers' and mimeType = 'application/vnd.google-apps.document' and trashed = false",
+                    q: `name = '${targetDocName}' and '${folderId}' in parents and mimeType = 'application/vnd.google-apps.document' and trashed = false`,
                     spaces: 'drive',
                     fields: 'files(id, name)'
                 });
 
                 if (searchRes.data.files && searchRes.data.files.length > 0) {
                     archiveDocId = searchRes.data.files[0].id;
-                    console.log(`Found existing archive document: ${archiveDocId}`);
+                    console.log(`Found existing document: ${targetDocName} (${archiveDocId})`);
                 } else {
-                    stage = 'Creating Archive Document';
+                    stage = `Creating Document: ${targetDocName} in folder`;
                     const createRes = await driveService.files.create({
                         resource: {
-                            name: 'archived-old papers',
-                            mimeType: 'application/vnd.google-apps.document'
+                            name: targetDocName,
+                            mimeType: 'application/vnd.google-apps.document',
+                            parents: [folderId]
                         },
                         fields: 'id'
                     });
                     archiveDocId = createRes.data.id;
-                    console.log(`Created new archive document: ${archiveDocId}`);
+                    console.log(`Created new document: ${targetDocName} (${archiveDocId})`);
+                }
+
+                // Share document (redundant if folder shared, but harmless)
+                if (userEmail && archiveDocId) {
+                    try {
+                        await driveService.permissions.create({
+                            fileId: archiveDocId,
+                            requestBody: { role: 'writer', type: 'user', emailAddress: userEmail }
+                        });
+                    } catch (e) { }
                 }
 
                 stage = 'Appending to Archive Document';
-                // Append the article info
-                // We insert at the end. To do that in Google Docs API, we usually need the end index.
-                // But simplified: insert at index 1 usually pushes everything down?
-                // Actually, 'endOfSegmentLocation' is better for appending, but requires a segment ID.
-                // Simpler: Just retrieve the doc to find the end index, OR use index 1 to prepend which effectively keeps a log (newest top).
-                // Let's PREPEND to make it a running log where newest archives are at the top.
-
                 await docs.documents.batchUpdate({
                     documentId: archiveDocId,
                     requestBody: {
@@ -76,7 +129,7 @@ export const POST = async ({ request, redirect }) => {
                             {
                                 insertText: {
                                     location: { index: 1 },
-                                    text: `[${new Date().toLocaleDateString()}] ARCHIVED: ${articleTitle}\nLink: ${articleLink}\nDescription: ${articleDescription}\n\n----------------------------------------\n\n`,
+                                    text: `[${new Date().toLocaleDateString()}] ${logPrefix}: ${articleTitle}\nLink: ${articleLink}\nDescription: ${articleDescription}\n\n----------------------------------------\n\n`,
                                 },
                             },
                         ],
@@ -85,11 +138,6 @@ export const POST = async ({ request, redirect }) => {
 
             } catch (googleError) {
                 console.error(`Google Integration Error [Stage: ${stage}]:`, googleError);
-                // We continue to remove it from queue even if Google fail (user wants to get rid of it)
-                // Or maybe we should stop? The user said "Archiving would mean writing...", implies it's the requirement.
-                // But blocking the "remove" action because of a doc error might be annoying.
-                // I'll log it and proceed to remove, but modify the success message?
-                // Actually, let's keep it robust: try to do it, if fail, still remove from queue but log error.
             }
         }
 
