@@ -1,41 +1,5 @@
 [
   {
-    "id": "http://arxiv.org/abs/2511.07663v2",
-    "title": "Cortex AISQL: A Production SQL Engine for Unstructured Data",
-    "summary": "Snowflake's Cortex AISQL is a production SQL engine that integrates native semantic operations directly into SQL. This integration allows users to write declarative queries that combine relational operations with semantic reasoning, enabling them to query both structured and unstructured data effortlessly. However, making semantic operations efficient at production scale poses fundamental challenges. Semantic operations are more expensive than traditional SQL operations, possess distinct latency and throughput characteristics, and their cost and selectivity are unknown during query compilation. Furthermore, existing query engines are not designed to optimize semantic operations. The AISQL query execution engine addresses these challenges through three novel techniques informed by production deployment data from Snowflake customers. First, AI-aware query optimization treats AI inference cost as a first-class optimization objective, reasoning about large language model (LLM) cost directly during query planning to achieve 2-8$\\times$ speedups. Second, adaptive model cascades reduce inference costs by routing most rows through a fast proxy model while escalating uncertain cases to a powerful oracle model, achieving 2-6$\\times$ speedups while maintaining 90-95% of oracle model quality. Third, semantic join query rewriting lowers the quadratic time complexity of join operations to linear through reformulation as multi-label classification tasks, achieving 15-70$\\times$ speedups with often improved prediction quality. AISQL is deployed in production at Snowflake, where it powers diverse customer workloads across analytics, search, and content understanding.",
-    "link": "http://arxiv.org/abs/2511.07663v2",
-    "source": "arXiv",
-    "topic": "Data Engineering",
-    "dateAdded": "2025-12-06T15:40:48.334Z"
-  },
-  {
-    "id": "http://arxiv.org/abs/2511.08232v1",
-    "title": "OWLAPY: A Pythonic Framework for OWL Ontology Engineering",
-    "summary": "In this paper, we introduce OWLAPY, a comprehensive Python framework for OWL ontology engineering. OWLAPY streamlines the creation, modification, and serialization of OWL 2 ontologies. It uniquely integrates native Python-based reasoners with support for external Java reasoners, offering flexibility for users. OWLAPY facilitates multiple implementations of core ontology components and provides robust conversion capabilities between OWL class expressions and formats such as Description Logics, Manchester Syntax, and SPARQL. It also allows users to define custom workflows to leverage large language models (LLMs) in ontology generation from natural language text. OWLAPY serves as a well-tested software framework for users seeking a flexible Python library for advanced ontology engineering, including those transitioning from Java-based environments. The project is publicly available on GitHub at https://github.com/dice-group/owlapy and on the Python Package Index (PyPI) at https://pypi.org/project/owlapy/ , with over 50,000 downloads at the time of writing.",
-    "link": "http://arxiv.org/abs/2511.08232v1",
-    "source": "arXiv",
-    "topic": "Python",
-    "dateAdded": "2025-12-06T15:40:48.819Z"
-  },
-  {
-    "id": "http://arxiv.org/abs/2508.05904v1",
-    "title": "Snowpark: Performant, Secure, User-Friendly Data Engineering and AI/ML Next To Your Data",
-    "summary": "Snowflake revolutionized data analytics with an elastic architecture that decouples compute and storage, enabling scalable solutions supporting data architectures like data lake, data warehouse, data lakehouse, and data mesh. Building on this foundation, Snowflake has advanced its AI Data Cloud vision by introducing Snowpark, a managed turnkey solution that supports data engineering and AI and ML workloads using Python and other programming languages.\n  This paper outlines Snowpark's design objectives towards high performance, strong security and governance, and ease of use. We detail the architecture of Snowpark, highlighting its elastic scalability and seamless integration with Snowflake core compute infrastructure. This includes leveraging Snowflake control plane for distributed computing and employing a secure sandbox for isolating Snowflake SQL workloads from Snowpark executions. Additionally, we present core innovations in Snowpark that drive further performance enhancements, such as query initialization latency reduction through Python package caching, improved workload scheduling for customized workloads, and data skew management via efficient row redistribution. Finally, we showcase real-world case studies that illustrate Snowpark's efficiency and effectiveness for large-scale data engineering and AI and ML tasks.",
-    "link": "http://arxiv.org/abs/2508.05904v1",
-    "source": "arXiv",
-    "topic": "Data Engineering",
-    "dateAdded": "2025-12-08T13:13:22.444Z"
-  },
-  {
-    "id": "40598996",
-    "title": "Development of a CRISPR/Cas9 RNP-mediated genetic engineering system in Paecilomyces variotii.",
-    "summary": "No abstract available via summary API. Please click link to read.",
-    "link": "https://pubmed.ncbi.nlm.nih.gov/40598996/",
-    "source": "PubMed",
-    "topic": "CRISPR",
-    "dateAdded": "2025-12-08T13:13:22.654Z"
-  },
-  {
     "id": "http://arxiv.org/abs/2510.18013v3",
     "title": "JunoBench: A Benchmark Dataset of Crashes in Python Machine Learning Jupyter Notebooks",
     "summary": "Jupyter notebooks are widely used for machine learning (ML) prototyping. Yet, few debugging tools are designed for ML code in notebooks, partly, due to the lack of benchmarks. We introduce JunoBench, the first benchmark dataset of real-world crashes in Python-based ML notebooks. JunoBench includes 111 curated and reproducible crashes with verified fixes from public Kaggle notebooks, covering popular ML libraries (e.g., TensorFlow/Keras, PyTorch, Scikit-learn) and notebook-specific out-of-order execution errors. JunoBench ensures reproducibility and ease of use through a unified environment that reliably reproduces all crashes. By providing realistic crashes, their resolutions, richly annotated labels of crash characteristics, and natural-language diagnostic annotations, JunoBench facilitates research on bug detection, localization, diagnosis, and repair in notebook-based ML development.",
@@ -45,13 +9,22 @@
     "dateAdded": "2025-12-08T13:13:22.881Z"
   },
   {
-    "id": "http://arxiv.org/abs/2402.11170v1",
-    "title": "Analyzing Reward Dynamics and Decentralization in Ethereum 2.0: An Advanced Data Engineering Workflow and Comprehensive Datasets for Proof-of-Stake Incentives",
-    "summary": "Ethereum 2.0, as the preeminent smart contract blockchain platform, guarantees the precise execution of applications without third-party intervention. At its core, this system leverages the Proof-of-Stake (PoS) consensus mechanism, which utilizes a stochastic process to select validators for block proposal and validation, consequently rewarding them for their contributions. However, the implementation of blockchain technology often diverges from its central tenet of decentralized consensus, presenting significant analytical challenges. Our study collects consensus reward data from the Ethereum Beacon chain and conducts a comprehensive analysis of reward distribution and evolution, categorizing them into attestation, proposer and sync committee rewards. To evaluate the degree of decentralization in PoS Ethereum, we apply several inequality indices, including the Shannon entropy, the Gini Index, the Nakamoto Coefficient, and the Herfindahl-Hirschman Index (HHI). Our comprehensive dataset is publicly available on Harvard Dataverse, and our analytical methodologies are accessible via GitHub, promoting open-access research. Additionally, we provide insights on utilizing our data for future investigations focused on assessing, augmenting, and refining the decentralization, security, and efficiency of blockchain systems.",
-    "link": "http://arxiv.org/abs/2402.11170v1",
-    "source": "arXiv",
-    "topic": "Data Engineering",
-    "dateAdded": "2025-12-15T13:15:24.743Z"
+    "id": "41071231",
+    "title": "Genetic Engineering of Esophageal Organoids: CRISPR-Based Knock-In for Cell Lineage Tracing.",
+    "summary": "No abstract available via summary API. Please click link to read.",
+    "link": "https://pubmed.ncbi.nlm.nih.gov/41071231/",
+    "source": "PubMed",
+    "topic": "CRISPR",
+    "dateAdded": "2025-12-26T21:37:37.818Z"
+  },
+  {
+    "id": "38066376",
+    "title": "Genetic Engineering of Therapeutic Phages Using Type III CRISPR-Cas Systems.",
+    "summary": "No abstract available via summary API. Please click link to read.",
+    "link": "https://pubmed.ncbi.nlm.nih.gov/38066376/",
+    "source": "PubMed",
+    "topic": "CRISPR",
+    "dateAdded": "2025-12-26T21:43:00.804Z"
   },
   {
     "id": "37849926",
@@ -60,24 +33,6 @@
     "link": "https://pubmed.ncbi.nlm.nih.gov/37849926/",
     "source": "PubMed",
     "topic": "CRISPR",
-    "dateAdded": "2025-12-15T13:15:25.884Z"
-  },
-  {
-    "id": "http://arxiv.org/abs/2511.04611v1",
-    "title": "evomap: A Toolbox for Dynamic Mapping in Python",
-    "summary": "This paper presents evomap, a Python package for dynamic mapping. Mapping methods are widely used across disciplines to visualize relationships among objects as spatial representations, or maps. However, most existing statistical software supports only static mapping, which captures objects' relationships at a single point in time and lacks tools to analyze how these relationships evolve. evomap fills this gap by implementing the dynamic mapping framework EvoMap, originally proposed by Matthe, Ringel, and Skiera (2023), which adapts traditional static mapping methods for dynamic analyses. The package supports multiple mapping techniques, including variants of Multidimensional Scaling (MDS), Sammon Mapping, and t-distributed Stochastic Neighbor Embedding (t-SNE). It also includes utilities for data preprocessing, exploration, and result evaluation, offering a comprehensive toolkit for dynamic mapping applications. This paper outlines the foundations of static and dynamic mapping, describes the architecture and functionality of evomap, and illustrates its application through an extensive usage example.",
-    "link": "http://arxiv.org/abs/2511.04611v1",
-    "source": "arXiv",
-    "topic": "Python",
-    "dateAdded": "2025-12-15T13:15:26.123Z"
-  },
-  {
-    "id": "41071231",
-    "title": "Genetic Engineering of Esophageal Organoids: CRISPR-Based Knock-In for Cell Lineage Tracing.",
-    "summary": "No abstract available via summary API. Please click link to read.",
-    "link": "https://pubmed.ncbi.nlm.nih.gov/41071231/",
-    "source": "PubMed",
-    "topic": "CRISPR",
-    "dateAdded": "2025-12-22T13:12:54.099Z"
+    "dateAdded": "2025-12-26T21:50:29.784Z"
   }
 ]

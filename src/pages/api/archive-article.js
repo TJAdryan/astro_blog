@@ -4,6 +4,7 @@ import { google } from 'googleapis';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { Buffer } from 'buffer';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const QUEUE_FILE = path.resolve(__dirname, '../../data/article_queue.json');
@@ -14,7 +15,6 @@ export const POST = async ({ request, redirect }) => {
     const articleTitle = data.get('articleTitle');
     const articleLink = data.get('articleLink');
     const articleDescription = data.get('articleDescription') || 'No description provided';
-
     const archiveType = data.get('archiveType') || 'archive'; // 'archive' or 'read'
 
     let targetDocName = 'archived-old papers';
@@ -25,20 +25,52 @@ export const POST = async ({ request, redirect }) => {
         logPrefix = 'ALREADY READ';
     }
 
+    console.log(`[API] archive-article hit. Type: ${archiveType}`);
+
     let stage = `Initiating ${archiveType}`;
     let auth = null;
     let driveService = null;
     let docs = null;
-    let archiveDocId = null;
 
     try {
-        // 1. Google Auth
+        // 1. Google Auth (Robust Fallback)
         stage = 'Google Auth';
-        if (process.env.GOOGLE_SERVICE_ACCOUNT_JSON || process.env.GOOGLE_SERVICES_ACCOUNT_JSON) {
-            try {
-                const jsonVar = process.env.GOOGLE_SERVICE_ACCOUNT_JSON || process.env.GOOGLE_SERVICES_ACCOUNT_JSON;
-                const credentials = JSON.parse(jsonVar);
 
+        // Define pEnv properly in scope
+        const pEnv = process.env.GOOGLE_SERVICE_ACCOUNT_JSON || process.env.GOOGLE_SERVICES_ACCOUNT_JSON;
+        const mEnv = import.meta.env?.GOOGLE_SERVICE_ACCOUNT_JSON || import.meta.env?.GOOGLE_SERVICES_ACCOUNT_JSON;
+        let jsonVar = pEnv || mEnv;
+
+        // FALLBACK: Manual .env read (Fix for Astro dev mode usually skipping complex env vars)
+        if (!jsonVar) {
+            try {
+                const envPath = path.resolve(process.cwd(), '.env');
+                if (fs.existsSync(envPath)) {
+                    console.log(`[API] Manually reading .env from ${envPath}`);
+                    const envFile = fs.readFileSync(envPath, 'utf-8');
+                    const lines = envFile.split('\n');
+                    for (const line of lines) {
+                        if (line.startsWith('GOOGLE_SERVICE_ACCOUNT_JSON=')) {
+                            let value = line.substring(line.indexOf('=') + 1);
+                            if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+                                value = value.slice(1, -1);
+                            }
+                            jsonVar = value.replace(/\\n/g, '\n');
+                            console.log('[API] Found credentials via manual read.');
+                            break;
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error('[API] Manual .env read failed:', e);
+            }
+        }
+
+        console.log(`[API] Credentials Check: ProcessEnv=${!!pEnv}, MetaEnv=${!!mEnv}, Final=${!!jsonVar}`);
+
+        if (jsonVar) {
+            try {
+                const credentials = JSON.parse(jsonVar);
                 auth = new google.auth.GoogleAuth({
                     credentials,
                     scopes: ['https://www.googleapis.com/auth/documents', 'https://www.googleapis.com/auth/drive'],
@@ -47,9 +79,10 @@ export const POST = async ({ request, redirect }) => {
                 docs = google.docs({ version: 'v1', auth });
                 driveService = google.drive({ version: 'v3', auth });
 
-                stage = 'Finding/Creating Folder: reading summaries';
+                stage = 'Finding Folder';
                 let folderId = null;
-                const folderQuery = "mimeType = 'application/vnd.google-apps.folder' and name = 'reading summaries' and trashed = false";
+                // Smart Search: Check for various folder names
+                const folderQuery = "(name = 'reading summaries' or name = 'Reading_Summaries') and mimeType = 'application/vnd.google-apps.folder' and trashed = false";
                 const folderRes = await driveService.files.list({
                     q: folderQuery,
                     spaces: 'drive',
@@ -58,84 +91,44 @@ export const POST = async ({ request, redirect }) => {
 
                 if (folderRes.data.files && folderRes.data.files.length > 0) {
                     folderId = folderRes.data.files[0].id;
-                    console.log(`Found existing folder: reading summaries (${folderId})`);
-                } else {
-                    const folderCreateRes = await driveService.files.create({
-                        resource: {
-                            name: 'reading summaries',
-                            mimeType: 'application/vnd.google-apps.folder'
-                        },
-                        fields: 'id'
+                    console.log(`[API] Found folder: ${folderRes.data.files[0].name} (${folderId})`);
+
+                    stage = `Finding Document: ${targetDocName}`;
+                    // Smart Search: Check for exact name OR hyphenated version
+                    const hyphenatedName = targetDocName.replace(/ /g, '-');
+                    const docQuery = `(name = '${targetDocName}' or name = '${hyphenatedName}') and '${folderId}' in parents and mimeType = 'application/vnd.google-apps.document' and trashed = false`;
+
+                    const searchRes = await driveService.files.list({
+                        q: docQuery,
+                        spaces: 'drive',
+                        fields: 'files(id, name)'
                     });
-                    folderId = folderCreateRes.data.id;
-                    console.log(`Created new folder: reading summaries (${folderId})`);
-                }
 
-                // Share the folder if possible
-                const userEmail = data.get('userEmail');
-                if (userEmail && folderId) {
-                    try {
-                        await driveService.permissions.create({
-                            fileId: folderId,
-                            requestBody: { role: 'writer', type: 'user', emailAddress: userEmail }
-                        });
-                        console.log(`Shared folder with ${userEmail}`);
-                    } catch (e) {
-                        // Ignore if already shared
-                        console.log(`Folder sharing note: ${e.message}`);
-                    }
-                }
+                    if (searchRes.data.files && searchRes.data.files.length > 0) {
+                        const archiveDocId = searchRes.data.files[0].id;
+                        console.log(`[API] Found document: ${searchRes.data.files[0].name} (${archiveDocId})`);
 
-                stage = `Finding Document: ${targetDocName}`;
-                // Search for the target document INSIDE the folder
-                const searchRes = await driveService.files.list({
-                    q: `name = '${targetDocName}' and '${folderId}' in parents and mimeType = 'application/vnd.google-apps.document' and trashed = false`,
-                    spaces: 'drive',
-                    fields: 'files(id, name)'
-                });
-
-                if (searchRes.data.files && searchRes.data.files.length > 0) {
-                    archiveDocId = searchRes.data.files[0].id;
-                    console.log(`Found existing document: ${targetDocName} (${archiveDocId})`);
-                } else {
-                    stage = `Creating Document: ${targetDocName} in folder`;
-                    const createRes = await driveService.files.create({
-                        resource: {
-                            name: targetDocName,
-                            mimeType: 'application/vnd.google-apps.document',
-                            parents: [folderId]
-                        },
-                        fields: 'id'
-                    });
-                    archiveDocId = createRes.data.id;
-                    console.log(`Created new document: ${targetDocName} (${archiveDocId})`);
-                }
-
-                // Share document (redundant if folder shared, but harmless)
-                if (userEmail && archiveDocId) {
-                    try {
-                        await driveService.permissions.create({
-                            fileId: archiveDocId,
-                            requestBody: { role: 'writer', type: 'user', emailAddress: userEmail }
-                        });
-                    } catch (e) { }
-                }
-
-                stage = 'Appending to Archive Document';
-                await docs.documents.batchUpdate({
-                    documentId: archiveDocId,
-                    requestBody: {
-                        requests: [
-                            {
-                                insertText: {
-                                    location: { index: 1 },
-                                    text: `[${new Date().toLocaleDateString()}] ${logPrefix}: ${articleTitle}\nLink: ${articleLink}\nDescription: ${articleDescription}\n\n----------------------------------------\n\n`,
-                                },
+                        stage = 'Appending to Archive Document';
+                        await docs.documents.batchUpdate({
+                            documentId: archiveDocId,
+                            requestBody: {
+                                requests: [
+                                    {
+                                        insertText: {
+                                            location: { index: 1 },
+                                            text: `[${new Date().toLocaleDateString()}] ${logPrefix}: ${articleTitle}\nLink: ${articleLink}\nDescription: ${articleDescription}\n\n----------------------------------------\n\n`,
+                                        },
+                                    },
+                                ],
                             },
-                        ],
-                    },
-                });
-
+                        });
+                        console.log('[API] Append successful.');
+                    } else {
+                        console.error(`[API] Google Doc '${targetDocName}' not found in folder. Bot cannot create files (0MB limit). User must create it.`);
+                    }
+                } else {
+                    console.error('[API] Folder "reading summaries" not found. User must create it and share it.');
+                }
             } catch (googleError) {
                 console.error(`Google Integration Error [Stage: ${stage}]:`, googleError);
             }
@@ -143,30 +136,28 @@ export const POST = async ({ request, redirect }) => {
 
         // 2. Remove from Queue
         stage = 'Queue Update';
-        let queueUpdated = false;
         const githubToken = process.env.GITHUB_TOKEN;
 
+        let queueUpdated = false;
+
+        // GitHub Update
         if (githubToken) {
             stage = 'GitHub Queue Update';
             try {
                 const repoOwner = 'TJAdryan';
                 const repoName = 'astro_blog';
                 const filePath = 'src/data/article_queue.json';
-
                 const getUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`;
+
                 const getResponse = await fetch(getUrl, {
-                    headers: {
-                        'Authorization': `Bearer ${githubToken}`,
-                        'Accept': 'application/vnd.github.v3+json',
-                        'User-Agent': 'Astro-Blog-App'
-                    }
+                    headers: { 'Authorization': `Bearer ${githubToken}`, 'Accept': 'application/vnd.github.v3+json', 'User-Agent': 'Astro-Blog-App' }
                 });
 
                 if (getResponse.ok) {
                     const fileData = await getResponse.json();
                     const content = Buffer.from(fileData.content, 'base64').toString('utf-8');
                     const queue = JSON.parse(content);
-                    const updatedQueue = queue.filter(item => item.id !== articleId);
+                    const updatedQueue = queue.filter(item => String(item.id).trim() !== String(articleId).trim());
 
                     const updateResponse = await fetch(getUrl, {
                         method: 'PUT',
@@ -183,38 +174,23 @@ export const POST = async ({ request, redirect }) => {
                             branch: 'main'
                         })
                     });
-
-                    if (updateResponse.ok) {
-                        queueUpdated = true;
-                    }
+                    if (updateResponse.ok) console.log('[API] GitHub update successful');
                 }
             } catch (ghError) {
                 console.error('GitHub API Error:', ghError);
             }
         }
 
-        // Local File System Update - ALWAYS update locals in dev mode
+        // Local File System Update - ALWAYS run
         stage = 'Local File System Update';
         try {
             if (fs.existsSync(QUEUE_FILE)) {
                 const fileContent = fs.readFileSync(QUEUE_FILE, 'utf-8');
                 const queue = JSON.parse(fileContent);
-
-                // Debug logging
-                console.log(`Attempting to remove articleId: [${articleId}]`);
-
-                const updatedQueue = queue.filter(item => {
-                    const itemId = String(item.id).trim();
-                    const targetId = String(articleId).trim();
-                    const match = itemId === targetId;
-                    if (match) {
-                        console.log(`Match found and removed: [${itemId}]`);
-                    }
-                    return !match;
-                });
-
+                console.log(`[API] Removing local ID: ${articleId}`);
+                const updatedQueue = queue.filter(item => String(item.id).trim() !== String(articleId).trim());
                 fs.writeFileSync(QUEUE_FILE, JSON.stringify(updatedQueue, null, 2));
-                console.log('Successfully updated local queue file.');
+                console.log('[API] Local queue updated.');
             }
         } catch (localError) {
             console.error('Local File Update Error:', localError);
