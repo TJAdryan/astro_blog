@@ -1,5 +1,16 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { ALLOWED_EMAILS } from "../allowed_emails";
+
+const user = await Astro.locals.currentUser();
+if (!user) return Astro.redirect("/login");
+const userEmail = user?.emailAddresses?.[0]?.emailAddress || "";
+
+if (ALLOWED_EMAILS.length > 0) {
+  if (!userEmail || !ALLOWED_EMAILS.includes(userEmail)) {
+    return Astro.redirect("/unauthorized");
+  }
+}
 import Dashboard from "../components/Dashboard.jsx";
 import fs from "node:fs";
 import path from "node:path";
@@ -51,9 +62,7 @@ try {
 
 const stats = { count, days, avgPerWeek };
 
-// Get user info
-const user = await Astro.locals.currentUser();
-const userEmail = user?.emailAddresses?.[0]?.emailAddress || "";
+// User info fetched at top
 ---
 
 <BaseLayout>
