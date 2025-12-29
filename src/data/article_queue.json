@@ -34,5 +34,23 @@
     "source": "PubMed",
     "topic": "CRISPR",
     "dateAdded": "2025-12-26T21:50:29.784Z"
+  },
+  {
+    "id": "http://arxiv.org/abs/2508.05904v1",
+    "title": "Snowpark: Performant, Secure, User-Friendly Data Engineering and AI/ML Next To Your Data",
+    "summary": "Snowflake revolutionized data analytics with an elastic architecture that decouples compute and storage, enabling scalable solutions supporting data architectures like data lake, data warehouse, data lakehouse, and data mesh. Building on this foundation, Snowflake has advanced its AI Data Cloud vision by introducing Snowpark, a managed turnkey solution that supports data engineering and AI and ML workloads using Python and other programming languages.\n  This paper outlines Snowpark's design objectives towards high performance, strong security and governance, and ease of use. We detail the architecture of Snowpark, highlighting its elastic scalability and seamless integration with Snowflake core compute infrastructure. This includes leveraging Snowflake control plane for distributed computing and employing a secure sandbox for isolating Snowflake SQL workloads from Snowpark executions. Additionally, we present core innovations in Snowpark that drive further performance enhancements, such as query initialization latency reduction through Python package caching, improved workload scheduling for customized workloads, and data skew management via efficient row redistribution. Finally, we showcase real-world case studies that illustrate Snowpark's efficiency and effectiveness for large-scale data engineering and AI and ML tasks.",
+    "link": "http://arxiv.org/abs/2508.05904v1",
+    "source": "arXiv",
+    "topic": "Data Engineering",
+    "dateAdded": "2025-12-29T13:14:17.308Z"
+  },
+  {
+    "id": "http://arxiv.org/abs/2511.16787v1",
+    "title": "NALA_MAINZ at BLP-2025 Task 2: A Multi-agent Approach for Bangla Instruction to Python Code Generation",
+    "summary": "This paper presents JGU Mainz's winning system for the BLP-2025 Shared Task on Code Generation from Bangla Instructions. We propose a multi-agent-based pipeline. First, a code-generation agent produces an initial solution from the input instruction. The candidate program is then executed against the provided unit tests (pytest-style, assert-based). Only the failing cases are forwarded to a debugger agent, which reruns the tests, extracts error traces, and, conditioning on the error messages, the current program, and the relevant test cases, generates a revised solution. Using this approach, our submission achieved first place in the shared task with a $Pass@1$ score of 95.4. We also make our code public.",
+    "link": "http://arxiv.org/abs/2511.16787v1",
+    "source": "arXiv",
+    "topic": "Python",
+    "dateAdded": "2025-12-29T13:14:18.333Z"
   }
 ]
