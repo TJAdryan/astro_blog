@@ -159,14 +159,14 @@ export default function Dashboard({ queue, stats, userEmail }) {
                                         <input type="hidden" name="articleTitle" value={article.title} />
                                         <input type="hidden" name="articleLink" value={article.link} />
 
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Your Summary (min 500 chars)</label>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Your Summary (min 300 chars)</label>
                                         <textarea
                                             name="summary"
                                             rows="6"
                                             className="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-sm"
                                             placeholder="Write your summary here..."
                                             required
-                                            minLength="500"
+                                            minLength="300"
                                         ></textarea>
                                         <div className="flex justify-end mt-2">
                                             <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors text-sm font-medium shadow-sm">
