@@ -4,6 +4,8 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { parseStringPromise } from 'xml2js';
+import { google } from 'googleapis';
+import { Buffer } from 'buffer';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const QUEUE_FILE = path.resolve(__dirname, '../../data/article_queue.json');
@@ -17,7 +19,7 @@ async function fetchArxivPaper(topic) {
     if (topic === 'data-engineering') {
         query = 'cat:cs.DB+AND+ti:"data engineering"';
         topicLabel = 'Data Engineering';
-    } else if (topic === 'python') { // Keeping python just in case, though not requested
+    } else if (topic === 'python') {
         query = 'cat:cs.SE+AND+ti:"python"';
         topicLabel = 'Python';
     } else {
@@ -186,6 +188,88 @@ export const POST = async ({ request, redirect }) => {
         } catch (e) {
             console.error('Local file error:', e);
         }
+    }
+
+    // --- 3. Google Drive Log (New Papers) ---
+    try {
+        console.log('[Google Auth] Starting for New Papers log...');
+        const pEnv = process.env.GOOGLE_SERVICE_ACCOUNT_JSON || process.env.GOOGLE_SERVICES_ACCOUNT_JSON;
+        const mEnv = import.meta.env?.GOOGLE_SERVICE_ACCOUNT_JSON || import.meta.env?.GOOGLE_SERVICES_ACCOUNT_JSON;
+        let jsonVar = pEnv || mEnv;
+
+        // FALLBACK: Manual .env read
+        if (!jsonVar) {
+            try {
+                const envPath = path.resolve(process.cwd(), '.env');
+                if (fs.existsSync(envPath)) {
+                    const envFile = fs.readFileSync(envPath, 'utf-8');
+                    const lines = envFile.split('\n');
+                    for (const line of lines) {
+                        if (line.startsWith('GOOGLE_SERVICE_ACCOUNT_JSON=')) {
+                            let value = line.substring(line.indexOf('=') + 1);
+                            if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+                                value = value.slice(1, -1);
+                            }
+                            jsonVar = value.replace(/\\n/g, '\n');
+                            break;
+                        }
+                    }
+                }
+            } catch (e) { console.error('Manual .env read failed', e); }
+        }
+
+        if (jsonVar) {
+            const credentials = JSON.parse(jsonVar);
+            const auth = new google.auth.GoogleAuth({
+                credentials,
+                scopes: ['https://www.googleapis.com/auth/documents', 'https://www.googleapis.com/auth/drive'],
+            });
+            const docs = google.docs({ version: 'v1', auth });
+            const driveService = google.drive({ version: 'v3', auth });
+
+            // 1. Find Folder
+            const folderQuery = "(name = 'reading summaries' or name = 'Reading_Summaries') and mimeType = 'application/vnd.google-apps.folder' and trashed = false";
+            const folderRes = await driveService.files.list({ q: folderQuery, spaces: 'drive', fields: 'files(id, name)' });
+
+            if (folderRes.data.files && folderRes.data.files.length > 0) {
+                const folderId = folderRes.data.files[0].id;
+
+                // 2. Find 'New Papers' Doc
+                const docName = 'New Papers';
+                const docQuery = `name = '${docName}' and '${folderId}' in parents and mimeType = 'application/vnd.google-apps.document' and trashed = false`;
+                const docRes = await driveService.files.list({ q: docQuery, spaces: 'drive', fields: 'files(id)' });
+
+                if (docRes.data.files && docRes.data.files.length > 0) {
+                    const docId = docRes.data.files[0].id;
+
+                    // 3. Prepare PDF Link
+                    let pdfLink = newArticle.link;
+                    if (newArticle.source === 'arXiv' && newArticle.link.includes('/abs/')) {
+                        pdfLink = newArticle.link.replace('/abs/', '/pdf/') + '.pdf';
+                    }
+
+                    // 4. Append
+                    await docs.documents.batchUpdate({
+                        documentId: docId,
+                        requestBody: {
+                            requests: [
+                                {
+                                    insertText: {
+                                        location: { index: 1 },
+                                        text: `[${new Date().toLocaleDateString()}] NEW ARTICLE ADDED\nTitle: ${newArticle.title}\nLink: ${newArticle.link}\nPDF Download: ${pdfLink}\n\n----------------------------------------\n\n`,
+                                    },
+                                },
+                            ],
+                        },
+                    });
+                    console.log('[Google Auth] Logged to New Papers.');
+                } else {
+                    console.error('[Google Auth] "New Papers" doc not found.');
+                }
+            }
+        }
+    } catch (gErr) {
+        console.error('Google Logging Error:', gErr);
     }
 
     return redirect('/private?success=added');
