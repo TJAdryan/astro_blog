@@ -1,14 +1,5 @@
 [
   {
-    "id": "http://arxiv.org/abs/2510.18013v3",
-    "title": "JunoBench: A Benchmark Dataset of Crashes in Python Machine Learning Jupyter Notebooks",
-    "summary": "Jupyter notebooks are widely used for machine learning (ML) prototyping. Yet, few debugging tools are designed for ML code in notebooks, partly, due to the lack of benchmarks. We introduce JunoBench, the first benchmark dataset of real-world crashes in Python-based ML notebooks. JunoBench includes 111 curated and reproducible crashes with verified fixes from public Kaggle notebooks, covering popular ML libraries (e.g., TensorFlow/Keras, PyTorch, Scikit-learn) and notebook-specific out-of-order execution errors. JunoBench ensures reproducibility and ease of use through a unified environment that reliably reproduces all crashes. By providing realistic crashes, their resolutions, richly annotated labels of crash characteristics, and natural-language diagnostic annotations, JunoBench facilitates research on bug detection, localization, diagnosis, and repair in notebook-based ML development.",
-    "link": "http://arxiv.org/abs/2510.18013v3",
-    "source": "arXiv",
-    "topic": "Python",
-    "dateAdded": "2025-12-08T13:13:22.881Z"
-  },
-  {
     "id": "41071231",
     "title": "Genetic Engineering of Esophageal Organoids: CRISPR-Based Knock-In for Cell Lineage Tracing.",
     "summary": "No abstract available via summary API. Please click link to read.",

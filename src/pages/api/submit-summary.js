@@ -142,7 +142,12 @@ export const POST = async ({ request, redirect }) => {
                     const fileData = await getResponse.json();
                     const content = Buffer.from(fileData.content, 'base64').toString('utf-8');
                     const queue = JSON.parse(content);
-                    const updatedQueue = queue.filter(item => String(item.id).trim() !== String(articleId).trim());
+                    const updatedQueue = queue.filter(item => {
+                        const itemId = String(item.id).trim();
+                        const targetId = String(articleId).trim();
+                        // Check exact match or decoded match (for URL IDs)
+                        return itemId !== targetId && itemId !== decodeURIComponent(targetId);
+                    });
 
                     await fetch(getUrl, {
                         method: 'PUT',
@@ -171,7 +176,11 @@ export const POST = async ({ request, redirect }) => {
             if (fs.existsSync(QUEUE_FILE)) {
                 const fileContent = fs.readFileSync(QUEUE_FILE, 'utf-8');
                 const queue = JSON.parse(fileContent);
-                const updatedQueue = queue.filter(item => String(item.id).trim() !== String(articleId).trim());
+                const updatedQueue = queue.filter(item => {
+                    const itemId = String(item.id).trim();
+                    const targetId = String(articleId).trim();
+                    return itemId !== targetId && itemId !== decodeURIComponent(targetId);
+                });
                 fs.writeFileSync(QUEUE_FILE, JSON.stringify(updatedQueue, null, 2));
                 console.log('[API] Local queue updated.');
             }
