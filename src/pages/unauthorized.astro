@@ -1,5 +1,16 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+
+const user = await Astro.locals.currentUser();
+if (user) {
+    const userEmail = user?.emailAddresses?.[0]?.emailAddress;
+    if (
+        userEmail &&
+        userEmail.toLowerCase() === "sophiogabatashvili@gmail.com"
+    ) {
+        return Astro.redirect("/wedding");
+    }
+}
 ---
 
 <BaseLayout>
