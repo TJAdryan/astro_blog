@@ -343,5 +343,119 @@ import Layout from "../layouts/BlogPost.astro";
 				display: block;
 			}
 		</style>
+		<style is:global>
+			/* Full Screen Heart Rain */
+			#heart-rain-container {
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				pointer-events: none;
+				z-index: 9999;
+				overflow: hidden;
+			}
+
+			.falling-heart {
+				position: absolute;
+				top: -10vh;
+				color: #ffb6c1; /* Light pink default */
+				font-size: 1.5rem;
+				opacity: 0.8;
+				animation-name: fall, sway;
+				animation-timing-function: linear, ease-in-out;
+				animation-iteration-count: infinite, infinite;
+			}
+
+			@keyframes fall {
+				0% {
+					top: -10vh;
+				}
+				100% {
+					top: 110vh;
+				}
+			}
+
+			@keyframes sway {
+				0% {
+					transform: translateX(0px) rotate(0deg);
+				}
+				50% {
+					transform: translateX(20px) rotate(10deg);
+				}
+				100% {
+					transform: translateX(0px) rotate(0deg);
+				}
+			}
+		</style>
+
+		<div id="heart-rain-container"></div>
+
+		<script is:inline>
+			document.addEventListener("DOMContentLoaded", () => {
+				const container = document.getElementById(
+					"heart-rain-container",
+				);
+				const heartCount = 40; // Number of hearts at once
+				const colors = [
+					"#ffb6c1",
+					"#ff69b4",
+					"#ff1493",
+					"#db7093",
+					"#ffa07a",
+				]; // Pink/Red/Salmon variants
+
+        <script is:inline>
+            document.addEventListener('DOMContentLoaded', () => {
+                const container = document.getElementById('heart-rain-container');
+                const heartCount = 30; // Max hearts at once
+                const colors = ['#ffb6c1', '#ff69b4', '#ff1493', '#db7093', '#ffa07a'];
+
+                let isActive = true;
+
+                // Stop spawning after 10 seconds
+                setTimeout(() => {
+                    isActive = false;
+                    // Fade out container
+                    container.style.transition = "opacity 2s ease-out";
+                    container.style.opacity = "0";
+                    // Remove from DOM after fade
+                    setTimeout(() => container.remove(), 2000);
+                }, 10000);
+
+                function createHeart() {
+                    if (!isActive) return;
+
+                    const heart = document.createElement('div');
+                    heart.innerHTML = '❤';
+                    heart.classList.add('falling-heart');
+                    
+                    const startLeft = Math.random() * 100;
+                    const durationFall = Math.random() * 5 + 5; 
+                    const durationSway = Math.random() * 2 + 2; 
+                    const size = Math.random() * 1.5 + 0.8; 
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+
+                    heart.style.left = `${startLeft}vw`;
+                    heart.style.animationDuration = `${durationFall}s, ${durationSway}s`;
+                    heart.style.fontSize = `${size}rem`;
+                    heart.style.color = color;
+
+                    container.appendChild(heart);
+                    
+                    // Cleanup this heart individually
+                    setTimeout(() => {
+                        heart.remove();
+                        // Only spawn replacement if still active
+                        if (isActive) createHeart();
+                    }, durationFall * 1000);
+                }
+
+                // Initial batch start
+                for (let i = 0; i < heartCount; i++) {
+                   setTimeout(createHeart, Math.random() * 3000);
+                }
+            });
+        </script>
 	</Layout>
 </PostHogLayout>
