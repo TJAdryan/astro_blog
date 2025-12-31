@@ -396,7 +396,9 @@ import Layout from "../layouts/BlogPost.astro";
 				const container = document.getElementById(
 					"heart-rain-container",
 				);
-				const heartCount = 40; // Number of hearts at once
+				if (!container) return;
+
+				const heartCount = 30; // Max hearts at once
 				const colors = [
 					"#ffb6c1",
 					"#ff69b4",
@@ -405,57 +407,57 @@ import Layout from "../layouts/BlogPost.astro";
 					"#ffa07a",
 				]; // Pink/Red/Salmon variants
 
-        <script is:inline>
-            document.addEventListener('DOMContentLoaded', () => {
-                const container = document.getElementById('heart-rain-container');
-                const heartCount = 30; // Max hearts at once
-                const colors = ['#ffb6c1', '#ff69b4', '#ff1493', '#db7093', '#ffa07a'];
+				let isActive = true;
 
-                let isActive = true;
+				// Stop spawning after 10 seconds
+				setTimeout(() => {
+					isActive = false;
+					// Fade out container
+					if (container) {
+						container.style.transition = "opacity 2s ease-out";
+						container.style.opacity = "0";
+						// Remove from DOM after fade
+						setTimeout(() => container.remove(), 2000);
+					}
+				}, 10000);
 
-                // Stop spawning after 10 seconds
-                setTimeout(() => {
-                    isActive = false;
-                    // Fade out container
-                    container.style.transition = "opacity 2s ease-out";
-                    container.style.opacity = "0";
-                    // Remove from DOM after fade
-                    setTimeout(() => container.remove(), 2000);
-                }, 10000);
+				function createHeart() {
+					if (!isActive) return;
+					if (!container) return;
 
-                function createHeart() {
-                    if (!isActive) return;
+					const heart = document.createElement("div");
+					heart.innerHTML = "❤";
+					heart.classList.add("falling-heart");
 
-                    const heart = document.createElement('div');
-                    heart.innerHTML = '❤';
-                    heart.classList.add('falling-heart');
-                    
-                    const startLeft = Math.random() * 100;
-                    const durationFall = Math.random() * 5 + 5; 
-                    const durationSway = Math.random() * 2 + 2; 
-                    const size = Math.random() * 1.5 + 0.8; 
-                    const color = colors[Math.floor(Math.random() * colors.length)];
+					// Randomize properties
+					const startLeft = Math.random() * 100; // 0 to 100 vw
+					const durationFall = Math.random() * 5 + 5; // 5 to 10s
+					const durationSway = Math.random() * 2 + 2; // 2 to 4s
+					const size = Math.random() * 1.5 + 0.8; // 0.8 to 2.3 rem
+					const color =
+						colors[Math.floor(Math.random() * colors.length)];
 
-                    heart.style.left = `${startLeft}vw`;
-                    heart.style.animationDuration = `${durationFall}s, ${durationSway}s`;
-                    heart.style.fontSize = `${size}rem`;
-                    heart.style.color = color;
+					heart.style.left = `${startLeft}vw`;
+					heart.style.animationDuration = `${durationFall}s, ${durationSway}s`;
+					heart.style.fontSize = `${size}rem`;
+					heart.style.color = color;
 
-                    container.appendChild(heart);
-                    
-                    // Cleanup this heart individually
-                    setTimeout(() => {
-                        heart.remove();
-                        // Only spawn replacement if still active
-                        if (isActive) createHeart();
-                    }, durationFall * 1000);
-                }
+					container.appendChild(heart);
 
-                // Initial batch start
-                for (let i = 0; i < heartCount; i++) {
-                   setTimeout(createHeart, Math.random() * 3000);
-                }
-            });
-        </script>
+					// Cleanup this heart individually
+					setTimeout(() => {
+						heart.remove();
+						// Only spawn replacement if still active
+						if (isActive) createHeart();
+					}, durationFall * 1000); // slightly before/after end
+				}
+
+				// Initial batch
+				for (let i = 0; i < heartCount; i++) {
+					// Stagger initial creation
+					setTimeout(createHeart, Math.random() * 3000);
+				}
+			});
+		</script>
 	</Layout>
 </PostHogLayout>
