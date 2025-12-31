@@ -32,6 +32,23 @@ import Layout from "../layouts/BlogPost.astro";
 					and Sophio.
 				</p>
 
+				<div class="video-container">
+					<video
+						controls
+						autoplay
+						muted
+						loop
+						playsinline
+						class="wedding-video"
+					>
+						<source
+							src="/video/wedding_video.mp4"
+							type="video/mp4"
+						/>
+						Your browser does not support the video tag.
+					</video>
+				</div>
+
 				<p>
 					They arrived at City Hall in the morning, ready to make
 					their bond official. Sophio looked absolutely beautiful,
@@ -340,6 +357,22 @@ import Layout from "../layouts/BlogPost.astro";
 				max-width: 100%;
 				height: auto;
 				border: 1px solid #eee;
+				display: block;
+			}
+			.video-container {
+				margin: 2rem 0 3rem 0;
+				border-radius: 12px;
+				overflow: hidden;
+				box-shadow: 0 10px 30px rgba(214, 51, 108, 0.15);
+				border: 8px solid white;
+				transform: rotate(1deg);
+				transition: transform 0.3s ease;
+			}
+			.video-container:hover {
+				transform: rotate(0deg) scale(1.01);
+			}
+			.wedding-video {
+				width: 100%;
 				display: block;
 			}
 		</style>
