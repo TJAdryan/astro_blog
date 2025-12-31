@@ -32,15 +32,92 @@ import Layout from "../layouts/BlogPost.astro";
 					and Sophio.
 				</p>
 
-				<div class="video-container">
-					<video controls loop playsinline class="wedding-video">
+				<div class="video-container relative" id="video-wrapper">
+					<video
+						id="wedding-video"
+						loop
+						playsinline
+						class="wedding-video"
+						poster="/favicon.svg"
+					>
+						<!-- Note: Using a placeholder poster or transparent if none provided. 
+                             Ideally we'd extract a frame, but for now we rely on the overlay covering it. -->
 						<source
 							src="/video/wedding_video.mp4"
 							type="video/mp4"
 						/>
 						Your browser does not support the video tag.
 					</video>
+
+					<!-- Custom Overlay -->
+					<div
+						id="video-overlay"
+						class="absolute inset-0 bg-black/60 flex flex-col items-center justify-center z-20 backdrop-blur-[2px]"
+					>
+						<h3
+							class="text-white font-serif text-2xl md:text-3xl mb-8 drop-shadow-md tracking-wide"
+						>
+							Wedding Highlights
+						</h3>
+						<div class="flex flex-col md:flex-row gap-4">
+							<button
+								id="btn-silent"
+								class="px-6 py-2 bg-white/20 hover:bg-white/30 text-white rounded-full border border-white/40 backdrop-blur-sm transition-all text-sm font-medium tracking-wider uppercase hover:scale-105"
+							>
+								Watch Silent
+							</button>
+							<button
+								id="btn-music"
+								class="px-6 py-2 bg-pink-600 hover:bg-pink-700 text-white rounded-full shadow-lg shadow-pink-600/30 transition-all text-sm font-bold tracking-wider uppercase hover:scale-105 flex items-center gap-2"
+							>
+								<span>With Music</span>
+								<svg
+									class="w-4 h-4"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+									><path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+									></path><path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+									></path></svg
+								>
+							</button>
+						</div>
+					</div>
 				</div>
+
+				<script is:inline>
+					const video = document.getElementById("wedding-video");
+					const overlay = document.getElementById("video-overlay");
+					const btnSilent = document.getElementById("btn-silent");
+					const btnMusic = document.getElementById("btn-music");
+
+					function startVideo(muted) {
+						video.muted = muted;
+						video.play();
+						video.controls = true; // Enable native controls once playing
+						overlay.style.opacity = "0";
+						setTimeout(() => {
+							overlay.style.display = "none";
+						}, 500); // Wait for fade out
+					}
+
+					if (btnSilent && btnMusic) {
+						btnSilent.addEventListener("click", () =>
+							startVideo(true),
+						);
+						btnMusic.addEventListener("click", () =>
+							startVideo(false),
+						);
+					}
+				</script>
 
 				<p>
 					They arrived at City Hall in the morning, ready to make
