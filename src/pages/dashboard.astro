@@ -5,15 +5,16 @@ import { ALLOWED_EMAILS } from "../allowed_emails";
 const user = await Astro.locals.currentUser();
 if (!user) return Astro.redirect("/login");
 
+const userEmail = user?.emailAddresses?.[0]?.emailAddress;
+
+// VIP: Redirect Sophio to wedding page immediately (Implicit Allow)
+if (userEmail && userEmail.toLowerCase() === "sophiogabatashvili@gmail.com") {
+  return Astro.redirect("/wedding");
+}
+
 if (ALLOWED_EMAILS.length > 0) {
-  const userEmail = user?.emailAddresses?.[0]?.emailAddress;
   if (!userEmail || !ALLOWED_EMAILS.includes(userEmail)) {
     return Astro.redirect("/unauthorized");
-  }
-
-  // Redirect Sophio to wedding page
-  if (userEmail === "sophiogabatashvili@gmail.com") {
-    return Astro.redirect("/wedding");
   }
 }
 
