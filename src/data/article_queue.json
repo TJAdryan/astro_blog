@@ -25,5 +25,14 @@
     "source": "PubMed",
     "topic": "CRISPR",
     "dateAdded": "2026-01-02T18:21:22.261Z"
+  },
+  {
+    "id": "http://arxiv.org/abs/2003.09541v2",
+    "title": "A Synopses Data Engine for Interactive Extreme-Scale Analytics",
+    "summary": "In this work, we detail the design and structure of a Synopses Data Engine (SDE) which combines the virtues of parallel processing and stream summarization towards delivering interactive analytics at extreme scale. Our SDE is built on top of Apache Flink and implements a synopsis-as-a-service paradigm. In that it achieves (a) concurrently maintaining thousands of synopses of various types for thousands of streams on demand, (b) reusing maintained synopses among various concurrent workflows, (c) providing data summarization facilities even for cross-(Big Data) platform workflows, (d) pluggability of new synopses on-the-fly, (e) increased potential for workflow execution optimization. The proposed SDE is useful for interactive analytics at extreme scales because it enables (i) enhanced horizontal scalability, i.e., not only scaling out the computation to a number of processing units available in a computer cluster, but also harnessing the processing load assigned to each by operating on carefully-crafted data summaries, (ii) vertical scalability, i.e., scaling the computation to very high numbers of processed streams and (iii) federated scalability i.e., scaling the computation beyond single clusters and clouds by controlling the communication required to answer global queries posed over a number of potentially geo-dispersed clusters.",
+    "link": "http://arxiv.org/abs/2003.09541v2",
+    "source": "arXiv",
+    "topic": "Data Engineering",
+    "dateAdded": "2026-01-02T18:21:53.616Z"
   }
 ]
