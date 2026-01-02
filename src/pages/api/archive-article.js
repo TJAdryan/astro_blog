@@ -25,7 +25,7 @@ export const POST = async ({ request, redirect }) => {
         logPrefix = 'ALREADY READ';
     }
 
-    console.log(`[API] archive-article hit. Type: ${archiveType}`);
+    console.log(`[API] archive-article hit. Type: ${archiveType}. Checking Token...`);
 
     let stage = `Initiating ${archiveType}`;
     let auth = null;
