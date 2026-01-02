@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-01-02T13:12:19.177Z",
+    "status": "Service Change",
+    "details": [
+      "Northbound: 96 St-bound trains are running in 2 sections: between Coney Island - Stillwell Av and 96 St, and between Fort Hamilton Pkwy and 96 St via <N>."
+    ]
+  },
+  {
     "date": "2026-01-01T13:13:25.878Z",
     "status": "Delays",
     "details": [
