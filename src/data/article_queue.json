@@ -25,14 +25,5 @@
     "source": "arXiv",
     "topic": "Data Engineering",
     "dateAdded": "2025-12-29T13:14:17.308Z"
-  },
-  {
-    "id": "http://arxiv.org/abs/2511.16787v1",
-    "title": "NALA_MAINZ at BLP-2025 Task 2: A Multi-agent Approach for Bangla Instruction to Python Code Generation",
-    "summary": "This paper presents JGU Mainz's winning system for the BLP-2025 Shared Task on Code Generation from Bangla Instructions. We propose a multi-agent-based pipeline. First, a code-generation agent produces an initial solution from the input instruction. The candidate program is then executed against the provided unit tests (pytest-style, assert-based). Only the failing cases are forwarded to a debugger agent, which reruns the tests, extracts error traces, and, conditioning on the error messages, the current program, and the relevant test cases, generates a revised solution. Using this approach, our submission achieved first place in the shared task with a $Pass@1$ score of 95.4. We also make our code public.",
-    "link": "http://arxiv.org/abs/2511.16787v1",
-    "source": "arXiv",
-    "topic": "Python",
-    "dateAdded": "2025-12-29T13:14:18.333Z"
   }
 ]
