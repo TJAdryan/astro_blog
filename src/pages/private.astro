@@ -19,6 +19,7 @@ if (ALLOWED_EMAILS.length > 0) {
 import Dashboard from "../components/Dashboard.jsx";
 import fs from "node:fs";
 import path from "node:path";
+import { Buffer } from "node:buffer";
 
 // Stats Calculation
 let count = 0;
@@ -55,11 +56,46 @@ try {
     }
   }
 
-  // Load Queue
-  const queuePath = path.resolve("./src/data/article_queue.json");
-  if (fs.existsSync(queuePath)) {
-    const queueData = fs.readFileSync(queuePath, "utf-8");
-    queue = JSON.parse(queueData);
+  // Load Queue using GitHub API (Real-time)
+  const githubToken = import.meta.env.GITHUB_TOKEN || process.env.GITHUB_TOKEN;
+  if (githubToken) {
+    try {
+      const repoOwner = "TJAdryan";
+      const repoName = "astro_blog";
+      const filePath = "src/data/article_queue.json";
+      const url = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`;
+
+      const res = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${githubToken}`,
+          Accept: "application/vnd.github.v3+json",
+          "User-Agent": "Astro-Blog-App",
+        },
+      });
+      if (res.ok) {
+        const fileData = await res.json();
+        const content = Buffer.from(fileData.content, "base64").toString(
+          "utf-8",
+        );
+        queue = JSON.parse(content);
+        console.log("[Dashboard] Fetched queue from GitHub API");
+      }
+    } catch (e) {
+      console.error(
+        "[Dashboard] GitHub API fetch failed, falling back to local:",
+        e,
+      );
+    }
+  }
+
+  // Fallback to Local File (if GitHub failed or no token)
+  if (queue.length === 0) {
+    const queuePath = path.resolve("./src/data/article_queue.json");
+    if (fs.existsSync(queuePath)) {
+      const queueData = fs.readFileSync(queuePath, "utf-8");
+      queue = JSON.parse(queueData);
+      console.log("[Dashboard] Loaded local queue snapshot");
+    }
   }
 } catch (e) {
   console.error("Error reading data for dashboard:", e);
