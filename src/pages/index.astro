@@ -54,18 +54,20 @@ const latestPosts = posts.slice(0, 3);
             />
           </div>
           <div class="flex flex-col gap-6 mt-4">
-            {latestPosts.map((post) => (
-              <div class="border-b pb-4 last:border-b-0">
+            {latestPosts.map((post, index) => (
+              <div
+                class={`border-b pb-4 last:border-b-0 ${index > 0 ? "hidden md:block" : ""}`}
+              >
                 <a
                   href={`/blog/${post.slug}/`}
-                  class="text-xl font-bold text-blue-600 dark:text-blue-400 hover:underline"
+                  class="text-2xl md:text-xl font-bold text-blue-600 dark:text-blue-400 hover:underline block leading-tight mb-2"
                 >
                   {post.data.title}
                 </a>
-                <p class="mt-2 text-gray-700 dark:text-gray-300">
+                <p class="mt-2 text-lg md:text-base text-gray-700 dark:text-gray-300 leading-relaxed">
                   {post.data.description}
                 </p>
-                <p class="text-sm text-gray-500 mt-1">
+                <p class="text-base md:text-sm text-gray-500 mt-2">
                   <FormattedDate date={post.data.pubDate} />
                 </p>
               </div>
@@ -227,27 +229,30 @@ const latestPosts = posts.slice(0, 3);
         const container = document.getElementById("articles-list");
         if (!container) return;
         container.innerHTML = "";
-        three.forEach((article) => {
+        three.forEach((article, index) => {
           const wrapper = document.createElement("div");
-          wrapper.className = "border-b pb-4 last:border-b-0";
+          // Hide 2nd and 3rd articles on mobile, show on md+
+          const visibilityClass = index > 0 ? " hidden md:block" : "";
+          wrapper.className = "border-b pb-4 last:border-b-0" + visibilityClass;
           const a = document.createElement("a");
           a.href = article.url;
           a.target = "_blank";
           a.rel = "noopener";
           a.className =
-            "text-xl font-bold text-blue-600 dark:text-blue-400 hover:underline";
+            "text-2xl md:text-xl font-bold text-blue-600 dark:text-blue-400 hover:underline block leading-tight mb-2";
           a.textContent = article.title;
           wrapper.appendChild(a);
 
           if (article.description) {
             const pDesc = document.createElement("p");
-            pDesc.className = "mt-2 text-gray-700 dark:text-gray-300";
+            pDesc.className =
+              "mt-2 text-lg md:text-base text-gray-700 dark:text-gray-300 leading-relaxed";
             pDesc.textContent = article.description;
             wrapper.appendChild(pDesc);
           }
 
           const meta = document.createElement("p");
-          meta.className = "text-sm text-gray-500 mt-1";
+          meta.className = "text-base md:text-sm text-gray-500 mt-2";
           meta.textContent = `${article.author || ""}${article.author ? " — " : ""}${article.area || ""}`;
           wrapper.appendChild(meta);
 
@@ -477,19 +482,14 @@ const latestPosts = posts.slice(0, 3);
   /* Responsive adjustments */
   @media (max-width: 720px) {
     .hero-title {
-      font-size: clamp(1.9rem, 9vw, 2.6rem);
+      font-size: clamp(2.5rem, 12vw, 3.2rem);
     }
     .hero-subtitle {
-      font-size: 0.98rem;
+      font-size: 1.15rem;
       padding: 0 0.5rem;
+      line-height: 1.5;
     }
-    .latest-posts a.text-xl.font-bold,
-    .latest-posts .title {
-      font-size: 1.05rem;
-    }
-    #articles-list .border-b a {
-      font-size: 1rem;
-    }
+    /* Article font sizes are now handled by Tailwind classes (text-2xl) */
   }
 
   /* Tighter hero */
