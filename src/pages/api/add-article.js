@@ -26,7 +26,7 @@ async function fetchArxivPaper(topic) {
         return null;
     }
 
-    const url = `http://export.arxiv.org/api/query?search_query=${query}&start=0&max_results=20&sortBy=submittedDate&sortOrder=descending`;
+    const url = `http://export.arxiv.org/api/query?search_query=${query}&start=0&max_results=50&sortBy=submittedDate&sortOrder=descending`;
 
     try {
         const response = await fetch(url);
@@ -57,7 +57,7 @@ async function fetchArxivPaper(topic) {
 async function fetchPubmedPaper() {
     // Search for CRISPR
     const term = 'CRISPR[Title] AND "genetic engineering"[Title]';
-    const searchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(term)}&retmode=json&retmax=20&sort=date`;
+    const searchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(term)}&retmode=json&retmax=50&sort=date`;
 
     try {
         const searchResp = await fetch(searchUrl);

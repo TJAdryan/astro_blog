@@ -158,9 +158,12 @@ export const POST = async ({ request, redirect }) => {
                     const content = Buffer.from(fileData.content, 'base64').toString('utf-8');
                     const queue = JSON.parse(content);
                     const updatedQueue = queue.filter(item => {
-                        const itemId = String(item.id).trim();
-                        const targetId = String(articleId).trim();
-                        return itemId !== targetId && itemId !== decodeURIComponent(targetId);
+                        // ROBUST ID MATCHING
+                        const i = String(item.id).trim().toLowerCase();
+                        const t = String(articleId).trim().toLowerCase();
+                        const tDecoded = decodeURIComponent(t).trim().toLowerCase();
+                        // Filter out if matches raw target or decoded target
+                        return i !== t && i !== tDecoded;
                     });
 
                     const updateResponse = await fetch(getUrl, {
@@ -193,9 +196,11 @@ export const POST = async ({ request, redirect }) => {
                 const queue = JSON.parse(fileContent);
                 console.log(`[API] Removing local ID: ${articleId}`);
                 const updatedQueue = queue.filter(item => {
-                    const itemId = String(item.id).trim();
-                    const targetId = String(articleId).trim();
-                    return itemId !== targetId && itemId !== decodeURIComponent(targetId);
+                    // ROBUST ID MATCHING
+                    const i = String(item.id).trim().toLowerCase();
+                    const t = String(articleId).trim().toLowerCase();
+                    const tDecoded = decodeURIComponent(t).trim().toLowerCase();
+                    return i !== t && i !== tDecoded;
                 });
                 fs.writeFileSync(QUEUE_FILE, JSON.stringify(updatedQueue, null, 2));
                 console.log('[API] Local queue updated.');
