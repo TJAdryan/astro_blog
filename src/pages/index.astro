@@ -489,7 +489,28 @@ const latestPosts = posts.slice(0, 3);
       padding: 0 0.5rem;
       line-height: 1.5;
     }
-    /* Article font sizes are now handled by Tailwind classes (text-2xl) */
+
+    /* FORCE HIDE 2nd and 3rd items on mobile */
+    .latest-posts .flex.flex-col > div:nth-child(n + 2),
+    #articles-list > div:nth-child(n + 2) {
+      display: none !important;
+    }
+
+    /* FORCE LARGER TEXT on mobile */
+    .latest-posts a,
+    #articles-list a {
+      font-size: 1.5rem !important; /* text-2xl equivalent */
+      line-height: 1.25 !important;
+    }
+    .latest-posts p,
+    #articles-list p {
+      font-size: 1.125rem !important; /* text-lg equivalent */
+      line-height: 1.6 !important;
+    }
+    .text-sm,
+    .text-base {
+      font-size: 1rem !important;
+    }
   }
 
   /* Tighter hero */
