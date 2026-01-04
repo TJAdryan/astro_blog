@@ -34,5 +34,14 @@
     "source": "PubMed",
     "topic": "CRISPR",
     "dateAdded": "2026-01-02T18:22:10.505Z"
+  },
+  {
+    "id": "http://arxiv.org/abs/1710.04144v1",
+    "title": "GUIDES - Geospatial Urban Infrastructure Data Engineering Solutions",
+    "summary": "As the underground infrastructure systems of cities age, maintenance and repair become an increasing concern. Cities face difficulties in planning maintenance, predicting and responding to infrastructure related issues, and in realizing their vision to be a smart city due to their incomplete understanding of the existing state of the infrastructure. Only few cities have accurate and complete digital information on their underground infrastructure (e.g., electricity, water, natural gas) systems, which poses problems to those planning and performing construction projects. To address these issues, we introduce GUIDES as a new data conversion and management framework for urban underground infrastructure systems that enable city administrators, workers, and contractors along with the general public and other users to query digitized and integrated data to make smarter decisions. This demo paper presents the GUIDES architecture and describes two of its central components: (i) mapping of underground infrastructure systems, and (ii) integration of heterogeneous geospatial data.",
+    "link": "http://arxiv.org/abs/1710.04144v1",
+    "source": "arXiv",
+    "topic": "Data Engineering",
+    "dateAdded": "2026-01-04T21:42:09.291Z"
   }
 ]
