@@ -56,7 +56,7 @@ async function fetchArxivPaper(topic) {
 
 async function fetchPubmedPaper() {
     // Search for CRISPR
-    const term = 'CRISPR[Title] AND "genetic engineering"[Title]';
+    const term = 'CRISPR[Title] AND "genetic engineering"[Title] AND "free full text"[Filter]';
     const searchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(term)}&retmode=json&retmax=50&sort=date`;
 
     try {
