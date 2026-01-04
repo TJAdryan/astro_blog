@@ -29,35 +29,69 @@ let hasStarted = false;
 let queue = [];
 
 try {
-  const logPath = path.resolve("./src/data/completed_log.json");
-  if (fs.existsSync(logPath)) {
-    const data = fs.readFileSync(logPath, "utf-8");
-    const log = JSON.parse(data);
-    count = log.length;
+  const githubToken = import.meta.env.GITHUB_TOKEN || process.env.GITHUB_TOKEN;
+  let log = [];
 
-    if (count > 0) {
-      hasStarted = true;
-      // Find the earliest date
-      const sortedLog = log.sort(
-        (a, b) =>
-          new Date(a.completedAt).valueOf() - new Date(b.completedAt).valueOf(),
-      );
-      const firstDate = new Date(sortedLog[0].completedAt);
-      const now = new Date();
+  // 1. Fetch Completed Log (GitHub -> Local)
+  let logLoaded = false;
 
-      // Calculate days elapsed (min 1 day to avoid divide by zero)
-      const diffTime = Math.abs(now.valueOf() - firstDate.valueOf());
-      days = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      if (days < 1) days = 1;
+  if (githubToken) {
+    try {
+      const repoOwner = "TJAdryan";
+      const repoName = "astro_blog";
+      const logPath = "src/data/completed_log.json";
+      const url = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${logPath}`;
 
-      // Calculate average
-      const rawAvg = (count / days) * 7;
-      avgPerWeek = rawAvg.toFixed(1);
+      const res = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${githubToken}`,
+          Accept: "application/vnd.github.v3+json",
+          "User-Agent": "Astro-Blog-App",
+        },
+      });
+      if (res.ok) {
+        const fileData = await res.json();
+        const content = Buffer.from(fileData.content, "base64").toString(
+          "utf-8",
+        );
+        log = JSON.parse(content);
+        logLoaded = true;
+        console.log("[Dashboard] Fetched completed_log from GitHub API");
+      }
+    } catch (e) {
+      console.error("[Dashboard] GitHub API fetch for log failed:", e);
     }
   }
 
+  if (!logLoaded) {
+    const logPath = path.resolve("./src/data/completed_log.json");
+    if (fs.existsSync(logPath)) {
+      const data = fs.readFileSync(logPath, "utf-8");
+      log = JSON.parse(data);
+    }
+  }
+
+  // Calculate Stats
+  count = log.length;
+  if (count > 0) {
+    hasStarted = true;
+    const sortedLog = log.sort(
+      (a, b) =>
+        new Date(a.completedAt).valueOf() - new Date(b.completedAt).valueOf(),
+    );
+    const firstDate = new Date(sortedLog[0].completedAt);
+    const now = new Date();
+
+    const diffTime = Math.abs(now.valueOf() - firstDate.valueOf());
+    days = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    if (days < 1) days = 1;
+
+    const rawAvg = (count / days) * 7;
+    avgPerWeek = rawAvg.toFixed(1);
+  }
+
   // Load Queue using GitHub API (Real-time)
-  const githubToken = import.meta.env.GITHUB_TOKEN || process.env.GITHUB_TOKEN;
+
   if (githubToken) {
     try {
       const repoOwner = "TJAdryan";
