@@ -188,8 +188,57 @@ export const POST = async ({ request, redirect }) => {
             console.error('Local File Update Error:', localError);
         }
 
-        // 3. Update Completed Log
+        // 3. Update Completed Log (GitHub + Local)
         stage = 'Log Update';
+
+        // GitHub Log Update
+        if (githubToken) {
+            try {
+                const repoOwner = 'TJAdryan';
+                const repoName = 'astro_blog';
+                const logPath = 'src/data/completed_log.json';
+                const getUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${logPath}`;
+
+                const getResponse = await fetch(getUrl, {
+                    headers: { 'Authorization': `Bearer ${githubToken}`, 'Accept': 'application/vnd.github.v3+json', 'User-Agent': 'Astro-Blog-App' }
+                });
+
+                if (getResponse.ok) {
+                    const fileData = await getResponse.json();
+                    const content = Buffer.from(fileData.content, 'base64').toString('utf-8');
+                    const log = JSON.parse(content);
+
+                    log.push({
+                        id: articleId,
+                        title: articleTitle,
+                        completedAt: new Date().toISOString(),
+                        googleDocId: documentId !== 'SKIPPED_GOOGLE_FAILURE' ? documentId : null,
+                        googleDocLink: documentId !== 'SKIPPED_GOOGLE_FAILURE' ? `https://docs.google.com/document/d/${documentId}` : null
+                    });
+
+                    await fetch(getUrl, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `Bearer ${githubToken}`,
+                            'Accept': 'application/vnd.github.v3+json',
+                            'User-Agent': 'Astro-Blog-App',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            message: `Log completion: ${articleTitle}`,
+                            content: Buffer.from(JSON.stringify(log, null, 2)).toString('base64'),
+                            sha: fileData.sha,
+                            branch: 'main'
+                        })
+                    });
+                    console.log('[API] GitHub Log updated.');
+                }
+            } catch (ghError) {
+                console.error('GitHub Log Update Error:', ghError);
+            }
+        }
+
+        // Local Log Update (Dev / Fallback)
         try {
             let log = [];
             if (fs.existsSync(LOG_FILE)) {
@@ -203,7 +252,7 @@ export const POST = async ({ request, redirect }) => {
                 googleDocLink: documentId !== 'SKIPPED_GOOGLE_FAILURE' ? `https://docs.google.com/document/d/${documentId}` : null
             });
             fs.writeFileSync(LOG_FILE, JSON.stringify(log, null, 2));
-            console.log('[API] Log updated.');
+            console.log('[API] Local Log updated.');
         } catch (logError) {
             console.error('Failed to update completed log:', logError);
         }
