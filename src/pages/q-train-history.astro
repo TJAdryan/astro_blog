@@ -1,0 +1,16 @@
+---
+import Layout from "../layouts/BaseLayout.astro";
+import QTrainHistory from "../components/QTrainHistory.jsx";
+
+const title = "Q Train Service History";
+const description = "Historical log of Q train service status and delays.";
+---
+
+<Layout title={title} description={description}>
+    <main class="container mx-auto px-4 py-12">
+        <h1 class="text-4xl font-bold text-center mb-8">{title}</h1>
+        <div class="flex justify-center">
+            <QTrainHistory client:load />
+        </div>
+    </main>
+</Layout>

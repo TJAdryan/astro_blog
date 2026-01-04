@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import stationMap from '../data/stations.json';
-import trainLog from '../data/train_log.json';
+
 
 const QTrainTracker = () => {
   const [status, setStatus] = useState('loading');
@@ -284,36 +284,18 @@ const QTrainTracker = () => {
       )}
 
       {/* Daily Log Section */}
-      {trainLog && trainLog.length > 0 && (
-        <div className="p-6 bg-white rounded-xl shadow-md space-y-4">
-          <h3 className="text-lg font-bold text-gray-800 border-b pb-2">Service History</h3>
-          <div className="space-y-4">
-            {trainLog.map((entry, index) => (
-              <div key={index} className="text-sm">
-                <div className="flex justify-between items-center mb-1">
-                  <span className="font-semibold text-gray-700">
-                    {new Date(entry.date).toLocaleDateString()}
-                  </span>
-                  <span className={`px-2 py-0.5 rounded text-xs font-medium ${entry.status === 'Good Service' ? 'bg-green-100 text-green-800' :
-                    entry.status === 'Service Change' ? 'bg-orange-100 text-orange-800' :
-                      entry.status === 'Delays' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-gray-100 text-gray-800'
-                    }`}>
-                    {entry.status}
-                  </span>
-                </div>
-                {entry.details && entry.details.length > 0 && (
-                  <ul className="list-disc list-inside text-gray-600 pl-2">
-                    {entry.details.map((detail, i) => (
-                      <li key={i}>{detail}</li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* Service History Link */}
+      <div className="text-center pt-4">
+        <a
+          href="/q-train-history"
+          className="inline-flex items-center justify-center px-4 py-2 border border-blue-200 text-base font-medium rounded-md text-blue-700 bg-blue-50 hover:bg-blue-100 transition-colors"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          View Service History Log
+        </a>
+      </div>
 
       <div className="text-xs text-gray-400 text-center">
         Data provided by goodservice.io
