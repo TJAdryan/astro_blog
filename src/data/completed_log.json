@@ -3,5 +3,12 @@
     "id": "http://arxiv.org/abs/2511.07663v2",
     "title": "Cortex AISQL: A Production SQL Engine for Unstructured Data",
     "completedAt": "2025-12-11T02:03:33.337Z"
+  },
+  {
+    "id": "http://arxiv.org/abs/2003.09541v2",
+    "title": "A Synopses Data Engine for Interactive Extreme-Scale Analytics",
+    "completedAt": "2026-01-04T22:29:06.521Z",
+    "googleDocId": "1va7Ow5uOmNtwLty2KoHX02N-wCI38WFCcvcF4BxGXpM",
+    "googleDocLink": "https://docs.google.com/document/d/1va7Ow5uOmNtwLty2KoHX02N-wCI38WFCcvcF4BxGXpM"
   }
 ]
