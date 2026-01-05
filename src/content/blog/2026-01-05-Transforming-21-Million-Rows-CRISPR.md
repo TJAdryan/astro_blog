@@ -93,3 +93,7 @@ CREATE INDEX idx_gene_symbol ON gene_effects(gene_symbol);
 
 By moving from a flat, wide CSV to an indexed SQL database, I can now query any of the 17,000+ genes across 1,000+ cell lines in **milliseconds**. This provides a sustainable, high-performance foundation for all future analysis.
 
+## Reflections: The Work Behind the Work
+
+Data engineering is rarely just about moving data; it is the culmination of several foundational, seemingly unrelated layers of systems architecture. Before a single row of this 21-million-point dataset could be processed, it was necessary to align the underlying infrastructure—from configuring `systemd` for persistence and Podman for container security to troubleshooting OS-level path errors and environment tooling. This project highlights that a functional pipeline is effectively the final "handshake" between stable systems administration and intentional data modeling.
+
