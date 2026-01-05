@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-01-05T13:15:31.242Z",
+    "status": "Service Change",
+    "details": [
+      "Northbound: 96 St-bound trains are running in 4 sections: between Coney Island - Stillwell Av and 96 St, between 86 St (W 7 St) and 96 St via <N>, between Whitehall St - South Ferry and 96 St via <W>, and between Grand St and 96 St via <D> and <F>."
+    ]
+  },
+  {
     "date": "2026-01-04T13:11:09.311Z",
     "status": "Good Service",
     "details": []
