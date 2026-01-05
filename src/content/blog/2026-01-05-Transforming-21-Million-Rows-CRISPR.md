@@ -5,36 +5,43 @@ pubDate: "Jan 05 2026"
 heroImage: "/crispr_architecture_simple.png"
 ---
 
-I have been working with publicly available data on **depmap.org**. The first challenge with any endeavor like this is getting the data into a format that works for you.
+I have been analyzing publicly available data from **depmap.org**. The first challenge? Wrangling the data into a usable format.
 
-The **CRISPR dependency dataset** is a raw matrix CSV containing over **21 million rows**. I want to put the cleaned data into Postgres for future jobs, but the current format is unwieldy for me. Getting Python to make that transformation is possible, but probably not the best use of our time.
+The **CRISPR dependency dataset** is massive: a raw CSV matrix containing over **21 million rows**. 
 
-Instead, I opted for a stack involving **Fedora 43**, **Podman**, and **DuckDB** to build a more efficient pipeline.
+My goal was to load this into **PostgreSQL** for future analysis. However, the raw format is unwieldy, and writing a custom Python script to transform it felt inefficient. I needed a faster, robust pipeline.
 
-## The Problem: The "Wide" Matrix
+My solution: A stack involving **Fedora 43**, **Podman**, and **DuckDB**.
 
-The raw `CRISPRGeneEffect.csv` is a matrix with over **17,000 columns** (one for each gene). Relational databases like PostgreSQL struggle with that many columns, and querying specific genes across cell lines becomes a nightmare.
+## The Problem: A "Wide" Matrix
 
-To make this usable, I needed to "unpivot" the data into a **"Long" format**:
-*   One column for the cell line ID
-*   One for the gene symbol
-*   One for the score
+The raw `CRISPRGeneEffect.csv` file has over **17,000 columns**—one for every gene. 
 
-## A Technical Snag: Running a Folder
+Relational databases like PostgreSQL struggle with tables this wide. Querying specific genes across thousands of cell lines becomes a performance nightmare.
 
-While setting up the toolchain, I hit a classic Linux hurdle. After downloading the DuckDB binary, I ran a `mv` command to put it in my system path. However, I accidentally created a **directory** named `duckdb` instead of moving the file itself.
+To fix this, I needed to "unpivot" the data into a **"Long" format**:
+*   **Model ID** (Cell Line)
+*   **Gene Symbol**
+*   **Dependency Score**
 
-When I tried to check the version, the terminal threw a "command not found" error. It was a moment that required a bit of troubleshooting—using `ls -F` showed that `/usr/local/bin/duckdb` ended in a `/`, meaning I was trying to execute a folder.
+## A Technical Snag: The "Folder" Mistake
 
-I had to purge the directory and re-map the binary correctly. It was a reminder that even simple file operations require attention to detail in a Linux environment.
+While setting up my toolchain, I hit a classic Linux hurdle. 
+
+After downloading the DuckDB binary, I ran a `mv` command to place it in my system path. In a rush, I accidentally created a **directory** named `duckdb` instead of moving the file itself.
+
+When I tried to run it, the terminal threw a confusing error: `command not found`. 
+
+A quick check with `ls -F` revealed the issue: `/usr/local/bin/duckdb/`. That trailing slash meant I was trying to execute a folder! A quick purge and re-map fixed it—a humble reminder to watch those file operations.
 
 ## The Solution: DuckDB + Podman
 
-Once the tools were in place, the transformation became a single efficient stream. I used a **Podman Quadlet** to manage the PostgreSQL instance, ensuring the database stays "always-on" as a systemd service.
+With the tools ready, the transformation became a single, efficient stream. 
+
+I used a **Podman Quadlet** to manage PostgreSQL, ensuring the database runs as an "always-on" systemd service.
 
 ### 1. The Quadlet Configuration
-
-Located at `~/.config/containers/systemd/postgres.container`, this ensures the DB persists and restarts automatically:
+Located at `~/.config/containers/systemd/postgres.container`, this configuration makes the DB persistent and auto-restarting:
 
 ```ini
 [Container]
@@ -51,15 +58,17 @@ WantedBy=default.target
 ```
 
 ### 2. The Unpivot and Load
-
-Using DuckDB’s Postgres scanner, I was able to unpivot the 17,000 columns and stream them into the container in about **4 minutes**:
+Using **DuckDB’s Postgres scanner**, I unpivoted all 17,000 columns and streamed them directly into the database in about **4 minutes**:
 
 ```bash
 duckdb -c "
 INSTALL postgres;
 LOAD postgres;
+
+-- Connect to the Podman container
 ATTACH 'host=localhost user=postgres password=self_assured_complexity dbname=crispr_db' AS pg (TYPE POSTGRES);
 
+-- Unpivot and Load in one pass
 CREATE TABLE pg.gene_effects AS 
 SELECT 
     \"column00000\" AS model_id, 
@@ -72,12 +81,15 @@ FROM (
 );"
 ```
 
-## Result and Optimization
+## The Result
 
-The final table contains **21,093,758 rows**. To make this actually useful for research, I added a B-tree index on the gene symbols.
+The final table contains **21,093,758 rows**. 
+
+To optimize for research, I added a B-tree index on the gene symbols:
 
 ```sql
 CREATE INDEX idx_gene_symbol ON gene_effects(gene_symbol);
 ```
 
-By moving the data out of a flat CSV and into an indexed database, I can now query any of the 17,000+ genes and get the dependency distribution across 1,000+ cell lines in milliseconds. It’s a much more sustainable foundation for the analysis scripts to follow.
+By moving from a flat, wide CSV to an indexed SQL database, I can now query any of the 17,000+ genes across 1,000+ cell lines in **milliseconds**. This provides a sustainable, high-performance foundation for all future analysis.
+
