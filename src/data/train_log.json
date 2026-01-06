@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-01-06T13:14:35.744Z",
+    "status": "Delays",
+    "details": [
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times at Kings Hwy (up to 13 mins, normally every 10 mins)."
+    ]
+  },
+  {
     "date": "2026-01-05T13:15:31.242Z",
     "status": "Service Change",
     "details": [
