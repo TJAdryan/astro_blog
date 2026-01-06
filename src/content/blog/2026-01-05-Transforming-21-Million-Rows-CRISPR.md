@@ -20,6 +20,7 @@ To fix this, I needed to “unpivot” the data into a **“Long” format**:
 *   **Gene Symbol**
 *   **Dependency Score**
 
+<br/>
 ## A Technical Snag: The “Folder” Mistake
 
 While setting up my toolchain, I hit a classic Linux hurdle. After downloading the DuckDB binary, I ran a `mv` command to place it in my system path. In a rush, I accidentally created a **directory** named `duckdb` instead of moving the file itself.
