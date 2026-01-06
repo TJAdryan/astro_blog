@@ -11,7 +11,7 @@ I have a Fedora workstation running on an old Mac Mini, so that comes with **Pod
 
 The **CRISPR dependency dataset** is a raw CSV matrix containing over **21 million rows**. My goal was to load this into PostgreSQL for future analysis. However, the raw format is unwieldy, and writing a custom Python script to transform it felt inefficient. I needed a faster, robust pipeline.
 
-## The Problem: A “Wide” Matrix
+### The Problem: A “Wide” Matrix
 
 The raw `CRISPRGeneEffect.csv` file has over **17,000 columns**—one for every gene. Relational databases like PostgreSQL struggle with tables this wide. Querying specific genes across thousands of cell lines becomes a performance nightmare.
 
@@ -21,7 +21,8 @@ To fix this, I needed to “unpivot” the data into a **“Long” format**:
 *   **Dependency Score**
 
 <br/>
-## A Technical Snag: The “Folder” Mistake
+
+### A Technical Snag: The “Folder” Mistake
 
 While setting up my toolchain, I hit a classic Linux hurdle. After downloading the DuckDB binary, I ran a `mv` command to place it in my system path. In a rush, I accidentally created a **directory** named `duckdb` instead of moving the file itself.
 
@@ -33,7 +34,7 @@ There is a specific kind of irony in spending an hour fixing a mistake that took
 
 
 
-## The Solution: DuckDB + Podman
+### The Solution: DuckDB + Podman
 
 With the tools ready, the transformation became a single, efficient stream. I used a **Podman Quadlet** to manage PostgreSQL, ensuring the database runs as an “always-on” systemd service.
 
@@ -80,7 +81,7 @@ FROM (
 );"
 ```
 
-## The Result
+### The Result
 
 The final table contains **21,093,758 rows**. To optimize for research, I added a B-tree index on the gene symbols:
 
@@ -90,6 +91,6 @@ CREATE INDEX idx_gene_symbol ON gene_effects(gene_symbol);
 
 By moving from a flat, wide CSV to an indexed SQL database, I can now query any of the 17,000+ genes across 1,000+ cell lines in **milliseconds**. This provides a sustainable, high-performance foundation for all future analysis.
 
-## Reflections: The Work Behind the Work
+### Reflections: The Work Behind the Work
 
 Data engineering is rarely just about moving data; it is the culmination of several foundational, seemingly unrelated layers of systems architecture. Before a single row of this 21-million-point dataset could be processed, it was necessary to align the underlying infrastructure—from configuring `systemd` for persistence and Podman for container security to troubleshooting OS-level path errors and environment tooling. This project highlights that a functional pipeline is effectively the final “handshake” between stable systems administration and intentional data modeling. 
