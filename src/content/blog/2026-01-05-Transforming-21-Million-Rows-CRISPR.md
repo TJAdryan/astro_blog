@@ -2,9 +2,10 @@
 title: "Transforming 21 Million Rows of CRISPR Data for PostgreSQL"
 description: "How I used DuckDB and Podman to unpivot a massive 17,000-column CSV into a usable PostgreSQL database."
 pubDate: "Jan 05 2026"
-heroImage: "/crispr_architecture_simple.png"
-showInListing: false
+
 ---
+
+![CRISPR Data Pipeline Architecture](/crispr_architecture_simple.png)
 
 Recently, I started working on creating some pipelines using the publicly available CRISPR data from **depmap.org**. The goal is to get the data into **PostgreSQL** so it can be efficiently called as needed. Since this was probably going to involve more than one transformation, building out some basic infrastructure seemed the most sensible way to start.
 
