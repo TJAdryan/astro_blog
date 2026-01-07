@@ -55,9 +55,7 @@ const latestPosts = posts.slice(0, 3);
           </div>
           <div class="flex flex-col gap-6 mt-4">
             {latestPosts.map((post, index) => (
-              <div
-                class={`border-b pb-4 last:border-b-0 ${index > 0 ? "hidden md:block" : ""}`}
-              >
+              <div class={`border-b pb-4 last:border-b-0`}>
                 <a
                   href={`/blog/${post.slug}/`}
                   class="text-2xl md:text-xl font-bold text-blue-600 dark:text-blue-400 hover:underline block leading-tight mb-2"
@@ -231,8 +229,8 @@ const latestPosts = posts.slice(0, 3);
         container.innerHTML = "";
         three.forEach((article, index) => {
           const wrapper = document.createElement("div");
-          // Hide 2nd and 3rd articles on mobile, show on md+
-          const visibilityClass = index > 0 ? " hidden md:block" : "";
+          // Show all items on mobile
+          const visibilityClass = "";
           wrapper.className = "border-b pb-4 last:border-b-0" + visibilityClass;
           const a = document.createElement("a");
           a.href = article.url;
@@ -490,11 +488,11 @@ const latestPosts = posts.slice(0, 3);
       line-height: 1.5;
     }
 
-    /* FORCE HIDE 2nd and 3rd items on mobile */
-    .latest-posts .flex.flex-col > div:nth-child(n + 2),
+    /* Previously forced hiding of 2nd/3rd items - RESTORED for user preference */
+    /* .latest-posts .flex.flex-col > div:nth-child(n + 2),
     #articles-list > div:nth-child(n + 2) {
       display: none !important;
-    }
+    } */
 
     /* FORCE LARGER TEXT on mobile */
     .latest-posts a,
