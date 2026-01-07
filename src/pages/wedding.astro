@@ -21,11 +21,20 @@ import Layout from "../layouts/BlogPost.astro";
 			</div>
 
 			<div class="wedding-content">
-				<h2 class="romantic-title">
+				<div
+					class="language-switch-container"
+					style="text-align: center; margin-bottom: 2rem;"
+				>
+					<button id="lang-toggle" class="lang-btn">
+						Read in Georgian / წაიკითხეთ ქართულად 🇬🇪
+					</button>
+				</div>
+
+				<h2 class="romantic-title" id="text-title">
 					The Wedding of Dominick and Sophio
 				</h2>
 
-				<p class="intro-text">
+				<p class="intro-text" id="text-intro">
 					It was a September day in Brooklyn that felt like a gift—the
 					kind of weather where the sun is bright but the air is
 					crisp, signaling the perfect start to something new. On this
@@ -118,9 +127,67 @@ import Layout from "../layouts/BlogPost.astro";
 							startVideo(false),
 						);
 					}
+
+					// --- Translation Logic ---
+					const langBtn = document.getElementById("lang-toggle");
+					let isGeorgian = false;
+					const originalText = {};
+
+					const georgianContent = {
+						"text-title": "დომინიკისა და სოფიოს ქორწილი",
+						"text-intro":
+							"ეს იყო სექტემბრის დღე ბრუკლინში, რომელიც საჩუქარს ჰგავდა - ისეთი ამინდი, როცა მზე კაშკაშებს, მაგრამ ჰაერი გრილია, რაც რაღაც ახლის იდეალურ დასაწყისს მოასწავებს. ამ დილას სინათლე თითქოს სპეციალურად დომინიკისა და სოფიოსთვის ანათებდა.",
+						"text-p1":
+							"ისინი დილით მივიდნენ მერიაში, მზად რომ ოფიციალურად გაეფორმებინათ თავიანთი კავშირი. სოფიო აბსოლუტურად ლამაზად გამოიყურებოდა, ასხივებდა ბედნიერებას, რომელიც ოთახს ანათებდა. მის გვერდით დგომისას, დომინიკი სიამაყისა და ერთგულების განსახიერება იყო; თვალს ვერ აშორებდა მას. ცერემონია იყო ინტიმური და ღრმად ამაღელვებელი. მოსამართლე, რომელიც ფიცს უძღვებოდა, იყო თბილი და კეთილგანწყობილი, რაც პროცესს ნამდვილი სიყვარულის ტონს აძლევდა.",
+						"text-p2":
+							"სოფიო სიყვარულით სავსე ვიწრო წრეში იყო. მისი ქალიშვილი ახლოს იდგა და მომენტის მოწმე იყო, სოფიოს დეიდასთან ერთად, რომელიც მტკიცე, მხარდამჭერ დასაყრდენს წარმოადგენდა. მისი მეგობარი ნატალი მეჯვარედ დადგა და დარწმუნდა, რომ ყველაფერი იდეალურად იყო. საინტერესოა, რომ ჩვეულებრივ მოლაპარაკე გვანცა იქ იყო, მაგრამ გასაკვირად ჩუმად - ალბათ მომენტის სიმძიმითა და სილამაზით იყო მოცული.",
+						"text-p3":
+							"ამ ნათელ დღეს მხოლოდ ერთი ჩრდილო აწვა: სოფიოს დედა შორს, თავის სამშობლოში - საქართველოში იყო და ვერ დაესწრო. თუმცა, მისი სული იგრძნობოდა იმ სიყვარულში, რომელსაც სოფიო ატარებდა.",
+						"text-p4":
+							'ფიცის წარმოთქმისა და ქაღალდებზე ხელმოწერის შემდეგ, წყვილი ბრუკლინის ჰაერზე გამოვიდა. ისინი ბრუკლინის ხიდთან ახლოს მდებარე პარკებისკენ გაემართნენ ფოტოების გადასაღებად. თითქოს ქალაქსაც სურდა ზეიმში ჩართვა. სადაც კი გაივლიდნენ, უცნობები ჩერდებოდნენ, სახე უნათდებოდათ. "დღეს იქორწინეთ?" ეკითხებოდნენ ხალხი, რასაც მაშინვე თბილი ღიმილი და გულწრფელი შეძახილები მოსდევდა: "გილოცავთ!" უცნობების კეთილგანწყობამ დღე კიდევ უფრო ჯადოსნური გახადა.',
+						"text-p5":
+							'ზეიმი მანჰეტენზე გაგრძელდა, როდესაც ისინი მატარებლით მე-14 ქუჩაზე გაემგზავრნენ. მე-8 ავენიუდან დასავლეთით მიმავალ გზაზე, გადაწყვიტეს სწრაფი წასახემსებლად პიცერიაში შეჩერებულიყვნენ. სიცილს ვერ იკავებდნენ კონტრასტზე - ისხდნენ ფორმალურ საქორწილო ტანსაცმელში, ქაღალდის თეფშებისა და ფლუორესცენტული განათების გარემოცვაში. დომინიკმა, რომელსაც სურდა ყველაფერი იდეალური ყოფილიყო, ჰკითხა სოფიოს, ხომ არ ამჯობინებდა უფრო მაღალი დონის ადგილს. მან იდეა მაშინვე უარყო და ღიმილით შეხედა მას. <span class="quote">"სანამ ჩვენ ერთად ვართ"</span>, - თქვა მან.',
+						"text-p6":
+							"მათ განაგრძეს გზა წყლისკენ, გაიარეს Meatpacking District-ი. რიყის ქვით მოპირკეთებული ქუჩები, რომლებიც დიდი ხანია მდიდარი ხალხის სასეირნო ადგილად იქცა, განსაცვიფრებელ ფონს ქმნიდა. სეირნობისას კიდევ უფრო მეტი კომპლიმენტი და ღიმილი მიიღეს მოდური ხალხისგან, რომლებიც მოხიბლულნი იყვნენ ბედნიერი წყვილით.",
+						"text-p7":
+							"საბოლოოდ მიაღწიეს Little Island-ს, ჰუძონზე მოტივტივე ახალ პარკს. აქ წრე გაფართოვდა. სოფიოს მეგობრები ირინკა და ორი გვანცა იქ იყვნენ საზეიმოდ. მისი მეგობარი თინაც კი სამსახურის შემდეგ გამოიქცა, რომ სიხარული არ გამოტოვებოდა. ისინი იცინოდნენ და ისვენებდნენ წყალთან, ტკბებოდნენ ჰორიზონტით და იმ მოლოდინით, რაც წინ ელოდათ.",
+						"text-p8":
+							"საღამოს დადგომასთან ერთად, დადგა გრანდიოზული ფინალის დრო: სადილი კრუიზზე.",
+						"text-p9":
+							"ნავზე ასვლის შემდეგ, წვეულება ნამდვილად დაიწყო. დომინიკის სამყარო შეერწყა სოფიოსას, როდესაც მისი მეგობრები ვენი, საბინა და პიტი ზეიმს შეუერთდნენ. ეს იყო ცხოვრებისეული შეკრება, რადგან დომინიკის ბავშვობის მეგობრები, ფუმიო და ჯეიმსი იქ იყვნენ. დომინიკი თავს ძალიან პატივცემულად გრძნობდა, რომ ჯეიმსის დედა, ჯუდი, შეძლო ზეიმზე დასწრება. მან წაახალისა დომინიკი ეცეკვა სოფიოსთან, თუმცა ეს არ არის ის, რაც მას ჩვეულებრივ სიამოვნებს. დომინიკმა ჭკვიანურად დაუჯერა ჯუდის. მოგვიანებით ის ისეთი ბედნიერი იყო, რომ დაუჯერა, რომ ჯუდი საცეკვაო მოედანზე მიიწვია და სამივემ რამდენიმე სიმღერაზე ერთად იცეკვა. ელიზაბეტიც კი, დომინიკის ყოფილი თანამშრომელი, მოვიდა საზეიმოდ; ის ყოველთვის იყო დომინიკისა და სოფიოს ურთიერთობის აქტიური მხარდამჭერი და მათი დაქორწინებულების ნახვა მისთვის განსაკუთრებული მომენტი იყო.",
+						"text-p10":
+							'ღამე სიხარულის ბუნდოვანებად იქცა. ისინი ჭამდნენ, სვამდნენ და საუბრობდნენ, სანამ ფანჯრებს მიღმა ქალაქის შუქები მიცურავდა. ენერგია მაღალი იყო, მაგრამ პიკს მიაღწია, როდესაც ბენდის ლიდერმა, ქარიზმატულმა ქალმა შთამბეჭდავი გარეგნობით, მიკროფონი აიღო. მან მუსიკა შეაჩერა და ხალხს ჰკითხა: "თქვენ ორმა დღეს იქორწინეთ?"',
+						"text-p11":
+							"როდესაც დომინიკმა და სოფიომ კი უპასუხეს, ოთახი აფეთქდა. ბენდმა სპეციალური საპატიო სიმღერა შეასრულა მხოლოდ მათთვის. ყველამ - ბავშვობის მეგობრებმა, თანამშრომლებმა, ოჯახმა და ახალმა ნაცნობებმა - წრე შეკრეს და ახალდაქორწინებულების გარშემო ცეკვავდნენ. ეს იყო შესანიშნავი საღამო, მშვიდი და თავდადებული სიყვარულის ხმამაღალი და მხიარული გამოცხადება.",
+					};
+
+					if (langBtn) {
+						langBtn.addEventListener("click", () => {
+							isGeorgian = !isGeorgian;
+							const ids = Object.keys(georgianContent);
+
+							ids.forEach((id) => {
+								const el = document.getElementById(id);
+								if (el) {
+									if (!originalText[id])
+										originalText[id] = el.innerHTML; // Save ENG
+
+									if (isGeorgian) {
+										el.innerHTML = georgianContent[id];
+									} else {
+										el.innerHTML = originalText[id];
+									}
+								}
+							});
+
+							langBtn.textContent = isGeorgian
+								? "Read in English 🇺🇸"
+								: "Read in Georgian / წაიკითხეთ ქართულად 🇬🇪";
+						});
+					}
 				</script>
 
-				<p>
+				<p id="text-p1">
 					They arrived at City Hall in the morning, ready to make
 					their bond official. Sophio looked absolutely beautiful,
 					radiating a happiness that lit up the room. Standing beside
@@ -131,7 +198,7 @@ import Layout from "../layouts/BlogPost.astro";
 					proceedings.
 				</p>
 
-				<p>
+				<p id="text-p2">
 					Sophio was surrounded by a tight circle of love. Her
 					daughter stood close, witnessing the moment, alongside
 					Sophio’s aunt, who offered a steady, supportive presence.
@@ -143,14 +210,14 @@ import Layout from "../layouts/BlogPost.astro";
 
 				<hr class="heart-divider" />
 
-				<p>
+				<p id="text-p3">
 					There was only one shadow on the bright day: Sophio’s mother
 					was far away in her home country of Georgia and could not
 					attend. However, her spirit was felt in the love Sophio
 					carried with her.
 				</p>
 
-				<p>
+				<p id="text-p4">
 					After the vows were spoken and the papers signed, the couple
 					stepped out into the Brooklyn air. They made their way to
 					the parks near the Brooklyn Bridge for photographs. The city
@@ -162,7 +229,7 @@ import Layout from "../layouts/BlogPost.astro";
 					feel even more magical.
 				</p>
 
-				<p>
+				<p id="text-p5">
 					The celebration moved to Manhattan as they took the train to
 					14th Street. Walking west from 8th Avenue, they decided to
 					stop for a quick bite in a utilitarian pizza dive. They
@@ -176,7 +243,7 @@ import Layout from "../layouts/BlogPost.astro";
 					> she said.
 				</p>
 
-				<p>
+				<p id="text-p6">
 					They continued their journey toward the water, walking
 					through the Meatpacking District. The cobblestone streets,
 					long transformed into a playground for the well-heeled,
@@ -185,7 +252,7 @@ import Layout from "../layouts/BlogPost.astro";
 					crowds, who were charmed by the happy couple.
 				</p>
 
-				<p>
+				<p id="text-p7">
 					They eventually reached Little Island, the new park floating
 					above the Hudson. Here, the circle widened. Sophio’s friends
 					Irinka and the two Gvantsas were there to celebrate. Her
@@ -197,12 +264,12 @@ import Layout from "../layouts/BlogPost.astro";
 
 				<hr class="heart-divider" />
 
-				<p>
+				<p id="text-p8">
 					As evening fell, it was time for the grand finale: the
 					Dinner Cruise.
 				</p>
 
-				<p>
+				<p id="text-p9">
 					Once they boarded the boat, the party truly began.
 					Dominick’s world merged with Sophio’s as his friends Wen,
 					Sabina, and Pete joined the festivities. It was a gathering
@@ -220,7 +287,7 @@ import Layout from "../layouts/BlogPost.astro";
 					special moment for her.
 				</p>
 
-				<p>
+				<p id="text-p10">
 					The night became a blur of joy. They ate, drank, and chatted
 					as the city lights drifted by outside the windows. The
 					energy was high, but it peaked when the band leader, a
@@ -229,7 +296,7 @@ import Layout from "../layouts/BlogPost.astro";
 					you two get married today?"
 				</p>
 
-				<p>
+				<p id="text-p11">
 					When Dominick and Sophio said yes, the room erupted. The
 					band struck up a special tribute song just for them.
 					Everyone—friends from childhood, friends from work, family,
@@ -446,6 +513,23 @@ import Layout from "../layouts/BlogPost.astro";
 			.wedding-video {
 				width: 100%;
 				display: block;
+			}
+			.lang-btn {
+				background: #ffecf2;
+				border: 2px solid #d6336c;
+				color: #c2255c;
+				padding: 10px 20px;
+				border-radius: 30px;
+				font-size: 1.1rem;
+				font-weight: bold;
+				cursor: pointer;
+				transition: all 0.3s ease;
+				box-shadow: 0 4px 6px rgba(214, 51, 108, 0.2);
+			}
+			.lang-btn:hover {
+				background: #d6336c;
+				color: white;
+				transform: translateY(-2px);
 			}
 		</style>
 		<style is:global>
