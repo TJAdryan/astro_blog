@@ -587,7 +587,6 @@ import Layout from "../layouts/BlogPost.astro";
 				);
 				if (!container) return;
 
-				const heartCount = 30; // Max hearts at once
 				const colors = [
 					"#ffb6c1",
 					"#ff69b4",
@@ -596,22 +595,10 @@ import Layout from "../layouts/BlogPost.astro";
 					"#ffa07a",
 				]; // Pink/Red/Salmon variants
 
-				let isActive = true;
-
-				// Stop spawning after 10 seconds
-				setTimeout(() => {
-					isActive = false;
-					// Fade out container
-					if (container) {
-						container.style.transition = "opacity 2s ease-out";
-						container.style.opacity = "0";
-						// Remove from DOM after fade
-						setTimeout(() => container.remove(), 2000);
-					}
-				}, 10000);
+				const startTime = Date.now();
+				const totalDuration = 15000; // 15 seconds
 
 				function createHeart() {
-					if (!isActive) return;
 					if (!container) return;
 
 					const heart = document.createElement("div");
@@ -634,18 +621,41 @@ import Layout from "../layouts/BlogPost.astro";
 
 					container.appendChild(heart);
 
-					// Cleanup this heart individually
+					// Cleanup this heart individually (no respawn logic here)
 					setTimeout(() => {
 						heart.remove();
-						// Only spawn replacement if still active
-						if (isActive) createHeart();
-					}, durationFall * 1000); // slightly before/after end
+					}, durationFall * 1000);
 				}
 
-				// Initial batch
-				for (let i = 0; i < heartCount; i++) {
-					// Stagger initial creation
-					setTimeout(createHeart, Math.random() * 3000);
+				// Loop with increasing delay to create "Fade to Trickle" effect
+				function spawnLoop() {
+					const elapsed = Date.now() - startTime;
+					if (elapsed > totalDuration) {
+						// End sequence: Fade out container
+						if (container) {
+							container.style.transition = "opacity 2s ease-out";
+							container.style.opacity = "0";
+							setTimeout(() => container.remove(), 2000);
+						}
+						return;
+					}
+
+					// Calculate delay based on time (Quadratic/Power curve)
+					// Start: ~30ms delay (very fast)
+					// End: ~800ms delay (trickle)
+					const progress = elapsed / totalDuration;
+					const nextDelay = 30 + 1000 * Math.pow(progress, 2.5);
+
+					createHeart();
+					setTimeout(spawnLoop, nextDelay);
+				}
+
+				// Start the main loop
+				spawnLoop();
+
+				// Initial Burst to fill the screen immediately
+				for (let i = 0; i < 20; i++) {
+					setTimeout(createHeart, Math.random() * 1000);
 				}
 			});
 		</script>
