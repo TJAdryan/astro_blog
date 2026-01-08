@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-01-08T13:15:25.573Z",
+    "status": "Service Change",
+    "details": [
+      "Northbound: 96 St-bound trains are running in 2 sections: between Coney Island - Stillwell Av and 96 St, and between Canal St and 96 St.",
+      "Southbound: Coney Island - Stillwell Av-bound trains are running in 2 sections: between 96 St and Coney Island - Stillwell Av, and between Cortlandt St and Coney Island - Stillwell Av via <R>."
+    ]
+  },
+  {
     "date": "2026-01-07T13:14:58.567Z",
     "status": "Delays",
     "details": [
