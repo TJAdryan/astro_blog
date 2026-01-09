@@ -12,82 +12,82 @@
 
 /* Reset default styles */
 body {
-  margin: 0;
-  padding: 0;
+	margin: 0;
+	padding: 0;
 }
 
 /* Header styles */
 header {
-  margin: 0;
-  padding: 1em;
-  background: white;
-  box-shadow: 0 2px 8px rgba(var(--black), 5%);
+	margin: 0;
+	padding: 1em;
+	background: white;
+	box-shadow: 0 2px 8px rgba(var(--black), 5%);
 }
 
 header nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 1em;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	max-width: 1400px;
+	margin: 0 auto;
+	padding: 0 1em;
 }
 
 .site-title {
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
-  text-decoration: none;
-  color: inherit;
+	display: flex;
+	align-items: center;
+	gap: 0.5em;
+	text-decoration: none;
+	color: inherit;
 }
 
 .site-logo {
-  width: 32px;
-  height: 32px;
+	width: 32px;
+	height: 32px;
 }
 
 .internal-links {
-  display: flex;
-  gap: 1em;
+	display: flex;
+	gap: 1em;
 }
 
 .social-links {
-  display: flex;
-  gap: 1em;
+	display: flex;
+	gap: 1em;
 }
 
 /* Housing simulation specific styles */
 .housing-simulation-page {
-  #housing-visual-grid {
-    width: 100% !important;
-    max-width: none !important;
-    margin: 0 !important;
-  }
-  
-  /* Only apply full width to the housing simulation container */
-  .housing-simulation-container {
-    width: 100% !important;
-    max-width: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
+	#housing-visual-grid {
+		width: 100% !important;
+		max-width: none !important;
+		margin: 0 !important;
+	}
+
+	/* Only apply full width to the housing simulation container */
+	.housing-simulation-container {
+		width: 100% !important;
+		max-width: none !important;
+		margin: 0 !important;
+		padding: 0 !important;
+	}
 }
 
 /* Font declarations */
 @font-face {
-    font-family: 'Atkinson';
-    src: url('/fonts/atkinson-regular.woff') format('woff');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
+	font-family: 'Atkinson';
+	src: url('/fonts/atkinson-regular.woff') format('woff');
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
 }
 
 @font-face {
-    font-family: 'Atkinson';
-    src: url('/fonts/atkinson-bold.woff') format('woff');
-    font-weight: 700;
-    font-style: normal;
-    font-display: swap;
+	font-family: 'Atkinson';
+	src: url('/fonts/atkinson-bold.woff') format('woff');
+	font-weight: 700;
+	font-style: normal;
+	font-display: swap;
 }
 
 /* ... your other global styles can go below ... */
@@ -97,14 +97,17 @@ header nav {
 	/* Data Analytics Theme - Jupyter Orange with Data-Friendly Grays */
 	--accent: #ff6b35;
 	--accent-dark: #e55527;
-	--black: 33, 37, 41;          /* Darker, more readable text */
-	--gray: 108, 117, 125;        /* Neutral data-friendly gray */
-	--gray-light: 248, 249, 250;  /* Clean background gray */
-	--gray-dark: 52, 58, 64;      /* Professional dark gray */
+	--black: 33, 37, 41;
+	/* Darker, more readable text */
+	--gray: 108, 117, 125;
+	/* Neutral data-friendly gray */
+	--gray-light: 248, 249, 250;
+	/* Clean background gray */
+	--gray-dark: 52, 58, 64;
+	/* Professional dark gray */
 	--gray-gradient: rgba(var(--gray-light), 50%), #fff;
 	--box-shadow:
-		0 2px 6px rgba(var(--gray), 25%), 0 8px 24px rgba(var(--gray), 33%), 0 16px 32px
-		rgba(var(--gray), 33%);
+		0 2px 6px rgba(var(--gray), 25%), 0 8px 24px rgba(var(--gray), 33%), 0 16px 32px rgba(var(--gray), 33%);
 	font-family: 'Atkinson', system-ui, sans-serif;
 }
 
@@ -130,6 +133,7 @@ header nav {
 		color: #e2e8f0;
 	}
 }
+
 @font-face {
 	font-family: "Atkinson";
 	src: url("/fonts/atkinson-regular.woff") format("woff");
@@ -137,6 +141,7 @@ header nav {
 	font-style: normal;
 	font-display: swap;
 }
+
 @font-face {
 	font-family: "Atkinson";
 	src: url("/fonts/atkinson-bold.woff") format("woff");
@@ -145,6 +150,7 @@ header nav {
 	font-display: swap;
 	font-display: swap;
 }
+
 body {
 	font-family: "Atkinson", sans-serif;
 	margin: 0;
@@ -158,94 +164,117 @@ body {
 	font-size: 18px;
 	line-height: 1.7;
 }
+
 main {
 	width: 1000px;
 	max-width: calc(100% - 4em);
 	margin: auto;
 	padding: 4em 2em;
 }
+
 h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
-	margin: 0 0 0.5rem 0;
+	margin: 2rem 0 1rem 0;
 	color: rgb(var(--black));
 	line-height: 1.2;
 }
+
 h1 {
 	font-size: 3.052em;
 }
+
 h2 {
 	font-size: 2.441em;
 }
+
 h3 {
 	font-size: 1.953em;
 }
+
 h4 {
 	font-size: 1.563em;
 }
+
 h5 {
 	font-size: 1.25em;
 }
+
 strong,
 b {
 	font-weight: 700;
 }
+
 a {
 	color: var(--accent);
 }
+
 a:hover {
 	color: var(--accent);
 }
+
 p {
 	margin-bottom: 1em;
 }
+
 .prose p {
 	margin-bottom: 1.5em;
 }
+
 textarea {
 	width: 100%;
 	font-size: 16px;
 }
+
 input {
 	font-size: 16px;
 }
+
 table {
 	width: 100%;
 }
+
 img {
 	max-width: 100%;
 	height: auto;
 	border-radius: 8px;
 }
+
 code {
 	padding: 2px 5px;
 	background-color: rgb(var(--gray-light));
 	border-radius: 2px;
 }
+
 pre {
 	padding: 1.5em;
 	border-radius: 8px;
 }
-pre > code {
+
+pre>code {
 	all: unset;
 }
+
 blockquote {
 	border-left: 4px solid var(--accent);
 	padding: 0 0 0 20px;
 	margin: 0px;
 	font-size: 1.333em;
 }
+
 hr {
 	border: none;
 	border-top: 1px solid rgb(var(--gray-light));
 }
+
 @media (max-width: 720px) {
 	body {
 		font-size: 18px;
 	}
+
 	main {
 		padding: 1em;
 	}
@@ -276,4 +305,3 @@ hr {
 	max-width: 100%;
 	height: auto;
 }
-
