@@ -5,7 +5,7 @@ pubDate: "Jan 05 2026"
 
 ---
 
-![CRISPR Data Pipeline Architecture](/crispr_architecture_simple.png)
+<img src="/bio_data_etl_pipeline.png" alt="Bio-Data ETL Pipeline" style="width: 75%; height: auto; display: block; margin: 0 auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" />
 
 ### The Challenge: Normalizing Multi-Dimensional Matrices
 
