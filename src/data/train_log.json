@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-01-11T13:11:27.730Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times between Canal St and 96 St (up to 16 mins, normally every 12 mins)."
+    ]
+  },
+  {
     "date": "2026-01-10T13:10:57.530Z",
     "status": "Delays",
     "details": [
