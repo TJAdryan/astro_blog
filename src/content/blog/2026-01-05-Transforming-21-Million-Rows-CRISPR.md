@@ -19,6 +19,43 @@ Building an environment to manage this type of data requires moving beyond basic
 *   **Persistence:** To ensure the database remains persistent and auto-restarting, I used **Podman Quadlets** to manage the PostgreSQL instance as a systemd service. This effectively turns a local container into a reliable piece of Infrastructure-as-Code.
 *   **Orchestration:** The final requirement for a biotech pipeline is observability. Because DepMap data updates on a semi-annual schedule, it is easy for pipelines to break quietly due to schema drift or corrupted downloads. I used **Dagster** for orchestration to ensure the system flags errors at the ingestion stage before they hit the research database. This moves the project from a "one-off" load to a managed data lifecycle.
 
+### Persistent Infrastructure: The Quadlet Configuration
+
+To move beyond a transient container, I utilized **Podman Quadlets** to manage the PostgreSQL instance. By defining the container in a `.container` file, Fedora's systemd handles the lifecycle—starting the database at boot and ensuring it auto-restarts if it fails.
+
+First, I defined the container configuration:
+
+```ini
+# ~/.config/containers/systemd/crispr-db.container
+[Container]
+Image=docker.io/library/postgres:latest
+Environment=POSTGRES_PASSWORD=self_assured_complexity
+Environment=POSTGRES_DB=crispr_db
+PublishPort=5432:5432
+Volume=postgres_data:/var/lib/postgresql/data
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target
+```
+
+Then, I used `systemctl` to load the Quadlet and start the service:
+
+```bash
+# Reload systemd to recognize the new Quadlet
+systemctl --user daemon-reload
+
+# Start and enable the database service
+systemctl --user enable --now crispr-db.service
+
+# Verify the container is running
+podman ps
+```
+
+This setup provides a persistent "Silver" layer that feels like a production cloud instance but runs entirely on local hardware.
+
 ### The Implementation: DuckDB to Postgres Stream
 
 The actual execution was handled via DuckDB’s Postgres scanner. By unpivoting all 17,000 columns and streaming them directly into the containerized database, the final table was populated in under 4 minutes.
