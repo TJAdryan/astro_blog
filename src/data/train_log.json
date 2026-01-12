@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-01-12T13:15:51.804Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times between Avenue M and 14 St - Union Sq (up to 12 mins, normally every 9 mins).",
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Kings Hwy and Sheepshead Bay (up to 17 mins, normally every 10 mins)."
+    ]
+  },
+  {
     "date": "2026-01-11T13:11:27.730Z",
     "status": "Delays",
     "details": [
