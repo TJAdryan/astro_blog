@@ -1,25 +1,31 @@
 ---
-import { type CollectionEntry, getCollection, render } from 'astro:content';
-import PostHogLayout from '../../layouts/PostHogLayout.astro';
-import BlogPost from '@/layouts/BlogPost.astro'; // <--- THIS IS THE CORRECTED LINE
+import { type CollectionEntry, getCollection, render } from "astro:content";
+import PostHogLayout from "../../layouts/PostHogLayout.astro";
+import BlogPost from "@/layouts/BlogPost.astro";
+import FullWidthLayout from "../../layouts/FullWidthLayout.astro";
 
 export const prerender = true;
 
 export async function getStaticPaths() {
-	const posts = await getCollection('blog');
+	const posts = await getCollection("blog");
 	return posts.map((post) => ({
 		params: { slug: post.slug },
 		props: post,
 	}));
 }
-type Props = CollectionEntry<'blog'>;
+type Props = CollectionEntry<"blog">;
 
 const post = Astro.props;
 const { Content } = await render(post);
+
+// Select layout based on frontmatter (default to BlogPost)
+// @ts-ignore
+const Layout =
+	post.data.layout_type === "full-width" ? FullWidthLayout : BlogPost;
 ---
 
 <PostHogLayout>
-	<BlogPost {...post.data}>
+	<Layout {...post.data}>
 		<Content />
-	</BlogPost>
+	</Layout>
 </PostHogLayout>
