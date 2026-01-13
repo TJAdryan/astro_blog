@@ -202,7 +202,10 @@ const QTrainTracker = () => {
           'R16'  // Times Sq - 42 St
         ];
 
-        if (!INTERESTING_STOPS.includes(trip.upcoming_stop)) return false;
+        if (!INTERESTING_STOPS.includes(trip.upcoming_stop)) {
+          // User requested to include ALL trains arriving in 9 minutes or less (540 seconds)
+          if (trip.secondsUntilArrival > 540) return false;
+        }
 
         return true;
       });
