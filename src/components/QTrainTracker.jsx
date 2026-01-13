@@ -202,20 +202,17 @@ const QTrainTracker = () => {
           'R16'  // Times Sq - 42 St
         ];
 
-        if (!INTERESTING_STOPS.includes(trip.upcoming_stop)) {
-          // User requested to include ALL trains arriving in 9 minutes or less (540 seconds)
-          if (trip.secondsUntilArrival > 540) return false;
-        }
+        if (!INTERESTING_STOPS.includes(trip.upcoming_stop)) return false;
 
         return true;
       });
 
-    // 3. Smart Filter: If we have trains < 10 mins, only show those.
-    // Otherwise show whatever we have (which handles the > 10 min case).
-    const hasNearTrains = candidates.some(t => t.secondsUntilArrival <= 600);
+    // 3. Smart Filter: If we have trains < 9 mins (540s), only show those.
+    // Otherwise show whatever we have (which handles the > 9 min case).
+    const hasNearTrains = candidates.some(t => t.secondsUntilArrival <= 540);
 
     if (hasNearTrains) {
-      candidates = candidates.filter(t => t.secondsUntilArrival <= 600);
+      candidates = candidates.filter(t => t.secondsUntilArrival <= 540);
     }
 
     return candidates
