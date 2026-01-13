@@ -31,7 +31,9 @@ import HolidayToggle from "./HolidayToggle.astro";
 			<HeaderLink href="/blog">Blog</HeaderLink>
 			<HeaderLink href="/about">About</HeaderLink>
 			<HeaderLink href="/contact">Contact</HeaderLink>
-			<HeaderLink href="/q-train">Q Train</HeaderLink>
+			<HeaderLink href="/q-train" aria-label="Q Train Status">
+				<span class="mta-bullet q-bullet">Q</span>
+			</HeaderLink>
 			<HolidayToggle />
 		</div>
 		<div class="social-links" style="flex: 0 1 auto;">
@@ -267,5 +269,22 @@ import HolidayToggle from "./HolidayToggle.astro";
 		.social-links {
 			display: none;
 		}
+	}
+	/* MTA Bullet Styles */
+	.mta-bullet {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 28px;
+		height: 28px;
+		border-radius: 50%;
+		font-family: Helvetica, Arial, sans-serif;
+		font-weight: bold;
+		font-size: 16px;
+		line-height: 1;
+	}
+	.q-bullet {
+		background-color: #fccc0a;
+		color: black;
 	}
 </style>
