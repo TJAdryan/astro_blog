@@ -29,7 +29,7 @@ First, I defined the container configuration:
 # ~/.config/containers/systemd/crispr-db.container
 [Container]
 Image=docker.io/library/postgres:latest
-Environment=POSTGRES_PASSWORD=self_assured_complexity
+Environment=POSTGRES_PASSWORD=YOUR_PASSWORD_HERE
 Environment=POSTGRES_DB=crispr_db
 PublishPort=5432:5432
 Volume=postgres_data:/var/lib/postgresql/data
@@ -58,7 +58,7 @@ This setup provides a persistent "Silver" layer that feels like a production clo
 
 ### The Implementation: DuckDB to Postgres Stream
 
-The actual execution was handled via DuckDB’s Postgres scanner. By unpivoting all 17,000 columns and streaming them directly into the containerized database, the final table was populated in under 4 minutes.
+The actual execution was handled via DuckDB's Postgres scanner. By unpivoting all 17,000 columns and streaming them directly into the containerized database, the final table was populated in under 4 minutes.
 
 ```sql
 -- Normalizing and Loading 21M rows in a single pass
@@ -66,7 +66,7 @@ INSTALL postgres;
 LOAD postgres;
 
 -- Connecting to the Podman-backed instance
-ATTACH 'host=localhost user=postgres password=self_assured_complexity dbname=crispr_db' AS pg (TYPE POSTGRES);
+ATTACH 'host=localhost user=postgres password=YOUR_PASSWORD_HERE dbname=crispr_db' AS pg (TYPE POSTGRES);
 
 -- Unpivot 17k columns into a "Long" format for indexing
 CREATE TABLE pg.gene_effects AS 
