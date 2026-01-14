@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-01-14T13:15:29.859Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times between Coney Island - Stillwell Av and Parkside Av (up to 18 mins, normally every 9 mins).",
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Brighton Beach and Coney Island - Stillwell Av (up to 14 mins, normally every 10 mins)."
+    ]
+  },
+  {
     "date": "2026-01-13T13:15:50.790Z",
     "status": "Delays",
     "details": [
