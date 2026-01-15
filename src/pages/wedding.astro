@@ -1,694 +1,674 @@
 ---
-import PostHogLayout from "../layouts/PostHogLayout.astro";
 import Layout from "../layouts/BlogPost.astro";
 ---
 
-<PostHogLayout>
-	<Layout
-		title="A September Promise"
-		description="The Wedding of Dominick and Sophio"
-		ogImage="/img/wedding_kiss.jpg"
-		pubDate={new Date("September 2025")}
-		favicon="/wedding-favicon.svg"
-	>
-		<div class="wedding-container">
-			<!-- Decoration: Floating Hearts Background -->
-			<div class="hearts-bg">
-				<div class="heart x1"></div>
-				<div class="heart x2"></div>
-				<div class="heart x3"></div>
-				<div class="heart x4"></div>
-				<div class="heart x5"></div>
+<Layout
+	title="A September Promise"
+	description="The Wedding of Dominick and Sophio"
+	ogImage="/img/wedding_kiss.jpg"
+	pubDate={new Date("September 2025")}
+	favicon="/wedding-favicon.svg"
+>
+	<div class="wedding-container">
+		<!-- Decoration: Floating Hearts Background -->
+		<div class="hearts-bg">
+			<div class="heart x1"></div>
+			<div class="heart x2"></div>
+			<div class="heart x3"></div>
+			<div class="heart x4"></div>
+			<div class="heart x5"></div>
+		</div>
+
+		<div class="wedding-content">
+			<div
+				class="language-switch-container"
+				style="text-align: center; margin-bottom: 2rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;"
+			>
+				<button id="lang-toggle" class="lang-btn">
+					Read in Georgian / წაიკითხეთ ქართულად 🇬🇪
+				</button>
+				<button
+					id="heart-trigger"
+					class="lang-btn"
+					style="background: #fff0f5; border-color: #ff69b4;"
+				>
+					Send More Love ❤️
+				</button>
 			</div>
 
-			<div class="wedding-content">
-				<div
-					class="language-switch-container"
-					style="text-align: center; margin-bottom: 2rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;"
+			<h2 class="romantic-title" id="text-title">
+				The Wedding of Dominick and Sophio
+			</h2>
+
+			<p class="intro-text" id="text-intro">
+				It was a September day in Brooklyn that felt like a gift—the
+				kind of weather where the sun is bright but the air is crisp,
+				signaling the perfect start to something new. On this morning,
+				the light seemed to shine specifically for Dominick and Sophio.
+			</p>
+
+			<div class="video-container relative" id="video-wrapper">
+				<video
+					id="wedding-video"
+					loop
+					playsinline
+					class="wedding-video"
+					poster="/favicon.svg"
 				>
-					<button id="lang-toggle" class="lang-btn">
-						Read in Georgian / წაიკითხეთ ქართულად 🇬🇪
-					</button>
-					<button
-						id="heart-trigger"
-						class="lang-btn"
-						style="background: #fff0f5; border-color: #ff69b4;"
-					>
-						Send More Love ❤️
-					</button>
-				</div>
-
-				<h2 class="romantic-title" id="text-title">
-					The Wedding of Dominick and Sophio
-				</h2>
-
-				<p class="intro-text" id="text-intro">
-					It was a September day in Brooklyn that felt like a gift—the
-					kind of weather where the sun is bright but the air is
-					crisp, signaling the perfect start to something new. On this
-					morning, the light seemed to shine specifically for Dominick
-					and Sophio.
-				</p>
-
-				<div class="video-container relative" id="video-wrapper">
-					<video
-						id="wedding-video"
-						loop
-						playsinline
-						class="wedding-video"
-						poster="/favicon.svg"
-					>
-						<!-- Note: Using a placeholder poster or transparent if none provided. 
+					<!-- Note: Using a placeholder poster or transparent if none provided. 
                              Ideally we'd extract a frame, but for now we rely on the overlay covering it. -->
-						<source
-							src="/video/wedding_video.mp4"
-							type="video/mp4"
-						/>
-						Your browser does not support the video tag.
-					</video>
+					<source src="/video/wedding_video.mp4" type="video/mp4" />
+					Your browser does not support the video tag.
+				</video>
 
-					<!-- Custom Overlay -->
-					<div
-						id="video-overlay"
-						class="absolute inset-0 bg-black/60 flex flex-col items-center justify-center z-20 backdrop-blur-[2px]"
+				<!-- Custom Overlay -->
+				<div
+					id="video-overlay"
+					class="absolute inset-0 bg-black/60 flex flex-col items-center justify-center z-20 backdrop-blur-[2px]"
+				>
+					<h3
+						class="text-white font-serif text-2xl md:text-3xl mb-8 drop-shadow-md tracking-wide"
 					>
-						<h3
-							class="text-white font-serif text-2xl md:text-3xl mb-8 drop-shadow-md tracking-wide"
+						Wedding Highlights
+					</h3>
+					<div class="flex flex-col md:flex-row gap-4">
+						<button
+							id="btn-silent"
+							class="px-6 py-2 bg-white/20 hover:bg-white/30 text-white rounded-full border border-white/40 backdrop-blur-sm transition-all text-sm font-medium tracking-wider uppercase hover:scale-105"
 						>
-							Wedding Highlights
-						</h3>
-						<div class="flex flex-col md:flex-row gap-4">
-							<button
-								id="btn-silent"
-								class="px-6 py-2 bg-white/20 hover:bg-white/30 text-white rounded-full border border-white/40 backdrop-blur-sm transition-all text-sm font-medium tracking-wider uppercase hover:scale-105"
+							Watch Silent
+						</button>
+						<button
+							id="btn-music"
+							class="px-6 py-2 bg-pink-600 hover:bg-pink-700 text-white rounded-full shadow-lg shadow-pink-600/30 transition-all text-sm font-bold tracking-wider uppercase hover:scale-105 flex items-center gap-2"
+						>
+							<span>With Music</span>
+							<svg
+								class="w-4 h-4"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+								><path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+								></path><path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+								></path></svg
 							>
-								Watch Silent
-							</button>
-							<button
-								id="btn-music"
-								class="px-6 py-2 bg-pink-600 hover:bg-pink-700 text-white rounded-full shadow-lg shadow-pink-600/30 transition-all text-sm font-bold tracking-wider uppercase hover:scale-105 flex items-center gap-2"
-							>
-								<span>With Music</span>
-								<svg
-									class="w-4 h-4"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-									><path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
-									></path><path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-									></path></svg
-								>
-							</button>
-						</div>
+						</button>
 					</div>
 				</div>
+			</div>
 
-				<script is:inline>
-					const video = document.getElementById("wedding-video");
-					const overlay = document.getElementById("video-overlay");
-					const btnSilent = document.getElementById("btn-silent");
-					const btnMusic = document.getElementById("btn-music");
+			<script is:inline>
+				const video = document.getElementById("wedding-video");
+				const overlay = document.getElementById("video-overlay");
+				const btnSilent = document.getElementById("btn-silent");
+				const btnMusic = document.getElementById("btn-music");
 
-					function startVideo(muted) {
-						video.muted = muted;
-						video.play();
-						video.controls = true; // Enable native controls once playing
-						overlay.style.opacity = "0";
-						setTimeout(() => {
-							overlay.style.display = "none";
-						}, 500); // Wait for fade out
-					}
+				function startVideo(muted) {
+					video.muted = muted;
+					video.play();
+					video.controls = true; // Enable native controls once playing
+					overlay.style.opacity = "0";
+					setTimeout(() => {
+						overlay.style.display = "none";
+					}, 500); // Wait for fade out
+				}
 
-					if (btnSilent && btnMusic) {
-						btnSilent.addEventListener("click", () =>
-							startVideo(true),
-						);
-						btnMusic.addEventListener("click", () =>
-							startVideo(false),
-						);
-					}
+				if (btnSilent && btnMusic) {
+					btnSilent.addEventListener("click", () => startVideo(true));
+					btnMusic.addEventListener("click", () => startVideo(false));
+				}
 
-					// --- Translation Logic ---
-					const langBtn = document.getElementById("lang-toggle");
-					let isGeorgian = false;
-					const originalText = {};
+				// --- Translation Logic ---
+				const langBtn = document.getElementById("lang-toggle");
+				let isGeorgian = false;
+				const originalText = {};
 
-					const georgianContent = {
-						"heart-trigger": "გააგზავნე მეტი სიყვარული ❤️",
-						"text-title": "დომინიკისა და სოფიოს ქორწილი",
-						"text-intro":
-							"ეს იყო სექტემბრის დღე ბრუკლინში, რომელიც საჩუქარს ჰგავდა - ისეთი ამინდი, როცა მზე კაშკაშებს, მაგრამ ჰაერი გრილია, რაც რაღაც ახლის იდეალურ დასაწყისს მოასწავებს. ამ დილას სინათლე თითქოს სპეციალურად დომინიკისა და სოფიოსთვის ანათებდა.",
-						"text-p1":
-							"ისინი დილით მივიდნენ მერიაში, მზად რომ ოფიციალურად გაეფორმებინათ თავიანთი კავშირი. სოფიო აბსოლუტურად ლამაზად გამოიყურებოდა, ასხივებდა ბედნიერებას, რომელიც ოთახს ანათებდა. მის გვერდით დგომისას, დომინიკი სიამაყისა და ერთგულების განსახიერება იყო; თვალს ვერ აშორებდა მას. ცერემონია იყო ინტიმური და ღრმად ამაღელვებელი. მოსამართლე, რომელიც ფიცს უძღვებოდა, იყო თბილი და კეთილგანწყობილი, რაც პროცესს ნამდვილი სიყვარულის ტონს აძლევდა.",
-						"text-p2":
-							"სოფიო სიყვარულით სავსე ვიწრო წრეში იყო. მისი ქალიშვილი ახლოს იდგა და მომენტის მოწმე იყო, სოფიოს დეიდასთან ერთად, რომელიც მტკიცე, მხარდამჭერ დასაყრდენს წარმოადგენდა. მისი მეგობარი ნატალი მეჯვარედ დადგა და დარწმუნდა, რომ ყველაფერი იდეალურად იყო. საინტერესოა, რომ ჩვეულებრივ მოლაპარაკე გვანცა იქ იყო, მაგრამ გასაკვირად ჩუმად - ალბათ მომენტის სიმძიმითა და სილამაზით იყო მოცული.",
-						"text-p3":
-							"ამ ნათელ დღეს მხოლოდ ერთი ჩრდილო აწვა: სოფიოს დედა შორს, თავის სამშობლოში - საქართველოში იყო და ვერ დაესწრო. თუმცა, მისი სული იგრძნობოდა იმ სიყვარულში, რომელსაც სოფიო ატარებდა.",
-						"text-p4":
-							'ფიცის წარმოთქმისა და ქაღალდებზე ხელმოწერის შემდეგ, წყვილი ბრუკლინის ჰაერზე გამოვიდა. ისინი ბრუკლინის ხიდთან ახლოს მდებარე პარკებისკენ გაემართნენ ფოტოების გადასაღებად. თითქოს ქალაქსაც სურდა ზეიმში ჩართვა. სადაც კი გაივლიდნენ, უცნობები ჩერდებოდნენ, სახე უნათდებოდათ. "დღეს იქორწინეთ?" ეკითხებოდნენ ხალხი, რასაც მაშინვე თბილი ღიმილი და გულწრფელი შეძახილები მოსდევდა: "გილოცავთ!" უცნობების კეთილგანწყობამ დღე კიდევ უფრო ჯადოსნური გახადა.',
-						"text-p5":
-							'ზეიმი მანჰეტენზე გაგრძელდა, როდესაც ისინი მატარებლით მე-14 ქუჩაზე გაემგზავრნენ. მე-8 ავენიუდან დასავლეთით მიმავალ გზაზე, გადაწყვიტეს სწრაფი წასახემსებლად პიცერიაში შეჩერებულიყვნენ. სიცილს ვერ იკავებდნენ კონტრასტზე - ისხდნენ ფორმალურ საქორწილო ტანსაცმელში, ქაღალდის თეფშებისა და ფლუორესცენტული განათების გარემოცვაში. დომინიკმა, რომელსაც სურდა ყველაფერი იდეალური ყოფილიყო, ჰკითხა სოფიოს, ხომ არ ამჯობინებდა უფრო მაღალი დონის ადგილს. მან იდეა მაშინვე უარყო და ღიმილით შეხედა მას. <span class="quote">"სანამ ჩვენ ერთად ვართ"</span>, - თქვა მან.',
-						"text-p6":
-							"მათ განაგრძეს გზა წყლისკენ, გაიარეს Meatpacking District-ი. რიყის ქვით მოპირკეთებული ქუჩები, რომლებიც დიდი ხანია მდიდარი ხალხის სასეირნო ადგილად იქცა, განსაცვიფრებელ ფონს ქმნიდა. სეირნობისას კიდევ უფრო მეტი კომპლიმენტი და ღიმილი მიიღეს მოდური ხალხისგან, რომლებიც მოხიბლულნი იყვნენ ბედნიერი წყვილით.",
-						"text-p7":
-							"საბოლოოდ მიაღწიეს Little Island-ს, ჰუძონზე მოტივტივე ახალ პარკს. აქ წრე გაფართოვდა. სოფიოს მეგობრები ირინკა და ორი გვანცა იქ იყვნენ საზეიმოდ. მისი მეგობარი თინაც კი სამსახურის შემდეგ გამოიქცა, რომ სიხარული არ გამოტოვებოდა. ისინი იცინოდნენ და ისვენებდნენ წყალთან, ტკბებოდნენ ჰორიზონტით და იმ მოლოდინით, რაც წინ ელოდათ.",
-						"text-p8":
-							"საღამოს დადგომასთან ერთად, დადგა გრანდიოზული ფინალის დრო: სადილი კრუიზზე.",
-						"text-p9":
-							"ნავზე ასვლის შემდეგ, წვეულება ნამდვილად დაიწყო. დომინიკის სამყარო შეერწყა სოფიოსას, როდესაც მისი მეგობრები ვენი, საბინა და პიტი ზეიმს შეუერთდნენ. ეს იყო ცხოვრებისეული შეკრება, რადგან დომინიკის ბავშვობის მეგობრები, ფუმიო და ჯეიმსი იქ იყვნენ. დომინიკი თავს ძალიან პატივცემულად გრძნობდა, რომ ჯეიმსის დედა, ჯუდი, შეძლო ზეიმზე დასწრება. მან წაახალისა დომინიკი ეცეკვა სოფიოსთან, თუმცა ეს არ არის ის, რაც მას ჩვეულებრივ სიამოვნებს. დომინიკმა ჭკვიანურად დაუჯერა ჯუდის. მოგვიანებით ის ისეთი ბედნიერი იყო, რომ დაუჯერა, რომ ჯუდი საცეკვაო მოედანზე მიიწვია და სამივემ რამდენიმე სიმღერაზე ერთად იცეკვა. ელიზაბეტიც კი, დომინიკის ყოფილი თანამშრომელი, მოვიდა საზეიმოდ; ის ყოველთვის იყო დომინიკისა და სოფიოს ურთიერთობის აქტიური მხარდამჭერი და მათი დაქორწინებულების ნახვა მისთვის განსაკუთრებული მომენტი იყო.",
-						"text-p10":
-							'ღამე სიხარულის ბუნდოვანებად იქცა. ისინი ჭამდნენ, სვამდნენ და საუბრობდნენ, სანამ ფანჯრებს მიღმა ქალაქის შუქები მიცურავდა. ენერგია მაღალი იყო, მაგრამ პიკს მიაღწია, როდესაც ბენდის ლიდერმა, ქარიზმატულმა ქალმა შთამბეჭდავი გარეგნობით, მიკროფონი აიღო. მან მუსიკა შეაჩერა და ხალხს ჰკითხა: "თქვენ ორმა დღეს იქორწინეთ?"',
-						"text-p11":
-							"როდესაც დომინიკმა და სოფიომ კი უპასუხეს, ოთახი აფეთქდა. ბენდმა სპეციალური საპატიო სიმღერა შეასრულა მხოლოდ მათთვის. ყველამ - ბავშვობის მეგობრებმა, თანამშრომლებმა, ოჯახმა და ახალმა ნაცნობებმა - წრე შეკრეს და ახალდაქორწინებულების გარშემო ცეკვავდნენ. ეს იყო შესანიშნავი საღამო, მშვიდი და თავდადებული სიყვარულის ხმამაღალი და მხიარული გამოცხადება.",
-					};
+				const georgianContent = {
+					"heart-trigger": "გააგზავნე მეტი სიყვარული ❤️",
+					"text-title": "დომინიკისა და სოფიოს ქორწილი",
+					"text-intro":
+						"ეს იყო სექტემბრის დღე ბრუკლინში, რომელიც საჩუქარს ჰგავდა - ისეთი ამინდი, როცა მზე კაშკაშებს, მაგრამ ჰაერი გრილია, რაც რაღაც ახლის იდეალურ დასაწყისს მოასწავებს. ამ დილას სინათლე თითქოს სპეციალურად დომინიკისა და სოფიოსთვის ანათებდა.",
+					"text-p1":
+						"ისინი დილით მივიდნენ მერიაში, მზად რომ ოფიციალურად გაეფორმებინათ თავიანთი კავშირი. სოფიო აბსოლუტურად ლამაზად გამოიყურებოდა, ასხივებდა ბედნიერებას, რომელიც ოთახს ანათებდა. მის გვერდით დგომისას, დომინიკი სიამაყისა და ერთგულების განსახიერება იყო; თვალს ვერ აშორებდა მას. ცერემონია იყო ინტიმური და ღრმად ამაღელვებელი. მოსამართლე, რომელიც ფიცს უძღვებოდა, იყო თბილი და კეთილგანწყობილი, რაც პროცესს ნამდვილი სიყვარულის ტონს აძლევდა.",
+					"text-p2":
+						"სოფიო სიყვარულით სავსე ვიწრო წრეში იყო. მისი ქალიშვილი ახლოს იდგა და მომენტის მოწმე იყო, სოფიოს დეიდასთან ერთად, რომელიც მტკიცე, მხარდამჭერ დასაყრდენს წარმოადგენდა. მისი მეგობარი ნატალი მეჯვარედ დადგა და დარწმუნდა, რომ ყველაფერი იდეალურად იყო. საინტერესოა, რომ ჩვეულებრივ მოლაპარაკე გვანცა იქ იყო, მაგრამ გასაკვირად ჩუმად - ალბათ მომენტის სიმძიმითა და სილამაზით იყო მოცული.",
+					"text-p3":
+						"ამ ნათელ დღეს მხოლოდ ერთი ჩრდილო აწვა: სოფიოს დედა შორს, თავის სამშობლოში - საქართველოში იყო და ვერ დაესწრო. თუმცა, მისი სული იგრძნობოდა იმ სიყვარულში, რომელსაც სოფიო ატარებდა.",
+					"text-p4":
+						'ფიცის წარმოთქმისა და ქაღალდებზე ხელმოწერის შემდეგ, წყვილი ბრუკლინის ჰაერზე გამოვიდა. ისინი ბრუკლინის ხიდთან ახლოს მდებარე პარკებისკენ გაემართნენ ფოტოების გადასაღებად. თითქოს ქალაქსაც სურდა ზეიმში ჩართვა. სადაც კი გაივლიდნენ, უცნობები ჩერდებოდნენ, სახე უნათდებოდათ. "დღეს იქორწინეთ?" ეკითხებოდნენ ხალხი, რასაც მაშინვე თბილი ღიმილი და გულწრფელი შეძახილები მოსდევდა: "გილოცავთ!" უცნობების კეთილგანწყობამ დღე კიდევ უფრო ჯადოსნური გახადა.',
+					"text-p5":
+						'ზეიმი მანჰეტენზე გაგრძელდა, როდესაც ისინი მატარებლით მე-14 ქუჩაზე გაემგზავრნენ. მე-8 ავენიუდან დასავლეთით მიმავალ გზაზე, გადაწყვიტეს სწრაფი წასახემსებლად პიცერიაში შეჩერებულიყვნენ. სიცილს ვერ იკავებდნენ კონტრასტზე - ისხდნენ ფორმალურ საქორწილო ტანსაცმელში, ქაღალდის თეფშებისა და ფლუორესცენტული განათების გარემოცვაში. დომინიკმა, რომელსაც სურდა ყველაფერი იდეალური ყოფილიყო, ჰკითხა სოფიოს, ხომ არ ამჯობინებდა უფრო მაღალი დონის ადგილს. მან იდეა მაშინვე უარყო და ღიმილით შეხედა მას. <span class="quote">"სანამ ჩვენ ერთად ვართ"</span>, - თქვა მან.',
+					"text-p6":
+						"მათ განაგრძეს გზა წყლისკენ, გაიარეს Meatpacking District-ი. რიყის ქვით მოპირკეთებული ქუჩები, რომლებიც დიდი ხანია მდიდარი ხალხის სასეირნო ადგილად იქცა, განსაცვიფრებელ ფონს ქმნიდა. სეირნობისას კიდევ უფრო მეტი კომპლიმენტი და ღიმილი მიიღეს მოდური ხალხისგან, რომლებიც მოხიბლულნი იყვნენ ბედნიერი წყვილით.",
+					"text-p7":
+						"საბოლოოდ მიაღწიეს Little Island-ს, ჰუძონზე მოტივტივე ახალ პარკს. აქ წრე გაფართოვდა. სოფიოს მეგობრები ირინკა და ორი გვანცა იქ იყვნენ საზეიმოდ. მისი მეგობარი თინაც კი სამსახურის შემდეგ გამოიქცა, რომ სიხარული არ გამოტოვებოდა. ისინი იცინოდნენ და ისვენებდნენ წყალთან, ტკბებოდნენ ჰორიზონტით და იმ მოლოდინით, რაც წინ ელოდათ.",
+					"text-p8":
+						"საღამოს დადგომასთან ერთად, დადგა გრანდიოზული ფინალის დრო: სადილი კრუიზზე.",
+					"text-p9":
+						"ნავზე ასვლის შემდეგ, წვეულება ნამდვილად დაიწყო. დომინიკის სამყარო შეერწყა სოფიოსას, როდესაც მისი მეგობრები ვენი, საბინა და პიტი ზეიმს შეუერთდნენ. ეს იყო ცხოვრებისეული შეკრება, რადგან დომინიკის ბავშვობის მეგობრები, ფუმიო და ჯეიმსი იქ იყვნენ. დომინიკი თავს ძალიან პატივცემულად გრძნობდა, რომ ჯეიმსის დედა, ჯუდი, შეძლო ზეიმზე დასწრება. მან წაახალისა დომინიკი ეცეკვა სოფიოსთან, თუმცა ეს არ არის ის, რაც მას ჩვეულებრივ სიამოვნებს. დომინიკმა ჭკვიანურად დაუჯერა ჯუდის. მოგვიანებით ის ისეთი ბედნიერი იყო, რომ დაუჯერა, რომ ჯუდი საცეკვაო მოედანზე მიიწვია და სამივემ რამდენიმე სიმღერაზე ერთად იცეკვა. ელიზაბეტიც კი, დომინიკის ყოფილი თანამშრომელი, მოვიდა საზეიმოდ; ის ყოველთვის იყო დომინიკისა და სოფიოს ურთიერთობის აქტიური მხარდამჭერი და მათი დაქორწინებულების ნახვა მისთვის განსაკუთრებული მომენტი იყო.",
+					"text-p10":
+						'ღამე სიხარულის ბუნდოვანებად იქცა. ისინი ჭამდნენ, სვამდნენ და საუბრობდნენ, სანამ ფანჯრებს მიღმა ქალაქის შუქები მიცურავდა. ენერგია მაღალი იყო, მაგრამ პიკს მიაღწია, როდესაც ბენდის ლიდერმა, ქარიზმატულმა ქალმა შთამბეჭდავი გარეგნობით, მიკროფონი აიღო. მან მუსიკა შეაჩერა და ხალხს ჰკითხა: "თქვენ ორმა დღეს იქორწინეთ?"',
+					"text-p11":
+						"როდესაც დომინიკმა და სოფიომ კი უპასუხეს, ოთახი აფეთქდა. ბენდმა სპეციალური საპატიო სიმღერა შეასრულა მხოლოდ მათთვის. ყველამ - ბავშვობის მეგობრებმა, თანამშრომლებმა, ოჯახმა და ახალმა ნაცნობებმა - წრე შეკრეს და ახალდაქორწინებულების გარშემო ცეკვავდნენ. ეს იყო შესანიშნავი საღამო, მშვიდი და თავდადებული სიყვარულის ხმამაღალი და მხიარული გამოცხადება.",
+				};
 
-					if (langBtn) {
-						langBtn.addEventListener("click", () => {
-							isGeorgian = !isGeorgian;
-							const ids = Object.keys(georgianContent);
+				if (langBtn) {
+					langBtn.addEventListener("click", () => {
+						isGeorgian = !isGeorgian;
+						const ids = Object.keys(georgianContent);
 
-							ids.forEach((id) => {
-								const el = document.getElementById(id);
-								if (el) {
-									if (!originalText[id])
-										originalText[id] = el.innerHTML; // Save ENG
+						ids.forEach((id) => {
+							const el = document.getElementById(id);
+							if (el) {
+								if (!originalText[id])
+									originalText[id] = el.innerHTML; // Save ENG
 
-									if (isGeorgian) {
-										el.innerHTML = georgianContent[id];
-									} else {
-										el.innerHTML = originalText[id];
-									}
+								if (isGeorgian) {
+									el.innerHTML = georgianContent[id];
+								} else {
+									el.innerHTML = originalText[id];
 								}
-							});
-
-							langBtn.textContent = isGeorgian
-								? "Read in English 🇺🇸"
-								: "Read in Georgian / წაიკითხეთ ქართულად 🇬🇪";
+							}
 						});
-					}
-				</script>
 
-				<p id="text-p1">
-					They arrived at City Hall in the morning, ready to make
-					their bond official. Sophio looked absolutely beautiful,
-					radiating a happiness that lit up the room. Standing beside
-					her, Dominick was the picture of pride and devotion; he
-					couldn’t take his eyes off her. The ceremony was intimate
-					and deeply moving. The Justice presiding over the vows was
-					warm and affirming, setting a tone of genuine love for the
-					proceedings.
-				</p>
+						langBtn.textContent = isGeorgian
+							? "Read in English 🇺🇸"
+							: "Read in Georgian / წაიკითხეთ ქართულად 🇬🇪";
+					});
+				}
+			</script>
 
-				<p id="text-p2">
-					Sophio was surrounded by a tight circle of love. Her
-					daughter stood close, witnessing the moment, alongside
-					Sophio’s aunt, who offered a steady, supportive presence.
-					Her friend Natalie stepped up as bridesmaid, ensuring
-					everything was perfect. Interestingly, the normally chatty
-					Gvantsa was there, but she was surprisingly quiet—perhaps
-					overcome by the weight and beauty of the moment.
-				</p>
+			<p id="text-p1">
+				They arrived at City Hall in the morning, ready to make their
+				bond official. Sophio looked absolutely beautiful, radiating a
+				happiness that lit up the room. Standing beside her, Dominick
+				was the picture of pride and devotion; he couldn’t take his eyes
+				off her. The ceremony was intimate and deeply moving. The
+				Justice presiding over the vows was warm and affirming, setting
+				a tone of genuine love for the proceedings.
+			</p>
 
-				<hr class="heart-divider" />
+			<p id="text-p2">
+				Sophio was surrounded by a tight circle of love. Her daughter
+				stood close, witnessing the moment, alongside Sophio’s aunt, who
+				offered a steady, supportive presence. Her friend Natalie
+				stepped up as bridesmaid, ensuring everything was perfect.
+				Interestingly, the normally chatty Gvantsa was there, but she
+				was surprisingly quiet—perhaps overcome by the weight and beauty
+				of the moment.
+			</p>
 
-				<p id="text-p3">
-					There was only one shadow on the bright day: Sophio’s mother
-					was far away in her home country of Georgia and could not
-					attend. However, her spirit was felt in the love Sophio
-					carried with her.
-				</p>
+			<hr class="heart-divider" />
 
-				<p id="text-p4">
-					After the vows were spoken and the papers signed, the couple
-					stepped out into the Brooklyn air. They made their way to
-					the parks near the Brooklyn Bridge for photographs. The city
-					itself seemed to want to join the celebration. Wherever they
-					walked, strangers stopped in their tracks, their faces
-					lighting up. "Did you get married today?" people asked,
-					followed immediately by warm smiles and genuine cries of
-					"Congratulations!" The kindness of strangers made the day
-					feel even more magical.
-				</p>
+			<p id="text-p3">
+				There was only one shadow on the bright day: Sophio’s mother was
+				far away in her home country of Georgia and could not attend.
+				However, her spirit was felt in the love Sophio carried with
+				her.
+			</p>
 
-				<p id="text-p5">
-					The celebration moved to Manhattan as they took the train to
-					14th Street. Walking west from 8th Avenue, they decided to
-					stop for a quick bite in a utilitarian pizza dive. They
-					couldn't help but laugh at the contrast—sitting in their
-					formal wedding attire surrounded by paper plates and
-					fluorescent lights. Dominick, wanting everything to be
-					perfect, asked Sophio if she would prefer to go somewhere
-					more upscale. She dismissed the idea out of hand, looking at
-					him with a smile. <span class="quote"
-						>"As long as we are together,"</span
-					> she said.
-				</p>
+			<p id="text-p4">
+				After the vows were spoken and the papers signed, the couple
+				stepped out into the Brooklyn air. They made their way to the
+				parks near the Brooklyn Bridge for photographs. The city itself
+				seemed to want to join the celebration. Wherever they walked,
+				strangers stopped in their tracks, their faces lighting up. "Did
+				you get married today?" people asked, followed immediately by
+				warm smiles and genuine cries of "Congratulations!" The kindness
+				of strangers made the day feel even more magical.
+			</p>
 
-				<p id="text-p6">
-					They continued their journey toward the water, walking
-					through the Meatpacking District. The cobblestone streets,
-					long transformed into a playground for the well-heeled,
-					provided a stunning backdrop. As they walked, they received
-					even more compliments and smiles from the fashionable
-					crowds, who were charmed by the happy couple.
-				</p>
+			<p id="text-p5">
+				The celebration moved to Manhattan as they took the train to
+				14th Street. Walking west from 8th Avenue, they decided to stop
+				for a quick bite in a utilitarian pizza dive. They couldn't help
+				but laugh at the contrast—sitting in their formal wedding attire
+				surrounded by paper plates and fluorescent lights. Dominick,
+				wanting everything to be perfect, asked Sophio if she would
+				prefer to go somewhere more upscale. She dismissed the idea out
+				of hand, looking at him with a smile. <span class="quote"
+					>"As long as we are together,"</span
+				> she said.
+			</p>
 
-				<p id="text-p7">
-					They eventually reached Little Island, the new park floating
-					above the Hudson. Here, the circle widened. Sophio’s friends
-					Irinka and the two Gvantsas were there to celebrate. Her
-					friend Tina even rushed over after work to make sure she
-					didn’t miss the joy. They laughed and relaxed by the water,
-					soaking in the skyline and the excitement of what was to
-					come.
-				</p>
+			<p id="text-p6">
+				They continued their journey toward the water, walking through
+				the Meatpacking District. The cobblestone streets, long
+				transformed into a playground for the well-heeled, provided a
+				stunning backdrop. As they walked, they received even more
+				compliments and smiles from the fashionable crowds, who were
+				charmed by the happy couple.
+			</p>
 
-				<hr class="heart-divider" />
+			<p id="text-p7">
+				They eventually reached Little Island, the new park floating
+				above the Hudson. Here, the circle widened. Sophio’s friends
+				Irinka and the two Gvantsas were there to celebrate. Her friend
+				Tina even rushed over after work to make sure she didn’t miss
+				the joy. They laughed and relaxed by the water, soaking in the
+				skyline and the excitement of what was to come.
+			</p>
 
-				<p id="text-p8">
-					As evening fell, it was time for the grand finale: the
-					Dinner Cruise.
-				</p>
+			<hr class="heart-divider" />
 
-				<p id="text-p9">
-					Once they boarded the boat, the party truly began.
-					Dominick’s world merged with Sophio’s as his friends Wen,
-					Sabina, and Pete joined the festivities. It was a gathering
-					of lifetimes, as Dominick’s childhood friends, Fumiyo and
-					James, were there. Dominick felt very honored that James's
-					mother, Judy, was able to attend the festivities. She
-					encouraged Dominick to dance with Sophio, even though it
-					isn't something he typically enjoys. Dominick smartly
-					listened to Judy. Later, he was so happy that he had
-					listened that he invited Judy onto the dance floor, and the
-					three of them enjoyed several songs together. Even
-					Elizabeth, Dominick’s former office mate, came to celebrate;
-					she had always been a vocal supporter of Dominick’s
-					relationship with Sophio, and seeing them married was a
-					special moment for her.
-				</p>
+			<p id="text-p8">
+				As evening fell, it was time for the grand finale: the Dinner
+				Cruise.
+			</p>
 
-				<p id="text-p10">
-					The night became a blur of joy. They ate, drank, and chatted
-					as the city lights drifted by outside the windows. The
-					energy was high, but it peaked when the band leader, a
-					charismatic woman with a commanding presence, took the
-					microphone. She paused the music and asked the crowd, "Did
-					you two get married today?"
-				</p>
+			<p id="text-p9">
+				Once they boarded the boat, the party truly began. Dominick’s
+				world merged with Sophio’s as his friends Wen, Sabina, and Pete
+				joined the festivities. It was a gathering of lifetimes, as
+				Dominick’s childhood friends, Fumiyo and James, were there.
+				Dominick felt very honored that James's mother, Judy, was able
+				to attend the festivities. She encouraged Dominick to dance with
+				Sophio, even though it isn't something he typically enjoys.
+				Dominick smartly listened to Judy. Later, he was so happy that
+				he had listened that he invited Judy onto the dance floor, and
+				the three of them enjoyed several songs together. Even
+				Elizabeth, Dominick’s former office mate, came to celebrate; she
+				had always been a vocal supporter of Dominick’s relationship
+				with Sophio, and seeing them married was a special moment for
+				her.
+			</p>
 
-				<p id="text-p11">
-					When Dominick and Sophio said yes, the room erupted. The
-					band struck up a special tribute song just for them.
-					Everyone—friends from childhood, friends from work, family,
-					and new acquaintances—formed a circle, dancing around the
-					newlyweds. It was a great evening, a loud and joyous
-					declaration of a quiet and devoted love.
-				</p>
+			<p id="text-p10">
+				The night became a blur of joy. They ate, drank, and chatted as
+				the city lights drifted by outside the windows. The energy was
+				high, but it peaked when the band leader, a charismatic woman
+				with a commanding presence, took the microphone. She paused the
+				music and asked the crowd, "Did you two get married today?"
+			</p>
 
-				<div class="photo-container">
-					<div class="photo-frame">
-						<img
-							src="/img/wedding_kiss.jpg"
-							alt="Dominick and Sophio sharing a kiss at their wedding"
-							class="wedding-photo"
-						/>
-					</div>
+			<p id="text-p11">
+				When Dominick and Sophio said yes, the room erupted. The band
+				struck up a special tribute song just for them. Everyone—friends
+				from childhood, friends from work, family, and new
+				acquaintances—formed a circle, dancing around the newlyweds. It
+				was a great evening, a loud and joyous declaration of a quiet
+				and devoted love.
+			</p>
+
+			<div class="photo-container">
+				<div class="photo-frame">
+					<img
+						src="/img/wedding_kiss.jpg"
+						alt="Dominick and Sophio sharing a kiss at their wedding"
+						class="wedding-photo"
+					/>
 				</div>
 			</div>
 		</div>
+	</div>
 
-		<style>
-			.wedding-container {
-				position: relative;
-				background: linear-gradient(to bottom, #fff5f5, #ffffff);
-				padding: 2rem;
-				border-radius: 15px;
-				overflow: hidden;
-			}
+	<style>
+		.wedding-container {
+			position: relative;
+			background: linear-gradient(to bottom, #fff5f5, #ffffff);
+			padding: 2rem;
+			border-radius: 15px;
+			overflow: hidden;
+		}
 
-			.wedding-content {
-				position: relative;
-				z-index: 10;
-				font-family: "Georgia", serif;
-				line-height: 1.8;
-				color: #4a4a4a;
-			}
+		.wedding-content {
+			position: relative;
+			z-index: 10;
+			font-family: "Georgia", serif;
+			line-height: 1.8;
+			color: #4a4a4a;
+		}
 
-			.romantic-title {
-				text-align: center;
-				font-family: "Brush Script MT", "Cursive", serif;
-				font-size: 3.5rem;
-				color: #d6336c;
-				margin-bottom: 2rem;
-				text-shadow: 2px 2px 4px rgba(214, 51, 108, 0.1);
-			}
+		.romantic-title {
+			text-align: center;
+			font-family: "Brush Script MT", "Cursive", serif;
+			font-size: 3.5rem;
+			color: #d6336c;
+			margin-bottom: 2rem;
+			text-shadow: 2px 2px 4px rgba(214, 51, 108, 0.1);
+		}
 
-			.intro-text::first-letter {
-				font-size: 3em;
-				color: #d6336c;
-				float: left;
-				margin-right: 0.1em;
-				line-height: 0.8;
-			}
+		.intro-text::first-letter {
+			font-size: 3em;
+			color: #d6336c;
+			float: left;
+			margin-right: 0.1em;
+			line-height: 0.8;
+		}
 
-			.quote {
-				font-style: italic;
-				font-weight: bold;
-				color: #c2255c;
-			}
+		.quote {
+			font-style: italic;
+			font-weight: bold;
+			color: #c2255c;
+		}
 
-			/* Heart Divider */
-			.heart-divider {
-				border: 0;
-				height: 1px;
-				background-image: linear-gradient(
-					to right,
-					rgba(0, 0, 0, 0),
-					rgba(214, 51, 108, 0.75),
-					rgba(0, 0, 0, 0)
-				);
-				margin: 2rem 0;
-				position: relative;
-				overflow: visible;
-			}
-			.heart-divider::after {
-				content: "❤";
-				position: absolute;
-				top: -0.7rem;
-				left: 50%;
-				transform: translateX(-50%);
-				color: #d6336c;
-				font-size: 1.5rem;
-				background: #fff5f5;
-				padding: 0 0.5rem;
-			}
+		/* Heart Divider */
+		.heart-divider {
+			border: 0;
+			height: 1px;
+			background-image: linear-gradient(
+				to right,
+				rgba(0, 0, 0, 0),
+				rgba(214, 51, 108, 0.75),
+				rgba(0, 0, 0, 0)
+			);
+			margin: 2rem 0;
+			position: relative;
+			overflow: visible;
+		}
+		.heart-divider::after {
+			content: "❤";
+			position: absolute;
+			top: -0.7rem;
+			left: 50%;
+			transform: translateX(-50%);
+			color: #d6336c;
+			font-size: 1.5rem;
+			background: #fff5f5;
+			padding: 0 0.5rem;
+		}
 
-			/* Floating Hearts Animation */
-			.hearts-bg {
-				position: absolute;
-				top: 0;
-				left: 0;
-				width: 100%;
-				height: 100%;
-				overflow: hidden;
-				pointer-events: none;
-				z-index: 1;
-			}
+		/* Floating Hearts Animation */
+		.hearts-bg {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+			pointer-events: none;
+			z-index: 1;
+		}
 
-			.heart {
-				position: absolute;
-				bottom: -100px;
-				width: 40px;
-				height: 40px;
-				background: rgba(255, 182, 193, 0.4);
-				transform: rotate(45deg);
-				animation: floatUp 15s infinite linear;
-			}
-			.heart::before,
-			.heart::after {
-				content: "";
-				position: absolute;
-				width: 40px;
-				height: 40px;
-				background: inherit;
-				border-radius: 50%;
-			}
-			.heart::before {
-				top: -20px;
-				left: 0;
-			}
-			.heart::after {
-				left: -20px;
-				top: 0;
-			}
+		.heart {
+			position: absolute;
+			bottom: -100px;
+			width: 40px;
+			height: 40px;
+			background: rgba(255, 182, 193, 0.4);
+			transform: rotate(45deg);
+			animation: floatUp 15s infinite linear;
+		}
+		.heart::before,
+		.heart::after {
+			content: "";
+			position: absolute;
+			width: 40px;
+			height: 40px;
+			background: inherit;
+			border-radius: 50%;
+		}
+		.heart::before {
+			top: -20px;
+			left: 0;
+		}
+		.heart::after {
+			left: -20px;
+			top: 0;
+		}
 
-			.x1 {
-				left: 10%;
-				animation-duration: 12s;
-				opacity: 0.3;
-				transform: scale(0.6) rotate(45deg);
+		.x1 {
+			left: 10%;
+			animation-duration: 12s;
+			opacity: 0.3;
+			transform: scale(0.6) rotate(45deg);
+		}
+		.x2 {
+			left: 30%;
+			animation-duration: 18s;
+			opacity: 0.5;
+			transform: scale(1) rotate(45deg);
+			animation-delay: 2s;
+		}
+		.x3 {
+			left: 50%;
+			animation-duration: 15s;
+			opacity: 0.4;
+			transform: scale(0.8) rotate(45deg);
+			animation-delay: 4s;
+		}
+		.x4 {
+			left: 70%;
+			animation-duration: 20s;
+			opacity: 0.2;
+			transform: scale(0.5) rotate(45deg);
+			animation-delay: 1s;
+		}
+		.x5 {
+			left: 90%;
+			animation-duration: 14s;
+			opacity: 0.6;
+			transform: scale(0.9) rotate(45deg);
+			animation-delay: 6s;
+		}
+
+		@keyframes floatUp {
+			0% {
+				transform: translateY(0) rotate(45deg) scale(0.8);
+				opacity: 0;
 			}
-			.x2 {
-				left: 30%;
-				animation-duration: 18s;
-				opacity: 0.5;
-				transform: scale(1) rotate(45deg);
-				animation-delay: 2s;
-			}
-			.x3 {
-				left: 50%;
-				animation-duration: 15s;
-				opacity: 0.4;
-				transform: scale(0.8) rotate(45deg);
-				animation-delay: 4s;
-			}
-			.x4 {
-				left: 70%;
-				animation-duration: 20s;
-				opacity: 0.2;
-				transform: scale(0.5) rotate(45deg);
-				animation-delay: 1s;
-			}
-			.x5 {
-				left: 90%;
-				animation-duration: 14s;
+			50% {
 				opacity: 0.6;
-				transform: scale(0.9) rotate(45deg);
-				animation-delay: 6s;
 			}
+			100% {
+				transform: translateY(-1200px) rotate(45deg) scale(0.8);
+				opacity: 0;
+			}
+		}
 
-			@keyframes floatUp {
-				0% {
-					transform: translateY(0) rotate(45deg) scale(0.8);
-					opacity: 0;
-				}
-				50% {
-					opacity: 0.6;
-				}
-				100% {
-					transform: translateY(-1200px) rotate(45deg) scale(0.8);
-					opacity: 0;
-				}
-			}
+		.photo-container {
+			margin-top: 3rem;
+			display: flex;
+			justify-content: center;
+		}
 
-			.photo-container {
-				margin-top: 3rem;
-				display: flex;
-				justify-content: center;
-			}
+		.photo-frame {
+			padding: 1rem 1rem 3rem 1rem;
+			background: white;
+			box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+			transform: rotate(-2deg);
+			transition: transform 0.3s ease;
+			max-width: 100%;
+		}
 
-			.photo-frame {
-				padding: 1rem 1rem 3rem 1rem;
-				background: white;
-				box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-				transform: rotate(-2deg);
-				transition: transform 0.3s ease;
-				max-width: 100%;
-			}
+		.photo-frame:hover {
+			transform: rotate(0deg) scale(1.02);
+			z-index: 20;
+		}
 
-			.photo-frame:hover {
-				transform: rotate(0deg) scale(1.02);
-				z-index: 20;
-			}
+		.wedding-photo {
+			max-width: 100%;
+			height: auto;
+			border: 1px solid #eee;
+			display: block;
+		}
+		.video-container {
+			margin: 2rem auto 3rem auto;
+			max-width: 55%;
+			border-radius: 12px;
+			overflow: hidden;
+			box-shadow: 0 10px 30px rgba(214, 51, 108, 0.15);
+			border: 8px solid white;
+			transform: rotate(1deg);
+			transition: transform 0.3s ease;
+		}
+		.video-container:hover {
+			transform: rotate(0deg) scale(1.01);
+		}
+		.wedding-video {
+			width: 100%;
+			display: block;
+		}
+		.lang-btn {
+			background: #ffecf2;
+			border: 2px solid #d6336c;
+			color: #c2255c;
+			padding: 10px 20px;
+			border-radius: 30px;
+			font-size: 1.1rem;
+			font-weight: bold;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			box-shadow: 0 4px 6px rgba(214, 51, 108, 0.2);
+		}
+		.lang-btn:hover {
+			background: #d6336c;
+			color: white;
+			transform: translateY(-2px);
+		}
+	</style>
+	<style is:global>
+		/* Full Screen Heart Rain */
+		#heart-rain-container {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			pointer-events: none;
+			z-index: 9999;
+			overflow: hidden;
+		}
 
-			.wedding-photo {
-				max-width: 100%;
-				height: auto;
-				border: 1px solid #eee;
-				display: block;
-			}
-			.video-container {
-				margin: 2rem auto 3rem auto;
-				max-width: 55%;
-				border-radius: 12px;
-				overflow: hidden;
-				box-shadow: 0 10px 30px rgba(214, 51, 108, 0.15);
-				border: 8px solid white;
-				transform: rotate(1deg);
-				transition: transform 0.3s ease;
-			}
-			.video-container:hover {
-				transform: rotate(0deg) scale(1.01);
-			}
-			.wedding-video {
-				width: 100%;
-				display: block;
-			}
-			.lang-btn {
-				background: #ffecf2;
-				border: 2px solid #d6336c;
-				color: #c2255c;
-				padding: 10px 20px;
-				border-radius: 30px;
-				font-size: 1.1rem;
-				font-weight: bold;
-				cursor: pointer;
-				transition: all 0.3s ease;
-				box-shadow: 0 4px 6px rgba(214, 51, 108, 0.2);
-			}
-			.lang-btn:hover {
-				background: #d6336c;
-				color: white;
-				transform: translateY(-2px);
-			}
-		</style>
-		<style is:global>
-			/* Full Screen Heart Rain */
-			#heart-rain-container {
-				position: fixed;
-				top: 0;
-				left: 0;
-				width: 100%;
-				height: 100%;
-				pointer-events: none;
-				z-index: 9999;
-				overflow: hidden;
-			}
+		.falling-heart {
+			position: absolute;
+			top: -10vh;
+			color: #ffb6c1; /* Light pink default */
+			font-size: 1.5rem;
+			opacity: 0.8;
+			animation-name: fall, sway;
+			animation-timing-function: linear, ease-in-out;
+			animation-iteration-count: infinite, infinite;
+		}
 
-			.falling-heart {
-				position: absolute;
+		@keyframes fall {
+			0% {
 				top: -10vh;
-				color: #ffb6c1; /* Light pink default */
-				font-size: 1.5rem;
-				opacity: 0.8;
-				animation-name: fall, sway;
-				animation-timing-function: linear, ease-in-out;
-				animation-iteration-count: infinite, infinite;
 			}
-
-			@keyframes fall {
-				0% {
-					top: -10vh;
-				}
-				100% {
-					top: 110vh;
-				}
+			100% {
+				top: 110vh;
 			}
+		}
 
-			@keyframes sway {
-				0% {
-					transform: translateX(0px) rotate(0deg);
-				}
-				50% {
-					transform: translateX(20px) rotate(10deg);
-				}
-				100% {
-					transform: translateX(0px) rotate(0deg);
-				}
+		@keyframes sway {
+			0% {
+				transform: translateX(0px) rotate(0deg);
 			}
-		</style>
+			50% {
+				transform: translateX(20px) rotate(10deg);
+			}
+			100% {
+				transform: translateX(0px) rotate(0deg);
+			}
+		}
+	</style>
 
-		<div id="heart-rain-container"></div>
+	<div id="heart-rain-container"></div>
 
-		<script is:inline>
-			document.addEventListener("DOMContentLoaded", () => {
-				const container = document.getElementById(
-					"heart-rain-container",
-				);
+	<script is:inline>
+		document.addEventListener("DOMContentLoaded", () => {
+			const container = document.getElementById("heart-rain-container");
+			if (!container) return;
+
+			const colors = [
+				"#ffb6c1",
+				"#ff69b4",
+				"#ff1493",
+				"#db7093",
+				"#ffa07a",
+			]; // Pink/Red/Salmon variants
+
+			const startTime = Date.now();
+			const totalDuration = 15000; // 15 seconds
+
+			function createHeart() {
 				if (!container) return;
 
-				const colors = [
-					"#ffb6c1",
-					"#ff69b4",
-					"#ff1493",
-					"#db7093",
-					"#ffa07a",
-				]; // Pink/Red/Salmon variants
+				const heart = document.createElement("div");
+				heart.innerHTML = "❤";
+				heart.classList.add("falling-heart");
 
-				const startTime = Date.now();
-				const totalDuration = 15000; // 15 seconds
+				// Randomize properties
+				const startLeft = Math.random() * 100; // 0 to 100 vw
+				const durationFall = Math.random() * 5 + 5; // 5 to 10s
+				const durationSway = Math.random() * 2 + 2; // 2 to 4s
+				const scaleFactor = 2.5; // Significantly larger hearts
+				const size = (Math.random() * 1.5 + 0.8) * scaleFactor;
+				const color = colors[Math.floor(Math.random() * colors.length)];
 
-				function createHeart() {
-					if (!container) return;
+				heart.style.left = `${startLeft}vw`;
+				heart.style.animationDuration = `${durationFall}s, ${durationSway}s`;
+				heart.style.fontSize = `${size}rem`;
+				heart.style.color = color;
 
-					const heart = document.createElement("div");
-					heart.innerHTML = "❤";
-					heart.classList.add("falling-heart");
+				container.appendChild(heart);
 
-					// Randomize properties
-					const startLeft = Math.random() * 100; // 0 to 100 vw
-					const durationFall = Math.random() * 5 + 5; // 5 to 10s
-					const durationSway = Math.random() * 2 + 2; // 2 to 4s
-					const scaleFactor = 2.5; // Significantly larger hearts
-					const size = (Math.random() * 1.5 + 0.8) * scaleFactor;
-					const color =
-						colors[Math.floor(Math.random() * colors.length)];
+				// Cleanup this heart individually (no respawn logic here)
+				setTimeout(() => {
+					heart.remove();
+				}, durationFall * 1000);
+			}
 
-					heart.style.left = `${startLeft}vw`;
-					heart.style.animationDuration = `${durationFall}s, ${durationSway}s`;
-					heart.style.fontSize = `${size}rem`;
-					heart.style.color = color;
-
-					container.appendChild(heart);
-
-					// Cleanup this heart individually (no respawn logic here)
-					setTimeout(() => {
-						heart.remove();
-					}, durationFall * 1000);
-				}
-
-				// Loop with increasing delay to create "Fade to Trickle" effect
-				function spawnLoop() {
-					const elapsed = Date.now() - startTime;
-					if (elapsed > totalDuration) {
-						// End sequence: Fade out container
-						if (container) {
-							container.style.transition = "opacity 2s ease-out";
-							container.style.opacity = "0";
-							setTimeout(() => container.remove(), 2000);
-						}
-						return;
+			// Loop with increasing delay to create "Fade to Trickle" effect
+			function spawnLoop() {
+				const elapsed = Date.now() - startTime;
+				if (elapsed > totalDuration) {
+					// End sequence: Fade out container
+					if (container) {
+						container.style.transition = "opacity 2s ease-out";
+						container.style.opacity = "0";
+						setTimeout(() => container.remove(), 2000);
 					}
-
-					// Calculate delay based on time (Quadratic/Power curve)
-					// Start: ~30ms delay (very fast)
-					// End: ~800ms delay (trickle)
-					const progress = elapsed / totalDuration;
-					const nextDelay = 30 + 1000 * Math.pow(progress, 2.5);
-
-					createHeart();
-					setTimeout(spawnLoop, nextDelay);
+					return;
 				}
 
-				// Start the main loop
-				spawnLoop();
+				// Calculate delay based on time (Quadratic/Power curve)
+				// Start: ~30ms delay (very fast)
+				// End: ~800ms delay (trickle)
+				const progress = elapsed / totalDuration;
+				const nextDelay = 30 + 1000 * Math.pow(progress, 2.5);
 
-				// Initial Burst to fill the screen immediately
-				for (let i = 0; i < 20; i++) {
-					setTimeout(createHeart, Math.random() * 1000);
-				}
+				createHeart();
+				setTimeout(spawnLoop, nextDelay);
+			}
 
-				// Manual Heart Trigger
-				const heartTrigger = document.getElementById("heart-trigger");
-				if (heartTrigger) {
-					heartTrigger.addEventListener("click", () => {
-						// Ensure container is active
-						if (container) {
-							// If it was removed or hidden, revive it
-							if (!container.isConnected) {
-								document.body.appendChild(container);
-							}
-							container.style.display = "block";
-							container.style.transition = "none";
-							container.style.opacity = "1";
+			// Start the main loop
+			spawnLoop();
 
-							// Trigger a burst
-							for (let i = 0; i < 30; i++) {
-								setTimeout(createHeart, Math.random() * 800);
-							}
+			// Initial Burst to fill the screen immediately
+			for (let i = 0; i < 20; i++) {
+				setTimeout(createHeart, Math.random() * 1000);
+			}
+
+			// Manual Heart Trigger
+			const heartTrigger = document.getElementById("heart-trigger");
+			if (heartTrigger) {
+				heartTrigger.addEventListener("click", () => {
+					// Ensure container is active
+					if (container) {
+						// If it was removed or hidden, revive it
+						if (!container.isConnected) {
+							document.body.appendChild(container);
 						}
-					});
-				}
-			});
-		</script>
-	</Layout>
-</PostHogLayout>
+						container.style.display = "block";
+						container.style.transition = "none";
+						container.style.opacity = "1";
+
+						// Trigger a burst
+						for (let i = 0; i < 30; i++) {
+							setTimeout(createHeart, Math.random() * 800);
+						}
+					}
+				});
+			}
+		});
+	</script>
+</Layout>
