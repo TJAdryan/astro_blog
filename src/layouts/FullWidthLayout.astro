@@ -4,6 +4,7 @@ import Footer from "../components/Footer.astro";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
 import "../styles/global.css";
 import "../styles/custom.css";
+import PostHogScript from "../components/PostHogScript.astro";
 const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props;
 ---
 
@@ -11,11 +12,24 @@ const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props;
 <html lang="en" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
+    <PostHogScript />
     <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="preload" href="/fonts/atkinson-regular.woff" as="font" type="font/woff" crossorigin />
-    <link rel="preload" href="/fonts/atkinson-bold.woff" as="font" type="font/woff" crossorigin />
+    <link
+      rel="preload"
+      href="/fonts/atkinson-regular.woff"
+      as="font"
+      type="font/woff"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/atkinson-bold.woff"
+      as="font"
+      type="font/woff"
+      crossorigin
+    />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <style is:global>
@@ -26,9 +40,11 @@ const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props;
         width: 100%;
         max-width: 100vw;
       }
-      
+
       /* Remove any margin/width constraints from main containers */
-      main, div[data-astro-cid], .content-wrapper {
+      main,
+      div[data-astro-cid],
+      .content-wrapper {
         width: 100% !important;
         max-width: 100vw !important;
         margin: 0 !important;
@@ -43,7 +59,8 @@ const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props;
       }
 
       /* Override any Astro default container styles */
-      .container, .astro-container {
+      .container,
+      .astro-container {
         max-width: none !important;
         width: 100% !important;
         margin: 0 !important;

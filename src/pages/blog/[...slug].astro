@@ -1,6 +1,5 @@
 ---
 import { type CollectionEntry, getCollection, render } from "astro:content";
-import PostHogLayout from "../../layouts/PostHogLayout.astro";
 import BlogPost from "@/layouts/BlogPost.astro";
 import FullWidthLayout from "../../layouts/FullWidthLayout.astro";
 
@@ -24,8 +23,6 @@ const Layout =
 	post.data.layout_type === "full-width" ? FullWidthLayout : BlogPost;
 ---
 
-<PostHogLayout>
 	<Layout {...post.data}>
 		<Content />
 	</Layout>
-</PostHogLayout>
