@@ -39,6 +39,11 @@ import Layout from "../layouts/BlogPost.astro";
 				</button>
 			</div>
 
+			<audio
+				id="georgian-audio"
+				src="/audio/georgian_wedding.mp3"
+				preload="none"></audio>
+
 			<h2 class="romantic-title" id="text-title">
 				The Wedding of Dominick and Sophio
 			</h2>
@@ -190,82 +195,65 @@ import Layout from "../layouts/BlogPost.astro";
 
 				// --- Read Aloud Logic ---
 				const readAloudBtn = document.getElementById("read-aloud");
+				const audioPlayer = document.getElementById("georgian-audio");
+				
+				const stopReading = () => {
+					window.speechSynthesis.cancel();
+					if (audioPlayer) {
+						audioPlayer.pause();
+						audioPlayer.currentTime = 0;
+					}
+					if (readAloudBtn) readAloudBtn.textContent = "Read Aloud 🔊";
+				};
+
+				if (langBtn) {
+					langBtn.addEventListener("click", stopReading);
+				}
+
 				const idsToRead = [
-					"text-title",
-					"text-intro",
-					"text-p1",
-					"text-p2",
-					"text-p3",
-					"text-p4",
-					"text-p5",
-					"text-p6",
-					"text-p7",
-					"text-p8",
-					"text-p9",
-					"text-p10",
-					"text-p11",
+					"text-title", "text-intro",
+					"text-p1", "text-p2", "text-p3", "text-p4",
+					"text-p5", "text-p6", "text-p7", "text-p8",
+					"text-p9", "text-p10", "text-p11",
 				];
 
 				if (readAloudBtn) {
 					readAloudBtn.addEventListener("click", () => {
 						const synth = window.speechSynthesis;
-						if (!synth) {
-							alert(
-								"Text-to-speech not supported in this browser.",
-							);
-							return;
-						}
+						const isSpeakingEng = synth.speaking;
+						const isSpeakingGeo = audioPlayer && !audioPlayer.paused;
 
-						if (synth.speaking) {
-							synth.cancel();
-							readAloudBtn.textContent = "Read Aloud 🔊";
+						if (isSpeakingEng || isSpeakingGeo) {
+							stopReading();
 							return;
-						}
-
-						// Check for Georgian voice support
-						if (isGeorgian) {
-							const voices = synth.getVoices();
-							if (voices.length > 0) {
-								const hasGeorgian = voices.some((v) =>
-									v.lang.startsWith("ka"),
-								);
-								if (!hasGeorgian) {
-									const proceed = confirm(
-										"Your device doesn't appear to have a Georgian voice installed. The audio will likely sound broken or read in English. Do you want to try anyway?",
-									);
-									if (!proceed) {
-										return;
-									}
-								}
-							}
 						}
 
 						readAloudBtn.textContent = "Stop Reading ⏹️";
 
-						let fullText = "";
-						idsToRead.forEach((id) => {
-							const el = document.getElementById(id);
-							if (el) {
-								// Use innerText to get visible text (respecting current language)
-								fullText += el.innerText + "\n\n";
+						if (isGeorgian) {
+							if (audioPlayer) {
+								audioPlayer.play().catch((e) => {
+									console.error("Audio play failed", e);
+									alert("Could not play audio file.");
+									stopReading();
+								});
+								audioPlayer.onended = stopReading;
 							}
-						});
+						} else {
+							let fullText = "";
+							idsToRead.forEach((id) => {
+								const el = document.getElementById(id);
+								if (el) {
+									fullText += el.innerText + "\n\n";
+								}
+							});
 
-						const utterance = new SpeechSynthesisUtterance(
-							fullText,
-						);
-						utterance.lang = isGeorgian ? "ka-GE" : "en-US";
-
-						utterance.onend = () => {
-							readAloudBtn.textContent = "Read Aloud 🔊";
-						};
-
-						// Handle errors or interruption
-						utterance.onerror = () => {
-							readAloudBtn.textContent = "Read Aloud 🔊";
-						};
-
-						synth.speak(utterance);
+							const utterance = new SpeechSynthesisUtterance(fullText);
+							utterance.lang = "en-US";
+							utterance.onend = stopReading;
+							utterance.onerror = stopReading;
+							synth.speak(utterance);
+						}
 					});
 				}
 			</script>
