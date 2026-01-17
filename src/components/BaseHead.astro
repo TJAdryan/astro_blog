@@ -82,8 +82,11 @@ const imageURL = typeof image === "string" ? image : image.src;
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"
 ></script>
 <script>
+  // @ts-nocheck
+  declare const mermaid: any;
   document.addEventListener("DOMContentLoaded", function () {
     // Initialize Mermaid
+    // @ts-ignore
     mermaid.initialize({
       startOnLoad: false,
       theme: "default",
@@ -92,32 +95,85 @@ const imageURL = typeof image === "string" ? image : image.src;
         htmlLabels: true,
         curve: "basis",
       },
+      logLevel: 5, // Suppress logging
     });
+
+    // Create and inject modal if it doesn't exist
+    let modal: HTMLDialogElement | null = document.getElementById(
+      "mermaid-modal",
+    ) as HTMLDialogElement;
+    if (!modal) {
+      modal = document.createElement("dialog");
+      modal.id = "mermaid-modal";
+      modal.className = "mermaid-modal-dialog";
+      modal.innerHTML = `
+        <form method="dialog" class="close-container">
+          <button class="close-btn" aria-label="Close modal">✕</button>
+        </form>
+        <div class="modal-content" id="mermaid-modal-content"></div>
+      `;
+      document.body.appendChild(modal);
+
+      // Close on backdrop click
+      modal.addEventListener("click", (event) => {
+        const rect = modal!.getBoundingClientRect();
+        const isInDialog =
+          rect.top <= event.clientY &&
+          event.clientY <= rect.top + rect.height &&
+          rect.left <= event.clientX &&
+          event.clientX <= rect.left + rect.width;
+        if (!isInDialog) {
+          modal!.close();
+        }
+      });
+    }
+
+    function openModal(svgContent: string) {
+      const modalContent = document.getElementById("mermaid-modal-content");
+      if (modalContent && modal) {
+        modalContent.innerHTML = svgContent;
+        // Ensure SVG in modal is scalable
+        const svg = modalContent.querySelector("svg");
+        if (svg) {
+          svg.style.width = "100%";
+          svg.style.height = "auto";
+          svg.style.maxHeight = "85vh";
+          // Remove fixed width/height attributes if they exist to allow CCS scaling
+          svg.removeAttribute("width");
+          svg.removeAttribute("height");
+        }
+        modal.showModal();
+      }
+    }
 
     // Function to render Mermaid diagrams
     async function renderMermaidDiagrams() {
-      console.log("Rendering mermaid diagrams...");
+      // console.log("Rendering mermaid diagrams...");
       const mermaidElements = document.querySelectorAll(".mermaid");
-      console.log(`Found ${mermaidElements.length} mermaid elements`);
+      // console.log(`Found ${mermaidElements.length} mermaid elements`);
 
       for (let i = 0; i < mermaidElements.length; i++) {
-        const element = mermaidElements[i];
+        const element = mermaidElements[i] as HTMLElement;
         if (!element.dataset.processed) {
-          console.log(
-            `Processing mermaid element ${i}:`,
-            element.textContent.trim().substring(0, 50),
-          );
+          // console.log(`Processing mermaid element ${i}`);
           element.dataset.processed = "true";
           const id = `mermaid-${Date.now()}-${i}`;
 
           try {
+            // @ts-ignore
             const { svg } = await mermaid.render(
               id,
-              element.textContent.trim(),
+              element.textContent?.trim() || "",
             );
             element.innerHTML = svg;
-            console.log(`Successfully rendered mermaid diagram ${i}`);
-          } catch (error) {
+
+            // Add interaction
+            element.style.cursor = "zoom-in";
+            element.title = "Click to enlarge";
+            element.addEventListener("click", () => openModal(svg));
+
+            // console.log(`Successfully rendered mermaid diagram ${i}`);
+          } catch (error: any) {
             console.error("Mermaid rendering error:", error);
             element.innerHTML = `<p style="color: red;">Error rendering diagram: ${error.message}</p>`;
           }
@@ -132,3 +188,91 @@ const imageURL = typeof image === "string" ? image : image.src;
     window.addEventListener("astro:page-load", renderMermaidDiagrams);
   });
 </script>
+
+<style is:global>
+  /* Mermaid Diagram Styles */
+  .mermaid {
+    background: white;
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 2rem 0;
+    overflow-x: auto;
+    border: 1px solid #eee;
+    text-align: center;
+    transition: box-shadow 0.3s ease;
+  }
+
+  .mermaid:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .mermaid svg {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Modal Styles */
+  .mermaid-modal-dialog {
+    border: none;
+    border-radius: 12px;
+    padding: 0;
+    background: transparent;
+    box-shadow:
+      0 20px 25px -5px rgba(0, 0, 0, 0.1),
+      0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    max-width: 95vw;
+    max-height: 95vh;
+    width: auto;
+  }
+
+  .mermaid-modal-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+  }
+
+  .mermaid-modal-dialog .modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    overflow: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-height: 90vh; /* Leave room for padding */
+    min-width: 300px;
+  }
+
+  .mermaid-modal-dialog .close-container {
+    position: fixed; /* Fixed relative to dialog viewport or absolute relative to dialog? */
+    /* Using absolute relative to dialog is safer */
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 100;
+  }
+
+  /* Override button styles from global if needed */
+  .mermaid-modal-dialog .close-btn {
+    background: var(--accent, #d24e00);
+    color: white;
+    border: 2px solid white;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    transition:
+      background-color 0.2s,
+      transform 0.2s;
+  }
+
+  .mermaid-modal-dialog .close-btn:hover {
+    background-color: var(--accent-dark, #a33b00);
+    transform: scale(1.1);
+  }
+</style>
