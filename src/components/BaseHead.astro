@@ -95,6 +95,10 @@ const imageURL = typeof image === "string" ? image : image.src;
         htmlLabels: true,
         curve: "basis",
       },
+      themeVariables: {
+        fontSize: "24px",
+        fontFamily: "Inter, system-ui, sans-serif",
+      },
       logLevel: 5, // Suppress logging
     });
 
@@ -135,9 +139,11 @@ const imageURL = typeof image === "string" ? image : image.src;
         // Ensure SVG in modal is scalable
         const svg = modalContent.querySelector("svg");
         if (svg) {
-          svg.style.width = "100%";
+          // Allow the SVG to be its natural size or larger, up to 100% width of container if it fits
+          // But importantly, DO NOT constrain height, so it doesn't shrink text
+          svg.style.width = "auto";
           svg.style.height = "auto";
-          svg.style.maxHeight = "85vh";
+          svg.style.maxWidth = "100%";
           // Remove fixed width/height attributes if they exist to allow CCS scaling
           svg.removeAttribute("width");
           svg.removeAttribute("height");
