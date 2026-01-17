@@ -222,6 +222,24 @@ import Layout from "../layouts/BlogPost.astro";
 							return;
 						}
 
+						// Check for Georgian voice support
+						if (isGeorgian) {
+							const voices = synth.getVoices();
+							if (voices.length > 0) {
+								const hasGeorgian = voices.some((v) =>
+									v.lang.startsWith("ka"),
+								);
+								if (!hasGeorgian) {
+									const proceed = confirm(
+										"Your device doesn't appear to have a Georgian voice installed. The audio will likely sound broken or read in English. Do you want to try anyway?",
+									);
+									if (!proceed) {
+										return;
+									}
+								}
+							}
+						}
+
 						readAloudBtn.textContent = "Stop Reading ⏹️";
 
 						let fullText = "";
