@@ -27,6 +27,9 @@ import Layout from "../layouts/BlogPost.astro";
 				<button id="lang-toggle" class="lang-btn">
 					Read in Georgian / წაიკითხეთ ქართულად 🇬🇪
 				</button>
+				<button id="read-aloud" class="lang-btn">
+					Read Aloud 🔊
+				</button>
 				<button
 					id="heart-trigger"
 					class="lang-btn"
@@ -182,6 +185,69 @@ import Layout from "../layouts/BlogPost.astro";
 						langBtn.textContent = isGeorgian
 							? "Read in English 🇺🇸"
 							: "Read in Georgian / წაიკითხეთ ქართულად 🇬🇪";
+					});
+				}
+
+				// --- Read Aloud Logic ---
+				const readAloudBtn = document.getElementById("read-aloud");
+				const idsToRead = [
+					"text-title",
+					"text-intro",
+					"text-p1",
+					"text-p2",
+					"text-p3",
+					"text-p4",
+					"text-p5",
+					"text-p6",
+					"text-p7",
+					"text-p8",
+					"text-p9",
+					"text-p10",
+					"text-p11",
+				];
+
+				if (readAloudBtn) {
+					readAloudBtn.addEventListener("click", () => {
+						const synth = window.speechSynthesis;
+						if (!synth) {
+							alert(
+								"Text-to-speech not supported in this browser.",
+							);
+							return;
+						}
+
+						if (synth.speaking) {
+							synth.cancel();
+							readAloudBtn.textContent = "Read Aloud 🔊";
+							return;
+						}
+
+						readAloudBtn.textContent = "Stop Reading ⏹️";
+
+						let fullText = "";
+						idsToRead.forEach((id) => {
+							const el = document.getElementById(id);
+							if (el) {
+								// Use innerText to get visible text (respecting current language)
+								fullText += el.innerText + "\n\n";
+							}
+						});
+
+						const utterance = new SpeechSynthesisUtterance(
+							fullText,
+						);
+						utterance.lang = isGeorgian ? "ka-GE" : "en-US";
+
+						utterance.onend = () => {
+							readAloudBtn.textContent = "Read Aloud 🔊";
+						};
+
+						// Handle errors or interruption
+						utterance.onerror = () => {
+							readAloudBtn.textContent = "Read Aloud 🔊";
+						};
+
+						synth.speak(utterance);
 					});
 				}
 			</script>
