@@ -7,19 +7,28 @@ import HolidayToggle from "./HolidayToggle.astro";
 <header>
 	<nav>
 		<!-- START: EDITED SECTION -->
-		<a href="/" class="site-title">
-			<img
-				src="/img/tosvg.svg"
-				alt="NextValData logo"
-				class="site-logo"
-				width="90"
-				height="90"
-			/>
-			<span class="site-title-text"
-				><strong>Next <span class="accent">Val</span> Data</strong
-				></span
+		<div class="site-branding">
+			<button
+				id="logo-trigger"
+				class="site-logo-btn"
+				aria-label="Enlarge logo"
+				title="Click to enlarge"
 			>
-		</a>
+				<img
+					src="/img/tosvg.svg"
+					alt="NextValData logo"
+					class="site-logo"
+					width="90"
+					height="90"
+				/>
+			</button>
+			<a href="/" class="site-title-link">
+				<span class="site-title-text"
+					><strong>Next <span class="accent">Val</span> Data</strong
+					></span
+				>
+			</a>
+		</div>
 		<!-- END: EDITED SECTION -->
 
 		<!-- (Removed center garland) -->
@@ -103,40 +112,63 @@ import HolidayToggle from "./HolidayToggle.astro";
 </header>
 
 <style>
-	.site-title {
+	<style>
+	/* .site-branding replaces the old .site-title container styles */
+	.site-branding {
 		display: flex;
 		align-items: center;
-		gap: 0.5em;
+		gap: 0.5em; /* Gap between logo and text */
 		font-size: 1em;
-		text-decoration: none;
-		color: rgb(var(--black));
 		min-width: 0;
 		overflow: visible;
 		flex-shrink: 0;
-		flex-shrink: 0;
-		/* flex-grow: 1;  <-- REMOVED so garland can take the space */
 	}
-	.site-title:hover {
+
+	.site-title-link {
+		text-decoration: none;
+		color: rgb(var(--black));
+		display: flex;
+		align-items: center;
+		position: relative;
+	}
+
+	.site-logo-btn {
+		background: none;
+		border: none;
+		padding: 0;
+		cursor: zoom-in;
+		display: flex; /* Removes default button line-height issues */
+		transition: transform 0.2s ease;
+	}
+	.site-logo-btn:hover {
+		transform: scale(1.05); /* Slight scale up on hover */
+	}
+
+	.site-title-link:hover {
 		color: rgb(var(--black));
 	}
 
-	/* Garland Styles Removed */
 	.site-logo {
 		width: 90px;
 		height: 90px;
 	}
-	.site-title .site-title-text {
+
+	.site-title-text {
 		font-size: 2rem;
 		line-height: 1;
 		font-weight: 700;
+		letter-spacing: -0.05em;
+		position: relative;
+		z-index: 2;
 	}
-	.site-title .site-title-text .accent {
+
+	.site-title-text .accent {
 		color: var(--accent);
 	}
-	.site-title span {
-		overflow: hidden;
+
+	/* Utility for text truncation if needed */
+	.site-branding span {
 		white-space: nowrap;
-		text-overflow: ellipsis;
 	}
 
 	header {
@@ -146,88 +178,104 @@ import HolidayToggle from "./HolidayToggle.astro";
 		box-shadow: 0 2px 8px rgba(var(--black), 5%);
 		min-width: 0;
 	}
-	/* START: EDITED STYLES */
-	.site-title {
+
+	/* Modal Styles */
+	.logo-modal {
+		border: none;
+		border-radius: 12px;
+		padding: 0;
+		background: transparent;
+		box-shadow:
+			0 20px 25px -5px rgba(0, 0, 0, 0.1),
+			0 10px 10px -5px rgba(0, 0, 0, 0.04);
+		max-width: 90vw;
+		max-height: 90vh;
+		overflow: visible; /* button might stick out */
+	}
+
+	.logo-modal::backdrop {
+		background: rgba(0, 0, 0, 0.5);
+		backdrop-filter: blur(4px);
+	}
+
+	.modal-content {
+		background: white;
+		padding: 2rem;
+		border-radius: 12px;
 		display: flex;
+		justify-content: center;
 		align-items: center;
-		gap: 0.5em;
-		font-size: 1em;
-		text-decoration: none;
-		color: rgb(var(--black));
-		position: relative;
 	}
 
-	.site-title .site-title-text {
-		font-size: 2rem;
-		line-height: 1;
-		font-weight: 700;
-		letter-spacing: -0.05em; /* Tighten letters as requested */
-		position: relative;
-		z-index: 2;
+	.large-logo {
+		width: auto;
+		height: auto;
+		max-width: 80vw;
+		max-height: 80vh;
+		min-width: 300px; /* Ensure it's significantly larger than the header version */
 	}
 
-	/* Holiday Mode Background Decoration REMOVED (moved to Hero) */
-
-	.site-logo {
-		width: 90px;
-		height: 90px;
+	.close-container {
+		position: absolute;
+		top: -15px;
+		right: -15px;
+		z-index: 10;
 	}
-	.logo-container {
-		position: relative;
-		width: 90px;
-		height: 90px;
+
+	.close-btn {
+		background: var(--accent);
+		color: white;
+		border: 2px solid white;
+		border-radius: 50%;
+		width: 36px;
+		height: 36px;
+		font-size: 18px;
+		font-weight: bold;
+		cursor: pointer;
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+		transition: background-color 0.2s;
 	}
-	.site-logo-bg {
-		width: 90px;
-		height: 90px;
-		position: absolute;
-		top: 0;
-		left: 0;
-	}
-	.logo-overlay {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		z-index: 10;
-		font-size: 1.2rem;
-		font-weight: bold;
+
+	.close-btn:hover {
+		background-color: var(--accent-dark, #d24e00);
 	}
 
 	/* Mobile Optimization */
 	@media (max-width: 768px) {
-		.site-title .site-title-text {
+		.site-branding {
+			gap: 0.25em;
+		}
+		.site-title-text {
 			font-size: 1.4rem;
-			white-space: nowrap; /* Prevent "Val" from dropping */
 		}
 		.site-logo {
 			width: 50px;
 			height: 50px;
 		}
-		.logo-container,
-		.site-logo-bg {
-			width: 50px;
-			height: 50px;
+
+		/* Adjust modal for mobile */
+		.large-logo {
+			min-width: 250px;
+			max-width: 90vw;
 		}
-		.site-title {
-			gap: 0.25em;
+		.modal-content {
+			padding: 1rem;
 		}
 
-		/* Ensure header contents don't overflow */
+		/* Wrap header content control */
 		header nav {
-			flex-wrap: wrap; /* Allow wrapping if absolutely necessary, but try to keep top bar tight */
+			flex-wrap: wrap;
 			justify-content: center;
 			gap: 1em;
 		}
 
-		/* Adjust internal links for mobile */
 		.internal-links {
 			width: 100%;
 			justify-content: center;
-			margin-top: 0.5em; /* Push links to a second row cleanly if they don't fit */
+			margin-top: 0.5em;
 			flex-wrap: wrap;
 		}
 		.internal-links a {
@@ -235,7 +283,6 @@ import HolidayToggle from "./HolidayToggle.astro";
 			font-size: 0.9rem;
 		}
 	}
-	/* END: EDITED STYLES */
 
 	h2 {
 		margin: 0;
@@ -289,3 +336,45 @@ import HolidayToggle from "./HolidayToggle.astro";
 		color: black;
 	}
 </style>
+
+<dialog id="logo-modal" class="logo-modal">
+	<form method="dialog" class="close-container">
+		<button class="close-btn" aria-label="Close modal">✕</button>
+	</form>
+	<div class="modal-content">
+		<img
+			src="/img/tosvg.svg"
+			alt="Large NextValData logo"
+			class="large-logo"
+		/>
+	</div>
+</dialog>
+
+<script>
+	const modal = document.getElementById("logo-modal");
+	const trigger = document.getElementById("logo-trigger");
+
+	if (modal && trigger) {
+		trigger.addEventListener("click", () => {
+			if (typeof modal.showModal === "function") {
+				modal.showModal();
+			} else {
+				// Fallback or polyfill check (rarely needed in modern browsers)
+				alert("Your browser does not support the <dialog> element.");
+			}
+		});
+
+		// Close modal when clicking outside the content
+		modal.addEventListener("click", (event) => {
+			const rect = modal.getBoundingClientRect();
+			const isInDialog =
+				rect.top <= event.clientY &&
+				event.clientY <= rect.top + rect.height &&
+				rect.left <= event.clientX &&
+				event.clientX <= rect.left + rect.width;
+			if (!isInDialog) {
+				modal.close();
+			}
+		});
+	}
+</script>
