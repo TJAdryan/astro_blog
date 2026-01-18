@@ -20,15 +20,24 @@ import Layout from "../layouts/BlogPost.astro";
 		</div>
 
 		<div class="wedding-content">
-			<div class="language-switch-container" style="text-align: center; margin-bottom: 2rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+			<div
+				class="language-switch-container"
+				style="text-align: center; margin-bottom: 2rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;"
+			>
 				<button id="lang-toggle" class="lang-btn">
 					Read in Georgian / წაიკითხეთ ქართულად 🇬🇪
 				</button>
 				<button id="read-aloud" class="lang-btn">
 					Read Aloud 🔊
 				</button>
-				<div id="voice-select-container" style="display: none; align-items: center;">
-					<select id="voice-select" style="padding: 10px; border-radius: 30px; border: 2px solid #d6336c; background: #fff; color: #c2255c; font-family: inherit;">
+				<div
+					id="voice-select-container"
+					style="display: none; align-items: center;"
+				>
+					<select
+						id="voice-select"
+						style="padding: 10px; border-radius: 30px; border: 2px solid #d6336c; background: #fff; color: #c2255c; font-family: inherit;"
+					>
 						<option value="">Default Voice</option>
 					</select>
 				</div>
@@ -178,9 +187,13 @@ import Layout from "../layouts/BlogPost.astro";
 					langBtn.addEventListener("click", () => {
 						isGeorgian = !isGeorgian;
 						// Hide/Show voice selector based on language
-						const voiceContainer = document.getElementById('voice-select-container');
+						const voiceContainer = document.getElementById(
+							"voice-select-container",
+						);
 						if (voiceContainer) {
-							voiceContainer.style.display = isGeorgian ? 'none' : 'flex';
+							voiceContainer.style.display = isGeorgian
+								? "none"
+								: "flex";
 						}
 
 						const ids = Object.keys(georgianContent);
@@ -207,24 +220,28 @@ import Layout from "../layouts/BlogPost.astro";
 
 				// --- Read Aloud Logic ---
 				const readAloudBtn = document.getElementById("read-aloud");
-				const audioPlayerGeo = document.getElementById("georgian-audio");
+				const audioPlayerGeo =
+					document.getElementById("georgian-audio");
 				const audioPlayerEng = document.getElementById("english-audio");
 				const voiceSelect = document.getElementById("voice-select");
-				const voiceContainer = document.getElementById("voice-select-container");
+				const voiceContainer = document.getElementById(
+					"voice-select-container",
+				);
 
 				// Initialize Voices
 				function populateVoices() {
 					if (!voiceSelect) return;
 					const voices = window.speechSynthesis.getVoices();
-					voiceSelect.innerHTML = '<option value="">Default Browser Voice</option>';
-					
+					voiceSelect.innerHTML =
+						'<option value="">Default Browser Voice</option>';
+
 					// Add placeholder for Custom English Audio if file exists (simulated check)
 					// We can't easily check for file existence in client-side JS without a fetch
 					// So we will just try to play it first in logic, but here we list system voices
-					
+
 					voices.forEach((voice) => {
-						if (voice.lang.startsWith('en')) {
-							const option = document.createElement('option');
+						if (voice.lang.startsWith("en")) {
+							const option = document.createElement("option");
 							option.value = voice.name;
 							option.textContent = `${voice.name} (${voice.lang})`;
 							voiceSelect.appendChild(option);
@@ -239,9 +256,9 @@ import Layout from "../layouts/BlogPost.astro";
 
 				// Show voice selector initially if in English mode
 				if (voiceContainer && !isGeorgian) {
-					voiceContainer.style.display = 'flex';
+					voiceContainer.style.display = "flex";
 				}
-				
+
 				const stopReading = () => {
 					window.speechSynthesis.cancel();
 					if (audioPlayerGeo) {
@@ -252,7 +269,8 @@ import Layout from "../layouts/BlogPost.astro";
 						audioPlayerEng.pause();
 						audioPlayerEng.currentTime = 0;
 					}
-					if (readAloudBtn) readAloudBtn.textContent = "Read Aloud 🔊";
+					if (readAloudBtn)
+						readAloudBtn.textContent = "Read Aloud 🔊";
 				};
 
 				if (langBtn) {
@@ -260,17 +278,29 @@ import Layout from "../layouts/BlogPost.astro";
 				}
 
 				const idsToRead = [
-					"text-title", "text-intro",
-					"text-p1", "text-p2", "text-p3", "text-p4",
-					"text-p5", "text-p6", "text-p7", "text-p8",
-					"text-p9", "text-p10", "text-p11",
+					"text-title",
+					"text-intro",
+					"text-p1",
+					"text-p2",
+					"text-p3",
+					"text-p4",
+					"text-p5",
+					"text-p6",
+					"text-p7",
+					"text-p8",
+					"text-p9",
+					"text-p10",
+					"text-p11",
 				];
 
 				if (readAloudBtn) {
 					readAloudBtn.addEventListener("click", () => {
 						const synth = window.speechSynthesis;
-						const isSpeakingEng = synth.speaking || (audioPlayerEng && !audioPlayerEng.paused);
-						const isSpeakingGeo = audioPlayerGeo && !audioPlayerGeo.paused;
+						const isSpeakingEng =
+							synth.speaking ||
+							(audioPlayerEng && !audioPlayerEng.paused);
+						const isSpeakingGeo =
+							audioPlayerGeo && !audioPlayerGeo.paused;
 
 						if (isSpeakingEng || isSpeakingGeo) {
 							stopReading();
@@ -292,7 +322,7 @@ import Layout from "../layouts/BlogPost.astro";
 							// Try connecting to English Audio File first
 							// If the user wants a custom celebrity voice, they should replace this file
 							// For now, we attempt to play it. If it fails (404/Empty), we fallback to Synth.
-							
+
 							const playFallbackSynth = () => {
 								let fullText = "";
 								idsToRead.forEach((id) => {
@@ -302,16 +332,21 @@ import Layout from "../layouts/BlogPost.astro";
 									}
 								});
 
-								const utterance = new SpeechSynthesisUtterance(fullText);
+								const utterance = new SpeechSynthesisUtterance(
+									fullText,
+								);
 								utterance.lang = "en-US";
-								
+
 								// Apply selected voice
 								if (voiceSelect && voiceSelect.value) {
 									const voices = synth.getVoices();
-									const selectedVoice = voices.find(v => v.name === voiceSelect.value);
-									if (selectedVoice) utterance.voice = selectedVoice;
+									const selectedVoice = voices.find(
+										(v) => v.name === voiceSelect.value,
+									);
+									if (selectedVoice)
+										utterance.voice = selectedVoice;
 								}
-								
+
 								utterance.onend = stopReading;
 								utterance.onerror = stopReading;
 								synth.speak(utterance);
@@ -320,31 +355,44 @@ import Layout from "../layouts/BlogPost.astro";
 							if (audioPlayerEng) {
 								// We try to play. If it fails (e.g. file doesn't exist), fallback.
 								const playPromise = audioPlayerEng.play();
-								
+
 								if (playPromise !== undefined) {
-									playPromise.then(() => {
-										// Play started successfully
-										audioPlayerEng.onended = stopReading;
-									}).catch((error) => {
-										// Auto-play might be blocked or file missing. 
-										// If file is missing (404), this catch might trigger or not depending on network.
-										// A more robust check is 'error' event on audio.
-										console.log("English audio file issue or blocked, falling back to synth:", error);
-										playFallbackSynth();
-									});
+									playPromise
+										.then(() => {
+											// Play started successfully
+											audioPlayerEng.onended =
+												stopReading;
+										})
+										.catch((error) => {
+											// Auto-play might be blocked or file missing.
+											// If file is missing (404), this catch might trigger or not depending on network.
+											// A more robust check is 'error' event on audio.
+											console.log(
+												"English audio file issue or blocked, falling back to synth:",
+												error,
+											);
+											playFallbackSynth();
+										});
 								}
 							} else {
 								playFallbackSynth();
 							}
-							
+
 							// Also catch explicit loading errors (404)
-							audioPlayerEng.addEventListener('error', (e) => {
-								console.log("English Audio File not found, using Synth.");
-								playFallbackSynth();
-							}, { once: true });
+							audioPlayerEng.addEventListener(
+								"error",
+								(e) => {
+									console.log(
+										"English Audio File not found, using Synth.",
+									);
+									playFallbackSynth();
+								},
+								{ once: true },
+							);
 						}
 					});
 				}
+			</script>
 
 			<p id="text-p1">
 				They arrived at City Hall in the morning, ready to make their
