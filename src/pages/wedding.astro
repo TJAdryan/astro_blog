@@ -269,8 +269,11 @@ import Layout from "../layouts/BlogPost.astro";
 						audioPlayerEng.pause();
 						audioPlayerEng.currentTime = 0;
 					}
-					if (readAloudBtn)
-						readAloudBtn.textContent = "Read Aloud 🔊";
+					if (readAloudBtn) {
+						readAloudBtn.textContent = isGeorgian
+							? "ხმამაღლა წაკითხვა 🔊"
+							: "Read Aloud 🔊";
+					}
 				};
 
 				if (langBtn) {
@@ -307,7 +310,9 @@ import Layout from "../layouts/BlogPost.astro";
 							return;
 						}
 
-						readAloudBtn.textContent = "Stop Reading ⏹️";
+						readAloudBtn.textContent = isGeorgian
+							? "შეჩერება ⏹️"
+							: "Stop Reading ⏹️";
 
 						if (isGeorgian) {
 							if (audioPlayerGeo) {
