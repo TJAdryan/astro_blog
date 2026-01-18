@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-01-18T13:10:46.245Z",
+    "status": "Service Change",
+    "details": [
+      "Northbound: 96 St-bound trains are running via <W> between DeKalb Av and Canal St."
+    ]
+  },
+  {
     "date": "2026-01-17T13:10:30.190Z",
     "status": "Service Change",
     "details": [
