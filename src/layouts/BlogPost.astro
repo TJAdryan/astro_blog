@@ -10,6 +10,7 @@ import Header from "../components/Header.astro";
 type Props = CollectionEntry<"blog">["data"] & {
 	ogImage?: string;
 	favicon?: string;
+	noindex?: boolean;
 };
 
 const {
@@ -20,6 +21,7 @@ const {
 	heroImage,
 	ogImage,
 	favicon,
+	noindex,
 } = Astro.props;
 ---
 
@@ -30,6 +32,7 @@ const {
 			description={description}
 			image={ogImage || heroImage}
 			favicon={favicon}
+			noindex={noindex}
 		/>
 		<style>
 			main {

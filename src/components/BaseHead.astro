@@ -12,6 +12,7 @@ interface Props {
   description: string;
   image?: ImageMetadata | string;
   favicon?: string;
+  noindex?: boolean;
 }
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -21,6 +22,7 @@ const {
   description,
   image = FallbackImage,
   favicon = "/favicon.svg",
+  noindex = false,
 } = Astro.props;
 const imageURL = typeof image === "string" ? image : image.src;
 ---
@@ -28,6 +30,7 @@ const imageURL = typeof image === "string" ? image : image.src;
 <!-- Global Metadata -->
 <meta charset="utf-8" />
 <PostHogScript />
+{noindex && <meta name="robots" content="noindex" />}
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <link rel="icon" type="image/svg+xml" href={favicon} />
 <link rel="apple-touch-icon" href={favicon} />
