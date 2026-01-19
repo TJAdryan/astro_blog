@@ -357,8 +357,12 @@ import Layout from "../layouts/BlogPost.astro";
 								synth.speak(utterance);
 							};
 
-							if (audioPlayerEng) {
-								// We try to play. If it fails (e.g. file doesn't exist), fallback.
+							// Check if user has explicitly selected a voice override
+							const userSelectedVoice =
+								voiceSelect && voiceSelect.value !== "";
+
+							if (!userSelectedVoice && audioPlayerEng) {
+								// We try to play default audio file. If it fails (e.g. file doesn't exist), fallback.
 								const playPromise = audioPlayerEng.play();
 
 								if (playPromise !== undefined) {
@@ -379,21 +383,21 @@ import Layout from "../layouts/BlogPost.astro";
 											playFallbackSynth();
 										});
 								}
+
+								// Also catch explicit loading errors (404)
+								audioPlayerEng.addEventListener(
+									"error",
+									(e) => {
+										console.log(
+											"English Audio File not found, using Synth.",
+										);
+										playFallbackSynth();
+									},
+									{ once: true },
+								);
 							} else {
 								playFallbackSynth();
 							}
-
-							// Also catch explicit loading errors (404)
-							audioPlayerEng.addEventListener(
-								"error",
-								(e) => {
-									console.log(
-										"English Audio File not found, using Synth.",
-									);
-									playFallbackSynth();
-								},
-								{ once: true },
-							);
 						}
 					});
 				}
