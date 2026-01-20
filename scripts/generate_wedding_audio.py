@@ -22,7 +22,7 @@ TEXT_PARTS = [
     ("When Dominick and Sophio said yes, the room erupted. The band struck up a special tribute song just for them. Everyone—friends from childhood, friends from work, family, and new acquaintances—formed a circle, dancing around the newlyweds. It was a great evening, a loud and joyous declaration of a quiet and devoted love.", VOICE_SENTIMENTAL)
 ]
 
-OUTPUT_FILE = "public/audio/english_wedding.mp3"
+OUTPUT_FILE = "public/audio/english_wedding_v2.mp3"
 
 async def main():
     print(f"Generating audio to {OUTPUT_FILE} using dual voices...")
