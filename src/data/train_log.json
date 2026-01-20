@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-01-20T13:17:41.068Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are taking 6 mins longer to travel per trip.",
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times at Ocean Pkwy (up to 12 mins, normally every 10 mins)."
+    ]
+  },
+  {
     "date": "2026-01-18T13:10:46.245Z",
     "status": "Service Change",
     "details": [
