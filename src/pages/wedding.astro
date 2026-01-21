@@ -192,9 +192,8 @@ import Layout from "../layouts/BlogPost.astro";
 							"voice-select-container",
 						);
 						if (voiceContainer) {
-							voiceContainer.style.display = isGeorgian
-								? "none"
-								: "flex";
+							// Always keep hidden as we are using pre-gen audio for both languages
+							voiceContainer.style.display = "none";
 						}
 
 						const ids = Object.keys(georgianContent);
@@ -230,34 +229,16 @@ import Layout from "../layouts/BlogPost.astro";
 				);
 
 				// Initialize Voices
+				// We are now using a specific pre-generated MP3 with dual voices (Christopher & Aria).
+				// We no longer populate the dropdown with system voices to prevent confusion.
 				function populateVoices() {
-					if (!voiceSelect) return;
-					const voices = window.speechSynthesis.getVoices();
-					voiceSelect.innerHTML =
-						'<option value="">Default Browser Voice</option>';
-
-					// Add placeholder for Custom English Audio if file exists (simulated check)
-					// We can't easily check for file existence in client-side JS without a fetch
-					// So we will just try to play it first in logic, but here we list system voices
-
-					voices.forEach((voice) => {
-						if (voice.lang.startsWith("en")) {
-							const option = document.createElement("option");
-							option.value = voice.name;
-							option.textContent = `${voice.name} (${voice.lang})`;
-							voiceSelect.appendChild(option);
-						}
-					});
+					// Intentional no-op
 				}
 
-				// Populate voices when they are loaded (async)
-				window.speechSynthesis.onvoiceschanged = populateVoices;
-				// Also call immediately in case they are already loaded
-				populateVoices();
-
 				// Show voice selector initially if in English mode
+				// HIDDEN: We want to force the use of the pre-generated MP3
 				if (voiceContainer && !isGeorgian) {
-					voiceContainer.style.display = "flex";
+					voiceContainer.style.display = "none";
 				}
 
 				const stopReading = () => {
