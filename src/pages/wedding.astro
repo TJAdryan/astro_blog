@@ -306,45 +306,10 @@ import Layout from "../layouts/BlogPost.astro";
 								audioPlayerGeo.onended = stopReading;
 							}
 						} else {
-							// Try connecting to English Audio File first
-							// If the user wants a custom celebrity voice, they should replace this file
-							// For now, we attempt to play it. If it fails (404/Empty), we fallback to Synth.
+							// Try connecting to English Audio File
+							// Strictly use the pre-generated MP3. No synthetic fallback.
 
-							const playFallbackSynth = () => {
-								let fullText = "";
-								idsToRead.forEach((id) => {
-									const el = document.getElementById(id);
-									if (el) {
-										fullText += el.innerText + "\n\n";
-									}
-								});
-
-								const utterance = new SpeechSynthesisUtterance(
-									fullText,
-								);
-								utterance.lang = "en-US";
-
-								// Apply selected voice
-								if (voiceSelect && voiceSelect.value) {
-									const voices = synth.getVoices();
-									const selectedVoice = voices.find(
-										(v) => v.name === voiceSelect.value,
-									);
-									if (selectedVoice)
-										utterance.voice = selectedVoice;
-								}
-
-								utterance.onend = stopReading;
-								utterance.onerror = stopReading;
-								synth.speak(utterance);
-							};
-
-							// Check if user has explicitly selected a voice override
-							const userSelectedVoice =
-								voiceSelect && voiceSelect.value !== "";
-
-							if (!userSelectedVoice && audioPlayerEng) {
-								// We try to play default audio file. If it fails (e.g. file doesn't exist), fallback.
+							if (audioPlayerEng) {
 								const playPromise = audioPlayerEng.play();
 
 								if (playPromise !== undefined) {
@@ -355,30 +320,14 @@ import Layout from "../layouts/BlogPost.astro";
 												stopReading;
 										})
 										.catch((error) => {
-											// Auto-play might be blocked or file missing.
-											// If file is missing (404), this catch might trigger or not depending on network.
-											// A more robust check is 'error' event on audio.
-											console.log(
-												"English audio file issue or blocked, falling back to synth:",
+											console.error(
+												"English audio file playback failed:",
 												error,
 											);
-											playFallbackSynth();
+											alert("Could not play audio file.");
+											stopReading();
 										});
 								}
-
-								// Also catch explicit loading errors (404)
-								audioPlayerEng.addEventListener(
-									"error",
-									(e) => {
-										console.log(
-											"English Audio File not found, using Synth.",
-										);
-										playFallbackSynth();
-									},
-									{ once: true },
-								);
-							} else {
-								playFallbackSynth();
 							}
 						}
 					});
