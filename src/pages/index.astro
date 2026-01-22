@@ -40,6 +40,23 @@ const latestPosts = posts.slice(0, 3);
       </p>
     </div>
 
+    <!-- About / Intro Section -->
+    <section class="about-intro mb-12 mx-auto max-w-3xl text-center">
+      <p
+        class="text-lg md:text-xl leading-relaxed text-gray-700 dark:text-gray-300"
+      >
+        Hi, thanks for visiting. I’m <strong class="text-accent"
+          >Dominick Ryan</strong
+        >. I’m a Senior Systems and Data Engineer focused on building reliable,
+        robust data transformations and cloud infrastructure. So much of what
+        I’ve built has been made possible by the mentors and peers I’ve worked
+        with directly and the open-source community. This blog is my
+        self-interested attempt to not forget the many projects I have thought
+        deeply about and executed. It is also my way of giving back and sharing
+        that technical knowledge.
+      </p>
+    </section>
+
     <!-- Latest Posts (top 3) -->
     {
       latestPosts.length > 0 && (
@@ -547,5 +564,23 @@ const latestPosts = posts.slice(0, 3);
     display: block;
     max-width: 250px; /* Adjust size to fit header area properly */
     height: auto;
+  }
+
+  /* About Intro Styling */
+  .about-intro {
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0),
+      rgba(var(--accent-rgb), 0.05),
+      rgba(255, 255, 255, 0)
+    );
+    /* Fallback if accent-rgb isn't defined, though usually --accent is hex. Using simple opacity approach: */
+    background: rgba(255, 255, 255, 0.5);
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid rgba(var(--gray), 0.1);
+  }
+  .about-intro strong {
+    color: var(--accent);
   }
 </style>
