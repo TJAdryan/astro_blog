@@ -12,50 +12,53 @@ const latestPosts = posts.slice(0, 3);
 <BaseLayout>
   <div class="container">
     <div class="hero-section">
-      <h1 class="hero-title relative z-10" id="hero-title-shake-zone">
-        <span class="primary-text">Next</span>
-        <!-- Val Door Wrapper -->
-        <span class="val-door-wrapper relative inline-block align-bottom">
-          <a
-            href="/login"
-            id="login-secret"
-            class="login-secret absolute inset-0 flex items-center justify-center opacity-0 pointer-events-none z-0"
-          >
-            <img
-              src="/img/cartoon_door.png"
-              alt="Login Door"
-              class="h-24 w-auto hover:brightness-110 transition-all"
-            />
-          </a>
-          <span
-            id="swing-val"
-            class="accent-text relative z-10 cursor-help inline-block origin-left"
-            >Val</span
-          >
-        </span>
-        <span class="primary-text">Data</span>
-      </h1>
-      <p class="hero-subtitle">
-        Data insights, analytics, and technical explorations.
-      </p>
-    </div>
+      <div class="hero-grid">
+        <!-- BRANDING COLUMN -->
+        <div class="hero-branding">
+          <h1 class="hero-title relative z-10" id="hero-title-shake-zone">
+            <span class="primary-text">Next</span>
+            <!-- Val Door Wrapper -->
+            <span class="val-door-wrapper relative inline-block align-bottom">
+              <a
+                href="/login"
+                id="login-secret"
+                class="login-secret absolute inset-0 flex items-center justify-center opacity-0 pointer-events-none z-0"
+              >
+                <img
+                  src="/img/cartoon_door.png"
+                  alt="Login Door"
+                  class="h-24 w-auto hover:brightness-110 transition-all"
+                />
+              </a>
+              <span
+                id="swing-val"
+                class="accent-text relative z-10 cursor-help inline-block origin-left"
+                >Val</span
+              >
+            </span>
+            <span class="primary-text">Data</span>
+          </h1>
+          <p class="hero-subtitle">
+            Data insights, analytics, and technical explorations.
+          </p>
+        </div>
 
-    <!-- About / Intro Section -->
-    <section class="about-intro mb-12 mx-auto max-w-3xl text-center">
-      <p
-        class="text-lg md:text-xl leading-relaxed text-gray-700 dark:text-gray-300"
-      >
-        Hi, thanks for visiting. I’m <strong class="text-accent"
-          >Dominick Ryan</strong
-        >. I’m a Senior Systems and Data Engineer focused on building reliable,
-        robust data transformations and cloud infrastructure. So much of what
-        I’ve built has been made possible by the mentors and peers I’ve worked
-        with directly and the open-source community. This blog is my
-        self-interested attempt to not forget the many projects I have thought
-        deeply about and executed. It is also my way of giving back and sharing
-        that technical knowledge.
-      </p>
-    </section>
+        <!-- INTRO COLUMN -->
+        <div class="hero-intro">
+          <p class="intro-text">
+            Hi, thanks for visiting. I’m <strong class="text-accent"
+              >Dominick Ryan</strong
+            >. I’m a Senior Systems and Data Engineer focused on building
+            reliable, robust data transformations and cloud infrastructure. So
+            much of what I’ve built has been made possible by the mentors and
+            peers I’ve worked with directly and the open-source community. This
+            blog is my self-interested attempt to not forget the many projects I
+            have thought deeply about and executed. It is also my way of giving
+            back and sharing that technical knowledge.
+          </p>
+        </div>
+      </div>
+    </div>
 
     <!-- Latest Posts (top 3) -->
     {
@@ -516,14 +519,72 @@ const latestPosts = posts.slice(0, 3);
     }
   }
 
-  /* Tighter hero */
+  /* Tighter hero with Grid Layout */
   .hero-section {
-    text-align: center;
-    padding: 3rem 0 4rem 0;
-    background: linear-gradient(135deg, rgba(255, 107, 53, 0.05), transparent);
+    padding: 3rem 2rem;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 107, 53, 0.03),
+      rgba(255, 255, 255, 0.4)
+    );
     border-radius: 16px;
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
+    border: 1px solid rgba(255, 107, 53, 0.05);
   }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 3rem;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .hero-branding {
+    text-align: left; /* Branding on left */
+  }
+
+  .hero-intro {
+    text-align: left;
+    padding-left: 2rem;
+    border-left: 3px solid rgba(255, 107, 53, 0.15); /* Elegant separator */
+  }
+
+  .intro-text {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: rgba(60, 60, 60, 0.9);
+  }
+
+  .intro-text strong {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* Responsive Mobile Layout */
+  @media (max-width: 850px) {
+    .hero-grid {
+      grid-template-columns: 1fr;
+      text-align: center;
+      gap: 2rem;
+    }
+
+    .hero-branding {
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-intro {
+      padding-left: 0;
+      border-left: none;
+      border-top: 1px solid rgba(0, 0, 0, 0.05); /* Top separator on mobile */
+      padding-top: 2rem;
+      text-align: center;
+    }
+  }
+
+  /* ... rest of your hero styles (shake animations etc) ... */
 
   /* Holiday Mode Substitutions */
   :global(html.holiday-mode) .hero-section {
@@ -566,21 +627,5 @@ const latestPosts = posts.slice(0, 3);
     height: auto;
   }
 
-  /* About Intro Styling */
-  .about-intro {
-    background: linear-gradient(
-      to right,
-      rgba(255, 255, 255, 0),
-      rgba(var(--accent-rgb), 0.05),
-      rgba(255, 255, 255, 0)
-    );
-    /* Fallback if accent-rgb isn't defined, though usually --accent is hex. Using simple opacity approach: */
-    background: rgba(255, 255, 255, 0.5);
-    padding: 2rem;
-    border-radius: 12px;
-    border: 1px solid rgba(var(--gray), 0.1);
-  }
-  .about-intro strong {
-    color: var(--accent);
-  }
+  /* End CSS */
 </style>
