@@ -16,9 +16,9 @@ const latestPosts = posts.slice(0, 3);
         <!-- BRANDING COLUMN -->
         <div class="hero-branding">
           <h1 class="hero-title relative z-10" id="hero-title-shake-zone">
-            <span class="primary-text">Next</span>
+            <span class="primary-text block">Next</span>
             <!-- Val Door Wrapper -->
-            <span class="val-door-wrapper relative inline-block align-bottom">
+            <span class="val-door-wrapper relative block">
               <a
                 href="/login"
                 id="login-secret"
@@ -36,7 +36,7 @@ const latestPosts = posts.slice(0, 3);
                 >Val</span
               >
             </span>
-            <span class="primary-text">Data</span>
+            <span class="primary-text block">Data</span>
           </h1>
           <p class="hero-subtitle">
             Data insights, analytics, and technical explorations.
@@ -348,7 +348,7 @@ const latestPosts = posts.slice(0, 3);
   /* ------------------------------- */
   .val-door-wrapper {
     perspective: 1000px; /* Essential for 3D Swing */
-    display: inline-block; /* Fix layout */
+    display: block; /* Vertical Stack */
   }
 
   /* The Hidden Link */
@@ -358,6 +358,7 @@ const latestPosts = posts.slice(0, 3);
   /* ------------------------------- */
 
   .hero-title .primary-text {
+    display: block; /* Stack vertically */
     /* darker neutral gradient */
     background: linear-gradient(90deg, #2b2b2b 0%, #4a4a4a 50%, #2b2b2b 100%);
     -webkit-background-clip: text;
