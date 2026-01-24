@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-01-24T13:11:43.031Z",
+    "status": "Service Change",
+    "details": [
+      "<Q> trains are making local stops between 57 St - 7 Av and Canal St."
+    ]
+  },
+  {
     "date": "2026-01-23T13:16:28.844Z",
     "status": "Delays",
     "details": [
