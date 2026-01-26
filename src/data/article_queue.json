@@ -43,5 +43,32 @@
     "source": "arXiv",
     "topic": "Python",
     "dateAdded": "2026-01-19T13:17:04.456Z"
+  },
+  {
+    "id": "http://arxiv.org/abs/2508.05904v1",
+    "title": "Snowpark: Performant, Secure, User-Friendly Data Engineering and AI/ML Next To Your Data",
+    "summary": "Snowflake revolutionized data analytics with an elastic architecture that decouples compute and storage, enabling scalable solutions supporting data architectures like data lake, data warehouse, data lakehouse, and data mesh. Building on this foundation, Snowflake has advanced its AI Data Cloud vision by introducing Snowpark, a managed turnkey solution that supports data engineering and AI and ML workloads using Python and other programming languages.\n  This paper outlines Snowpark's design objectives towards high performance, strong security and governance, and ease of use. We detail the architecture of Snowpark, highlighting its elastic scalability and seamless integration with Snowflake core compute infrastructure. This includes leveraging Snowflake control plane for distributed computing and employing a secure sandbox for isolating Snowflake SQL workloads from Snowpark executions. Additionally, we present core innovations in Snowpark that drive further performance enhancements, such as query initialization latency reduction through Python package caching, improved workload scheduling for customized workloads, and data skew management via efficient row redistribution. Finally, we showcase real-world case studies that illustrate Snowpark's efficiency and effectiveness for large-scale data engineering and AI and ML tasks.",
+    "link": "http://arxiv.org/abs/2508.05904v1",
+    "source": "arXiv",
+    "topic": "Data Engineering",
+    "dateAdded": "2026-01-26T13:16:56.392Z"
+  },
+  {
+    "id": "38066376",
+    "title": "Genetic Engineering of Therapeutic Phages Using Type III CRISPR-Cas Systems.",
+    "summary": "No abstract available via summary API. Please click link to read.",
+    "link": "https://pubmed.ncbi.nlm.nih.gov/38066376/",
+    "source": "PubMed",
+    "topic": "CRISPR",
+    "dateAdded": "2026-01-26T13:16:57.194Z"
+  },
+  {
+    "id": "http://arxiv.org/abs/2601.13139v1",
+    "title": "From Human to Machine Refactoring: Assessing GPT-4's Impact on Python Class Quality and Readability",
+    "summary": "Refactoring is a software engineering practice that aims to improve code quality without altering program behavior. Although automated refactoring tools have been extensively studied, their practical applicability remains limited. Recent advances in Large Language Models (LLMs) have introduced new opportunities for automated code refactoring. The evaluation of such an LLM-driven approach, however, leaves unanswered questions about its effects on code quality. In this paper, we present a comprehensive empirical study on LLM-driven refactoring using GPT-4o, applied to 100 Python classes from the ClassEval benchmark. Unlike prior work, our study explores a wide range of class-level refactorings inspired by Fowler's catalog and evaluates their effects from three complementary perspectives: (i) behavioral correctness, verified through unit tests; (ii) code quality, assessed via Pylint, Flake8, and SonarCloud; and (iii) readability, measured using a state-of-the-art readability tool. Our findings show that GPT-4o generally produces behavior-preserving refactorings that reduce code smells and improve quality metrics, albeit at the cost of decreased readability. Our results provide new evidence on the capabilities and limitations of LLMs in automated software refactoring, highlighting directions for integrating LLMs into practical refactoring workflows.",
+    "link": "http://arxiv.org/abs/2601.13139v1",
+    "source": "arXiv",
+    "topic": "Python",
+    "dateAdded": "2026-01-26T13:16:57.469Z"
   }
 ]
