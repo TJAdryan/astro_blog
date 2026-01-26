@@ -1,14 +1,5 @@
 [
   {
-    "id": "http://arxiv.org/abs/1710.04144v1",
-    "title": "GUIDES - Geospatial Urban Infrastructure Data Engineering Solutions",
-    "summary": "As the underground infrastructure systems of cities age, maintenance and repair become an increasing concern. Cities face difficulties in planning maintenance, predicting and responding to infrastructure related issues, and in realizing their vision to be a smart city due to their incomplete understanding of the existing state of the infrastructure. Only few cities have accurate and complete digital information on their underground infrastructure (e.g., electricity, water, natural gas) systems, which poses problems to those planning and performing construction projects. To address these issues, we introduce GUIDES as a new data conversion and management framework for urban underground infrastructure systems that enable city administrators, workers, and contractors along with the general public and other users to query digitized and integrated data to make smarter decisions. This demo paper presents the GUIDES architecture and describes two of its central components: (i) mapping of underground infrastructure systems, and (ii) integration of heterogeneous geospatial data.",
-    "link": "http://arxiv.org/abs/1710.04144v1",
-    "source": "arXiv",
-    "topic": "Data Engineering",
-    "dateAdded": "2026-01-04T21:42:09.291Z"
-  },
-  {
     "id": "http://arxiv.org/abs/1501.04832v1",
     "title": "Big Data: How Geo-information Helped Shape the Future of Data Engineering",
     "summary": "Very large data sets are the common rule in automated mapping, GIS, remote sensing, and what we can name geo-information. Indeed, in 1983 Landsat was already delivering gigabytes of data, and other sensors were in orbit or ready for launch, and a tantamount of cartographic data was being digitized. The retrospective paper revisits several issues that geo-information sciences had to face from the early stages on, including: structure ( to bring some structure to the data registered from a sampled signal, metadata); processing (huge amounts of data for big computers and fast algorithms); uncertainty (the kinds of errors, their quantification); consistency (when merging different sources of data is logically allowed, and meaningful); ontologies (clear and agreed shared definitions, if any kind of decision should be based upon them). All these issues are the background of Internet queries, and the underlying technology has been shaped during those years when geo-information engineering emerged.",

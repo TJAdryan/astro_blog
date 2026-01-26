@@ -1,268 +1,253 @@
 ---
 import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
-import BaseHead from "../../components/BaseHead.astro";
-import Footer from "../../components/Footer.astro";
 import FormattedDate from "../../components/FormattedDate.astro";
-import Header from "../../components/Header.astro";
 import { SITE_DESCRIPTION, SITE_TITLE } from "../../consts";
 import UnknownPlateWidget from "../../components/UnknownPlateWidget.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
 
 const posts = (await getCollection("blog")).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
 ---
 
-<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-<style>
-	main {
-		width: 960px;
-	}
-
-	/* Search Bar Styles */
-	.search-container {
-		margin-bottom: 2rem;
-		position: relative;
-	}
-
-	.search-input {
-		width: 100%;
-		padding: 1rem 1.5rem;
-		font-size: 1.1rem;
-		border: 2px solid transparent; /* Prepare for gradient border */
-		border-radius: 50px;
-		background:
-			linear-gradient(#fff, #fff) padding-box,
-			linear-gradient(to right, #ff6b35, #ff9f43) border-box;
-		box-shadow: 0 4px 15px rgba(255, 107, 53, 0.1);
-		transition: all 0.3s ease;
-		outline: none;
-		color: var(--black);
-	}
-
-	.search-input:focus {
-		box-shadow: 0 8px 25px rgba(255, 107, 53, 0.25);
-		transform: translateY(-2px);
-	}
-
-	.search-input::placeholder {
-		color: #999;
-	}
-
-	ul {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 2rem;
-		list-style-type: none;
-		margin: 0;
-		padding: 0;
-	}
-	ul li {
-		width: calc(50% - 1rem);
-		/* Animation setup */
-		opacity: 0;
-		animation: slideIn 0.5s ease-out forwards;
-	}
-
-	@keyframes slideIn {
-		from {
-			opacity: 0;
-			transform: translateY(20px);
+<BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
+	<style>
+		/* Search Bar Styles */
+		.search-container {
+			margin-bottom: 2rem;
+			position: relative;
 		}
-		to {
-			opacity: 1;
-			transform: translateY(0);
+
+		.search-input {
+			width: 100%;
+			padding: 1rem 1.5rem;
+			font-size: 1.1rem;
+			border: 2px solid transparent; /* Prepare for gradient border */
+			border-radius: 50px;
+			background:
+				linear-gradient(#fff, #fff) padding-box,
+				linear-gradient(to right, #ff6b35, #ff9f43) border-box;
+			box-shadow: 0 4px 15px rgba(255, 107, 53, 0.1);
+			transition: all 0.3s ease;
+			outline: none;
+			color: var(--black);
 		}
-	}
 
-	ul li * {
-		text-decoration: none;
-		transition: 0.2s ease;
-	}
-	ul li:first-child {
-		width: 100%;
-		margin-bottom: 1rem;
-		text-align: center;
-	}
-	ul li:first-child img {
-		width: 100%;
-	}
-	ul li:first-child .title {
-		font-size: 2.369rem;
-	}
-	ul li img {
-		margin-bottom: 0.5rem;
-		border-radius: 12px;
-		width: 100%;
-		aspect-ratio: 16/9;
-		object-fit: cover;
-	}
-	ul li a {
-		display: block;
-		padding: 1.5rem;
-		background: rgba(255, 255, 255, 0.8);
-		border-radius: 12px;
-		border: 1px solid rgba(255, 107, 53, 0.1);
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-		transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smoother hover */
-		height: 100%;
-		position: relative;
-		overflow: hidden;
-	}
-	/* Shine effect on hover */
-	ul li a::before {
-		content: "";
-		position: absolute;
-		top: 0;
-		left: -100%;
-		width: 100%;
-		height: 100%;
-		background: linear-gradient(
-			90deg,
-			transparent,
-			rgba(255, 255, 255, 0.5),
-			transparent
-		);
-		transition: 0.5s;
-		pointer-events: none;
-	}
-	ul li a:hover::before {
-		left: 100%;
-	}
+		.search-input:focus {
+			box-shadow: 0 8px 25px rgba(255, 107, 53, 0.25);
+			transform: translateY(-2px);
+		}
 
-	ul li a:hover {
-		transform: translateY(-5px);
-		box-shadow: 0 12px 30px rgba(255, 107, 53, 0.25);
-		border-color: rgba(255, 107, 53, 0.4);
-	}
-	.title {
-		margin: 0;
-		color: rgb(var(--black));
-		line-height: 1;
-	}
-	.date {
-		margin: 0;
-		color: rgb(var(--gray));
-	}
-	ul li a:hover h4,
-	ul li a:hover .date {
-		color: rgb(var(--accent));
-	}
-	ul a:hover img {
-		box-shadow: var(--box-shadow);
-	}
-	.no-results {
-		text-align: center;
-		padding: 2rem;
-		color: var(--gray);
-		font-size: 1.2rem;
-		display: none;
-		width: 100%;
-	}
-	@media (max-width: 720px) {
+		.search-input::placeholder {
+			color: #999;
+		}
+
 		ul {
-			gap: 0.5em;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 2rem;
+			list-style-type: none;
+			margin: 0;
+			padding: 0;
 		}
 		ul li {
-			width: 100%;
-			text-align: center;
+			width: calc(50% - 1rem);
+			/* Animation setup */
+			opacity: 0;
+			animation: slideIn 0.5s ease-out forwards;
+		}
+
+		@keyframes slideIn {
+			from {
+				opacity: 0;
+				transform: translateY(20px);
+			}
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		ul li * {
+			text-decoration: none;
+			transition: 0.2s ease;
 		}
 		ul li:first-child {
-			margin-bottom: 0;
+			width: 100%;
+			margin-bottom: 1rem;
+			text-align: center;
+		}
+		ul li:first-child img {
+			width: 100%;
 		}
 		ul li:first-child .title {
-			font-size: 1.563em;
+			font-size: 2.369rem;
 		}
-	}
-</style>
+		ul li img {
+			margin-bottom: 0.5rem;
+			border-radius: 12px;
+			width: 100%;
+			aspect-ratio: 16/9;
+			object-fit: cover;
+		}
+		ul li a {
+			display: block;
+			padding: 1.5rem;
+			background: rgba(255, 255, 255, 0.8);
+			border-radius: 12px;
+			border: 1px solid rgba(255, 107, 53, 0.1);
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+			transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smoother hover */
+			height: 100%;
+			position: relative;
+			overflow: hidden;
+		}
+		/* Shine effect on hover */
+		ul li a::before {
+			content: "";
+			position: absolute;
+			top: 0;
+			left: -100%;
+			width: 100%;
+			height: 100%;
+			background: linear-gradient(
+				90deg,
+				transparent,
+				rgba(255, 255, 255, 0.5),
+				transparent
+			);
+			transition: 0.5s;
+			pointer-events: none;
+		}
+		ul li a:hover::before {
+			left: 100%;
+		}
 
-<Header />
-<UnknownPlateWidget />
-<div class="container">
-	<div class="hero-section">
-		<!-- ...existing hero content... -->
-	</div>
+		ul li a:hover {
+			transform: translateY(-5px);
+			box-shadow: 0 12px 30px rgba(255, 107, 53, 0.25);
+			border-color: rgba(255, 107, 53, 0.4);
+		}
+		.title {
+			margin: 0;
+			color: rgb(var(--black));
+			line-height: 1;
+		}
+		.date {
+			margin: 0;
+			color: rgb(var(--gray));
+		}
+		ul li a:hover h4,
+		ul li a:hover .date {
+			color: rgb(var(--accent));
+		}
+		ul a:hover img {
+			box-shadow: var(--box-shadow);
+		}
+		.no-results {
+			text-align: center;
+			padding: 2rem;
+			color: var(--gray);
+			font-size: 1.2rem;
+			display: none;
+			width: 100%;
+		}
+		@media (max-width: 720px) {
+			ul {
+				gap: 0.5em;
+			}
+			ul li {
+				width: 100%;
+				text-align: center;
+			}
+			ul li:first-child {
+				margin-bottom: 0;
+			}
+			ul li:first-child .title {
+				font-size: 1.563em;
+			}
+		}
+	</style>
 
-	<main>
-		<section>
-			<div class="search-container">
-				<input
-					type="text"
-					id="blog-search"
-					class="search-input"
-					placeholder="Search articles..."
-					autocomplete="off"
-				/>
-			</div>
+	<UnknownPlateWidget />
+	<section>
+		<div class="search-container">
+			<input
+				type="text"
+				id="blog-search"
+				class="search-input"
+				placeholder="Search articles..."
+				autocomplete="off"
+			/>
+		</div>
 
-			<ul id="blog-list">
-				{
-					posts.map((post, index) => (
-						<li
-							class="post-item"
-							style={`animation-delay: ${index * 0.1}s`}
-						>
-							<a href={`/blog/${post.slug}/`}>
-								{post.data.heroImage && (
-									<Image
-										width={720}
-										height={360}
-										src={post.data.heroImage}
-										alt=""
-									/>
-								)}
-								<h4 class="title">{post.data.title}</h4>
-								<p class="date">
-									<FormattedDate date={post.data.pubDate} />
-								</p>
-								{/* Hidden search data */}
-								<span class="sr-only search-data">
-									{post.data.title.toLowerCase()}{" "}
-									{post.data.description?.toLowerCase()}
-								</span>
-							</a>
-						</li>
-					))
-				}
-			</ul>
-			<div id="no-results" class="no-results">
-				No articles found matching that search.
-			</div>
-		</section>
-	</main>
-</div>
-<Footer />
+		<ul id="blog-list">
+			{
+				posts.map((post, index) => (
+					<li
+						class="post-item"
+						style={`animation-delay: ${index * 0.1}s`}
+					>
+						<a href={`/blog/${post.slug}/`}>
+							{post.data.heroImage && (
+								<Image
+									width={720}
+									height={360}
+									src={post.data.heroImage}
+									alt=""
+								/>
+							)}
+							<h4 class="title">{post.data.title}</h4>
+							<p class="date">
+								<FormattedDate date={post.data.pubDate} />
+							</p>
+							{/* Hidden search data */}
+							<span class="sr-only search-data">
+								{post.data.title.toLowerCase()}{" "}
+								{post.data.description?.toLowerCase()}
+							</span>
+						</a>
+					</li>
+				))
+			}
+		</ul>
+		<div id="no-results" class="no-results">
+			No articles found matching that search.
+		</div>
+	</section>
 
-<script>
-	const searchInput = document.getElementById("blog-search");
-	const blogList = document.getElementById("blog-list");
-	const noResults = document.getElementById("no-results");
+	<script>
+		const searchInput = document.getElementById("blog-search");
+		const blogList = document.getElementById("blog-list");
+		const noResults = document.getElementById("no-results");
 
-	if (searchInput && blogList) {
-		const items = blogList.querySelectorAll(".post-item");
+		if (searchInput && blogList) {
+			const items = blogList.querySelectorAll(".post-item");
 
-		searchInput.addEventListener("input", (e) => {
-			const searchTerm = (
-				e.target as HTMLInputElement
-			).value.toLowerCase();
-			let hasResults = false;
+			searchInput.addEventListener("input", (e) => {
+				const searchTerm = (
+					e.target as HTMLInputElement
+				).value.toLowerCase();
+				let hasResults = false;
 
-			items.forEach((item) => {
-				const searchData =
-					item.querySelector(".search-data")?.textContent || "";
-				if (searchData.includes(searchTerm)) {
-					(item as HTMLElement).style.display = "";
-					// Re-trigger animation for searched items?
-					// Maybe too distracting, let's keep it simple.
-					hasResults = true;
-				} else {
-					(item as HTMLElement).style.display = "none";
+				items.forEach((item) => {
+					const searchData =
+						item.querySelector(".search-data")?.textContent || "";
+					if (searchData.includes(searchTerm)) {
+						(item as HTMLElement).style.display = "";
+						// Re-trigger animation for searched items?
+						// Maybe too distracting, let's keep it simple.
+						hasResults = true;
+					} else {
+						(item as HTMLElement).style.display = "none";
+					}
+				});
+
+				if (noResults) {
+					noResults.style.display = hasResults ? "none" : "block";
 				}
 			});
-
-			if (noResults) {
-				noResults.style.display = hasResults ? "none" : "block";
-			}
-		});
-	}
-</script>
+		}
+	</script>
+</BaseLayout>

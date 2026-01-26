@@ -180,3 +180,18 @@ if __name__ == "__main__":
         # MTA feeds update frequently, but every 30-60 seconds is reasonable
         time.sleep(30)
 ```
+
+## Real-World Application: My Personal Q-Train Tracker
+
+I took these concepts and built a custom dashboard for my own daily commute. You can see it live at my [Q-Train Tracker](/q-train).
+
+Instead of a generic schedule, I tailored the usage of the MTA API to solve a specific problem: "Where is the train closest to *me* right now?"
+
+By filtering the real-time feed specifically for the Q line and narrowing it down to my tailored list of stops, I effectively created a personalized "arrival board" that I can check at a glance. Key features include:
+
+*   **Smart Filtering:** The dashboard prioritizes trains arriving within 9 minutes. If a train is imminent, that's the only thing I need to see.
+*   **Context Aware:** It filters for both Northbound and Southbound trains at the specific stations I use most.
+*   **Live Status:** It instantly reflects service changes or delays that might affect my specific route.
+
+This is the power of accessing raw data: you can build tools that fit your life, not just generic apps that fit everyone.
+
