@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-01-27T13:17:36.034Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are taking 8 mins longer to travel between Coney Island - Stillwell Av and Avenue U, and having longer wait times between W 8 St - NY Aquarium and 34 St - Herald Sq (up to 14 mins, normally every 9 mins).",
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between 34 St - Herald Sq and Newkirk Plaza (up to 15 mins, normally every 10 mins)."
+    ]
+  },
+  {
     "date": "2026-01-25T13:12:38.109Z",
     "status": "Service Change",
     "details": [
@@ -202,12 +210,5 @@
     "date": "2025-12-26T15:06:52.468Z",
     "status": "Good Service",
     "details": []
-  },
-  {
-    "date": "2025-12-01T22:09:52.786Z",
-    "status": "Delays",
-    "details": [
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times at Sheepshead Bay (up to 12 mins, normally every 10 mins)."
-    ]
   }
 ]
