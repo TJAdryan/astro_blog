@@ -192,6 +192,7 @@ By filtering the real-time feed specifically for the Q line and narrowing it dow
 *   **Smart Filtering:** The dashboard prioritizes trains arriving within 9 minutes. If a train is imminent, that's the only thing I need to see.
 *   **Context Aware:** It filters for both Northbound and Southbound trains at the specific stations I use most.
 *   **Live Status:** It instantly reflects service changes or delays that might affect my specific route.
+*   **Client-Side Processing:** The dashboard uses React to handle all data processing directly in the browser. This means the server just serves the page, and your device communicates directly with the API, keeping the site fast and lightweight with zero additional server load.
 
 This is the power of accessing raw data: you can build tools that fit your life, not just generic apps that fit everyone.
 
