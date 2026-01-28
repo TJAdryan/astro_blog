@@ -22,7 +22,7 @@ const {
 } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={title} description={description} mainClass="max-w-5xl">
 	<style>
 		.hero-image {
 			width: 100%;
@@ -38,17 +38,36 @@ const {
 			object-position: top center;
 		}
 		.prose {
-			width: 720px;
-			max-width: calc(100% - 2em);
+			width: 100%;
+			max-width: 100%;
 			margin: auto;
 			padding: 1em;
 			color: rgb(var(--gray-dark));
 		}
+
+		/* Text and content centering - keep readable width */
+		.prose > :not(pre) {
+			max-width: 720px;
+			margin-left: auto;
+			margin-right: auto;
+		}
+
+		/* Allow code blocks to expand */
+		.prose pre {
+			max-width: 100%;
+			border-radius: 8px;
+			/* Optional: ensure it doesn't touch edges on mobile */
+		}
+
 		.title {
 			margin-bottom: 1em;
 			padding: 1em 0;
 			text-align: center;
 			line-height: 1;
+			/* Ensure title is also constrained */
+			max-width: 720px;
+			margin-left: auto;
+			margin-right: auto;
 		}
 		.title h1 {
 			margin: 0 0 0.5em 0;

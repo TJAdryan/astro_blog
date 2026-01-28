@@ -5,7 +5,11 @@ import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
 import "../styles/global.css";
 import "../styles/custom.css";
 
-const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props;
+const {
+  title = SITE_TITLE,
+  description = SITE_DESCRIPTION,
+  mainClass = "max-w-3xl",
+} = Astro.props;
 ---
 
 <!doctype html>
@@ -39,7 +43,7 @@ const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props;
     class="min-h-screen bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-50"
   >
     <Header />
-    <main class="max-w-3xl mx-auto px-4 py-8">
+    <main class:list={[mainClass, "mx-auto px-4 py-8"]}>
       <slot />
       <!-- Your page content will go here -->
     </main>
