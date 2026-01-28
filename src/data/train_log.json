@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-01-28T13:18:12.232Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times at 14 St - Union Sq (up to 12 mins, normally every 9 mins).",
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Avenue H and Kings Hwy (up to 15 mins, normally every 10 mins)."
+    ]
+  },
+  {
     "date": "2026-01-27T13:17:36.034Z",
     "status": "Delays",
     "details": [
@@ -205,10 +213,5 @@
       "Northbound: Some 96 St-bound trains are running via <R> between DeKalb Av and Canal St.",
       "Northbound: 96 St-bound trains are making local stops between Canal St and 57 St - 7 Av."
     ]
-  },
-  {
-    "date": "2025-12-26T15:06:52.468Z",
-    "status": "Good Service",
-    "details": []
   }
 ]
