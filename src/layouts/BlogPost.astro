@@ -38,7 +38,7 @@ const {
 			object-position: top center;
 		}
 		.prose {
-			width: 100%;
+			width: 80%;
 			max-width: 100%;
 			margin: auto;
 			padding: 1em;
@@ -46,14 +46,14 @@ const {
 		}
 
 		/* Text and content centering - keep readable width */
-		.prose > :not(pre) {
+		.prose :global(> :not(pre)) {
 			max-width: 720px;
 			margin-left: auto;
 			margin-right: auto;
 		}
 
 		/* Allow code blocks to expand */
-		.prose pre {
+		.prose :global(pre) {
 			max-width: 100%;
 			border-radius: 8px;
 			/* Optional: ensure it doesn't touch edges on mobile */
