@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-01-31T13:16:27.336Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times between W 8 St - NY Aquarium and 96 St (up to 16 mins, normally every 11 mins).",
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Atlantic Av - Barclays Ctr and Neck Rd (up to 17 mins, normally every 11 mins)."
+    ]
+  },
+  {
     "date": "2026-01-30T13:23:07.983Z",
     "status": "Service Change",
     "details": [
@@ -203,13 +211,6 @@
     "status": "Delays",
     "details": [
       "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Cortelyou Rd and Newkirk Plaza (up to 13 mins, normally every 10 mins)."
-    ]
-  },
-  {
-    "date": "2025-12-30T13:14:14.694Z",
-    "status": "Delays",
-    "details": [
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Avenue H and Avenue J (up to 14 mins, normally every 10 mins)."
     ]
   }
 ]
