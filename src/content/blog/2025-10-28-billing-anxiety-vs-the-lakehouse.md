@@ -45,17 +45,15 @@ silver_data.write.format("delta").mode("overwrite").save("./data/silver/patient_
 
 ## Is it worth it?
 
-While a local environment is a 10/10 for learning Spark syntax and Delta Lake logic, it’s about a 4/10 for learning the Databricks Platform. If you are serious about getting started or you are focusing on getting certified, you need to know what you *can't* do on your laptop:
+With a local environment for learning Spark syntax and Delta Lake logic you can do almost everything, it’s about a 4/10 for learning the Databricks Platform. If you are serious about getting started or you are focusing on getting certified, you need to know what you can’t do on your laptop:
 
-1.  **Unity Catalog (Governance):** You cannot simulate enterprise data governance locally. Unity Catalog handles the security, lineage, and discovery that makes Databricks "Enterprise-ready." You won't learn how to manage grants or service principals from a local script.
+1.  **Unity Catalog (Governance):** You cannot simulate enterprise data governance locally. Unity Catalog handles the security, lineage, and discovery that makes Databricks “Enterprise-ready.” You won’t learn how to manage grants or service principals from a local script.
 2.  **Delta Live Tables (Orchestration):** DLT is a managed service. While you can write the Python decorators locally, the engine that automatically scales your infrastructure and handles retries only exists in the cloud.
-3.  **The Control Plane Experience:** A huge part of the Databricks Associate exam is navigating the UI—managing SQL Warehouses, configuring Cluster Policies, and setting up Workflows. You can't "feel" the platform's latency or operational flow from a local IDE.
-4.  **Multi-Node Shuffling:** On a single machine (even one with a 4070 Ti SUPER), you aren't truly experiencing a "distributed" system. You won't see how data skews or network bottlenecks affect a 10-node cluster until you're in a real environment.
+3.  **The Control Plane Experience:** A huge part of the Databricks Associate exam is navigating the UI—managing SQL Warehouses, configuring Cluster Policies, and setting up Workflows. You can’t “feel” the platform’s latency or operational flow from a local IDE.
+4.  **Multi-Node Shuffling:** On a single machine (even one with a 4070 Ti SUPER), you aren’t truly experiencing a “distributed” system. You won’t see how data skews or network bottlenecks affect a 10-node cluster until you’re in a real environment.
 
-## The Verdict: Engineering vs. Scale
+## My Opinion:
 
 The cloud is where the scale happens, but the local environment is where the engineering happens.
 
-If you’re starting out, don’t feel pressured to link your credit card to a cloud provider immediately. Master the Spark API and Delta Lake logic locally or on the Databricks Free Edition (a perpetual, serverless tier for learners that requires no cloud account).
-
-By the time you move to a paid instance to learn platform-only features like Unity Catalog, you’ll be doing so with battle-tested code and the confidence that you won't be the next "budget horror story."
+If you’re starting out, don’t feel pressured to link your credit card to a cloud provider immediately. Get familiar with Spark API and Delta Lake logic locally or on the Databricks Free Edition (a perpetual, serverless tier for learners that requires no cloud account). It is unfortunate that running a cloud environment risks you running up larger than expected bills. I think it is one of those cases where some paranoia is justified.
