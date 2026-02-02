@@ -61,5 +61,32 @@
     "source": "arXiv",
     "topic": "Python",
     "dateAdded": "2026-01-26T13:16:57.469Z"
+  },
+  {
+    "id": "http://arxiv.org/abs/2504.10950v2",
+    "title": "Unveiling Challenges for LLMs in Enterprise Data Engineering",
+    "summary": "Large Language Models (LLMs) promise to automate data engineering on tabular data, offering enterprises a valuable opportunity to cut the high costs of manual data handling. But the enterprise domain comes with unique challenges that existing LLM-based approaches for data engineering often overlook, such as large table sizes, more complex tasks, and the need for internal knowledge. To bridge these gaps, we identify key enterprise-specific challenges related to data, tasks, and background knowledge and extensively evaluate how they affect data engineering with LLMs. Our analysis reveals that LLMs face substantial limitations in real-world enterprise scenarios, with accuracy declining sharply. Our findings contribute to a systematic understanding of LLMs for enterprise data engineering to support their adoption in industry.",
+    "link": "http://arxiv.org/abs/2504.10950v2",
+    "source": "arXiv",
+    "topic": "Data Engineering",
+    "dateAdded": "2026-02-02T13:24:58.660Z"
+  },
+  {
+    "id": "36842543",
+    "title": "CRISPR/Cas advancements for genome editing, diagnosis, therapeutics, and vaccine development for Plasmodium parasites, and genetic engineering of Anopheles mosquito vector.",
+    "summary": "No abstract available via summary API. Please click link to read.",
+    "link": "https://pubmed.ncbi.nlm.nih.gov/36842543/",
+    "source": "PubMed",
+    "topic": "CRISPR",
+    "dateAdded": "2026-02-02T13:24:59.255Z"
+  },
+  {
+    "id": "http://arxiv.org/abs/2601.01320v1",
+    "title": "Adaptive Hierarchical Evaluation of LLMs and SAST tools for CWE Prediction in Python",
+    "summary": "Large Language Models have become integral to software development, yet they frequently generate vulnerable code. Existing code vulnerability detection benchmarks employ binary classification, lacking the CWE-level specificity required for actionable feedback in iterative correction systems. We present ALPHA (Adaptive Learning via Penalty in Hierarchical Assessment), the first function-level Python benchmark that evaluates both LLMs and SAST tools using hierarchically aware, CWE-specific penalties. ALPHA distinguishes between over-generalisation, over-specification, and lateral errors, reflecting practical differences in diagnostic utility. Evaluating seven LLMs and two SAST tools, we find LLMs substantially outperform SAST, though SAST demonstrates higher precision when detections occur. Critically, prediction consistency varies dramatically across models (8.26%-81.87% agreement), with significant implications for feedback-driven systems. We further outline a pathway for future work incorporating ALPHA penalties into supervised fine-tuning, which could provide principled hierarchy-aware vulnerability detection pending empirical validation.",
+    "link": "http://arxiv.org/abs/2601.01320v1",
+    "source": "arXiv",
+    "topic": "Python",
+    "dateAdded": "2026-02-02T13:24:59.532Z"
   }
 ]
