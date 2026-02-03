@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-02-03T13:25:24.066Z",
+    "status": "Service Change",
+    "details": [
+      "Northbound: 96 St-bound trains are running in 2 sections: between Coney Island - Stillwell Av and 96 St, and between 86 St (W 7 St) and 96 St via <N>.",
+      "Northbound: Some 96 St-bound trains are running via <W> between DeKalb Av and Canal St."
+    ]
+  },
+  {
     "date": "2026-02-01T13:16:59.667Z",
     "status": "Service Change",
     "details": [
@@ -204,13 +212,6 @@
     "status": "Service Change",
     "details": [
       "Northbound: 96 St-bound trains are running in 2 sections: between Coney Island - Stillwell Av and 96 St, and between Fort Hamilton Pkwy and 96 St via <N>."
-    ]
-  },
-  {
-    "date": "2026-01-01T13:13:25.878Z",
-    "status": "Delays",
-    "details": [
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between 96 St and Kings Hwy (up to 18 mins, normally every 14 mins)."
     ]
   }
 ]
