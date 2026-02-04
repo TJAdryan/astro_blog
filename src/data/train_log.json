@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-02-04T13:25:43.244Z",
+    "status": "Delays",
+    "details": [
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Sheepshead Bay and Coney Island - Stillwell Av (up to 19 mins, normally every 10 mins)."
+    ]
+  },
+  {
     "date": "2026-02-03T13:25:24.066Z",
     "status": "Service Change",
     "details": [
@@ -206,12 +213,5 @@
     "date": "2026-01-03T13:10:48.918Z",
     "status": "Good Service",
     "details": []
-  },
-  {
-    "date": "2026-01-02T13:12:19.177Z",
-    "status": "Service Change",
-    "details": [
-      "Northbound: 96 St-bound trains are running in 2 sections: between Coney Island - Stillwell Av and 96 St, and between Fort Hamilton Pkwy and 96 St via <N>."
-    ]
   }
 ]
