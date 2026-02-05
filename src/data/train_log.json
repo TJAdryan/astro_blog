@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-02-05T13:27:19.383Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times between Coney Island - Stillwell Av and Avenue U (up to 13 mins, normally every 9 mins).",
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Sheepshead Bay and Brighton Beach (up to 16 mins, normally every 10 mins)."
+    ]
+  },
+  {
     "date": "2026-02-04T13:25:43.244Z",
     "status": "Delays",
     "details": [
@@ -206,11 +214,6 @@
   },
   {
     "date": "2026-01-04T13:11:09.311Z",
-    "status": "Good Service",
-    "details": []
-  },
-  {
-    "date": "2026-01-03T13:10:48.918Z",
     "status": "Good Service",
     "details": []
   }
