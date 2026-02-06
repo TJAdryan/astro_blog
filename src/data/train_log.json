@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-02-06T13:25:15.924Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times between Avenue M and Lexington Av/63 St (up to 12 mins, normally every 9 mins).",
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Avenue U and Neck Rd (up to 14 mins, normally every 10 mins)."
+    ]
+  },
+  {
     "date": "2026-02-05T13:27:19.383Z",
     "status": "Delays",
     "details": [
@@ -211,10 +219,5 @@
     "details": [
       "Northbound: 96 St-bound trains are running in 4 sections: between Coney Island - Stillwell Av and 96 St, between 86 St (W 7 St) and 96 St via <N>, between Whitehall St - South Ferry and 96 St via <W>, and between Grand St and 96 St via <D> and <F>."
     ]
-  },
-  {
-    "date": "2026-01-04T13:11:09.311Z",
-    "status": "Good Service",
-    "details": []
   }
 ]
