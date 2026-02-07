@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-02-07T13:16:51.201Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times between Canal St and DeKalb Av (up to 14 mins, normally every 11 mins).",
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times at DeKalb Av (up to 13 mins, normally every 11 mins)."
+    ]
+  },
+  {
     "date": "2026-02-06T13:25:15.924Z",
     "status": "Delays",
     "details": [
@@ -211,13 +219,6 @@
     "status": "Delays",
     "details": [
       "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times at Kings Hwy (up to 13 mins, normally every 10 mins)."
-    ]
-  },
-  {
-    "date": "2026-01-05T13:15:31.242Z",
-    "status": "Service Change",
-    "details": [
-      "Northbound: 96 St-bound trains are running in 4 sections: between Coney Island - Stillwell Av and 96 St, between 86 St (W 7 St) and 96 St via <N>, between Whitehall St - South Ferry and 96 St via <W>, and between Grand St and 96 St via <D> and <F>."
     ]
   }
 ]
