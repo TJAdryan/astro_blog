@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-02-09T13:29:39.936Z",
+    "status": "Service Change",
+    "details": [
+      "Southbound: Some Coney Island - Stillwell Av-bound trains are skipping Avenue H, Avenue J, and Avenue M."
+    ]
+  },
+  {
     "date": "2026-02-08T13:17:16.980Z",
     "status": "Good Service",
     "details": []
@@ -210,13 +217,6 @@
     "details": [
       "Northbound: 96 St-bound trains are running in 2 sections: between Coney Island - Stillwell Av and 96 St, and between Canal St and 96 St.",
       "Southbound: Coney Island - Stillwell Av-bound trains are running in 2 sections: between 96 St and Coney Island - Stillwell Av, and between Cortlandt St and Coney Island - Stillwell Av via <R>."
-    ]
-  },
-  {
-    "date": "2026-01-07T13:14:58.567Z",
-    "status": "Delays",
-    "details": [
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Avenue H and Avenue J (up to 14 mins, normally every 10 mins)."
     ]
   }
 ]
