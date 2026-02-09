@@ -88,5 +88,23 @@
     "source": "arXiv",
     "topic": "Python",
     "dateAdded": "2026-02-02T13:24:59.532Z"
+  },
+  {
+    "id": "http://arxiv.org/abs/2503.16079v2",
+    "title": "Efficient Data Ingestion in Cloud-based architecture: a Data Engineering Design Pattern Proposal",
+    "summary": "In today's fast-paced digital world, data has become a critical asset for enterprises across various industries. However, the exponential growth of data presents significant challenges in managing and utilizing the vast amounts of information collected. Data engineering has emerged as a vital discipline addressing these challenges by providing robust platforms for effective data management, processing, and utilization. Data Engineering Patterns (DEP) refer to standardized practices and procedures in data engineering, such as ETL (extract, transform, load) processes, data pipelining, and data streaming management. Data Engineering Design Patterns (DEDP) are best practice solutions to common problems in data engineering, involving established, tested, and optimized approaches. These include architectural decisions, data modeling techniques, and data storage and retrieval strategies. While many researchers and practitioners have identified various DEPs and proposed DEDPs, such as data mesh and lambda architecture, the challenge of high-volume data ingestion remains inadequately addressed. In this paper, we propose a data ingestion design pattern for big data in cloud architecture, incorporating both incremental and full refresh techniques. Our approach leverages a flexible, metadata-driven framework to enhance feasibility and flexibility. This allows for easy changes to the ingestion type, schema modifications, table additions, and the integration of new data sources, all with minimal effort from data engineers. Tested on the Azure cloud architecture, our experiments demonstrate that the proposed techniques significantly reduce data ingestion time. Overall, this paper advances data management practices by presenting a detailed exploration of data ingestion challenges and defining a proposal for an effective design patterns for cloud-based architectures.",
+    "link": "http://arxiv.org/abs/2503.16079v2",
+    "source": "arXiv",
+    "topic": "Data Engineering",
+    "dateAdded": "2026-02-09T13:29:09.440Z"
+  },
+  {
+    "id": "40598996",
+    "title": "Development of a CRISPR/Cas9 RNP-mediated genetic engineering system in Paecilomyces variotii.",
+    "summary": "No abstract available via summary API. Please click link to read.",
+    "link": "https://pubmed.ncbi.nlm.nih.gov/40598996/",
+    "source": "PubMed",
+    "topic": "CRISPR",
+    "dateAdded": "2026-02-09T13:29:09.665Z"
   }
 ]
