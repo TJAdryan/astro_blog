@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-02-10T13:30:05.025Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are taking 6 mins longer to travel between Parkside Av and 14 St - Union Sq, and having longer wait times between Canal St and 14 St - Union Sq (up to 17 mins, normally every 9 mins).",
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Brighton Beach and Ocean Pkwy (up to 14 mins, normally every 10 mins)."
+    ]
+  },
+  {
     "date": "2026-02-09T13:29:39.936Z",
     "status": "Service Change",
     "details": [
@@ -209,14 +217,6 @@
     "status": "Service Change",
     "details": [
       "Southbound: Some Coney Island - Stillwell Av-bound trains are making local stops between 57 St - 7 Av and Times Sq - 42 St."
-    ]
-  },
-  {
-    "date": "2026-01-08T13:15:25.573Z",
-    "status": "Service Change",
-    "details": [
-      "Northbound: 96 St-bound trains are running in 2 sections: between Coney Island - Stillwell Av and 96 St, and between Canal St and 96 St.",
-      "Southbound: Coney Island - Stillwell Av-bound trains are running in 2 sections: between 96 St and Coney Island - Stillwell Av, and between Cortlandt St and Coney Island - Stillwell Av via <R>."
     ]
   }
 ]
