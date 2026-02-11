@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "../../.."
+		},
+		{
+			"name": "astro_blog",
+			"path": "../.."
+		}
+	],
+	"settings": {}
+}
