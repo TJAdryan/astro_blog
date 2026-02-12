@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-02-12T13:29:28.636Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times between 57 St - 7 Av and Lexington Av/63 St (up to 12 mins, normally every 9 mins).",
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times at Canal St (up to 13 mins, normally every 10 mins)."
+    ]
+  },
+  {
     "date": "2026-02-11T13:29:57.388Z",
     "status": "Delays",
     "details": [
@@ -210,14 +218,6 @@
     "status": "Delays",
     "details": [
       "Northbound: 96 St-bound trains are having longer wait times between Canal St and 96 St (up to 16 mins, normally every 12 mins)."
-    ]
-  },
-  {
-    "date": "2026-01-10T13:10:57.530Z",
-    "status": "Delays",
-    "details": [
-      "Northbound: 96 St-bound trains are having longer wait times between Sheepshead Bay and Prospect Park (up to 15 mins, normally every 11 mins).",
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between 7 Av and Atlantic Av - Barclays Ctr (up to 13 mins, normally every 11 mins)."
     ]
   }
 ]
