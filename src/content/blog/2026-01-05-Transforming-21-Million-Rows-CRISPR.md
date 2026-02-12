@@ -83,7 +83,7 @@ FROM (
 
 ### Strategic Reflection: Traceability and Integrity
 
-Ultimately, this project is about establishing **Data Provenance**. In a regulated **GxP** environment, the process behind the data is as important as the data itself. A researcher can now query a genetic target in milliseconds, knowing that every row is backed by a versioned, observable audit trail. Moving from a "Wide" CSV silo to a high-performance platform like this is what turns raw research data into a strategic asset for drug discovery.
+Ultimately, this project is about establishing **Data Provenance**, but the primary importance of this system lies in its **computational efficiency for therapeutic discovery**. In a regulated **GxP** environment, the process behind the data is as important as the data itself. A researcher can now query a genetic target in milliseconds, knowing that every row is backed by a versioned, observable audit trail. Moving from a "Wide" CSV silo to a high-performance platform like this is what turns raw research data into a strategic asset for drug discovery.
 
 ### Expanding the Infrastructure: Next Steps
 
