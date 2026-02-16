@@ -18,15 +18,6 @@
     "dateAdded": "2026-01-19T13:17:04.230Z"
   },
   {
-    "id": "http://arxiv.org/abs/2511.05821v1",
-    "title": "PyGress: Tool for Analyzing the Progression of Code Proficiency in Python OSS Projects",
-    "summary": "Assessing developer proficiency in open-source software (OSS) projects is essential for understanding project dynamics, especially for expertise. This paper presents PyGress, a web-based tool designed to automatically evaluate and visualize Python code proficiency using pycefr, a Python code proficiency analyzer. By submitting a GitHub repository link, the system extracts commit histories, analyzes source code proficiency across CEFR-aligned levels (A1 to C2), and generates visual summaries of individual and project-wide proficiency. The PyGress tool visualizes per-contributor proficiency distribution and tracks project code proficiency progression over time. PyGress offers an interactive way to explore contributor coding levels in Python OSS repositories. The video demonstration of the PyGress tool can be found at https://youtu.be/hxoeK-ggcWk, and the source code of the tool is publicly available at https://github.com/MUICT-SERU/PyGress.",
-    "link": "http://arxiv.org/abs/2511.05821v1",
-    "source": "arXiv",
-    "topic": "Python",
-    "dateAdded": "2026-01-19T13:17:04.456Z"
-  },
-  {
     "id": "38066376",
     "title": "Genetic Engineering of Therapeutic Phages Using Type III CRISPR-Cas Systems.",
     "summary": "No abstract available via summary API. Please click link to read.",
