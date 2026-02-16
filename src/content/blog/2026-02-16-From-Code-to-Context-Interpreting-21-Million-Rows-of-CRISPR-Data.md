@@ -4,7 +4,7 @@ description: "In my previous post, I detailed the 'how' of unpivoting 21 million
 pubDate: "Feb 16 2026"
 ---
 
-In my previous post, I detailed the "how" of unpivoting 21 million rows of genomic data using DuckDB. Since then, the project has matured significantly. I’ve implemented Dagster for orchestration and moved the compute to a Spark-on-Delta Lakehouse architecture.
+In [a recent post](/blog/2026-01-05-Transforming-21-Million-Rows-CRISPR), I detailed the "how" of unpivoting 21 million rows of genomic data using DuckDB. Since then, the project has matured significantly. I’ve implemented Dagster for orchestration and moved the compute to a Spark-on-Delta Lakehouse architecture.
 
 In data engineering, architectural complexity is often a tax, and sometimes you do not know if it will pay off until you are further along the project. I probably spent more time on just JVM memory issues than I did on the whole previous post. However, once I had the Spark job running and managed by Dagster, measuring and validating the data became straightforward.
 
