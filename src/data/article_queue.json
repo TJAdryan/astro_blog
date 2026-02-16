@@ -97,5 +97,32 @@
     "source": "PubMed",
     "topic": "CRISPR",
     "dateAdded": "2026-02-09T13:29:09.665Z"
+  },
+  {
+    "id": "http://arxiv.org/abs/2505.21575v1",
+    "title": "StreamLink: Large-Language-Model Driven Distributed Data Engineering System",
+    "summary": "Large Language Models (LLMs) have shown remarkable proficiency in natural language understanding (NLU), opening doors for innovative applications. We introduce StreamLink - an LLM-driven distributed data system designed to improve the efficiency and accessibility of data engineering tasks. We build StreamLink on top of distributed frameworks such as Apache Spark and Hadoop to handle large data at scale. One of the important design philosophies of StreamLink is to respect user data privacy by utilizing local fine-tuned LLMs instead of a public AI service like ChatGPT. With help from domain-adapted LLMs, we can improve our system's understanding of natural language queries from users in various scenarios and simplify the procedure of generating database queries like the Structured Query Language (SQL) for information processing. We also incorporate LLM-based syntax and security checkers to guarantee the reliability and safety of each generated query. StreamLink illustrates the potential of merging generative LLMs with distributed data processing for comprehensive and user-centric data engineering. With this architecture, we allow users to interact with complex database systems at different scales in a user-friendly and security-ensured manner, where the SQL generation reaches over 10\\% of execution accuracy compared to baseline methods, and allow users to find the most concerned item from hundreds of millions of items within a few seconds using natural language.",
+    "link": "http://arxiv.org/abs/2505.21575v1",
+    "source": "arXiv",
+    "topic": "Data Engineering",
+    "dateAdded": "2026-02-16T13:26:50.339Z"
+  },
+  {
+    "id": "40770192",
+    "title": "CRISPR.BOT an autonomous platform for streamlined genetic engineering and molecular biology applications.",
+    "summary": "No abstract available via summary API. Please click link to read.",
+    "link": "https://pubmed.ncbi.nlm.nih.gov/40770192/",
+    "source": "PubMed",
+    "topic": "CRISPR",
+    "dateAdded": "2026-02-16T13:26:50.701Z"
+  },
+  {
+    "id": "http://arxiv.org/abs/2601.01413v1",
+    "title": "GlycoPy: An Equation-Oriented and Object-Oriented Software for Hierarchical Modeling, Optimization, and Control in Python",
+    "summary": "Most existing model predictive control (MPC) applications in process industries employ lin-ear models, although real-world (bio)chemical processes are typically nonlinear. The use of linear models limits the performance and applicability of MPC for processes that span a wide range of operating conditions. A challenge in employing nonlinear models in MPC for com-plex systems is the lack of tools that facilitate hierarchical model development, as well as lack of efficient implementations of the corresponding nonlinear MPC (NMPC) algorithms. As a step towards making NMPC more practical for hierarchical systems, we introduce Gly-coPy, an equation-oriented, object-oriented software framework for process modeling, opti-mization, and NMPC in Python. GlycoPy enables users to focus on writing equations for modeling while supporting hierarchical modeling. GlycoPy includes algorithms for parame-ter estimation, dynamic optimization, and NMPC, and allows users to customize the simula-tion, optimization, and control algorithms. Three case studies, ranging from a simple differ-ential algebraic equation system to a multiscale bioprocess model, validate the modeling, optimization, and NMPC capabilities of GlycoPy. GlycoPy has the potential to bridge the gap between advanced NMPC algorithms and their practical application in real-world (bio)chemical processes.",
+    "link": "http://arxiv.org/abs/2601.01413v1",
+    "source": "arXiv",
+    "topic": "Python",
+    "dateAdded": "2026-02-16T13:26:50.940Z"
   }
 ]
