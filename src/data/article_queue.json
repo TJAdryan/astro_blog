@@ -9,15 +9,6 @@
     "dateAdded": "2026-01-04T22:23:53.718Z"
   },
   {
-    "id": "http://arxiv.org/abs/2507.13892v2",
-    "title": "Towards Next Generation Data Engineering Pipelines",
-    "summary": "Data engineering pipelines are a widespread way to provide high-quality data for all kinds of data science applications. However, numerous challenges still remain in the composition and operation of such pipelines. Data engineering pipelines do not always deliver high-quality data. By default, they are also not reactive to changes. When new data is coming in which deviates from prior data, the pipeline could crash or output undesired results. We therefore envision three levels of next generation data engineering pipelines: optimized data pipelines, self-aware data pipelines, and self-adapting data pipelines. Pipeline optimization addresses the composition of operators and their parametrization in order to achieve the highest possible data quality. Self-aware data engineering pipelines enable a continuous monitoring of its current state, notifying data engineers on significant changes. Self-adapting data engineering pipelines are then even able to automatically react to those changes. We propose approaches to achieve each of these levels.",
-    "link": "http://arxiv.org/abs/2507.13892v2",
-    "source": "arXiv",
-    "topic": "Data Engineering",
-    "dateAdded": "2026-01-19T13:17:03.323Z"
-  },
-  {
     "id": "37849926",
     "title": "Application of the endogenous CRISPR-Cas type I-D system for genetic engineering in the thermoacidophilic archaeon Sulfolobus acidocaldarius.",
     "summary": "No abstract available via summary API. Please click link to read.",
