@@ -12,7 +12,7 @@ In data engineering, architectural complexity is often a tax, and sometimes you 
 
 For those coming from a pure data engineering background, genomic "Effect Scores" can be opaque. When scientists use CRISPR, they are essentially "deleting" a gene from a cell's DNA to see if the cell survives.
 
-*(Shutterstock)*
+<img src="/crispr_gene_editing.jpg" alt="CRISPR Gene Editing Illustration" style="width: 75%; height: auto; display: block; margin: 0 auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" />
 
 The result is a Dependency Score:
 
