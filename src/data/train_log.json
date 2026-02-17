@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-02-17T13:27:43.114Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times between Cortelyou Rd and DeKalb Av (up to 24 mins, normally every 9 mins).",
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Neck Rd and Ocean Pkwy (up to 18 mins, normally every 10 mins)."
+    ]
+  },
+  {
     "date": "2026-02-15T13:17:38.985Z",
     "status": "Service Change",
     "details": [
@@ -208,14 +216,6 @@
     "status": "Service Change",
     "details": [
       "Southbound: Some Coney Island - Stillwell Av-bound trains are skipping Parkside Av, Beverley Rd, Cortelyou Rd, Avenue H, Avenue J, Avenue M, Avenue U, Neck Rd, Ocean Pkwy, and W 8 St - NY Aquarium."
-    ]
-  },
-  {
-    "date": "2026-01-14T13:15:29.859Z",
-    "status": "Delays",
-    "details": [
-      "Northbound: 96 St-bound trains are having longer wait times between Coney Island - Stillwell Av and Parkside Av (up to 18 mins, normally every 9 mins).",
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Brighton Beach and Coney Island - Stillwell Av (up to 14 mins, normally every 10 mins)."
     ]
   }
 ]
