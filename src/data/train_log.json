@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-02-18T13:28:31.787Z",
+    "status": "Service Change",
+    "details": [
+      "Northbound: 96 St-bound trains are running in 2 sections: between Coney Island - Stillwell Av and 96 St, and between Rector St and 96 St via <W>."
+    ]
+  },
+  {
     "date": "2026-02-17T13:27:43.114Z",
     "status": "Delays",
     "details": [
@@ -209,13 +216,6 @@
     "status": "Service Change",
     "details": [
       "Northbound: Some 96 St-bound trains are making local stops between Times Sq - 42 St and 57 St - 7 Av."
-    ]
-  },
-  {
-    "date": "2026-01-15T13:15:15.686Z",
-    "status": "Service Change",
-    "details": [
-      "Southbound: Some Coney Island - Stillwell Av-bound trains are skipping Parkside Av, Beverley Rd, Cortelyou Rd, Avenue H, Avenue J, Avenue M, Avenue U, Neck Rd, Ocean Pkwy, and W 8 St - NY Aquarium."
     ]
   }
 ]
