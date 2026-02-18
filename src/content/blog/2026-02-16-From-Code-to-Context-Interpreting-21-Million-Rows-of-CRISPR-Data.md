@@ -33,18 +33,14 @@ If you aren’t a biologist, these look like random strings. But to a Bioinforma
 
 **RPL15** builds ribosomes (protein factories), and **SNRPD3** handles RNA processing. Because these scores are so extreme (well beyond -1.0), we know these genes are "pan-essential." Seeing these known biological truths at the top of the list validates the entire engineering stack. It proves the unpivot logic is mathematically sound.
 
-### The State of the Industry: Seeking Selective Vulnerabilities
+### The State of the Industry
 
-In modern Bioinformatics, identifying SNRPD3 isn't the end goal—it's the baseline. Because these genes are essential to all cells, they make poor drug targets; you can’t kill a cancer cell by destroying machinery that healthy cells also need.
+In modern bioinformatics, identifying a common essential like **SNRPD3** is a baseline check. The industry value lies in **Selective Essentials**—genes that are lethal in specific cancer subtypes but neutral in healthy tissue. By paying the "complexity tax" to move to Spark and Dagster, we’ve built the engine necessary to find those needles in the 21-million-row haystack.
 
-The real "Gold" lies in finding Selective Essentials: genes that are a -1.0 in Breast Cancer but 0.0 in healthy tissue.
+### From Validation to Integration
 
-### The Path Forward: Data Enrichment
+The move to a searchable Lakehouse was the "Foundational" step required to hit the goals I set in my first post:
 
-The move to a searchable Lakehouse wasn't about raw speed; it was about turning a static file into a foundational platform. With the data now indexed in Delta tables and orchestrated by Dagster, we can begin Data Enrichment:
-
-*   **Clinical Correlation:** Joining "Achilles' heels" with patient mutation data from the TCGA (The Cancer Genome Atlas).
-*   **Druggability:** Cross-referencing targets with the Drug Gene Interaction Database (DGIdb).
-*   **Selective Search:** Filtering for vulnerabilities unique to specific cancer subtypes.
-
-By building this infrastructure, we’ve moved beyond a one-off script and created a relational engine ready for the next level of genomic discovery.
+*   **Multi-Omics Integration (Spark Joins):** Now that the data is in a Delta Lake, we can perform massive distributed joins with the GWAS Catalog or TCGA mutation data. This allows us to prioritize "High-Confidence" targets where a genetic variant in a patient population matches a high dependency score in the lab.
+*   **Regulatory-Ready Data (Delta Versioning):** Moving toward SDTM compliance requires more than just a table; it requires audit trails. Delta Lake’s "Time Travel" and versioning provide the traceability needed for research hits to eventually move toward clinical submissions.
+*   **Scalable Dashboards:** While the first post mentioned Postgres, the current Delta architecture allows us to serve these 21M rows to a Streamlit or BI dashboard with much higher concurrency, enabling real-time visualization of "selective" essentials across different cancer lineages.
