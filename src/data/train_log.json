@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-02-19T13:29:01.093Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times at 7 Av (up to 12 mins, normally every 9 mins)."
+    ]
+  },
+  {
     "date": "2026-02-18T13:28:31.787Z",
     "status": "Service Change",
     "details": [
@@ -209,13 +216,6 @@
     "status": "Service Change",
     "details": [
       "Northbound: 96 St-bound trains are running via <W> between DeKalb Av and Canal St."
-    ]
-  },
-  {
-    "date": "2026-01-16T13:14:28.573Z",
-    "status": "Service Change",
-    "details": [
-      "Northbound: Some 96 St-bound trains are making local stops between Times Sq - 42 St and 57 St - 7 Av."
     ]
   }
 ]
