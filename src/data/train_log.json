@@ -1,5 +1,10 @@
 [
   {
+    "date": "2026-02-21T13:16:29.722Z",
+    "status": "Good Service",
+    "details": []
+  },
+  {
     "date": "2026-02-20T13:24:34.498Z",
     "status": "Service Change",
     "details": [
@@ -209,13 +214,6 @@
     "details": [
       "Northbound: 96 St-bound trains are taking 6 mins longer to travel per trip.",
       "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times at Ocean Pkwy (up to 12 mins, normally every 10 mins)."
-    ]
-  },
-  {
-    "date": "2026-01-18T13:10:46.245Z",
-    "status": "Service Change",
-    "details": [
-      "Northbound: 96 St-bound trains are running via <W> between DeKalb Av and Canal St."
     ]
   }
 ]
