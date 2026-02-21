@@ -43,4 +43,3 @@ The move to a searchable Lakehouse was the "Foundational" step required to hit t
 
 *   **Multi-Omics Integration (Spark Joins):** Now that the data is in a Delta Lake, we can perform massive distributed joins with the GWAS Catalog or TCGA mutation data. This allows us to prioritize "High-Confidence" targets where a genetic variant in a patient population matches a high dependency score in the lab.
 *   **Regulatory-Ready Data (Delta Versioning):** Moving toward SDTM compliance requires more than just a table; it requires audit trails. Delta Lake’s "Time Travel" and versioning provide the traceability needed for research hits to eventually move toward clinical submissions.
-*   **Scalable Dashboards:** While the first post mentioned Postgres, the current Delta architecture allows us to serve these 21M rows to a Streamlit or BI dashboard with much higher concurrency, enabling real-time visualization of "selective" essentials across different cancer lineages.
