@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-02-22T13:17:30.709Z",
+    "status": "Service Change",
+    "details": [
+      "Northbound: 96 St-bound trains are running in 2 sections: between Coney Island - Stillwell Av and 96 St, and between Whitehall St - South Ferry and 96 St.",
+      "Northbound: Some 96 St-bound trains are making local stops between Times Sq - 42 St and 57 St - 7 Av."
+    ]
+  },
+  {
     "date": "2026-02-21T13:16:29.722Z",
     "status": "Good Service",
     "details": []
@@ -207,13 +215,5 @@
     "date": "2026-01-21T13:17:25.959Z",
     "status": "Good Service",
     "details": []
-  },
-  {
-    "date": "2026-01-20T13:17:41.068Z",
-    "status": "Delays",
-    "details": [
-      "Northbound: 96 St-bound trains are taking 6 mins longer to travel per trip.",
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times at Ocean Pkwy (up to 12 mins, normally every 10 mins)."
-    ]
   }
 ]
