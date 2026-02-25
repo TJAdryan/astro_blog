@@ -1,72 +1,242 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
+import BaseLayout from "../layouts/BaseLayout.astro";
 ---
-  <BaseLayout>
-    <div class="container">
-      <h1 class="text-4xl font-bold mb-4">Contact</h1>
-      <p class="mb-8 text-lg text-gray-600 dark:text-gray-400">
-        I'm always keen to connect with fellow data enthusiasts, developers, and anyone interested in the topics I write about.
-      </p>
 
-      <div class="space-y-6">
-        
-        <!-- Email Contact -->
-        <div class="p-6 border rounded-lg bg-gray-50 dark:bg-gray-800">
-          <div class="mb-2">
-            <svg width="64" height="64" class="mb-2" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
-              <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
-            </svg>
-          </div>
-          <h3 class="text-xl font-semibold mb-2">Email</h3>
-          <p class="text-gray-700 dark:text-gray-300 mb-3">
-            The best way to reach me for questions, feedback, or just to say hello.
-          </p>
-          <a href="mailto:dominick@nextvaldata.com" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
-            dominick@nextvaldata.com
-          </a>
-        </div>
-
-        <!-- Social Media -->
-        <div class="p-6 border rounded-lg bg-gray-50 dark:bg-gray-800">
-          <div class="mb-2">
-            <svg width="64" height="64" class="mb-2" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"></path>
-              <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"></path>
-            </svg>
-          </div>
-          <h3 class="text-xl font-semibold mb-2">GitHub</h3>
-          <p class="text-gray-700 dark:text-gray-300 mb-3">
-            Check out my code, projects, and contributions.
-          </p>
-          <a href="https://github.com/tjadryan" target="_blank" rel="noopener noreferrer"
-             class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
-            github.com/tjadryan
-          </a>
-        </div>
-
-        <!-- What to Contact About -->
-        <div class="p-6 border rounded-lg bg-gray-50 dark:bg-gray-800">
-          <h3 class="text-xl font-semibold mb-2">What to Contact Me About</h3>
-          <ul class="text-gray-700 dark:text-gray-300 space-y-2">
-            <li>Questions about my blog posts or technical content</li>
-            <li>Data engineering discussions and experiences</li>
-            <li>Collaboration opportunities</li>
-            <li>Feedback on articles or the site</li>
-            <li>Book recommendations (especially history or technical books)</li>
-            <li>NYC recommendations or meetups</li>
-            <li>General data and analytics chat</li>
-          </ul>
-        </div>
-
-        <!-- Response Time -->
-        <div class="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-          <p class="text-blue-800 dark:text-blue-200">
-            <strong>Response Time:</strong> I typically respond to emails within 1-2 business days. 
-            Feel free to follow up if you don't hear back!
+<BaseLayout>
+  <div class="container">
+    <div class="hero-section">
+      <div class="hero-grid">
+        <div class="hero-branding">
+          <h1 class="hero-title">
+            <span class="primary-text block">Get in</span>
+            <span class="accent-text inline-block">Touch</span>
+          </h1>
+          <p class="hero-subtitle">
+            I'm always keen to connect with fellow data enthusiasts and
+            developers.
           </p>
         </div>
-
+        <div class="hero-intro">
+          <p class="intro-text">
+            For questions about my blog posts, data engineering discussions,
+            collaboration opportunities, or general analytics chat.
+          </p>
+        </div>
       </div>
     </div>
-  </BaseLayout>
+
+    <!-- Contact Methods Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+      <!-- Email Contact -->
+      <div
+        class="p-6 border border-gray-100 dark:border-gray-800 rounded-xl bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-shadow"
+      >
+        <div class="mb-4 text-blue-500">
+          <svg width="48" height="48" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"
+            ></path>
+            <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"
+            ></path>
+          </svg>
+        </div>
+        <h3 class="text-xl font-bold mb-2">Email</h3>
+        <p class="text-gray-600 dark:text-gray-300 mb-4">
+          The best way to reach me for questions, feedback, or just to say
+          hello. I typically respond within 1-2 business days.
+        </p>
+        <a
+          href="mailto:dominick@nextvaldata.com"
+          class="text-blue-600 dark:text-blue-400 hover:underline font-semibold"
+        >
+          dominick@nextvaldata.com
+        </a>
+      </div>
+
+      <!-- Social Media -->
+      <div
+        class="p-6 border border-gray-100 dark:border-gray-800 rounded-xl bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-shadow"
+      >
+        <div class="mb-4 text-gray-700 dark:text-gray-300">
+          <svg width="48" height="48" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"
+            ></path>
+            <path
+              d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"
+            ></path>
+          </svg>
+        </div>
+        <h3 class="text-xl font-bold mb-2">GitHub</h3>
+        <p class="text-gray-600 dark:text-gray-300 mb-4">
+          Check out my code, projects, and contributions.
+        </p>
+        <a
+          href="https://github.com/tjadryan"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-blue-600 dark:text-blue-400 hover:underline font-semibold"
+        >
+          github.com/tjadryan
+        </a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  /* Tighter hero with Grid Layout from main page */
+  .hero-section {
+    padding: 3rem 2rem;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 107, 53, 0.03),
+      rgba(255, 255, 255, 0.4)
+    );
+    border-radius: 16px;
+    margin-bottom: 3rem;
+    border: 1px solid rgba(255, 107, 53, 0.05);
+  }
+
+  /* Holiday Mode Background Garland */
+  :global(html.holiday-mode) .hero-section {
+    background: white;
+    box-shadow: none;
+    position: relative;
+    overflow: hidden;
+  }
+  :global(html.holiday-mode) .hero-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("/img/holiday/garland.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100% auto;
+    z-index: 0;
+    opacity: 0.9;
+    pointer-events: none;
+    mix-blend-mode: multiply;
+    filter: contrast(1.5) brightness(1.2);
+  }
+  :global(html.holiday-mode) .hero-section > * {
+    position: relative;
+    z-index: 10;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 3rem;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .hero-branding {
+    text-align: left;
+  }
+
+  .hero-title {
+    font-size: clamp(2.25rem, 6vw, 3.25rem);
+    font-weight: 900;
+    margin-bottom: 0.6rem;
+    line-height: 1.02;
+    color: #222;
+    display: inline-block;
+    letter-spacing: -0.05em;
+    position: relative;
+  }
+
+  .hero-title .primary-text {
+    display: block;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(90deg, #2b2b2b 0%, #4a4a4a 50%, #2b2b2b 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  :global(html.holiday-mode) .hero-title .primary-text {
+    background: var(--accent, #ff8c42) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+  }
+
+  .hero-title .accent-text {
+    background: linear-gradient(
+      90deg,
+      var(--accent, #ff8c42) 0%,
+      #ffb07a 60%,
+      var(--accent, #ff8c42) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+    position: relative;
+  }
+
+  .hero-subtitle {
+    max-width: 680px;
+    margin: 0.25rem auto 0.75rem auto;
+    font-size: clamp(0.98rem, 1.9vw, 1.05rem);
+    color: rgba(102, 102, 102, 0.9);
+    line-height: 1.45;
+    position: relative;
+    z-index: 20;
+  }
+
+  .hero-intro {
+    text-align: left;
+    padding-left: 2rem;
+    border-left: 3px solid rgba(255, 107, 53, 0.15);
+  }
+
+  .intro-text {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: rgba(60, 60, 60, 0.9);
+  }
+
+  @media (max-width: 850px) {
+    .hero-grid {
+      grid-template-columns: 1fr;
+      text-align: center;
+      gap: 2rem;
+    }
+
+    .hero-branding {
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-intro {
+      padding-left: 0;
+      border-left: none;
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+      padding-top: 2rem;
+      text-align: center;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .hero-title {
+      font-size: clamp(2.5rem, 12vw, 3.2rem);
+    }
+    .hero-subtitle {
+      font-size: 1.15rem;
+      padding: 0 0.5rem;
+    }
+  }
+</style>
