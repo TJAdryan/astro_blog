@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-02-28T13:14:16.034Z",
+    "status": "Service Change",
+    "details": [
+      "Southbound: Coney Island - Stillwell Av-bound trains are running in 2 sections: between 96 St and Coney Island - Stillwell Av, and between Cortlandt St and Coney Island - Stillwell Av via <R>."
+    ]
+  },
+  {
     "date": "2026-02-27T13:24:12.863Z",
     "status": "Good Service",
     "details": []
@@ -209,13 +216,6 @@
     "details": [
       "Northbound: 96 St-bound trains are taking 8 mins longer to travel between Coney Island - Stillwell Av and Avenue U, and having longer wait times between W 8 St - NY Aquarium and 34 St - Herald Sq (up to 14 mins, normally every 9 mins).",
       "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between 34 St - Herald Sq and Newkirk Plaza (up to 15 mins, normally every 10 mins)."
-    ]
-  },
-  {
-    "date": "2026-01-25T13:12:38.109Z",
-    "status": "Service Change",
-    "details": [
-      "<Q> trains are making local stops between 57 St - 7 Av and Canal St."
     ]
   }
 ]
