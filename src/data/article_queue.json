@@ -124,5 +124,23 @@
     "source": "ResearchGate",
     "topic": "Biology",
     "dateAdded": "2026-02-27T02:17:01.000Z"
+  },
+  {
+    "id": "http://arxiv.org/abs/2402.11170v1",
+    "title": "Analyzing Reward Dynamics and Decentralization in Ethereum 2.0: An Advanced Data Engineering Workflow and Comprehensive Datasets for Proof-of-Stake Incentives",
+    "summary": "Ethereum 2.0, as the preeminent smart contract blockchain platform, guarantees the precise execution of applications without third-party intervention. At its core, this system leverages the Proof-of-Stake (PoS) consensus mechanism, which utilizes a stochastic process to select validators for block proposal and validation, consequently rewarding them for their contributions. However, the implementation of blockchain technology often diverges from its central tenet of decentralized consensus, presenting significant analytical challenges. Our study collects consensus reward data from the Ethereum Beacon chain and conducts a comprehensive analysis of reward distribution and evolution, categorizing them into attestation, proposer and sync committee rewards. To evaluate the degree of decentralization in PoS Ethereum, we apply several inequality indices, including the Shannon entropy, the Gini Index, the Nakamoto Coefficient, and the Herfindahl-Hirschman Index (HHI). Our comprehensive dataset is publicly available on Harvard Dataverse, and our analytical methodologies are accessible via GitHub, promoting open-access research. Additionally, we provide insights on utilizing our data for future investigations focused on assessing, augmenting, and refining the decentralization, security, and efficiency of blockchain systems.",
+    "link": "http://arxiv.org/abs/2402.11170v1",
+    "source": "arXiv",
+    "topic": "Data Engineering",
+    "dateAdded": "2026-03-02T13:24:52.891Z"
+  },
+  {
+    "id": "http://arxiv.org/abs/2511.18506v1",
+    "title": "HQPEF-Py: Metrics, Python Patterns, and Guidance for Evaluating Hybrid Quantum Programs",
+    "summary": "We study how to evaluate hybrid quantum programs as end-to-end workflows rather than as isolated devices or algorithms. Building on the Hybrid Quantum Program Evaluation Framework (HQPEF), we formalize a workflow-aware Quantum Readiness Level (QRL) score; define a normalized speedup under quality constraints for the Utility of Quantumness (UQ); and provide a timing-and-drift audit for hybrid pipelines. We complement these definitions with concise Python reference implementations that illustrate how to instantiate the metrics and audit procedures with state-of-the-art classical and quantum solvers (e.g., via Qiskit or PennyLane), while preserving matched-budget discipline and reproducibility.",
+    "link": "http://arxiv.org/abs/2511.18506v1",
+    "source": "arXiv",
+    "topic": "Python",
+    "dateAdded": "2026-03-02T13:24:53.864Z"
   }
 ]
