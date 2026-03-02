@@ -9,11 +9,11 @@ draft: false
 
 [Google’s recent announcement](https://security.googleblog.com/) regarding the Chrome Quantum-resistant Root Store (CQRS) and Merkle Tree Certificates (MTCs) marks a definitive shift in web architecture. As quantum computing capabilities advance, the industry is moving to replace the traditional X.509 certificate chains that have secured the web for decades.
 
-Because post-quantum cryptographic signatures are significantly larger, standard X.509 chains would bloat TLS handshakes and degrade performance. MTCs solve this by using a “proof of inclusion” model—a lightweight digital receipt that proves a site is legit without the bandwidth penalty of carrying massive signature data.
+Because post-quantum cryptographic signatures are significantly larger, standard X.509 chains would bloat TLS handshakes and degrade performance. MTCs solve this by using a “proof of inclusion” model—a lightweight digital receipt that proves a site is legit without the bandwidth penalty of carrying massive signature data. *(See below for Glossary - apologies for the acronym-heavy post).*
 
 ## What to Review: The Rise of ARI
 
-The transition centers on the PLANTS working group at the IETF. A critical component of this “steady but secure hand” approach is ACME Renewal Information (ARI), recently finalized as RFC 9773.
+The transition centers on the PLANTS working group at the [IETF](https://www.ietf.org/). A critical component of this “steady but secure hand” approach is ACME Renewal Information (ARI), recently finalized as RFC 9773.
 
 Historically, ACME clients decided when to renew certificates based on a hardcoded percentage (e.g., at 60 days). ARI allows the CA to dictate the renewal window. Instead of your server guessing, it asks the CA: “When is the best time for me to rotate this specific certificate?” This allows CAs to:
 
@@ -41,7 +41,7 @@ The rollout is structured to ensure stability across the ecosystem:
 *   **Phase 2 (Q1 2027):** Bootstrapping public MTCs with established CT log operators.
 *   **Phase 3 (Q3 2027):** Launch of the Chrome Quantum-resistant Root Store. This introduces a “quantum-only” trust store and the ability for sites to opt-in to downgrade protections, preventing attackers from forcing weaker connections.
 
-### 🛡️ Looking Ahead
+### <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; color:#3b82f6;"><circle cx="12" cy="12" r="3"></circle><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(30 12 12)"></ellipse><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(150 12 12)"></ellipse><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(90 12 12)"></ellipse></svg> Looking Ahead
 
 **You can now tell people your website features hardened security specifically designed to resist quantum attacks.**
 
