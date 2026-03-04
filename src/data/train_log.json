@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-03-04T13:23:19.809Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times between Prospect Park and Times Sq - 42 St (up to 14 mins, normally every 9 mins).",
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Avenue U and Sheepshead Bay (up to 15 mins, normally every 10 mins)."
+    ]
+  },
+  {
     "date": "2026-03-03T13:24:11.837Z",
     "status": "Delays",
     "details": [
@@ -206,13 +214,6 @@
     "status": "Service Change",
     "details": [
       "Southbound: Some Coney Island - Stillwell Av-bound trains are making local stops between 57 St - 7 Av and Times Sq - 42 St."
-    ]
-  },
-  {
-    "date": "2026-01-29T13:24:04.155Z",
-    "status": "Delays",
-    "details": [
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between DeKalb Av and 7 Av (up to 16 mins, normally every 10 mins)."
     ]
   }
 ]
