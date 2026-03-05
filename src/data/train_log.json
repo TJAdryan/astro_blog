@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-03-05T13:25:57.465Z",
+    "status": "Service Change",
+    "details": [
+      "Southbound: Some Coney Island - Stillwell Av-bound trains are skipping Parkside Av, Beverley Rd, Cortelyou Rd, Avenue H, Avenue J, and Avenue M."
+    ]
+  },
+  {
     "date": "2026-03-04T13:23:19.809Z",
     "status": "Delays",
     "details": [
@@ -207,13 +214,6 @@
     "details": [
       "Northbound: 96 St-bound trains are having longer wait times between W 8 St - NY Aquarium and 96 St (up to 16 mins, normally every 11 mins).",
       "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Atlantic Av - Barclays Ctr and Neck Rd (up to 17 mins, normally every 11 mins)."
-    ]
-  },
-  {
-    "date": "2026-01-30T13:23:07.983Z",
-    "status": "Service Change",
-    "details": [
-      "Southbound: Some Coney Island - Stillwell Av-bound trains are making local stops between 57 St - 7 Av and Times Sq - 42 St."
     ]
   }
 ]
