@@ -1,0 +1,153 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+    title="404 - Page Not Found"
+    description="The requested page could not be found."
+    mainClass="max-w-3xl"
+>
+    <div class="not-found-container">
+        <div class="error-code">404</div>
+        <div class="query-block">
+            <pre><code><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> pages
+<span class="keyword">WHERE</span> url <span class="operator">=</span> <span class="string">'current_path'</span>;
+
+<span class="comment">-- Returns 0 rows.</span>
+<span class="comment">-- ERROR: Relation "this_page" does not exist.</span></code></pre>
+        </div>
+        <h2>Table Not Found</h2>
+        <p>
+            We queried the entire data lakehouse, but this page seems to have
+            been DROP'd.
+        </p>
+        <a href="/" class="home-button">Return to Main Schema</a>
+    </div>
+
+    <style>
+        .not-found-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 4rem 1rem;
+            min-height: 60vh;
+        }
+
+        .error-code {
+            font-size: 8rem;
+            font-weight: 900;
+            line-height: 1;
+            background: linear-gradient(135deg, #ff6b35 0%, #ff9a76 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            animation: float 6s ease-in-out infinite;
+            text-shadow: 0px 10px 20px rgba(255, 107, 53, 0.2);
+        }
+
+        .query-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            text-align: left;
+            margin: 2rem 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-family: "Fira Code", "Consolas", monospace;
+            font-size: 1.1rem;
+            max-width: 100%;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .query-block::before {
+            content: "sql";
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.1);
+            color: #aaa;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.6rem;
+            border-bottom-left-radius: 8px;
+            text-transform: uppercase;
+        }
+
+        .keyword {
+            color: #569cd6;
+            font-weight: bold;
+        }
+        .operator {
+            color: #d4d4d4;
+        }
+        .string {
+            color: #ce9178;
+        }
+        .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+
+        h2 {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+            color: inherit;
+        }
+
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 2.5rem;
+            color: #666;
+            max-width: 500px;
+        }
+
+        /* Target dark mode specifically using the global class added by BaseLayout or browser preference */
+        :global(.dark) p {
+            color: #aaa;
+        }
+        @media (prefers-color-scheme: dark) {
+            p {
+                color: #aaa;
+            }
+        }
+
+        .home-button {
+            display: inline-block;
+            background: #ff6b35; /* Using your accent color */
+            color: white;
+            padding: 0.8rem 2.5rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease,
+                background 0.2s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+            border: 2px solid transparent;
+        }
+
+        .home-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+            background: #ff8255;
+            color: white; /* Ensure text stays white */
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-15px);
+            }
+            100% {
+                transform: translateY(0px);
+            }
+        }
+    </style>
+</BaseLayout>
