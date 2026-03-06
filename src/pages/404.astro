@@ -22,6 +22,22 @@ import BaseLayout from "../layouts/BaseLayout.astro";
             only imagined exist. Please share the details of your fevered dream
             url here.
         </p>
+
+        <form
+            class="dream-form"
+            action="/"
+            method="GET"
+            onsubmit="alert('Dream details recorded in the abyss. Returning to sanity...');"
+        >
+            <input
+                type="text"
+                class="dream-input"
+                placeholder="Describe the page you seek..."
+                required
+            />
+            <button type="submit" class="dream-submit">Submit Details</button>
+        </form>
+
         <a href="/" class="home-button">Return to Sanity</a>
     </div>
 
@@ -100,7 +116,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
         p {
             font-size: 1.2rem;
-            margin-bottom: 2.5rem;
+            margin-bottom: 1.5rem;
             color: #666;
             max-width: 500px;
         }
@@ -112,6 +128,79 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         @media (prefers-color-scheme: dark) {
             p {
                 color: #aaa;
+            }
+        }
+
+        .dream-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 2.5rem;
+        }
+
+        .dream-input {
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+            background-color: #fff;
+            color: #333;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition:
+                border-color 0.2s,
+                box-shadow 0.2s;
+        }
+
+        .dream-input:focus {
+            outline: none;
+            border-color: #ff6b35;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.2);
+        }
+
+        :global(.dark) .dream-input {
+            background-color: #1e293b;
+            border-color: #334155;
+            color: #f8fafc;
+        }
+        @media (prefers-color-scheme: dark) {
+            .dream-input {
+                background-color: #1e293b;
+                border-color: #334155;
+                color: #f8fafc;
+            }
+        }
+
+        .dream-submit {
+            padding: 0.8rem 1.5rem;
+            background-color: #e2e8f0;
+            color: #334155;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition:
+                background-color 0.2s,
+                transform 0.1s;
+        }
+
+        .dream-submit:hover {
+            background-color: #cbd5e1;
+        }
+
+        .dream-submit:active {
+            transform: translateY(1px);
+        }
+
+        :global(.dark) .dream-submit {
+            background-color: #334155;
+            color: #e2e8f0;
+        }
+        @media (prefers-color-scheme: dark) {
+            .dream-submit {
+                background-color: #334155;
+                color: #e2e8f0;
             }
         }
 
