@@ -1,46 +1,71 @@
-export const prerender = false;
-
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
-// Store in data dir for consistency with other trackers like tracker_log.json
+export const prerender = false;
+
+import { google } from 'googleapis';
+
+const DOCUMENT_ID = '1T7ytVl8r9sWkcEp5HxfVuN8p3YRIvGcFTaZMYefG0mw';
+
 export const POST = async ({ request, redirect }) => {
     try {
         const data = await request.formData();
         const dream = data.get('dream_details');
 
-        if (dream) {
+        let credentialsStr = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
+
+        // Fallback for local development if process.env isn't populated yet
+        if (!credentialsStr) {
+            try {
+                const envPath = path.resolve(process.cwd(), '.env');
+                const env = fs.readFileSync(envPath, 'utf8');
+                env.split('\n').forEach(line => {
+                    if (line.startsWith('GOOGLE_SERVICE_ACCOUNT_JSON=')) {
+                        credentialsStr = line.substring('GOOGLE_SERVICE_ACCOUNT_JSON='.length);
+                        if (credentialsStr.startsWith("'") && credentialsStr.endsWith("'")) {
+                            credentialsStr = credentialsStr.substring(1, credentialsStr.length - 1);
+                        }
+                    }
+                });
+            } catch (e) {
+                console.error("Could not read local env", e);
+            }
+        }
+
+        if (dream && credentialsStr) {
             const entry = {
                 date: new Date().toISOString(),
                 dream: dream
             };
 
-            // Calculate path dynamically for Astro build
-            const currentDir = new URL('.', import.meta.url).pathname;
-            // Pointing to src/data/abyss_log.json relative to the api dir
-            const abyssFile = path.resolve(currentDir, '../../data/abyss_log.json');
+            const credentials = JSON.parse(credentialsStr);
+            const auth = new google.auth.GoogleAuth({
+                credentials,
+                scopes: ['https://www.googleapis.com/auth/documents'],
+            });
+            const docs = google.docs({ version: 'v1', auth });
 
-            // Ensure data directory exists
-            const dataDir = path.dirname(abyssFile);
-            if (!fs.existsSync(dataDir)) {
-                fs.mkdirSync(dataDir, { recursive: true });
-            }
+            const docContent = `[${entry.date}]\n${entry.dream}\n---\n`;
 
-            let log = [];
-            if (fs.existsSync(abyssFile)) {
-                try {
-                    log = JSON.parse(fs.readFileSync(abyssFile, 'utf-8'));
-                } catch (e) {
-                    console.error('Error reading abyss log, starting fresh:', e);
-                }
-            }
-            log.push(entry);
-            fs.writeFileSync(abyssFile, JSON.stringify(log, null, 2));
+            await docs.documents.batchUpdate({
+                documentId: DOCUMENT_ID,
+                requestBody: {
+                    requests: [
+                        {
+                            insertText: {
+                                location: { index: 1 },
+                                text: docContent,
+                            },
+                        },
+                    ],
+                },
+            });
         }
 
         return redirect('/abyss');
     } catch (e) {
-        console.error('Failed to save to abyss:', e);
+        console.error('Failed to save to abyss docs:', e);
         // Even on error, send them to the abyss
         return redirect('/abyss');
     }

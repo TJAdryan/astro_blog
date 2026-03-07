@@ -2,25 +2,87 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import fs from "fs";
 import path from "path";
+import { google } from "googleapis";
 
 // Let Astro know to render this dynamically
 export const prerender = false;
 
-// Read dreams
-const currentDir = new URL(".", import.meta.url).pathname;
-const abyssFile = path.resolve(currentDir, "../data/abyss_log.json");
-
+const DOCUMENT_ID = "1T7ytVl8r9sWkcEp5HxfVuN8p3YRIvGcFTaZMYefG0mw";
 let dreams = [];
-if (fs.existsSync(abyssFile)) {
-    try {
-        dreams = JSON.parse(fs.readFileSync(abyssFile, "utf-8"));
-    } catch (e) {
-        console.error("Error parsing abyss log", e);
+
+try {
+    let credentialsStr = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
+
+    // Fallback for local development if process.env isn't populated yet
+    if (!credentialsStr) {
+        try {
+            const envPath = path.resolve(process.cwd(), ".env");
+            const env = fs.readFileSync(envPath, "utf8");
+            env.split("\n").forEach((line) => {
+                if (line.startsWith("GOOGLE_SERVICE_ACCOUNT_JSON=")) {
+                    credentialsStr = line.substring(
+                        "GOOGLE_SERVICE_ACCOUNT_JSON=".length,
+                    );
+                    if (
+                        credentialsStr.startsWith("'") &&
+                        credentialsStr.endsWith("'")
+                    ) {
+                        credentialsStr = credentialsStr.substring(
+                            1,
+                            credentialsStr.length - 1,
+                        );
+                    }
+                }
+            });
+        } catch (e) {
+            console.error("Could not read local env", e);
+        }
     }
+
+    if (credentialsStr) {
+        const credentials = JSON.parse(credentialsStr);
+        const auth = new google.auth.GoogleAuth({
+            credentials,
+            scopes: ["https://www.googleapis.com/auth/documents"],
+        });
+        const docs = google.docs({ version: "v1", auth });
+
+        const doc = await docs.documents.get({ documentId: DOCUMENT_ID });
+        const textNodes = doc.data.body.content.map(
+            (c) =>
+                c.paragraph?.elements
+                    ?.map((e) => e.textRun?.content || "")
+                    .join("") || "",
+        );
+
+        const text = textNodes.join("");
+        const chunks = text
+            .split("---")
+            .map((c) => c.trim())
+            .filter(Boolean);
+
+        for (const chunk of chunks) {
+            // Match our [YYYY-MM-DDTHH:mm:SS.sssZ] <dream> pattern
+            const match = chunk.match(/^\[(.*?)\]\s*([\s\S]*)$/);
+            if (match) {
+                // Ignore the "Hello from test!" messages if they don't match the regex but they usually won't
+                dreams.push({
+                    date: match[1],
+                    dream: match[2].trim(),
+                });
+            }
+        }
+    }
+} catch (e) {
+    console.error("Error parsing abyss log from Google Docs", e);
 }
 
-// Reverse so newest are at the top
-dreams.reverse();
+// Ensure newest are at the top (it's inserted at index 1 so they actually prepend anyway,
+// but they'll naturally be output top-down in the doc, meaning the newest is already first)
+// Let's not reverse here if we read top-down. Wait, it inserts at index 1:
+// Day 1 at index 1
+// Day 2 at index 1 -> pushes Day 1 down
+// So the parsing top-down will get newest first automatically!
 ---
 
 <BaseLayout
@@ -141,6 +203,7 @@ dreams.reverse();
             font-size: 1.1rem;
             line-height: 1.5;
             color: #334155;
+            white-space: pre-wrap;
         }
 
         :global(.dark) .dream-content {
