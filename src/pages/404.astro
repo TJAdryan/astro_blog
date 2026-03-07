@@ -23,14 +23,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
             url here.
         </p>
 
-        <form
-            class="dream-form"
-            action="/"
-            method="GET"
-            onsubmit="alert('Dream details recorded in the abyss. Returning to sanity...');"
-        >
+        <form class="dream-form" action="/api/submit-abyss" method="POST">
             <input
                 type="text"
+                name="dream_details"
                 class="dream-input"
                 placeholder="Describe the page you seek..."
                 required

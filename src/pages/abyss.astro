@@ -1,0 +1,173 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import fs from "fs";
+import path from "path";
+
+// Let Astro know to render this dynamically
+export const prerender = false;
+
+// Read dreams
+const currentDir = new URL(".", import.meta.url).pathname;
+const abyssFile = path.resolve(currentDir, "../data/abyss_log.json");
+
+let dreams = [];
+if (fs.existsSync(abyssFile)) {
+    try {
+        dreams = JSON.parse(fs.readFileSync(abyssFile, "utf-8"));
+    } catch (e) {
+        console.error("Error parsing abyss log", e);
+    }
+}
+
+// Reverse so newest are at the top
+dreams.reverse();
+---
+
+<BaseLayout
+    title="The Abyss - NextValData"
+    description="Fevered dreams of missing pages."
+    mainClass="max-w-3xl"
+>
+    <div class="abyss-container">
+        <h1 class="abyss-title">The Abyss</h1>
+        <p class="abyss-subtitle">
+            A repository of fevered dreams and forgotten schemas.
+        </p>
+
+        <div class="dreams-list">
+            {
+                dreams.length === 0 ? (
+                    <div class="empty-state">
+                        The abyss is currently empty. No fevered dreams have
+                        been recorded yet.
+                    </div>
+                ) : (
+                    dreams.map((entry) => (
+                        <div class="dream-card">
+                            <div class="dream-date">
+                                {new Date(entry.date).toLocaleString()}
+                            </div>
+                            <div class="dream-content">{entry.dream}</div>
+                        </div>
+                    ))
+                )
+            }
+        </div>
+
+        <a href="/" class="home-button">Return to Sanity</a>
+    </div>
+
+    <style>
+        .abyss-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 3rem 1rem;
+            min-height: 60vh;
+        }
+
+        .abyss-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        :global(.dark) .abyss-title {
+            color: #f8fafc;
+        }
+
+        .abyss-subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 3rem;
+            font-style: italic;
+        }
+
+        :global(.dark) .abyss-subtitle {
+            color: #aaa;
+        }
+
+        .dreams-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 3rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            border-radius: 12px;
+            color: #64748b;
+        }
+
+        :global(.dark) .empty-state {
+            background: #1e293b;
+            border-color: #334155;
+            color: #94a3b8;
+        }
+
+        .dream-card {
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid #ff6b35;
+            transition: transform 0.2s;
+        }
+
+        .dream-card:hover {
+            transform: translateY(-2px);
+        }
+
+        :global(.dark) .dream-card {
+            background: #1e293b;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .dream-date {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 0.5rem;
+            font-family: monospace;
+        }
+
+        .dream-content {
+            font-size: 1.1rem;
+            line-height: 1.5;
+            color: #334155;
+        }
+
+        :global(.dark) .dream-content {
+            color: #e2e8f0;
+        }
+
+        .home-button {
+            display: inline-block;
+            background: #ff6b35;
+            color: white;
+            padding: 0.8rem 2.5rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease,
+                background 0.2s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        }
+
+        .home-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+            background: #ff8255;
+            color: white;
+        }
+    </style>
+</BaseLayout>
