@@ -21,6 +21,10 @@ Historically, ACME clients decided when to renew certificates based on a hardcod
 *   **Manage Load:** CAs can smooth out traffic spikes by distributing renewal windows.
 *   **Support Shortened Lifespans:** As the industry moves toward a 45-day maximum validity by 2028, ARI makes these frequent rotations invisible to the administrator.
 
+## The Looming "Middlebox" Bottleneck
+
+While MTCs are designed to keep certificate sizes manageable, the transition to post-quantum cryptography still introduces significantly larger cryptographic primitives and new handshake patterns. This presents a major risk of protocol ossification. Many legacy firewalls, load balancers, and deep packet inspection (DPI) appliances are hardcoded to recognize traditional TLS 1.2/1.3 structures. If these "middleboxes" encounter the larger packets required for quantum-resistant key exchanges (like X25519Kyber768) or the new Merkle Tree Certificate formats, they may flag the traffic as malformed and drop the connection entirely. As we approach the 2027 milestones, auditing your network edge for "MTU sensitivity" and ensuring your security appliances can handle non-traditional TLS extensions will be as critical as updating your ACME clients.
+
 ## How to Prepare (A Note for Windows Users)
 
 For those of us relying on [acme.sh](https://github.com/acmesh-official/acme.sh), [Certbot](https://certbot.eff.org/), or automated Windows workflows, keeping services up to date is the primary requirement. Manual certificate management is becoming obsolete in a quantum-resistant ecosystem; automation via ACME is the only viable path forward.
@@ -57,5 +61,6 @@ The rollout is structured to ensure stability across the ecosystem:
 | **IETF** | Internet Engineering Task Force | The group that writes the rules (RFCs) for how the internet works. |
 | **MTC** | Merkle Tree Certificate | A new type of certificate that uses Merkle Trees to stay small and fast while using big quantum-proof keys. |
 | **PLANTS** | PKI, Logs, And Tree Signatures | The IETF working group specifically building the new quantum-resistant web standards. |
+| **Protocol Ossification** | Rigid network expectations blocking innovation | When strict network hardware blocks new internet protocols simply because they look "different." |
 | **RFC** | Request for Comments | An official technical document that defines a specific internet standard. |
 | **X.509** | X.509 Certificate | The standard format for digital certificates that the web has used for over 30 years. |
