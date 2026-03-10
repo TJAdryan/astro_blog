@@ -90,9 +90,14 @@ bun add -d tailwindcss postcss autoprefixer @tailwindcss/postcss
 - If you see errors about PostCSS plugins, make sure `@tailwindcss/postcss` is installed.
 - Some npm-specific plugins may not work with Bun. Check plugin docs for Bun compatibility.
 
-## 📝 User Submissions via Google Docs
+## 📝 User Submissions & Record Keeping via Google Docs
 
-This project utilizes **Google Docs** as a backend to store user inputs (e.g., from the Abyss/404 page). Using a Google Doc allows the static site to securely hold sanitized user inputs without requiring a traditional database.
+This project utilizes **Google Docs** as a lightweight, serverless backend to process and store data. Using a Google Doc allows the static site to securely hold sanitized inputs and track records without requiring a traditional database.
+
+Currently, the Google Docs integration is used to:
+- **Hold Abyss Entries:** Collect and store user-submitted "fevered dream URLs" from the custom 404 page.
+- **Track Reading Log:** Maintain a running list of books and articles.
+- **Record Q Train Subway Service:** Keep a structured historical log of MTA subway service statuses.
 
 There are also test scripts included in the `scripts/` directory to ensure reading and writing to the Google Doc works correctly:
 - `scripts/test_google_doc.js`
