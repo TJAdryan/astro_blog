@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-03-10T13:26:37.495Z",
+    "status": "Service Change",
+    "details": [
+      "Northbound: Some 96 St-bound trains are making local stops between Times Sq - 42 St and 57 St - 7 Av."
+    ]
+  },
+  {
     "date": "2026-03-09T13:27:41.531Z",
     "status": "Service Change",
     "details": [
@@ -203,14 +210,6 @@
     "details": [
       "Northbound: 96 St-bound trains are having longer wait times between Avenue M and Lexington Av/63 St (up to 12 mins, normally every 9 mins).",
       "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Avenue U and Neck Rd (up to 14 mins, normally every 10 mins)."
-    ]
-  },
-  {
-    "date": "2026-02-05T13:27:19.383Z",
-    "status": "Delays",
-    "details": [
-      "Northbound: 96 St-bound trains are having longer wait times between Coney Island - Stillwell Av and Avenue U (up to 13 mins, normally every 9 mins).",
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Sheepshead Bay and Brighton Beach (up to 16 mins, normally every 10 mins)."
     ]
   }
 ]
