@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-03-13T13:24:52.282Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times between 57 St - 7 Av and Lexington Av/63 St (up to 14 mins, normally every 10 mins).",
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Atlantic Av - Barclays Ctr and Newkirk Plaza (up to 16 mins, normally every 11 mins)."
+    ]
+  },
+  {
     "date": "2026-03-12T13:26:31.968Z",
     "status": "Good Service",
     "details": []
@@ -203,10 +211,5 @@
     "details": [
       "Southbound: Some Coney Island - Stillwell Av-bound trains are skipping Avenue H, Avenue J, and Avenue M."
     ]
-  },
-  {
-    "date": "2026-02-08T13:17:16.980Z",
-    "status": "Good Service",
-    "details": []
   }
 ]
