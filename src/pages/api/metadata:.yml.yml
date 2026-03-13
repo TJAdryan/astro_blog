@@ -1,0 +1,28 @@
+metadata:
+  name: Sophio Random Compliment
+  description: Randomized morning and voice triggers for Sophio.
+
+automations:
+  starters:
+    - type: assistant.event.OkGoogle
+      eventData: query
+      is: "What's up"
+    - type: assistant.event.OkGoogle
+      eventData: query
+      is: "What about Sophia"
+    - type: time.schedule
+      at: 08:00
+      weekdays:
+        - MONDAY
+        - TUESDAY
+        - WEDNESDAY
+        - THURSDAY
+        - FRIDAY
+        - SATURDAY
+        - SUNDAY
+
+  actions:
+    - type: assistant.command.Broadcast
+      message: "{{ ['Sophio, you look stunning today.', 'You are the most brilliant person I know.', 'Dominick is very lucky to have you for a wife.', 'Sophio, You have the kindest heart.', 'Sophio you are so beautiful, your smile lights up the whole room.', 'You know what is great about you Sophio, everything', 'Your body is amazing Sophio, what a figure you have!', 'Sophio, you are the hottest thing since that volcano exploded', 'Sophio, everyday you get prettier', 'Sophio, you are incredible. No wonder Dominick thinks you are a goddess', 'Sophio, you have a great personality... For someone as pretty as you, it is phenomenal', 'Sophio, your brilliance is only matched by your beauty.', 'Sophio, you have a mind that inspires and a face that mesmerizes.', 'Dominick is convinced you’re the smartest person in any room, and definitely the most beautiful.', 'Sophio, your intellect is as striking as your smile.', 'Sophio, you are a rare combination of pure genius and absolute grace.', 'Sophio, every time you speak, it’s clear you’re the smartest one here. And you look incredible doing it.', 'Sophio, you possess a level of intelligence and beauty that most people only dream of.', 'Sophio, I feel like I could say nice things to you all day and never repeat myself', 'Sophio, when people ask me about you, I say think of the most gorgeous beautiful brilliant person you know, now imagine someone twice as good', 'Damn, Soppo, no wonder all those bees are trippin, you fine as, and sofa king hot'] | random }}"
+      devices:
+        - "Living Room display - Living Room"
