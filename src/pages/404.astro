@@ -9,6 +9,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 >
     <div class="not-found-container">
         <div class="error-code">404</div>
+        <div class="error-subtext">(Clearly something went wrong...)</div>
         <div class="query-block">
             <pre><code><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> pages
 <span class="keyword">WHERE</span> url <span class="operator">=</span> <span class="string">'current_path'</span>;
@@ -55,9 +56,16 @@ import BaseLayout from "../layouts/BaseLayout.astro";
             background: linear-gradient(135deg, #ff6b35 0%, #ff9a76 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 1rem;
+            margin-bottom: 0.2rem;
             animation: float 6s ease-in-out infinite;
             text-shadow: 0px 10px 20px rgba(255, 107, 53, 0.2);
+        }
+
+        .error-subtext {
+            color: #ff6b35;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
         }
 
         .query-block {
