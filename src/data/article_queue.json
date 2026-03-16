@@ -142,5 +142,14 @@
     "source": "arXiv",
     "topic": "Python",
     "dateAdded": "2026-03-02T13:24:53.864Z"
+  },
+  {
+    "id": "http://arxiv.org/abs/2603.06107v1",
+    "title": "Real-World Fault Detection for C-Extended Python Projects with Automated Unit Test Generation",
+    "summary": "Many popular Python libraries use C-extensions for performance-critical operations allowing users to combine the best of the two worlds: The simplicity and versatility of Python and the performance of C. A drawback of this approach is that exceptions raised in C can bypass Python's exception handling and cause the entire interpreter to crash. These crashes are real faults if they occur when calling a public API. While automated test generation should, in principle, detect such faults, crashes in native code can halt the test process entirely, preventing detection or reproduction of the underlying errors and inhibiting coverage of non-crashing parts of the code. To overcome this problem, we propose separating the generation and execution stages of the test-generation process. We therefore adapt Pynguin, an automated test case generation tool for Python, to use subprocess-execution. Executing each generated test in an isolated subprocess prevents a crash from halting the test generation process itself. This allows us to (1) detect such faults, (2) generate reproducible crash-revealing test cases for them, (3) allow studying the underlying faults, and (4) enable test generation for non-crashing parts of the code. To evaluate our approach, we created a dataset consisting of 1648 modules from 21 popular Python libraries with C-extensions. Subprocess-execution allowed automated testing of up to 56.5% more modules and discovered 213 unique crash causes, revealing 32 previously unknown faults.",
+    "link": "http://arxiv.org/abs/2603.06107v1",
+    "source": "arXiv",
+    "topic": "Python",
+    "dateAdded": "2026-03-16T13:29:28.183Z"
   }
 ]
