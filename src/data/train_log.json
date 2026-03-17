@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-03-17T13:29:47.135Z",
+    "status": "Service Change",
+    "details": [
+      "Northbound: Some 96 St-bound trains are skipping Avenue M, Avenue J, Avenue H, Cortelyou Rd, Beverley Rd, and Parkside Av."
+    ]
+  },
+  {
     "date": "2026-03-15T13:19:12.506Z",
     "status": "Service Change",
     "details": [
@@ -201,14 +208,6 @@
     "details": [
       "Northbound: 96 St-bound trains are having longer wait times between 57 St - 7 Av and Lexington Av/63 St (up to 12 mins, normally every 9 mins).",
       "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times at Canal St (up to 13 mins, normally every 10 mins)."
-    ]
-  },
-  {
-    "date": "2026-02-11T13:29:57.388Z",
-    "status": "Delays",
-    "details": [
-      "Northbound: 96 St-bound trains are having longer wait times between Canal St and DeKalb Av (up to 12 mins, normally every 9 mins).",
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Brighton Beach and Ocean Pkwy (up to 15 mins, normally every 10 mins)."
     ]
   }
 ]
