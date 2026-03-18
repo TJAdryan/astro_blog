@@ -27,7 +27,7 @@ When an update modifies the system or during high I/O, these services enter a ra
 
 ## The ROI Gap in Core Infrastructure
 
-As a consultant, I’m seeing a widening gap between the cost of licensing and the reliability of core functions. Since late 2024, we’ve seen multi-billion dollar share buyback authorizations—$60B from Microsoft and $25B from Adobe. These are mature companies prioritizing shareholder yield over core product stability.
+The companies I worke are not being served by a widening gap between the cost of licensing and the reliability of core functions. Since late 2024, we’ve seen multi-billion dollar share buyback authorizations—$60B from Microsoft and $25B from Adobe. These are mature companies prioritizing shareholder yield over core product stability.
 
 I would like to make clear, I don't have a problem with the priority of capital being invested in AI infrastructure and research. And I understand that the security postures to deal with the onslaught of scammers and hackers require compute resources that would, in the past, have belonged to the user. What I find frustrating is that users are effectively working on more powerful hardware and more expensive software with worse outcomes. We are paying 2026-priced subscriptions (often exceeding $600/year for premium tiers) to run search logic that still relies on nuking and rebuilding local databases when a sync goes sideways.
 
