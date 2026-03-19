@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-03-19T13:28:40.642Z",
+    "status": "Service Change",
+    "details": [
+      "Southbound: Brighton Beach/Coney Island - Stillwell Av-bound trains are running in 2 sections: between 96 St and Brighton Beach, and between Prospect Park and Coney Island - Stillwell Av."
+    ]
+  },
+  {
     "date": "2026-03-18T13:29:57.524Z",
     "status": "Service Change",
     "details": [
@@ -200,13 +207,6 @@
     "status": "Service Change",
     "details": [
       "<Q> trains are running between 96 St and Kings Hwy."
-    ]
-  },
-  {
-    "date": "2026-02-13T13:25:49.139Z",
-    "status": "Delays",
-    "details": [
-      "Northbound: 96 St-bound trains are having longer wait times between Prospect Park and 14 St - Union Sq (up to 13 mins, normally every 9 mins)."
     ]
   }
 ]
