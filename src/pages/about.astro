@@ -21,21 +21,20 @@ import Layout from "../layouts/BlogPost.astro";
 					/>
 				</div>
 				<div style="flex: 1; min-width: 250px;">
-					<h2
-						style="color: var(--accent); margin-top: 0; font-size: 2.2rem; line-height: 1.1; margin-bottom: 0.5rem;"
+					<h1
+						style="color: var(--accent); margin-top: 0; font-size: 2.5rem; line-height: 1.1; margin-bottom: 0.2rem;"
 					>
-						About Me
+						Dominick Ryan
+					</h1>
+					<h2
+						style="color: rgba(0,0,0,0.7); font-size: 1.5rem; margin-top: 0; margin-bottom: 0.5rem; font-weight: 500;"
+					>
+						Senior Systems & Data Architect
 					</h2>
 					<p
 						style="font-size: 1.15rem; line-height: 1.6; color: rgba(0,0,0,0.8);"
 					>
-						I am <strong>Dominick Ryan</strong>, a Senior Systems
-						and Data Engineer focused on architecting reliable,
-						high-performance data transformations and cloud
-						infrastructure. With over a decade of experience across
-						systems engineering and technical consultancy, I bridge
-						the gap between complex legacy environments and modern,
-						analytics-ready data lakehouses.
+						I bridge the gap between complex legacy infrastructure and modern data lakehouse architectures. My work focuses on the engineering requirements of <strong>data gravity</strong>—ensuring that underlying systems (compute, storage, and networking) are architected specifically to support high-throughput, reliable data transformations.
 					</p>
 				</div>
 			</div>
@@ -43,127 +42,38 @@ import Layout from "../layouts/BlogPost.astro";
 	</div>
 
 	<div class="content-section">
-		<h3>Core Philosophy</h3>
+		<h3>Infrastructure & Systems Strategy</h3>
 		<p>
-			So much of what I have built has been made possible by the
-			generosity of colleagues sharing their knowledge, and the many
-			open-source projects making their work freely available. This blog, <strong
-				>NextValData</strong
-			>, is a curated collection of the academic and technical
-			documentation I've gathered along the way. It functions both as a
-			personal repository for the projects I’ve thought deeply about, and
-			as a medium to share that knowledge back with the broader
-			engineering community.
+			I specialize in the design and management of high-concurrency environments, ensuring that infrastructure is a performance enabler rather than a bottleneck.
 		</p>
-	</div>
-
-	<div class="content-section">
-		<h3>Technical Expertise & Strategy</h3>
-		<p>
-			I specialize in solving high-stakes business challenges through
-			modern data architecture. My approach is platform-agnostic, spanning
-			Azure, GCP, and AWS, with a deep focus on scalability and data
-			quality.
-		</p>
-
-		<div class="grid-list">
-			<div class="grid-item">
-				<h4>Architecture & Orchestration</h4>
-				<p>
-					I implement Medallion Architecture (Bronze/Silver/Gold) to
-					ensure data reliability and use <strong>Dagster</strong> and
-					<strong>Spark</strong> for robust orchestration.
-				</p>
-			</div>
-			<div class="grid-item">
-				<h4>Data Platforms</h4>
-				<p>
-					Extensive experience building lakehouses using <strong
-						>Microsoft Fabric, Databricks, Snowflake, and Apache
-						Iceberg</strong
-					>.
-				</p>
-			</div>
-			<div class="grid-item">
-				<h4>High-Performance Compute</h4>
-				<p>
-					I leverage <strong>Polars and PySpark</strong> for performance-critical
-					transformations and explore GPU-accelerated processing (<strong
-						>CUDA/RAPIDS</strong
-					>) to achieve 70x speedups over traditional CPU workloads.
-				</p>
-			</div>
-			<div class="grid-item">
-				<h4>Engineering Standards</h4>
-				<p>
-					I utilize Event-Driven Microservices to build real-time,
-					scalable data services that unlock immediate business value.
-				</p>
-			</div>
-		</div>
-	</div>
-
-	<div class="content-section">
-		<h3>Industry Impact: Healthcare & Beyond</h3>
-		<p>
-			Much of my specialized work focuses on Healthcare Data Integration,
-			where technical reliability directly impacts operational outcomes.
-		</p>
-		<ul style="list-style-type: none; padding-left: 0;">
-			<li style="margin-bottom: 1rem;">
-				<strong>Operational Efficiency:</strong> For LHCSAs and home health
-				care agencies, I built data solutions that resolved delayed payment
-				cycles and streamlined legacy EDI transactions.
-			</li>
-			<li style="margin-bottom: 1rem;">
-				<strong>Interoperability:</strong> I have specific expertise in HHA
-				Exchange and transitioning legacy on-prem systems to modern FHIR-based
-				cloud solutions.
-			</li>
-			<li style="margin-bottom: 1rem;">
-				<strong>Infrastructure Scale:</strong> I previously built and maintained
-				a data platform integrating APIs from over 2,000 devices to provide
-				real-time support desk metrics, ensuring high-availability monitoring
-				for critical infrastructure.
-			</li>
+		<ul style="line-height: 1.6;">
+			<li style="margin-bottom: 0.8rem;"><strong>Hybrid Cloud Orchestration:</strong> Expert-level administration of <strong>Azure</strong> and on-prem <strong>VMware/Hyper-V</strong> environments. This includes architecting <strong>Azure Virtual Desktop (AVD)</strong> for secure data access and managing complex identity lifecycles via <strong>Entra ID</strong>.</li>
+			<li style="margin-bottom: 0.8rem;"><strong>Performance Engineering:</strong> I specialize in removing compute bottlenecks by offloading CPU-bound workloads to <strong>GPU-accelerated processing (CUDA/RAPIDS)</strong>, achieving measured <strong>70x speedups</strong> in data processing latency.</li>
+			<li style="margin-bottom: 0.8rem;"><strong>Observability & Telemetry:</strong> I engineered a high-availability monitoring platform integrating real-time telemetry from <strong>2,000+ distributed devices</strong>, providing sub-second support desk metrics and 24/7 infrastructure health visibility.</li>
 		</ul>
 	</div>
 
 	<div class="content-section">
-		<h3>Professional Certifications</h3>
-		<ul class="cert-list">
-			<li>Microsoft Certified: Azure Administrator Associate (AZ-104)</li>
-			<li>
-				Microsoft Certified: Azure Virtual Desktop Specialty (AZ-140)
-			</li>
+		<h3>Data Architecture & Engineering</h3>
+		<p>
+			I treat data as a distributed systems product, focusing on reliability and strictly typed lineages.
+		</p>
+		<ul style="line-height: 1.6;">
+			<li style="margin-bottom: 0.8rem;"><strong>Lakehouse Implementation:</strong> I architect end-to-end data lifecycles using the <strong>Medallion Architecture</strong> (Bronze/Silver/Gold) on <strong>Microsoft Fabric</strong>, <strong>Databricks</strong>, and <strong>Snowflake</strong>.</li>
+			<li style="margin-bottom: 0.8rem;"><strong>Modern Orchestration:</strong> I utilize <strong>Dagster</strong> for software-defined orchestration, implementing event-driven pipelines that prioritize data quality and idempotent processing.</li>
+			<li style="margin-bottom: 0.8rem;"><strong>Systems Reliability:</strong> My background in systems allows me to implement <strong>Event-Driven Microservices</strong> as the backbone for real-time data services, ensuring pipelines are as resilient as the infrastructure they run on.</li>
 		</ul>
 	</div>
 
 	<div class="content-section">
-		<h3>Featured Projects</h3>
-		<div class="project-card">
-			<h4>
-				<a href="/blog/interactive-housing-simulation"
-					>Interactive Housing Simulation (React)</a
-				>
-			</h4>
-			<p>
-				An agent-based dynamics simulation built with React and Astro to
-				visualize how supply and demand policies affect market outcomes.
-			</p>
-		</div>
-		<div class="project-card">
-			<h4>
-				<a
-					href="/blog/2025-10-20-Getting -70x-Data-Processing-Speed-with-GPU-vs-CPU"
-					>GPU vs CPU Benchmarking</a
-				>
-			</h4>
-			<p>
-				A deep dive into RAPIDS and the CUDA Toolkit, achieving
-				significant performance gains in ETL workloads.
-			</p>
-		</div>
+		<h3>High-Compliance Industry Impact</h3>
+		<p>
+			My career is defined by solving bottlenecks in regulated environments where technical reliability directly impacts financial outcomes.
+		</p>
+		<ul style="line-height: 1.6;">
+			<li style="margin-bottom: 0.8rem;"><strong>Healthcare Revenue Optimization:</strong> I have a proven track record of re-engineering legacy EDI transaction pipelines for <strong>LHCSAs</strong> to <strong>resolve stalled revenue cycles</strong> and migrating fragmented on-prem SQL environments to modern <strong>FHIR-compliant cloud architectures</strong>.</li>
+			<li style="margin-bottom: 0.8rem;"><strong>Technical Documentation:</strong> This site, <strong>NextValData.com</strong>, serves as a repository for my deep dives into <strong>CRISPR data pipelines</strong> (processing 21M+ rows via DuckDB) and emerging patterns in the Python ecosystem, including <code>uv</code>, <code>Polars</code>, and <code>Ruff</code>.</li>
+		</ul>
 	</div>
 
 	<div class="content-section">
