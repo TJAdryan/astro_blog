@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-03-20T13:24:59.786Z",
+    "status": "Service Change",
+    "details": [
+      "Northbound: Some 96 St-bound trains are skipping Avenue M, Avenue J, Avenue H, Cortelyou Rd, Beverley Rd, and Parkside Av."
+    ]
+  },
+  {
     "date": "2026-03-19T13:28:40.642Z",
     "status": "Service Change",
     "details": [
@@ -197,13 +204,6 @@
   },
   {
     "date": "2026-02-15T13:17:38.985Z",
-    "status": "Service Change",
-    "details": [
-      "<Q> trains are running between 96 St and Kings Hwy."
-    ]
-  },
-  {
-    "date": "2026-02-14T13:17:10.072Z",
     "status": "Service Change",
     "details": [
       "<Q> trains are running between 96 St and Kings Hwy."
