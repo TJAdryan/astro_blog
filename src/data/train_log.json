@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-03-22T13:17:32.852Z",
+    "status": "Service Change",
+    "details": [
+      "<Q> trains are running between Prospect Park and Coney Island - Stillwell Av."
+    ]
+  },
+  {
     "date": "2026-03-21T13:16:34.612Z",
     "status": "Service Change",
     "details": [
@@ -199,14 +206,6 @@
     "status": "Service Change",
     "details": [
       "Northbound: 96 St-bound trains are running in 2 sections: between Coney Island - Stillwell Av and 96 St, and between Rector St and 96 St via <W>."
-    ]
-  },
-  {
-    "date": "2026-02-17T13:27:43.114Z",
-    "status": "Delays",
-    "details": [
-      "Northbound: 96 St-bound trains are having longer wait times between Cortelyou Rd and DeKalb Av (up to 24 mins, normally every 9 mins).",
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Neck Rd and Ocean Pkwy (up to 18 mins, normally every 10 mins)."
     ]
   }
 ]
