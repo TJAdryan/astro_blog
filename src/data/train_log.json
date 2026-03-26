@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-03-26T13:30:16.943Z",
+    "status": "Service Change",
+    "details": [
+      "Northbound: Some 96 St-bound trains are skipping Avenue M, Avenue J, Avenue H, Cortelyou Rd, Beverley Rd, and Parkside Av."
+    ]
+  },
+  {
     "date": "2026-03-25T13:29:27.933Z",
     "status": "Service Change",
     "details": [
@@ -205,10 +212,5 @@
       "Northbound: 96 St-bound trains are running in 2 sections: between Coney Island - Stillwell Av and 96 St, and between Whitehall St - South Ferry and 96 St.",
       "Northbound: Some 96 St-bound trains are making local stops between Times Sq - 42 St and 57 St - 7 Av."
     ]
-  },
-  {
-    "date": "2026-02-21T13:16:29.722Z",
-    "status": "Good Service",
-    "details": []
   }
 ]
