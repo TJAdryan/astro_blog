@@ -57,4 +57,4 @@ You may be wisely asking yourself, "Has he really defined it yet? I still have q
 
 A Named Instance is a complete, isolated copy of the SQL engine running side-by-side with the original on a single OS. It satisfies the needs of users with different technical skills and access requirements by giving them their own private version of the truth. Isolation is the primary concern; if a Dev instance crashes, the HR instance on the same hardware doesn't even feel the glitch. While the Default Instance lives on the standard port, every Named Instance hides behind a Dynamic Port managed by the SQL Browser Service. It’s the same software, but with its own service accounts, security settings, and memory footprint. It’s how one expensive server handles a hundred different realities without them ever bumping into each other in the hallway.
 
-I am glad I asked a silly question.
+If you take away anything from this, I hope it is that sometimes you learn by asking questions, even if they make you feel a little silly.
