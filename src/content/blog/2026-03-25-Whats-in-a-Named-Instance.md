@@ -15,7 +15,7 @@ Aaron looked at me, genuinely puzzled. "What’s a named instance?"
 
 I realized then that despite years of building, maintaining, and architecting data through these, I didn't have a textbook definition ready. One of the most confounding parts of adulthood to me is how often I am faced with something I feel I probably should know, but find myself unable to come up with a good explanation. I knew the backslash in the connection string and the dynamic port headaches, but I’d stopped questioning their value.
 
-In fact, I’d stopped questioning if they were even the right tool. Usually, I was just happy there was a service that multiple people could access to satisfy the different needs an organization might have for data. I decided to stop being the "silent expert" and actually look at the value and the math.
+In fact, I’d stopped questioning if they were even the right tool. Usually, I was just happy there was a service that multiple people could access to satisfy the different needs an organization might have for data. I decided to stop being the "silent expert" and actually look at the value and the math. I know you are thinking, "What's the big deal? Why isn't he defining it already?" I am getting there. But if we want to really improve our understanding of something beyond repeating what we read in a book or a website, we have to delve, probe the background, and build our understanding through our shared past.
 
 ## The Microsoft Gravity Well
 
