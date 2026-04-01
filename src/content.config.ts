@@ -15,4 +15,13 @@ const blog = defineCollection({
   }),
 });
 
-export const collections = { blog };
+const stories = defineCollection({
+  schema: z.object({
+    title: z.string(),
+    description: z.string().optional(),
+    pubDate: z.coerce.date(),
+    heroImage: z.string().optional(),
+  }),
+});
+
+export const collections = { blog, stories };
