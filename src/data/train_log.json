@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-04-01T13:30:45.809Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times between Newkirk Plaza and Church Av (up to 14 mins, normally every 10 mins)."
+    ]
+  },
+  {
     "date": "2026-03-31T13:30:24.789Z",
     "status": "Service Change",
     "details": [
@@ -204,12 +211,5 @@
     "date": "2026-03-01T13:15:34.409Z",
     "status": "Good Service",
     "details": []
-  },
-  {
-    "date": "2026-02-28T13:14:16.034Z",
-    "status": "Service Change",
-    "details": [
-      "Southbound: Coney Island - Stillwell Av-bound trains are running in 2 sections: between 96 St and Coney Island - Stillwell Av, and between Cortlandt St and Coney Island - Stillwell Av via <R>."
-    ]
   }
 ]
