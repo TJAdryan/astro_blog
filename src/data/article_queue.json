@@ -178,5 +178,14 @@
     "source": "arXiv",
     "topic": "Python",
     "dateAdded": "2026-03-23T13:29:10.494Z"
+  },
+  {
+    "id": "http://arxiv.org/abs/2603.17893v1",
+    "title": "scicode-lint: Detecting Methodology Bugs in Scientific Python Code with LLM-Generated Patterns",
+    "summary": "Methodology bugs in scientific Python code produce plausible but incorrect results that traditional linters and static analysis tools cannot detect. Several research groups have built ML-specific linters, demonstrating that detection is feasible. Yet these tools share a sustainability problem: dependency on specific pylint or Python versions, limited packaging, and reliance on manual engineering for every new pattern. As AI-generated code increases the volume of scientific software, the need for automated methodology checking (such as detecting data leakage, incorrect cross-validation, and missing random seeds) grows. We present scicode-lint, whose two-tier architecture separates pattern design (frontier models at build time) from execution (small local model at runtime). Patterns are generated, not hand-coded; adapting to new library versions costs tokens, not engineering hours. On Kaggle notebooks with human-labeled ground truth, preprocessing leakage detection reaches 65% precision at 100% recall; on 38 published scientific papers applying AI/ML, precision is 62% (LLM-judged) with substantial variation across pattern categories; on a held-out paper set, precision is 54%. On controlled tests, scicode-lint achieves 97.7% accuracy across 66 patterns.",
+    "link": "http://arxiv.org/abs/2603.17893v1",
+    "source": "arXiv",
+    "topic": "Python",
+    "dateAdded": "2026-04-06T13:28:57.192Z"
   }
 ]
