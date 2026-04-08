@@ -11,6 +11,14 @@ The evolution of LAPS is less of a "product replacement" and more of an organic 
 
 The real story isn't just that the tech changed; it’s that the strategy changed. We are finally treating the "Local Admin" as a high-value target that deserves the same encryption and rotation rigor as a Domain Admin.
 
+## No Windows Policy would be complete without a known error
+
+When implemented with two windows configurations, one to create the policy and the second to create the admin account, you will get an error in the policy even though the admin account exists.
+
+The "Service in Error" ghost is a notorious friction point in modern deployments. It typically occurs when a policy is successfully pushed, but the underlying LAPS engine stalls because it detects a legacy "AdmPwd" MSI or orphaned registry keys from a previous image. You’ll see the policy reflected in the registry, but the operational logs throw a conflict error (often Event ID 10031) as the native OS service refuses to initialize while a legacy hook is present.
+
+I can't live like that so I moved to a detect-and-remediation script. That allows you to actively scrub legacy artifacts and force-trigger Invoke-LapsPolicyProcessing, ensuring the "Domain LAPS" logic actually takes hold rather than just sitting in a configured-but-failed state.
+
 ## The Evolution: From Agent to Native
 
 For years, LAPS was essentially a sidecar. You had to deploy an MSI, manage an agent, and hope your ACLs were tight because passwords sat in Active Directory in cleartext.
@@ -31,7 +39,7 @@ By making these Domain LAPS Members, you are applying the LAPS "rotation engine"
 
 ### 2. Just-In-Time (JIT) Credentialing
 
-When you manage a domain account via LAPS, you are effectively turning it into a "Ghost Account." The password only exists in a usable state when it’s actually needed. Once the task (or the rotation window) is over, LAPS rolls the credential. An attacker who sniffs that password on a server finds it’s already been "burned" by the time they try to use it.
+When you manage a domain account via LAPS, you are effectively turning it into a "Ghost Account." The password only exists in a usable state when it’s actually needed. Once the task (or the rotation window) is over, LAPS rolls the credential. The hope is, an attacker who sniffs that password on a server finds it’s already been "burned" by the time they try to use it.
 
 ### 3. Automatic DSRM Management
 
@@ -46,4 +54,4 @@ We were taught to separate the Local Kingdom from the Domain Kingdom.
 
 By introducing Domain LAPS, Microsoft is admitting that the border between these two is where most breaches happen. By using the "Local" logic of Rotate-on-Use and Unique-per-Endpoint for domain-level service accounts, they’ve created a hybrid security model that is significantly harder to map and exploit.
 
-It’s the most secure version of LAPS yet because it stops pretending that "Domain" accounts are inherently safe just because they live in the directory. It treats every credential—local or domain—as a temporary, encrypted secret that should only exist for as long as it’s strictly necessary.
+It’s a more secure version of LAPS yet because it stops pretending that "Domain" accounts are inherently safe just because they live in the directory. It treats every credential—local or domain—as a temporary, encrypted secret that should only exist for as long as it’s strictly necessary.
