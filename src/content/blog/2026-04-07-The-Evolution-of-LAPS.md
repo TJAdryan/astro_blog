@@ -9,7 +9,7 @@ draft: false
 
 The evolution of LAPS is less of a "product replacement" and more of an organic hardening of the Windows kernel itself. It’s moving from an external utility to a native, living part of the operating system's security posture.
 
-The real story isn't just that the tech changed; it’s that the strategy changed. We are finally treating the "Local Admin" as a high-value target that deserves the same encryption and rotation rigor as a Domain Admin.
+The real story isn't just that the tech changed; it’s that the strategy changed. Treating the "Local Admin" as a high-value target that deserves the same encryption and rotation rigor as a Domain Admin.
 
 ## No Windows Policy would be complete without a known error
 
