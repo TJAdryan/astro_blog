@@ -19,6 +19,63 @@ The "Service in Error" ghost is a notorious friction point in modern deployments
 
 I can't live like that so I moved to a detect-and-remediation script. That allows you to actively scrub legacy artifacts and force-trigger Invoke-LapsPolicyProcessing, ensuring the "Domain LAPS" logic actually takes hold rather than just sitting in a configured-but-failed state.
 
+### Detection Script
+
+This script returns an exit code of 1 if a problem is found, triggering the remediation.
+
+```powershell
+# Check 1: Is the legacy LAPS MSI present?
+$legacyMsi = Get-Package -Name "Local Administrator Password Solution" -ErrorAction SilentlyContinue
+
+# Check 2: Is the native LAPS engine reporting a failure in the registry?
+# A missing 'LastSuccess' timestamp or presence of an error code in the State key indicates a failure.
+$lapsStatePath = "HKLM:\Software\Microsoft\Windows\CurrentVersion\LAPS\State"
+$stateError = $false
+if (Test-Path $lapsStatePath) {
+    $lastSuccess = Get-ItemProperty -Path $lapsStatePath -Name "LastStoredPasswordTimestamp" -ErrorAction SilentlyContinue
+    if (-not $lastSuccess) { $stateError = $true }
+} else {
+    $stateError = $true
+}
+
+# Exit 1 triggers the Remediation script; Exit 0 means compliant.
+if ($legacyMsi -or $stateError) {
+    Write-Output "LAPS conflict or uninitialized state detected."
+    exit 1 
+} else {
+    Write-Output "LAPS is healthy."
+    exit 0
+}
+```
+
+### Remediation Script
+
+This script executes only if the Detection script fails. It scrubs the environment and forces a policy refresh.
+
+```powershell
+# 1. Remove Legacy MSI to resolve hook conflicts
+$legacyLaps = Get-Package -Name "Local Administrator Password Solution" -ErrorAction SilentlyContinue
+if ($legacyLaps) {
+    Uninstall-Package -Name "Local Administrator Password Solution" -Force | Out-Null
+}
+
+# 2. Purge the orphaned state to force a fresh handshake
+$lapsStatePath = "HKLM:\Software\Microsoft\Windows\CurrentVersion\LAPS\State"
+if (Test-Path $lapsStatePath) {
+    Remove-Item -Path $lapsStatePath -Recurse -Force
+}
+
+# 3. Explicitly invoke the native engine
+try {
+    # This cmdlet is built-in to Windows 10/11 and Server 2019+ (post-2023 updates)
+    Invoke-LapsPolicyProcessing -ErrorAction Stop
+    Write-Output "LAPS native engine successfully re-initialized."
+} catch {
+    Write-Error "Remediation failed. Check AD Schema or OS Version. Error: $_"
+    exit 1
+}
+```
+
 ## The Evolution: From Agent to Native
 
 For years, LAPS was essentially a sidecar. You had to deploy an MSI, manage an agent, and hope your ACLs were tight because passwords sat in Active Directory in cleartext.
