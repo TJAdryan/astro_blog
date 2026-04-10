@@ -2,6 +2,8 @@
 title: "The New Frontier of Data Engineering: From Pipelines to Deliberation"
 description: "Understanding how Large Language Models (LLMs) function is heady stuff. The difficulty lies partially in the sheer velocity of the field, and partially because our metaphors haven’t yet caught up to the methodology. But this isn't just a technical shift; it's a new climate of opportunity and challenge for how we manage the flow of intelligence."
 pubDate: "Feb 11 2026"
+category: "Data Engineering"
+tags: ["General"]
 ---
 
 Understanding how Large Language Models (LLMs) function is heady stuff. The difficulty lies partially in the sheer velocity of the field, and partially because our metaphors haven’t yet caught up to the methodology. But this isn't just a technical shift; it's a new climate of opportunity and challenge for how we manage the flow of intelligence.

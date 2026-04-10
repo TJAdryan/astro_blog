@@ -5,6 +5,7 @@ pubDate: 2025-10-21
 tags: ["Data Science", "GPU Computing", "Performance", "CUDA", "Python", "Machine Learning"]
 image: "/images/gpu-vs-cpu-performance.png" # Replace with the actual path to your cover image
 draft: false
+category: "Data Engineering"
 ---
 
 I began to run some of my own tests after seeing some incredible performance figures from NVIDIA's open-source data processing efforts using tools like RAPIDS and cuDF, which you can explore further here: [NVIDIA RAPIDS Open Source for Data Processing](https://rapids.ai/). It occurred to me that while my existing data pipelines complete within the expected time frame, maybe I wasn't getting all performance I could be from utilizing the cpu.  I needed a true baseline to understand the limits of my existing hardware before pursuing specialized solutions. I should point out that the existing benchmark testing in the RAPIDS documentation it great, I recommend checking them out.  But anytime you can test code that is closer to what you are acutally running in production, the more likely you are to have gains that match the excpected results.

@@ -3,8 +3,8 @@ title: "The Distributed State Trap: Why Modern Desktop Search is Failing"
 description: "A field perspective on why desktop search, sync, and shell services collide in modern Windows environments—and practical mitigations for 2026."
 pubDate: "2025-12-17T00:00:00Z"
 tags: ["Windows", "OneDrive", "Search", "Infrastructure", "IT Operations"]
-categories: ["IT Operations", "Workstation Reliability"]
 draft: false
+category: "Data Engineering"
 ---
 
 I know this is a bit complaint heavy, I just wanted to vent a little, indulge me.

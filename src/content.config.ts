@@ -4,14 +4,14 @@ const blog = defineCollection({
   // Type-check frontmatter using a schema
   schema: z.object({
     title: z.string(),
-    description: z.string(),
+    // Enforce real summaries: min 50 chars to avoid placeholders
+    description: z.string().min(50),
     // Transform string to Date object
     pubDate: z.coerce.date(),
     updatedDate: z.coerce.date().optional(),
     heroImage: z.string().optional(),
-  // Add support for tags and categories
-  tags: z.array(z.string()).optional(),
-  categories: z.array(z.string()).optional(),
+  tags: z.array(z.string()).nonempty(), // Enforce at least one tag
+  category: z.enum(['Data Engineering', 'Bioinformatics', 'Security', 'Automation']),
   }),
 });
 

@@ -3,8 +3,8 @@ title: "Google Scholar Gets Better: What to Know About the Latest Updates"
 description: "A look at the recent improvements to Google Scholar and why they matter for researchers and data professionals."
 pubDate: "2025-11-24T00:00:00Z"
 tags: ["research", "tools", "AI", "academic"]
-categories: ["Tools", "Research"]
 draft: false
+category: "Data Engineering"
 ---
 ### We Have Privatized Knowledge and Socialized Misinformation
 

@@ -2,6 +2,8 @@
 title: "From Code to Context: Interpreting 21 Million Rows of CRISPR Data"
 description: "In my previous post, I detailed the 'how' of unpivoting 21 million rows of genomic data using DuckDB. Since then, the project has matured significantly. I’ve implemented Dagster for orchestration and moved the compute to a Spark-on-Delta Lakehouse architecture."
 pubDate: "Feb 16 2026"
+category: "Data Engineering"
+tags: ["General"]
 ---
 
 In [a recent post](/blog/2026-01-05-Transforming-21-Million-Rows-CRISPR), I detailed the "how" of unpivoting 21 million rows of genomic data using DuckDB. Since then, the [project](https://github.com/TJAdryan/crispr-data-engineering/blob/main/README.md) has matured significantly. I’ve implemented Dagster for orchestration and moved the compute to a Spark-on-Delta Lakehouse architecture.

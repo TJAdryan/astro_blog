@@ -3,6 +3,8 @@ title: "Architecting a High-Performance Research Platform for CRISPR Dependency 
 description: "Transforming a 21-million-row matrix into a normalized relational structure for a FAIR data environment."
 pubDate: "Jan 05 2026"
 
+category: "Data Engineering"
+tags: ["General"]
 ---
 
 <img src="/bio_data_etl_pipeline.png" alt="Bio-Data ETL Pipeline" style="width: 75%; height: auto; display: block; margin: 0 auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" />

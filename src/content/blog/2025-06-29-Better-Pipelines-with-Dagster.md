@@ -1,17 +1,17 @@
 ---
 title: 'Building Data Pipelines with Dagster: Practical'
-categories:
 - Data Engineering
 - Python
 - Orchestration
-tags:
+tags: ["General"]
 - Dagster
 - data pipelines
 - Python
 - orchestration
 - data engineering
 pubDate: 2025-06-29
-description: 'A post about Building Data Pipelines with Dagster: Practical.'
+description: "A post about Building Data Pipelines with Dagster: Practical."
+category: "Data Engineering"
 ---
 
 

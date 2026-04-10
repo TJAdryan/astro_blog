@@ -3,6 +3,7 @@ title: "An Imperfect Model for an Imperfect Market"
 description: "A simulation-based exploration of how market forces affect housing utility and affordability."
 pubDate: "2025-09-14"
 tags: ["housing-simulation"]
+category: "Data Engineering"
 ---
 
 *Want to try the simulation? [Try it here](https://nextvaldata.com/blog/interactive-housing-simulation/). Instructions for downloading and running locally are provided below.*

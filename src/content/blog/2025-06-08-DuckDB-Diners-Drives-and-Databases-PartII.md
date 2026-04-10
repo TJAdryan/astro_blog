@@ -1,9 +1,8 @@
 ---
 title: DuckDB - Diners, Drives, and Databases Part II
-categories:
 - Data Engineering
 - Python
-tags:
+tags: ["General"]
 - DuckDB
 - Pandas
 - data analysis
@@ -11,7 +10,8 @@ tags:
 - Python
 - testing
 pubDate: 2025-06-08
-description: A post about DuckDB - Diners, Drives, and Databases Part II.
+description: "A post about DuckDB - Diners, Drives, and Databases Part II."
+category: "Data Engineering"
 ---
 
 

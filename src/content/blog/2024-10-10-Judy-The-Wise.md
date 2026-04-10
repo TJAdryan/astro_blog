@@ -1,7 +1,9 @@
 ---
 title: 2024 10 10 Judy The Wise
-description: A post about 2024 10 10 Judy The Wise.
+description: "A post about 2024 10 10 Judy The Wise. Here is an extended description to meet the minimum character requirement for summaries."
 pubDate: 2024-10-10
+category: "Data Engineering"
+tags: ["General"]
 ---
 No technology in this post—just some thinking and reflecting. If this resonates with you, great; if not, perhaps another post will. This is the story of how a seemingly trivial moment on Judge Judy illuminated the often-unseen dynamics of power that shape our relationships and societies. I didn't know how little I understood people until I watched one episode of Judge Judy
 

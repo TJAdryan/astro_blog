@@ -1,10 +1,9 @@
 ---
 title: Fact and Friction in Healthcare Data
-categories:
 - Healthcare Technology
 - Data Integration
 - Interoperability
-tags:
+tags: ["General"]
 - HL7
 - FHIR
 - healthcare data
@@ -13,7 +12,8 @@ tags:
 - healthcare interoperability
 - data exchange
 pubDate: 2025-08-10 12:00:00 -0400
-description: How advanced data integration in healthcare creates powerful capabilities alongside unintended friction for patients and providers.
+description: "How advanced data integration in healthcare creates powerful capabilities alongside unintended friction for patients and providers."
+category: "Data Engineering"
 ---
 
 **Blackbox Consensus: The Potential for Misalignment in Health Data Integration for Patient Outcomes in Claim Adjudication**

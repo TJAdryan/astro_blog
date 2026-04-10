@@ -3,8 +3,8 @@ title: "Billing Anxiety vs. The Lakehouse: Is a 'Local Databricks' Actually Poss
 description: "A guide to learning Databricks skills without the risk of a surprise cloud bill, utilizing a local-first development strategy."
 pubDate: "2025-10-28T00:00:00Z"
 tags: ["Databricks", "Spark", "Data Engineering", "Local Dev", "Learning"]
-categories: ["Data Engineering", "Career"]
 draft: false
+category: "Data Engineering"
 ---
 
 Occasionally someone will ask me the best way to start learning Databricks and the biggest hurdle they mention is **The Cloud Bill**. There is a common misconception that if you aren't running an AWS or Azure instance, you’re already behind. For many, it's not just about the $40 monthly fee or the pricey annual subscription—it’s the fear of a "cost spiral." We’ve all heard the horror stories. In fact, a recent thread on Reddit discussed a customer going $1 million over budget due to a lack of monitoring. For an individual learner, a 2,000-node job accidentally left running over a weekend isn't just a mistake; it's a financial catastrophe.

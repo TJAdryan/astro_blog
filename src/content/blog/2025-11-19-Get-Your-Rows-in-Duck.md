@@ -3,8 +3,8 @@ title: "A Pragmatic Look at pg_duckdb 1.0"
 description: "Exploring the features and benefits of the pg_duckdb 1.0 extension for PostgreSQL."
 pubDate: "2025-11-19T00:00:00Z"
 tags: ["pg_duckdb", "PostgreSQL", "analytics"]
-categories: ["Data", "Tools"]
 draft: false
+category: "Data Engineering"
 ---
 
 In September, the pg_duckdb extension reached version 1.0. For teams heavily invested in the PostgreSQL ecosystem, this release offers a specific, practical utility: it allows the DuckDB engine to run within the Postgres process.

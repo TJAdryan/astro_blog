@@ -3,8 +3,8 @@ title: "Quantum-Resistant HTTPS: The Roadmap to Merkle Tree Certificates"
 description: "A look into Google's CQRS, Merkle Tree Certificates, and the future of web security in a post-quantum world."
 pubDate: "2026-03-02T09:15:06-05:00"
 tags: ["HTTPS", "Security", "Quantum Computing", "SSL"]
-categories: ["Security", "Tech Strategy"]
 draft: false
+category: "Security"
 ---
 
 [Google’s recent announcement](https://security.googleblog.com/) regarding the Chrome Quantum-resistant Root Store (CQRS) and Merkle Tree Certificates (MTCs) marks a definitive shift in web architecture. As quantum computing capabilities advance, the industry is moving to replace the traditional X.509 certificate chains that have secured the web for decades.

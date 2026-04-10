@@ -3,7 +3,7 @@ title: "Modern LAPS: Transitioning to Native Security"
 description: "Moving from legacy LAPS agents to integrated encryption and Domain LAPS members."
 pubDate: "2026-04-08T09:00:00-04:00"
 tags: ["Security", "Windows", "LAPS", "Active Directory"]
-categories: ["Security", "Tech Strategy"]
+category: "Security"
 draft: false
 ---
 

@@ -1,17 +1,17 @@
 ---
 title: Bring me the Data
-categories:
 - Data Engineering
 - Python
 - API
-tags:
+tags: ["General"]
 - API
 - Pandas
 - data analysis
 - Python
 - testing
 pubDate: 2025-06-14 12:00:00 -0400
-description: A post about Bring me the Data.
+description: "A post about Bring me the Data. Here is an extended description to meet the minimum character requirement for summaries."
+category: "Data Engineering"
 ---
 
 

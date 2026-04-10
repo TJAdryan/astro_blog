@@ -3,8 +3,8 @@ title: "What’s in a Named Instance?"
 description: "A look into the costs, convenience, and lock-in of Microsoft's named instances."
 pubDate: "2026-03-25T18:15:00-04:00"
 tags: ["SQL Server", "Database", "Microsoft", "Architecture"]
-categories: ["Tech Strategy", "Database"]
 draft: false
+category: "Data Engineering"
 ---
 
 I stopped to chat with a colleague I see once in a while in the office—we'll call him Aaron. As we were talking, I glanced at his monitor and saw the familiar blue banner of a Remote Desktop session. He was logged into a server ending in .local with SQL Server Management Studio (SSMS) open.

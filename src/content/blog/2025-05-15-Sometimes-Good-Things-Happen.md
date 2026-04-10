@@ -1,16 +1,16 @@
 ---
 title: 'The Legend of CRISPR: Long Ago and Far Away a Young Prokaryote...'
-categories:
 - Technology
 - Science
-tags:
+tags: ["General"]
 - CRISPR
 - Gene Editing
 - Biotechnology
 - Health
 - python
 pubDate: 2025-05-15 12:00:00 -0400
-description: 'A post about The Legend of CRISPR: Long Ago and Far Away a Young Prokaryote....'
+description: "A post about The Legend of CRISPR: Long Ago and Far Away a Young Prokaryote...."
+category: "Data Engineering"
 ---
 
 

@@ -1,17 +1,17 @@
 ---
 title: 'If You Have To Use Excel, Automate It: Formatting with Python'
-categories:
 - Development
 - Data
-tags:
+tags: ["General"]
 - python
 - excel
 - pandas
 - xlsxwriter
 - automation
 pubDate: 2024-07-18 12:00:00 -0400
-description: 'A post about If You Have To Use Excel, Automate It: Formatting with
+description: "A post about If You Have To Use Excel, Automate It: Formatting with"
   Python.'
+category: "Data Engineering"
 ---
 
 
