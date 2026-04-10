@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-04-10T13:29:45.854Z",
+    "status": "Service Change",
+    "details": [
+      "Southbound: Brighton Beach/Coney Island - Stillwell Av-bound trains are running in 2 sections: between 96 St and Brighton Beach, and between Beverley Rd and Coney Island - Stillwell Av."
+    ]
+  },
+  {
     "date": "2026-04-09T13:31:20.479Z",
     "status": "Service Change",
     "details": [
@@ -198,13 +205,6 @@
   },
   {
     "date": "2026-03-10T13:26:37.495Z",
-    "status": "Service Change",
-    "details": [
-      "Northbound: Some 96 St-bound trains are making local stops between Times Sq - 42 St and 57 St - 7 Av."
-    ]
-  },
-  {
-    "date": "2026-03-09T13:27:41.531Z",
     "status": "Service Change",
     "details": [
       "Northbound: Some 96 St-bound trains are making local stops between Times Sq - 42 St and 57 St - 7 Av."
