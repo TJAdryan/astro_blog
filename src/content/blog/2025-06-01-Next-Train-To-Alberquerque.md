@@ -1,16 +1,8 @@
 ---
-title: 'Next Train to Alberquerque: Track NYC Subway Arrivals in Real-Time with Python'
-- Data Engineering
-- Python
-tags: ["General"]
-- MTA
-- subway
-- GTFS-Realtime
-- Python
-- data
-pubDate: 2025-06-01 12:00:00 -0400
-description: "A post about Next Train to Alberquerque: Track NYC Subway Arrivals in"
-  Real-Time with Python.'
+title: 'Building a Real-Time NYC Subway Tracker with Python and GTFS-Realtime'
+description: 'Learn to interface with the MTA’s GTFS-Realtime feeds using Python to build a custom, low-latency transit arrival dashboard.'
+pubDate: 2025-06-01
+tags: ["Python", "MTA", "GTFS", "Data Engineering", "Real-Time"]
 category: "Data Engineering"
 ---
 
