@@ -350,7 +350,7 @@ import HolidayToggle from "./HolidayToggle.astro";
 </dialog>
 
 <script>
-	const modal = document.getElementById("logo-modal");
+	const modal = document.getElementById("logo-modal") as HTMLDialogElement;
 	const trigger = document.getElementById("logo-trigger");
 
 	if (modal && trigger) {
