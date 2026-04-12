@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-04-12T13:25:21.098Z",
+    "status": "Service Change",
+    "details": [
+      "<Q> trains are running between 96 St and Prospect Park."
+    ]
+  },
+  {
     "date": "2026-04-11T13:23:30.811Z",
     "status": "Service Change",
     "details": [
@@ -201,13 +208,5 @@
     "date": "2026-03-12T13:26:31.968Z",
     "status": "Good Service",
     "details": []
-  },
-  {
-    "date": "2026-03-11T13:26:48.017Z",
-    "status": "Delays",
-    "details": [
-      "Northbound: 96 St-bound trains are taking 13 mins longer to travel between 7 Av and Times Sq - 42 St, and having longer wait times at 34 St - Herald Sq (up to 12 mins, normally every 10 mins).",
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Sheepshead Bay and Brighton Beach (up to 15 mins, normally every 11 mins)."
-    ]
   }
 ]
