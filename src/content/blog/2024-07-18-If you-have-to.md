@@ -9,8 +9,7 @@ tags: ["General"]
 - xlsxwriter
 - automation
 pubDate: 2024-07-18 12:00:00 -0400
-description: "A post about If You Have To Use Excel, Automate It: Formatting with"
-  Python.'
+description: "A post about If You Have To Use Excel, Automate It: Formatting with\" Python."
 category: "Data Engineering"
 ---
 

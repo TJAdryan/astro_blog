@@ -1,6 +1,6 @@
 ---
 title: 'Building a Real-Time NYC Subway Tracker with Python and GTFS-Realtime'
-description: 'Learn to interface with the MTA’s GTFS-Realtime feeds using Python to build a custom, low-latency transit arrival dashboard.'
+description: "Learn to interface with the MTA’s GTFS-Realtime feeds using Python to build a custom, low-latency transit arrival dashboard."
 pubDate: 2025-06-01
 tags: ["Python", "MTA", "GTFS", "Data Engineering", "Real-Time"]
 category: "Data Engineering"
