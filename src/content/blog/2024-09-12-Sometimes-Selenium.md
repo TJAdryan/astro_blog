@@ -1,13 +1,6 @@
 ---
 title: 'Sometimes Selenium Works Best: Web Automation in Python'
-- Development
-- Automation
 tags: ["General"]
-- python
-- selenium
-- web-scraping
-- automation
-- chromedriver
 pubDate: 2024-09-12 12:00:00 -0400
 description: "A post about Sometimes Selenium Works Best: Web Automation in Python."
 category: "Data Engineering"

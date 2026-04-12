@@ -1,14 +1,6 @@
 ---
 title: Automated SQL Backups to Google Drive with Python
-- Development
-- Automation
-- Databases
 tags: ["General"]
-- python
-- google-drive
-- backup
-- sql
-- automation
 pubDate: 2025-05-26 12:00:00 -0400
 description: "A post about Automated SQL Backups to Google Drive with Python."
 category: "Data Engineering"

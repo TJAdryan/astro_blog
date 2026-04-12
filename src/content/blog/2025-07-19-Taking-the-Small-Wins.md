@@ -1,23 +1,7 @@
 ---
 title: 'Taking the Small Wins: How Incremental Improvements Cut My API Call Times
   from 70 to 45 Minutes'
-- Python
-- Performance
-- APIs
-- DataEngineering
-- orjson
-- Optimization
 tags: ["General"]
-- Python
-- API
-- performance
-- optimization
-- json
-- orjson
-- benchmark
-- data pipeline
-- incremental improvement
-- long-term code health
 pubDate: 2025-07-19 12:00:00 -0400
 description: "A post about Taking the Small Wins: How Incremental Improvements Cut\" My API Call Times from 70 to 45 Minutes."
 category: "Data Engineering"

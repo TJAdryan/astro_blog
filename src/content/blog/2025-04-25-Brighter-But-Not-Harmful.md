@@ -1,14 +1,6 @@
 ---
 title: 'Brighter But Not Harmful: The ''uv'' Python Installer'
-- Development
-- Python
 tags: ["General"]
-- python
-- uv
-- dependency-management
-- pip
-- package-manager
-- rust
 pubDate: 2025-04-25 12:00:00 -0400
 description: "A post about Brighter But Not Harmful: The ''uv'' Python Installer."
 category: "Data Engineering"

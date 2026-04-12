@@ -1,12 +1,6 @@
 ---
 title: 'Lemon Labor Lost: A Quest for the Perfect Cookie'
-- Food
-- Personal
 tags: ["General"]
-- lemon cookies
-- food review
-- maximizer
-- satisficer
 pubDate: 2025-05-29 12:00:00 -0400
 description: "A post about Lemon Labor Lost: A Quest for the Perfect Cookie."
 category: "Data Engineering"
