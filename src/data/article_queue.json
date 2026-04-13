@@ -187,5 +187,23 @@
     "source": "arXiv",
     "topic": "Python",
     "dateAdded": "2026-04-06T13:28:57.192Z"
+  },
+  {
+    "id": "http://arxiv.org/abs/2602.01952v1",
+    "title": "SQLAgent: Learning to Explore Before Generating as a Data Engineer",
+    "summary": "Large Language Models have recently shown impressive capabilities in reasoning and code generation, making them promising tools for natural language interfaces to relational databases. However, existing approaches often fail to generalize in complex, real-world settings due to the highly database-specific nature of SQL reasoning, which requires deep familiarity with unique schemas, ambiguous semantics, and intricate join paths. To address this challenge, we introduce a novel two-stage LLM-based framework that decouples knowledge acquisition from query generation. In the Exploration Stage, the system autonomously constructs a database-specific knowledge base by navigating the schema with a Monte Carlo Tree Search-inspired strategy, generating triplets of schema fragments, executable queries, and natural language descriptions as usage examples. In the Deployment Stage, a dual-agent system leverages the collected knowledge as in-context examples to iteratively retrieve relevant information and generate accurate SQL queries in response to user questions. This design enables the agent to proactively familiarize itself with unseen databases and handle complex, multi-step reasoning. Extensive experiments on large-scale benchmarks demonstrate that our approach significantly improves accuracy over strong baselines, highlighting its effectiveness and generalizability.",
+    "link": "http://arxiv.org/abs/2602.01952v1",
+    "source": "arXiv",
+    "topic": "Data Engineering",
+    "dateAdded": "2026-04-13T13:30:30.971Z"
+  },
+  {
+    "id": "http://arxiv.org/abs/2603.29999v1",
+    "title": "Phyelds: A Pythonic Framework for Aggregate Computing",
+    "summary": "Aggregate programming is a field-based coordination paradigm with over a decade of exploration and successful applications across domains including sensor networks, robotics, and IoT, with implementations in various programming languages, such as Protelis, ScaFi (Scala), and FCPP (C++). A recent research direction integrates machine learning with aggregate computing, aiming to support large-scale distributed learning and provide new abstractions for implementing learning algorithms. However, existing implementations do not target data science practitioners, who predominantly work in Python--the de facto language for data science and machine learning, with a rich and mature ecosystem. Python also offers advantages for other use cases, such as education and robotics (e.g., via ROS). To address this gap, we present Phyelds, a Python library for aggregate programming. Phyelds offers a fully featured yet lightweight implementation of the field calculus model of computation, featuring a Pythonic API and an architecture designed for seamless integration with Python's machine learning ecosystem. We describe the design and implementation of Phyelds and illustrate its versatility across domains, from well-known aggregate computing patterns to federated learning coordination and integration with a widely used multi-agent reinforcement learning simulator.",
+    "link": "http://arxiv.org/abs/2603.29999v1",
+    "source": "arXiv",
+    "topic": "Python",
+    "dateAdded": "2026-04-13T13:30:31.641Z"
   }
 ]
