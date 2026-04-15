@@ -122,4 +122,4 @@ try {
     exit 1
 }
 ```
-Activating this policy for your VMs or your Intune devices is a good idea in my opinion.  It doesn't resolve every security issue, but it is a step in the right direction. Like most things it depends on how it well it is implemented and that is going to affect how it is adopted.
+Deploying modern LAPS across your Intune devices and ARM templates won't magically solve every security vulnerability, but it immediately closes the most exploitable credential gap in your infrastructure. Success ultimately hinges on strict implementation—when done right, local credentials finally become ephemeral, encrypted, and safe.
