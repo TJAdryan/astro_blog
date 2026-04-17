@@ -4,8 +4,10 @@ import type { CollectionEntry } from "astro:content";
 import FormattedDate from "../components/FormattedDate.astro";
 import BaseLayout from "./BaseLayout.astro";
 
-type Props = Omit<CollectionEntry<"blog">["data"], "pubDate"> & {
+type Props = Omit<CollectionEntry<"blog">["data"], "pubDate" | "tags" | "category"> & {
 	pubDate?: Date;
+	tags?: string[];
+	category?: string;
 	ogImage?: string;
 	favicon?: string;
 	noindex?: boolean;
