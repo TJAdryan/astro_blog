@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-04-17T13:31:00.552Z",
+    "status": "Service Change",
+    "details": [
+      "Southbound: Brighton Beach/Coney Island - Stillwell Av-bound trains are running in 3 sections: between 96 St and Brighton Beach, between Avenue H and Coney Island - Stillwell Av via <R>, and between City Hall and Brighton Beach."
+    ]
+  },
+  {
     "date": "2026-04-16T13:31:24.741Z",
     "status": "Delays",
     "details": [
@@ -204,13 +211,6 @@
     "status": "Service Change",
     "details": [
       "Northbound: Some 96 St-bound trains are skipping Avenue M, Avenue J, Avenue H, Cortelyou Rd, Beverley Rd, and Parkside Av."
-    ]
-  },
-  {
-    "date": "2026-03-15T13:19:12.506Z",
-    "status": "Service Change",
-    "details": [
-      "<Q> trains are making local stops between 57 St - 7 Av and Canal St."
     ]
   }
 ]
