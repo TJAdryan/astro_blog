@@ -7,119 +7,79 @@ category: "Security"
 draft: false
 ---
 
-The transition to Windows LAPS is a pivot from managing "sidecar" agents to utilizing a native OS feature. It replaces cleartext AD attributes with group-managed encryption, treating local credentials with the same rigor as the domain itself.
+Windows LAPS has evolved into a native OS feature that eliminates the need for legacy agents by integrating directly with Microsoft Entra ID. By rotating unique local passwords over HTTPS, it secures endpoints and infrastructure without requiring VPNs or Active Directory line-of-sight. This shift enables a unified security posture, whether managed through Intune for workstations or Azure Policy for cloud-native VMs. Ultimately, LAPS serves as a critical isolation layer that ensuring local administrator credentials are non-global, non-static, and gated behind MFA-backed RBAC.
 
-## The Domain LAPS Paradox
+## Implementation: Azure Virtual Machines
 
-Managing "Domain" accounts with a "Local" tool sounds like an architectural hall of mirrors, but it addresses the **Service Account Gap**. Automated accounts for backups or SQL often have static passwords that go unchanged for years to avoid breaking pipelines. By designating these as Domain LAPS members, the rotation engine is applied to the directory level. The password becomes ephemeral—neutralizing the lateral movement an attacker relies on.
+For Azure VMs, LAPS is best implemented via Azure Policy to ensure a consistent security baseline across the environment. This method avoids manual agent maintenance and utilizes the native Guest Configuration extension.
 
-## The Entra ID Pivot
+Once the policy is assigned, verify the state of the local engine using the native PowerShell module.
 
-In Entra ID, the dependency on Domain Controller line-of-sight is removed. Rotation occurs over HTTPS, meaning endpoints stay compliant on any internet connection without a VPN. This replaces brittle AD ACLs with Entra RBAC, allowing password retrieval to be gated behind MFA and Conditional Access.
+```powershell
+# Verify the LAPS native engine is running and processing policies
+Get-LapsDiagnostics -Scope Operational
 
----
+# Force a background processing cycle for LAPS
+Invoke-LapsPolicyProcessing
 
-## Implementing the Solution
-
-Depending on how your fleet is managed, the path to enforcement differs. Whether you are using **Microsoft Intune** for modern endpoint management or **ARM Templates** for unmanaged cloud infrastructure, the goal is the same: eliminate the race condition and ensure the LAPS engine takes ownership of the account.
-
-### 1. The Managed Path: Microsoft Intune
-For workstations and managed servers, the LAPS policy is delivered via the Configuration Service Provider (CSP). This is the cleanest delivery method, but it is the most susceptible to the "Service in Error" ghost if the policy arrives before the user account it is meant to manage exists.
-
-### 2. The Unmanaged Path: ARM Template Integration
-For VMs that sit outside of Intune management—such as backend servers or specialized cloud workloads—you must bake the policy into the deployment itself. We use the `Microsoft.Compute/virtualMachines/extensions` resource to trigger the Windows LAPS configuration immediately after provisioning.
-
-#### ARM Template Snippet: LAPS Policy Extension
-```json
-{
-  "type": "Microsoft.Compute/virtualMachines/extensions",
-  "apiVersion": "2023-03-01",
-  "name": "[concat(parameters('vmName'), '/Microsoft.GuestConfiguration')]",
-  "location": "[parameters('location')]",
-  "dependsOn": [
-    "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
-  ],
-  "properties": {
-    "publisher": "Microsoft.GuestConfiguration",
-    "type": "ConfigurationforWindows",
-    "typeHandlerVersion": "1.0",
-    "autoUpgradeMinorVersion": true,
-    "settings": {
-      "configuration": {
-        "name": "LAPS",
-        "parameters": [
-          {
-            "name": "Laps.BackupDirectory",
-            "value": "1" 
-          },
-          {
-            "name": "Laps.AdministratorAccountName",
-            "value": "LapsAdmin"
-          },
-          {
-            "name": "Laps.PasswordComplexity",
-            "value": "4"
-          },
-          {
-            "name": "Laps.PasswordAgeDays",
-            "value": "30"
-          }
-        ]
-      }
-    }
-  }
-}
+# Confirm the managed account and the backup destination
+Get-LapsConfig
 ```
 
-#### Configuration Breakdown
-| Parameter | Value | Description |
-| :--- | :--- | :--- |
-| **Laps.BackupDirectory** | `1` | Backs up the password to Entra ID. |
-| **Laps.AdministratorAccountName** | `String` | The specific local account to manage. |
-| **Laps.PasswordComplexity** | `4` | Requires Large + small letters + numbers + symbols. |
-| **Laps.PasswordAgeDays** | `30` | Forces a rotation every 30 days. |
+## Implementation: Microsoft Intune
 
----
+In Intune, LAPS is deployed via Account Protection policies. This leverages the LAPS Configuration Service Provider (CSP) to manage the password lifecycle on endpoints without VPN requirements.
 
-## The "Service in Error" Ghost
+### Policy Configuration
 
-A known friction point on new VMs is a policy that lands in the registry while the service reports an error (**Event ID 10031**). This usually stems from a race condition where the policy arrives and attempts to manage an account still being provisioned by the template or CSP. The result is a stalemate: the account exists, but the LAPS engine stalls, refusing to rotate or back up the password because it "missed" the creation event.
+- Navigate to Endpoint Security > Account Protection.
+- Create a new Local admin password solution (Windows LAPS) policy.
+- Set Backup Directory to Microsoft Entra ID.
+- Configure Post-Authentication Actions to Reset the password and logoff the managed account to ensure credentials are non-persistent after use.
 
-Relying on a detect-and-remediation approach—delivered via Intune Proactive Remediation or a post-deployment script—ensures the environment is scrubbed and the handshake is forced.
+## Detection and Remediation
+
+To maintain the integrity of the LAPS state, use the following Proactive Remediation scripts to detect and fix drift.
 
 ### Detection Script
-```powershell
-$legacyMsi = Get-Package -Name "Local Administrator Password Solution" -ErrorAction SilentlyContinue
-$lapsStatePath = "HKLM:\Software\Microsoft\Windows\CurrentVersion\LAPS\State"
-$stateError = $false
 
-if (Test-Path $lapsStatePath) {
-    $lastSuccess = Get-ItemProperty -Path $lapsStatePath -Name "LastStoredPasswordTimestamp" -ErrorAction SilentlyContinue
-    if (-not $lastSuccess) { $stateError = $true }
-} else {
-    $stateError = $true
+```powershell
+# Check for active LAPS configuration
+$lapsConfig = Get-LapsConfig -ErrorAction SilentlyContinue
+
+if ($null -eq $lapsConfig) {
+    Write-Error "LAPS Configuration missing."
+    exit 1
 }
 
-if ($legacyMsi -or $stateError) { exit 1 } else { exit 0 }
+# Verify successful backup to Entra ID (Event ID 10004)
+$status = Get-LapsDiagnostics | Where-Object { $_.EventID -eq 10004 }
+
+if ($null -eq $status) {
+    Write-Host "Policy exists but backup has not occurred."
+    exit 1
+}
+
+Write-Host "LAPS is healthy."
+exit 0
 ```
 
 ### Remediation Script
+
 ```powershell
-$legacyLaps = Get-Package -Name "Local Administrator Password Solution" -ErrorAction SilentlyContinue
-if ($legacyLaps) {
-    Uninstall-Package -Name "Local Administrator Password Solution" -Force | Out-Null
-}
-
-$lapsStatePath = "HKLM:\Software\Microsoft\Windows\CurrentVersion\LAPS\State"
-if (Test-Path $lapsStatePath) {
-    Remove-Item -Path $lapsStatePath -Recurse -Force
-}
-
 try {
-    Invoke-LapsPolicyProcessing -ErrorAction Stop
+    # Ensure the target local account exists
+    $AdminAccount = "LocalAdmin"
+    if (-not (Get-LocalUser -Name $AdminAccount -ErrorAction SilentlyContinue)) {
+        New-LocalUser -Name $AdminAccount -NoPassword -Description "LAPS Managed Account"
+        Add-LocalGroupMember -Group "Administrators" -Member $AdminAccount
+    }
+
+    # Force the LAPS engine to process the policy
+    Invoke-LapsPolicyProcessing
+    Write-Host "LAPS remediation successful."
 } catch {
-    Write-Error "Remediation failed: $_"
+    Write-Error "Remediation failed: $($_.Exception.Message)"
     exit 1
 }
 ```
-Deploying modern LAPS across your Intune devices and ARM templates won't magically solve every security vulnerability, but it immediately closes the most exploitable credential gap in your infrastructure. Success ultimately hinges on strict implementation—when done right, local credentials finally become ephemeral, encrypted, and safe.
