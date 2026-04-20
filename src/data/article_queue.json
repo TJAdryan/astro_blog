@@ -205,5 +205,32 @@
     "source": "arXiv",
     "topic": "Python",
     "dateAdded": "2026-04-13T13:30:31.641Z"
+  },
+  {
+    "id": "http://arxiv.org/abs/2507.21056v1",
+    "title": "AI-Driven Generation of Data Contracts in Modern Data Engineering Systems",
+    "summary": "Data contracts formalize agreements between data producers and consumers regarding schema, semantics, and quality expectations. As data pipelines grow in complexity, manual authoring and maintenance of contracts becomes error-prone and labor-intensive. We present an AI-driven framework for automatic data contract generation using large language models (LLMs). Our system leverages parameter-efficient fine-tuning methods, including LoRA and PEFT, to adapt LLMs to structured data domains. The models take sample data or schema descriptions and output validated contract definitions in formats such as JSON Schema and Avro. We integrate this framework into modern data platforms (e.g., Databricks, Snowflake) to automate contract enforcement at scale. Experimental results on synthetic and real-world datasets demonstrate that the fine-tuned LLMs achieve high accuracy in generating valid contracts and reduce manual workload by over 70%. We also discuss key challenges such as hallucination, version control, and the need for continuous learning. This work demonstrates that generative AI can enable scalable, agile data governance by bridging the gap between intent and implementation in enterprise data management.",
+    "link": "http://arxiv.org/abs/2507.21056v1",
+    "source": "arXiv",
+    "topic": "Data Engineering",
+    "dateAdded": "2026-04-20T13:32:10.073Z"
+  },
+  {
+    "id": "37794017",
+    "title": "A thermostable type I-B CRISPR-Cas system for orthogonal and multiplexed genetic engineering.",
+    "summary": "No abstract available via summary API. Please click link to read.",
+    "link": "https://pubmed.ncbi.nlm.nih.gov/37794017/",
+    "source": "PubMed",
+    "topic": "CRISPR",
+    "dateAdded": "2026-04-20T13:32:10.514Z"
+  },
+  {
+    "id": "http://arxiv.org/abs/2604.07656v3",
+    "title": "MVOS_HSI: A Python Library for Preprocessing Agricultural Crop Hyperspectral Data",
+    "summary": "Hyperspectral imaging (HSI) allows researchers to study plant traits non-destructively. By capturing hundreds of narrow spectral bands per pixel, it reveals details about plant biochemistry and stress that standard cameras miss. However, processing this data is often challenging. Many labs still rely on loosely organized collections of lab-specific MATLAB or Python scripts, which makes workflows difficult to share and results difficult to reproduce. MVOS_HSI is an open-source Python library that provides an end-to-end workflow for processing leaf-level HSI data. The software handles everything from calibrating raw ENVI files to detecting and clipping individual leaves based on multiple vegetation indices (NDVI, CIRedEdge and GCI). It also includes tools for data augmentation to create training-time variations for machine learning and utilities to visualize spectral profiles. MVOS_HSI can be used as an importable Python library or run directly from the command line. The code and documentation are available on GitHub. By consolidating these common tasks into a single package, MVOS_HSI helps researchers produce consistent and reproducible results in plant phenotyping",
+    "link": "http://arxiv.org/abs/2604.07656v3",
+    "source": "arXiv",
+    "topic": "Python",
+    "dateAdded": "2026-04-20T13:32:10.859Z"
   }
 ]
