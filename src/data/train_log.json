@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-04-21T13:32:31.708Z",
+    "status": "Service Change",
+    "details": [
+      "Northbound: Some 96 St-bound trains are skipping Avenue M, Avenue J, Avenue H, Cortelyou Rd, Beverley Rd, and Parkside Av."
+    ]
+  },
+  {
     "date": "2026-04-19T13:26:28.297Z",
     "status": "Delays",
     "details": [
@@ -204,13 +211,6 @@
     "status": "Service Change",
     "details": [
       "Northbound: Some 96 St-bound trains are skipping Avenue M, Avenue J, Avenue H, Cortelyou Rd, Beverley Rd, and Parkside Av."
-    ]
-  },
-  {
-    "date": "2026-03-19T13:28:40.642Z",
-    "status": "Service Change",
-    "details": [
-      "Southbound: Brighton Beach/Coney Island - Stillwell Av-bound trains are running in 2 sections: between 96 St and Brighton Beach, and between Prospect Park and Coney Island - Stillwell Av."
     ]
   }
 ]
