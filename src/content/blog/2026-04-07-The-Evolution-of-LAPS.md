@@ -7,13 +7,15 @@ category: "Security"
 draft: false
 ---
 
-Windows LAPS has evolved into a native OS feature that eliminates the need for legacy agents by integrating directly with Microsoft Entra ID. By rotating unique local passwords over HTTPS, it secures endpoints and infrastructure without requiring VPNs or Active Directory line-of-sight. This shift enables a unified security posture, whether managed through Intune for workstations or Azure Policy for cloud-native VMs. Ultimately, LAPS serves as a critical isolation layer that ensuring local administrator credentials are non-global, non-static, and gated behind MFA-backed RBAC.
+Managing local administrator passwords used to mean relying on legacy agents, on-premises Active Directory, and line-of-sight networks. Today, Windows LAPS has evolved into a native OS feature that simplifies this entire process. By integrating directly with Microsoft Entra ID and rotating passwords over HTTPS, we can secure our endpoints and infrastructure without needing a VPN.
+
+This modern approach provides a unified security posture. Whether you are managing user workstations through Intune or configuring cloud-native VMs with Azure Policy, you can maintain a consistent standard. Ultimately, LAPS serves as a critical isolation layer, guaranteeing that local administrator credentials remain non-global, non-static, and safely locked behind MFA-backed RBAC. Let's walk through how to set this up effectively.
 
 ## Implementation: Azure Virtual Machines
 
-For Azure VMs, LAPS is best implemented via Azure Policy to ensure a consistent security baseline across the environment. This method avoids manual agent maintenance and utilizes the native Guest Configuration extension.
+For Azure VMs, implementing LAPS via Azure Policy helps ensure a consistent security baseline across your entire cloud environment. This approach is highly efficient because it utilizes the native Guest Configuration extension, completely avoiding the need for manual agent installation and maintenance.
 
-Once the policy is assigned, verify the state of the local engine using the native PowerShell module.
+Once you have the policy assigned, you can verify the state of the local engine using the native PowerShell module. Here is the snippet to check your configuration:
 
 ```powershell
 # Verify the LAPS native engine is running and processing policies
@@ -28,20 +30,24 @@ Get-LapsConfig
 
 ## Implementation: Microsoft Intune
 
-In Intune, LAPS is deployed via Account Protection policies. This leverages the LAPS Configuration Service Provider (CSP) to manage the password lifecycle on endpoints without VPN requirements.
+For workstations managed in Intune, deploying LAPS via Account Protection policies is your best route. This leverages the built-in LAPS Configuration Service Provider (CSP) to manage the password lifecycle on endpoints natively.
 
 ### Policy Configuration
 
-- Navigate to Endpoint Security > Account Protection.
-- Create a new Local admin password solution (Windows LAPS) policy.
-- Set Backup Directory to Microsoft Entra ID.
-- Configure Post-Authentication Actions to Reset the password and logoff the managed account to ensure credentials are non-persistent after use.
+Here is a quick checklist for setting this up:
+
+- Navigate to **Endpoint Security** > **Account Protection**.
+- Create a new **Local admin password solution (Windows LAPS)** policy.
+- Set the **Backup Directory** to **Microsoft Entra ID**.
+- Configure **Post-Authentication Actions** to *Reset the password and logoff the managed account*. This ensures those credentials aren't left behind after they are used.
 
 ## Detection and Remediation
 
-To maintain the integrity of the LAPS state, use the following Proactive Remediation scripts to detect and fix drift.
+Configuration drift happens. To ensure your LAPS state remains intact, you can use these Proactive Remediation scripts in Intune to automatically detect and fix any endpoints that fall out of compliance.
 
 ### Detection Script
+
+Run this script to check if LAPS is active and successfully backing up passwords:
 
 ```powershell
 # Check for active LAPS configuration
@@ -65,6 +71,8 @@ exit 0
 ```
 
 ### Remediation Script
+
+If the detection script flags an issue, you can use this counterpart script to step in and fix it automatically:
 
 ```powershell
 try {

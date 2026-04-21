@@ -7,9 +7,9 @@ const description = "Real-time status updates for the Q train.";
 ---
 
 <Layout title={title} description={description}>
-  <main className="container mx-auto px-4 py-12">
-    <h1 className="text-4xl font-bold text-center mb-8">{title}</h1>
-    <div className="flex justify-center">
+  <main class="container mx-auto px-4 py-12">
+    <h1 class="text-4xl font-bold text-center mb-8">{title}</h1>
+    <div class="flex justify-center">
       <QTrainTracker client:load />
     </div>
   </main>
