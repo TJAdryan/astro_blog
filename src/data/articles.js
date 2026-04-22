@@ -5,7 +5,7 @@ export const featuredArticles = [
     authors: "Nitert, M. G.",
     year: "2022",
     journal: "Leiden University Student Repository",
-    url: "https://studenttheses.universiteitleiden.nl/access/item%3A2661526/view",
+    url: "https://studenttheses.universiteitleiden.nl/handle/1887/3271867",
     description: "This study examines how observers perceive and react to unequal resource allocation through the lens of a rigged Monopoly game, providing insights into attitudes towards economic inequality and resource distribution."
   },
   {
