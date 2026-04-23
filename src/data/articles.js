@@ -115,5 +115,14 @@ export const featuredArticles = [
     url: "https://www.tensorflow.org/guide/gpu",
     description: "Official TensorFlow guide for GPU usage: device placement, multi-GPU strategies, performance tips, and recommended settings for training and inference on GPUs.",
     tags: ["tensorflow", "gpu", "device-placement", "multi-gpu"]
+  },
+  {
+    title: "Apache Iceberg vs Delta Lake vs Apache Hudi 2026: Complete Comparison",
+    authors: "Reintech",
+    year: "2026",
+    journal: "Reintech Blog",
+    url: "https://reintech.io/blog/apache-iceberg-vs-delta-lake-vs-apache-hudi-2026-table-format-comparison",
+    description: "Compare Apache Iceberg, Delta Lake, and Apache Hudi for modern data lakehouses. Learn architecture differences, performance characteristics, and how to choose the right table format for your data engineering needs in 2026.",
+    tags: ["data-lakehouse", "apache-iceberg", "delta-lake", "apache-hudi", "table-formats"]
   }
 ];
