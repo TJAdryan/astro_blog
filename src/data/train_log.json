@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-04-24T13:31:34.980Z",
+    "status": "Service Change",
+    "details": [
+      "Northbound: Some 96 St-bound trains are skipping Avenue M, Avenue J, Avenue H, Cortelyou Rd, Beverley Rd, and Parkside Av.",
+      "Northbound: Some 96 St-bound trains are making local stops between Times Sq - 42 St and 57 St - 7 Av."
+    ]
+  },
+  {
     "date": "2026-04-23T13:32:19.053Z",
     "status": "Service Change",
     "details": [
@@ -205,13 +213,6 @@
     "status": "Delays",
     "details": [
       "Northbound: 96 St-bound trains are having longer wait times at Atlantic Av - Barclays Ctr (up to 12 mins, normally every 10 mins)."
-    ]
-  },
-  {
-    "date": "2026-03-22T13:17:32.852Z",
-    "status": "Service Change",
-    "details": [
-      "<Q> trains are running between Prospect Park and Coney Island - Stillwell Av."
     ]
   }
 ]
