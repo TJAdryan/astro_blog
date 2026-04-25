@@ -9,7 +9,7 @@ draft: false
 
 Managing an Entra ID tenant requires removing the technical debt of permanent administrative permissions. A robust implementation relies on three pillars: Just-In-Time (JIT) elevation for daily operations, a hardened bypass for emergency recovery, and an automated tripwire for audit integrity.
 
-It is far too easy to rely on a standing Global Admin account for routine troubleshooting—or conversely, to accidentally lock out your entire team* with a single misconfigured Conditional Access policy. Striking the right balance is essential.  Everyone has a horror story of getting locked out of a machine or a tenant.  Good policy should be designed to both avoid this and help restore access in the event of an emergency.
+It is far too easy to rely on a standing Global Admin account for routine troubleshooting—or conversely, to accidentally lock out your entire team<sup>*</sup> with a single misconfigured Conditional Access policy. Striking the right balance is essential.  Everyone has a horror story of getting locked out of a machine or a tenant.  Good policy should be designed to both avoid this and help restore access in the event of an emergency.
 
 
 ---
@@ -53,4 +53,4 @@ Because the Breakglass account is a managed vulnerability, its use must be treat
 
 By architecting the bypass as a documented, monitored exception rather than an accidental oversight, you ensure the tenant remains recoverable during a disaster without sacrificing daily security posture.
 
-* **Hey solo admin:** I see you, thrust into a position you never expected with responsibility you never asked for. This is important for you, too. You might feel that being a "team of one" justifies staying signed in with full privileges for the sake of speed, but that is a habit born from years of Windows admin conditioning. In the cloud, that convenience is a trap. Just-In-Time access and emergency bypasses aren't just for enterprise teams—they are the only things standing between you and a catastrophic, self-inflicted lockout.
+<sup>*</sup> **Hey solo admin:** I see you, thrust into a position you never expected with responsibility you never asked for. This is important for you, too. You might feel that being a "team of one" justifies staying signed in with full privileges for the sake of speed, but that is a habit born from years of Windows admin conditioning. In the cloud, that convenience is a trap. Just-In-Time access and emergency bypasses aren't just for enterprise teams—they are the only things standing between you and a catastrophic, self-inflicted lockout.
