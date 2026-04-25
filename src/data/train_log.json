@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-04-25T13:28:12.969Z",
+    "status": "Service Change",
+    "details": [
+      "Northbound: Some 96 St-bound trains are making local stops between Times Sq - 42 St and 57 St - 7 Av.",
+      "Southbound: Coney Island - Stillwell Av-bound trains are running via <R> between Canal St and DeKalb Av."
+    ]
+  },
+  {
     "date": "2026-04-24T13:31:34.980Z",
     "status": "Service Change",
     "details": [
@@ -206,13 +214,6 @@
     "details": [
       "Northbound: Some 96 St-bound trains are skipping Avenue M, Avenue J, Avenue H, Cortelyou Rd, Beverley Rd, and Parkside Av.",
       "Southbound: Some Coney Island - Stillwell Av-bound trains are making local stops between 57 St - 7 Av and Times Sq - 42 St."
-    ]
-  },
-  {
-    "date": "2026-03-23T13:29:41.979Z",
-    "status": "Delays",
-    "details": [
-      "Northbound: 96 St-bound trains are having longer wait times at Atlantic Av - Barclays Ctr (up to 12 mins, normally every 10 mins)."
     ]
   }
 ]
