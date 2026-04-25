@@ -9,7 +9,7 @@ draft: false
 
 Managing an Entra ID tenant requires removing the technical debt of permanent administrative permissions. A robust implementation relies on three pillars: Just-In-Time (JIT) elevation for daily operations, a hardened bypass for emergency recovery, and an automated tripwire for audit integrity.
 
-I still remember a Friday deployment where a well-intentioned engineer pushed a Conditional Access policy meant to enforce stricter device compliance. Instead, a slight misconfiguration immediately locked out every administrator in the tenant. Panic ensued as support tickets piled up and automated workflows began failing. If we hadn't set up an emergency Breakglass account excluded from those policies, we would have been facing a multi-day recovery relying on Microsoft support. It was a stark reminder that while locking down access is crucial, always having a key to the back door is equally vital.
+It is far too easy to rely on a standing Global Admin account for routine troubleshooting—or conversely, to accidentally lock out your entire team with a single misconfigured Conditional Access policy. Striking the right balance is essential.
 
 ---
 
