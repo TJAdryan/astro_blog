@@ -11,7 +11,7 @@ Managing an Entra ID tenant requires removing the technical debt of permanent ad
 
 ---
 
-### 1. Global Admin: Removing Standing Access
+### Global Admin: Removing Standing Access
 Permanent Global Admin assignments are a primary security liability. The architecture must transition these to **Eligible** status within Privileged Identity Management (PIM).
 
 * **JIT Activation:** Users do not hold permissions by default. They must explicitly request elevation.
@@ -21,7 +21,7 @@ Permanent Global Admin assignments are a primary security liability. The archite
     * **Justification:** Every request must include a ticket reference or reason to maintain a clean audit trail.
 * **Approval Gates:** For Tier 0 roles, implement a "Second-Person" approval workflow. No single individual should be able to elevate to Global Admin without a peer or lead signing off in the portal.
 
-### 2. The Emergency Bypass: Breakglass Architecture
+### The Emergency Bypass: Breakglass Architecture
 A bypass is a deliberate exclusion in security policies designed to prevent a total lockout. If a Conditional Access (CA) policy is misconfigured or a cloud MFA service fails, standard JIT-dependent admins will be locked out. The Breakglass account is the only way back in.
 
 * **Cloud-Only Isolation:** Use a `*.onmicrosoft.com` account. It must have no dependencies on on-premises Active Directory or synchronization tools.
@@ -29,7 +29,7 @@ A bypass is a deliberate exclusion in security policies designed to prevent a to
 * **Physical Hardware (FIDO2):** Since the account bypasses standard MFA, secure it with a physical FIDO2 security key. Store the key and the randomized 256-character password in separate physical safes.
 * **The Circular Dependency Fix:** The bypass ensures that if the services required to validate a "standard" login fail, you still have a path to disable or fix the blocking policy.
 
-### 3. Audit Integrity: Setting the Tripwire
+### Audit Integrity: Setting the Tripwire
 Because the Breakglass account is a managed vulnerability, its use must be treated as a Priority 1 incident.
 
 * **Continuous Monitoring:** Stream all Entra ID sign-in and audit logs to a **Log Analytics Workspace**.
