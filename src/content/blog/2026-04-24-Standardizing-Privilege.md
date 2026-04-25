@@ -23,6 +23,7 @@ Permanent Global Admin assignments are a primary security liability. The archite
     * **MFA Requirement:** Activation must trigger a fresh MFA challenge, regardless of the current session state.
     * **Justification:** Every request must include a ticket reference or reason to maintain a clean audit trail.
 * **Approval Gates:** For Tier 0 roles, implement a "Second-Person" approval workflow. No single individual should be able to elevate to Global Admin without a peer or lead signing off in the portal.
+* **Hey solo admin:** I see you, thrust into a position you never expected with responsibility you never asked for. This is important for you, too. You might feel that being a "team of one" justifies staying signed in with full privileges for the sake of speed, but that is a habit born from years of Windows admin conditioning. In the cloud, that convenience is a trap. Just-In-Time access and emergency bypasses aren't just for enterprise teams—they are the only things standing between you and a catastrophic, self-inflicted lockout.
 
 ### The Emergency Bypass: Breakglass Architecture
 A bypass is a deliberate exclusion in security policies designed to prevent a total lockout. If a Conditional Access (CA) policy is misconfigured or a cloud MFA service fails, standard JIT-dependent admins will be locked out. The Breakglass account is the only way back in.
