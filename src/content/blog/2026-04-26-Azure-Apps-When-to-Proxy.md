@@ -3,7 +3,7 @@ title: "Azure Apps: When to Proxy and When to Steer"
 description: "A comparison between Azure Front Door and Azure Traffic Manager for global traffic routing."
 pubDate: "2026-04-26T00:00:00-04:00"
 tags: ["Azure", "Architecture", "Networking", "Front Door", "Traffic Manager"]
-category: "Security"
+category: "Cloud"
 draft: false
 ---
 

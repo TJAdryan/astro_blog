@@ -11,7 +11,7 @@ const blog = defineCollection({
     updatedDate: z.coerce.date().optional(),
     heroImage: z.string().optional(),
   tags: z.array(z.string()).nonempty(), // Enforce at least one tag
-  category: z.enum(['Data Engineering', 'Bioinformatics', 'Security', 'Automation']),
+  category: z.enum(['Data Engineering', 'Bioinformatics', 'Security', 'Automation', 'Cloud']),
   }),
 });
 
