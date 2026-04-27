@@ -232,5 +232,14 @@
     "source": "arXiv",
     "topic": "Python",
     "dateAdded": "2026-04-20T13:32:10.859Z"
+  },
+  {
+    "id": "http://arxiv.org/abs/2603.18693v1",
+    "title": "Cross-Ecosystem Vulnerability Analysis for Python Applications",
+    "summary": "Python applications depend on native libraries that may be vendored within package distributions or installed on the host system. When vulnerabilities are discovered in these libraries, determining which Python packages are affected requires cross-ecosystem analysis spanning Python dependency graphs and OS package versions. Current vulnerability scanners produce false negatives by missing vendored vulnerabilities and false positives by ignoring security patches backported by OS distributions.\n  We present a provenance-aware vulnerability analysis approach that resolves vendored libraries to specific OS package versions or upstream releases. Our approach queries vendored libraries against a database of historical OS package artifacts using content-based hashing, and applies library-specific dynamic analyses to extract version information from binaries built from upstream source. We then construct cross-ecosystem call graphs by stitching together Python and binary call graphs across dependency boundaries, enabling reachability analysis of vulnerable functions. Evaluating on 100,000 Python packages and 10 known CVEs associated with third-party native dependencies, we identify 39 directly vulnerable packages (47M+ monthly downloads) and 312 indirectly vulnerable client packages affected through dependency chains. Our analysis achieves up to 97% false positive reduction compared to upstream version matching.",
+    "link": "http://arxiv.org/abs/2603.18693v1",
+    "source": "arXiv",
+    "topic": "Python",
+    "dateAdded": "2026-04-27T13:32:14.758Z"
   }
 ]
