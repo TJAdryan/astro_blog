@@ -9,7 +9,7 @@ draft: false
 
 When designing multi-region applications, the architectural choice for global traffic usually narrows down to two options. While the services overlap in intent, the mechanical distinctions are significant depending on the workload requirements. I usually run these types of architectural questions by my friend Aaron, but since we haven't crossed paths in a while, I had to dive into the documentation myself. When I eventually get a chance to grill him on this, I suspect a few revisions might follow, but the core divide is clear: it is a choice between a proxy and a navigator.
 
-If you haven't thought about the OSI model in a while, you might want to brush up on how these layers dictate traffic flow. A solid refresher can be found at the Cloudflare Learning Center.
+If you haven't thought about the OSI model in a while, you might want to brush up on how these layers dictate traffic flow. A solid refresher can be found at the [Cloudflare Learning Center](https://www.cloudflare.com/learning/ddos/glossary/open-systems-interconnection-model-osi/).
 
 ### The Proxy: Azure Front Door
 Azure Front Door operates as a Layer 7 (HTTP/HTTPS) reverse proxy. It does not just point a user to a destination; it sits in the middle of the conversation.
