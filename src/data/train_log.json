@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-04-28T13:34:21.140Z",
+    "status": "Delays",
+    "details": [
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times at Avenue U (up to 13 mins, normally every 11 mins)."
+    ]
+  },
+  {
     "date": "2026-04-26T13:28:32.150Z",
     "status": "Service Change",
     "details": [
@@ -204,15 +211,6 @@
     "status": "Service Change",
     "details": [
       "Northbound: Some 96 St-bound trains are skipping Avenue M, Avenue J, Avenue H, Cortelyou Rd, Beverley Rd, and Parkside Av."
-    ]
-  },
-  {
-    "date": "2026-03-25T13:29:27.933Z",
-    "status": "Service Change",
-    "details": [
-      "Some <Q> trains are skipping Avenue H, Avenue J, and Avenue M.",
-      "Northbound: Some 96 St-bound trains are skipping Cortelyou Rd, Beverley Rd, and Parkside Av.",
-      "Northbound: Some 96 St-bound trains are making local stops between Times Sq - 42 St and 57 St - 7 Av."
     ]
   }
 ]
