@@ -1,5 +1,10 @@
 [
   {
+    "date": "2026-04-30T13:33:23.404Z",
+    "status": "Good Service",
+    "details": []
+  },
+  {
     "date": "2026-04-29T13:33:36.112Z",
     "status": "Delays",
     "details": [
@@ -205,13 +210,6 @@
     "status": "Service Change",
     "details": [
       "<Q> trains are running between Kings Hwy and Coney Island - Stillwell Av."
-    ]
-  },
-  {
-    "date": "2026-03-27T13:28:19.575Z",
-    "status": "Service Change",
-    "details": [
-      "Northbound: Some 96 St-bound trains are skipping Avenue M, Avenue J, Avenue H, Cortelyou Rd, Beverley Rd, and Parkside Av."
     ]
   }
 ]
