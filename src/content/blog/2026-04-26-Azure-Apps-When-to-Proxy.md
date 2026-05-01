@@ -47,4 +47,6 @@ This makes it the necessary choice for specific scenarios:
 ### Selecting the Path
 The decision is essentially governed by the protocol. For modern web applications where security, caching, and SSL performance are priorities, Azure Front Door is the standard entry point. However, for any workload that moves outside the HTTP stack or requires the leanest possible connection path, Azure Traffic Manager provides the necessary steering.
 
+---
+
 In enterprise environments, these are often used in tandem: Front Door secures the web-facing application, while Traffic Manager manages the global health and failover of the underlying infrastructure services.
