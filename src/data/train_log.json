@@ -1,5 +1,10 @@
 [
   {
+    "date": "2026-05-01T13:31:07.068Z",
+    "status": "Good Service",
+    "details": []
+  },
+  {
     "date": "2026-04-30T13:33:23.404Z",
     "status": "Good Service",
     "details": []
@@ -200,13 +205,6 @@
   },
   {
     "date": "2026-03-29T13:21:59.961Z",
-    "status": "Service Change",
-    "details": [
-      "<Q> trains are running between Kings Hwy and Coney Island - Stillwell Av."
-    ]
-  },
-  {
-    "date": "2026-03-28T13:21:18.130Z",
     "status": "Service Change",
     "details": [
       "<Q> trains are running between Kings Hwy and Coney Island - Stillwell Av."
