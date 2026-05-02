@@ -22,6 +22,7 @@ Because it understands the application layer, it can perform tasks a simple rout
 * **Path-Based Routing:** It can look at the URL and decide that `/api` should go to one cluster while `/static` content is served from a cache.
 * **SSL Offloading:** Your backend servers are spared the compute overhead of managing certificates because the encryption is handled at the edge.
 
+### Isn't this just App Gateway?
 You may be thinking, "Doesn't an App Gateway handle this?" It can, but only within the walls of a single region (or across Availability Sets). While it’s a solid Layer 7 load balancer, it is not a multi-region solution out of the box. Using it to mimic the global reach of Front Door requires you to deploy and manage instances in every region, then manually keep every listener, cert, and WAF rule in sync. For a large-scale app, the deployment becomes a huge pain and the maintenance will probably end up giving you nightmares—likely right before it causes your first major outage.
 
 ### The Navigator: Azure Traffic Manager
