@@ -9,6 +9,8 @@ draft: false
 
 When designing multi-region applications, the architectural choice for global traffic usually narrows down to two options. While the services overlap in intent, the mechanical distinctions are significant depending on the workload requirements. I usually run these types of architectural questions by my friend Aaron, but since we haven't crossed paths in a while, I had to dive into the [documentation](https://learn.microsoft.com/en-us/azure/architecture/guide/technology-choices/load-balancing-overview) myself. When I eventually get a chance to grill him on this, I suspect a few revisions might follow, but the core divide is clear: it is a choice between a proxy and a navigator.
 
+A multi-region load balancing strategy only becomes a mechanical necessity once an application surpasses 50,000 concurrent users and requires sub-100ms latency for a globally distributed audience. A practical example is a Global Financial Transaction Gateway that processes high-frequency payment authorizations across North America, Europe, and Asia.
+
 If you haven't thought about the OSI model in a while, you might want to brush up on how these layers dictate traffic flow. A solid refresher can be found at the [Cloudflare Learning Center](https://www.cloudflare.com/learning/ddos/glossary/open-systems-interconnection-model-osi/).
 
 ### The Proxy: Azure Front Door
