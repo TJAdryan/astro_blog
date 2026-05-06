@@ -3,37 +3,27 @@ import Layout from "../layouts/BlogPost.astro";
 ---
 
 <Layout
-	title=""
+	title="About Me"
 	description="Senior Systems and Data Engineer focused on architecting reliable, high-performance data transformations and cloud infrastructure."
 >
-	<div
-		style="background: linear-gradient(135deg, rgba(255, 107, 53, 0.05) 0%, rgba(255, 107, 53, 0.02) 100%); border-radius: 16px; border: 1px solid rgba(255, 107, 53, 0.1); overflow: hidden; margin-bottom: 2rem;"
-	>
-		<div style="padding: 2.5rem;">
-			<div
-				style="display: flex; gap: 2rem; align-items: flex-start; flex-wrap: wrap;"
-			>
-				<div style="flex: 0 0 150px;">
+	<div class="profile-header">
+		<div class="profile-header-inner">
+			<div class="profile-layout">
+				<div class="profile-img-container">
 					<img
 						src="/img/about/profileme.jpg"
 						alt="Dominick Ryan"
-						style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; box-shadow: 0 8px 16px rgba(0,0,0,0.1); border: 3px solid white;"
+						class="profile-img"
 					/>
 				</div>
-				<div style="flex: 1; min-width: 250px;">
-					<h1
-						style="color: var(--accent); margin-top: 0; font-size: 2.5rem; line-height: 1.1; margin-bottom: 0.2rem;"
-					>
+				<div class="profile-text">
+					<h1 class="profile-title">
 						Dominick Ryan
 					</h1>
-					<h2
-						style="color: rgba(0,0,0,0.7); font-size: 1.5rem; margin-top: 0; margin-bottom: 0.5rem; font-weight: 500;"
-					>
+					<h2 class="profile-subtitle">
 						Senior Systems & Data Architect
 					</h2>
-					<p
-						style="font-size: 1.15rem; line-height: 1.6; color: rgba(0,0,0,0.8);"
-					>
+					<p class="profile-bio">
 						I bridge the gap between complex legacy infrastructure and modern data lakehouse architectures. My work focuses on the engineering requirements of <strong>data gravity</strong>—ensuring that underlying systems (compute, storage, and networking) are architected specifically to support high-throughput, reliable data transformations.
 					</p>
 				</div>
@@ -41,11 +31,11 @@ import Layout from "../layouts/BlogPost.astro";
 		</div>
 	</div>
 
-	<div style="background: rgba(255, 107, 53, 0.05); padding: 1rem 1.5rem; border-radius: 8px; margin-bottom: 2rem; border-left: 4px solid var(--accent, #ff6b35);">
-		<a href="/about-the-stack" style="color: var(--accent, #ff6b35); font-weight: 700; text-decoration: none; transition: opacity 0.2s;">
+	<div class="stack-banner">
+		<a href="/about-the-stack" class="stack-link">
 			About the Stack:
 		</a> 
-		<span style="color: rgba(0,0,0,0.8);">find out more about technologies that make this site possible.</span>
+		<span class="stack-text">find out more about technologies that make this site possible.</span>
 	</div>
 
 	<div class="content-section">
@@ -53,11 +43,20 @@ import Layout from "../layouts/BlogPost.astro";
 		<p>
 			I specialize in the design and management of high-concurrency environments, ensuring that infrastructure is a performance enabler rather than a bottleneck.
 		</p>
-		<ul style="line-height: 1.6;">
-			<li style="margin-bottom: 0.8rem;"><strong>Hybrid Cloud Orchestration:</strong> Expert-level administration of <strong>Azure</strong> and on-prem <strong>VMware/Hyper-V</strong> environments. This includes architecting <strong>Azure Virtual Desktop (AVD)</strong> for secure data access and managing complex identity lifecycles via <strong>Entra ID</strong>.</li>
-			<li style="margin-bottom: 0.8rem;"><strong>Performance Engineering:</strong> I specialize in removing compute bottlenecks by offloading CPU-bound workloads to <strong>GPU-accelerated processing (CUDA/RAPIDS)</strong>, achieving measured <strong>70x speedups</strong> in data processing latency.</li>
-			<li style="margin-bottom: 0.8rem;"><strong>Observability & Telemetry:</strong> I engineered a high-availability monitoring platform integrating real-time telemetry from <strong>2,000+ distributed devices</strong>, providing sub-second support desk metrics and 24/7 infrastructure health visibility.</li>
-		</ul>
+		<div class="grid-list">
+			<div class="project-card">
+				<h4>Hybrid Cloud Orchestration</h4>
+				<p>Expert-level administration of <strong>Azure</strong> and on-prem <strong>VMware/Hyper-V</strong> environments. This includes architecting <strong>Azure Virtual Desktop (AVD)</strong> for secure data access and managing complex identity lifecycles via <strong>Entra ID</strong>.</p>
+			</div>
+			<div class="project-card">
+				<h4>Performance Engineering</h4>
+				<p>I specialize in removing compute bottlenecks by offloading CPU-bound workloads to <strong>GPU-accelerated processing (CUDA/RAPIDS)</strong>, achieving measured <strong>70x speedups</strong> in data processing latency.</p>
+			</div>
+			<div class="project-card">
+				<h4>Observability & Telemetry</h4>
+				<p>I engineered a high-availability monitoring platform integrating real-time telemetry from <strong>2,000+ distributed devices</strong>, providing sub-second support desk metrics and 24/7 infrastructure health visibility.</p>
+			</div>
+		</div>
 	</div>
 
 	<div class="content-section">
@@ -65,11 +64,20 @@ import Layout from "../layouts/BlogPost.astro";
 		<p>
 			I treat data as a distributed systems product, focusing on reliability and strictly typed lineages.
 		</p>
-		<ul style="line-height: 1.6;">
-			<li style="margin-bottom: 0.8rem;"><strong>Lakehouse Implementation:</strong> I architect end-to-end data lifecycles using the <strong>Medallion Architecture</strong> (Bronze/Silver/Gold) on <strong>Microsoft Fabric</strong>, <strong>Databricks</strong>, and <strong>Snowflake</strong>.</li>
-			<li style="margin-bottom: 0.8rem;"><strong>Modern Orchestration:</strong> I utilize <strong>Dagster</strong> for software-defined orchestration, implementing event-driven pipelines that prioritize data quality and idempotent processing.</li>
-			<li style="margin-bottom: 0.8rem;"><strong>Systems Reliability:</strong> My background in systems allows me to implement <strong>Event-Driven Microservices</strong> as the backbone for real-time data services, ensuring pipelines are as resilient as the infrastructure they run on.</li>
-		</ul>
+		<div class="grid-list">
+			<div class="project-card">
+				<h4>Lakehouse Implementation</h4>
+				<p>I architect end-to-end data lifecycles using the <strong>Medallion Architecture</strong> (Bronze/Silver/Gold) on <strong>Microsoft Fabric</strong>, <strong>Databricks</strong>, and <strong>Snowflake</strong>.</p>
+			</div>
+			<div class="project-card">
+				<h4>Modern Orchestration</h4>
+				<p>I utilize <strong>Dagster</strong> for software-defined orchestration, implementing event-driven pipelines that prioritize data quality and idempotent processing.</p>
+			</div>
+			<div class="project-card">
+				<h4>Systems Reliability</h4>
+				<p>My background in systems allows me to implement <strong>Event-Driven Microservices</strong> as the backbone for real-time data services, ensuring pipelines are as resilient as the infrastructure they run on.</p>
+			</div>
+		</div>
 	</div>
 
 	<div class="content-section">
@@ -77,10 +85,16 @@ import Layout from "../layouts/BlogPost.astro";
 		<p>
 			My career is defined by solving bottlenecks in regulated environments where technical reliability directly impacts financial outcomes.
 		</p>
-		<ul style="line-height: 1.6;">
-			<li style="margin-bottom: 0.8rem;"><strong>Healthcare Revenue Optimization:</strong> I have a proven track record of re-engineering legacy EDI transaction pipelines for <strong>LHCSAs</strong> to <strong>resolve stalled revenue cycles</strong> and migrating fragmented on-prem SQL environments to modern <strong>FHIR-compliant cloud architectures</strong>.</li>
-			<li style="margin-bottom: 0.8rem;"><strong>Technical Documentation:</strong> This site, <strong>NextValData.com</strong>, serves as a repository for my deep dives into <strong>CRISPR data pipelines</strong> (processing 21M+ rows via DuckDB) and emerging patterns in the Python ecosystem, including <code>uv</code>, <code>Polars</code>, and <code>Ruff</code>.</li>
-		</ul>
+		<div class="grid-list">
+			<div class="project-card">
+				<h4>Healthcare Revenue Optimization</h4>
+				<p>I have a proven track record of re-engineering legacy EDI transaction pipelines for <strong>LHCSAs</strong> to <strong>resolve stalled revenue cycles</strong> and migrating fragmented on-prem SQL environments to modern <strong>FHIR-compliant cloud architectures</strong>.</p>
+			</div>
+			<div class="project-card">
+				<h4>Technical Documentation</h4>
+				<p>This site, <strong>NextValData.com</strong>, serves as a repository for my deep dives into <strong>CRISPR data pipelines</strong> (processing 21M+ rows via DuckDB) and emerging patterns in the Python ecosystem, including <code>uv</code>, <code>Polars</code>, and <code>Ruff</code>.</p>
+			</div>
+		</div>
 	</div>
 
 	<div class="content-section">
@@ -97,16 +111,81 @@ import Layout from "../layouts/BlogPost.astro";
 		<h3>Literary Interests</h3>
 		<p>
 			I am a sophisticate when it comes to literature, enjoying great
-			works by the likes of <strong>Stoppard</strong> and <strong
-				>Vonnegut</strong
-			> and the venerable <strong>Matt Dinniman</strong> who writes <strong
-				>The Dungeon Crawler Carl</strong
-			>
-			series.
+			works by the likes of <strong>Stoppard</strong> and <strong>Vonnegut</strong> and the venerable <strong>Matt Dinniman</strong> who writes <strong>The Dungeon Crawler Carl</strong> series.
 		</p>
 	</div>
 
 	<style>
+		.profile-header {
+			background: linear-gradient(135deg, rgba(255, 107, 53, 0.05) 0%, rgba(255, 107, 53, 0.02) 100%);
+			border-radius: 16px;
+			border: 1px solid rgba(255, 107, 53, 0.1);
+			overflow: hidden;
+			margin-bottom: 2rem;
+		}
+		.profile-header-inner {
+			padding: 2.5rem;
+		}
+		.profile-layout {
+			display: flex;
+			gap: 2rem;
+			align-items: flex-start;
+			flex-wrap: wrap;
+		}
+		.profile-img-container {
+			flex: 0 0 150px;
+		}
+		.profile-img {
+			width: 150px;
+			height: 150px;
+			border-radius: 50%;
+			object-fit: cover;
+			box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+			border: 3px solid white;
+		}
+		.profile-text {
+			flex: 1;
+			min-width: 250px;
+		}
+		.profile-title {
+			color: var(--accent);
+			margin-top: 0;
+			font-size: 2.5rem;
+			line-height: 1.1;
+			margin-bottom: 0.2rem;
+		}
+		.profile-subtitle {
+			color: rgba(0,0,0,0.7);
+			font-size: 1.5rem;
+			margin-top: 0;
+			margin-bottom: 0.5rem;
+			font-weight: 500;
+		}
+		.profile-bio {
+			font-size: 1.15rem;
+			line-height: 1.6;
+			color: rgba(0,0,0,0.8);
+		}
+		.stack-banner {
+			background: rgba(255, 107, 53, 0.05);
+			padding: 1rem 1.5rem;
+			border-radius: 8px;
+			margin-bottom: 2rem;
+			border-left: 4px solid var(--accent, #ff6b35);
+		}
+		.stack-link {
+			color: var(--accent, #ff6b35);
+			font-weight: 700;
+			text-decoration: none;
+			transition: opacity 0.2s;
+		}
+		.stack-link:hover {
+			opacity: 0.8;
+			text-decoration: underline;
+		}
+		.stack-text {
+			color: rgba(0,0,0,0.8);
+		}
 		.content-section {
 			margin-bottom: 3rem;
 		}
