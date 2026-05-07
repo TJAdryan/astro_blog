@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-05-07T13:34:25.417Z",
+    "status": "Service Change",
+    "details": [
+      "Northbound: Some 96 St-bound trains are skipping Avenue M, Avenue J, Avenue H, Cortelyou Rd, Beverley Rd, and Parkside Av."
+    ]
+  },
+  {
     "date": "2026-05-06T13:34:42.684Z",
     "status": "Service Change",
     "details": [
@@ -204,10 +211,5 @@
     "details": [
       "<Q> trains are making local stops between 57 St - 7 Av and Canal St."
     ]
-  },
-  {
-    "date": "2026-04-03T13:27:20.714Z",
-    "status": "Good Service",
-    "details": []
   }
 ]
