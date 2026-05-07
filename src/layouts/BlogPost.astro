@@ -11,6 +11,7 @@ type Props = Omit<CollectionEntry<"blog">["data"], "pubDate" | "tags" | "categor
 	ogImage?: string;
 	favicon?: string;
 	noindex?: boolean;
+	hideTitle?: boolean;
 };
 
 const {
@@ -22,6 +23,7 @@ const {
 	ogImage,
 	favicon,
 	noindex,
+	hideTitle,
 } = Astro.props;
 ---
 
@@ -93,21 +95,23 @@ const {
 			}
 		</div>
 		<div class="prose">
-			<div class="title">
-				<div class="date">
-					{pubDate && <FormattedDate date={pubDate} />}
-					{
-						updatedDate && (
-							<div class="last-updated-on">
-								Last updated on{" "}
-								<FormattedDate date={updatedDate} />
-							</div>
-						)
-					}
+			{!hideTitle && (
+				<div class="title">
+					<div class="date">
+						{pubDate && <FormattedDate date={pubDate} />}
+						{
+							updatedDate && (
+								<div class="last-updated-on">
+									Last updated on{" "}
+									<FormattedDate date={updatedDate} />
+								</div>
+							)
+						}
+					</div>
+					<h1>{title}</h1>
+					<hr />
 				</div>
-				<h1>{title}</h1>
-				<hr />
-			</div>
+			)}
 			<slot />
 		</div>
 	</article>
