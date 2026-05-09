@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-05-09T13:30:58.813Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times between Lexington Av/63 St and 72 St (up to 14 mins, normally every 12 mins)."
+    ]
+  },
+  {
     "date": "2026-05-08T13:32:44.221Z",
     "status": "Service Change",
     "details": [
@@ -203,13 +210,6 @@
     "status": "Delays",
     "details": [
       "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times at 96 St (up to 13 mins, normally every 11 mins)."
-    ]
-  },
-  {
-    "date": "2026-04-05T13:22:55.541Z",
-    "status": "Service Change",
-    "details": [
-      "<Q> trains are making local stops between 57 St - 7 Av and Canal St."
     ]
   }
 ]
