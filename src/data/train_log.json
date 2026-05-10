@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-05-10T13:30:56.635Z",
+    "status": "Service Change",
+    "details": [
+      "Northbound: 96 St-bound trains are running in 2 sections: between Coney Island - Stillwell Av and 96 St, and between Whitehall St - South Ferry and 96 St via <W>."
+    ]
+  },
+  {
     "date": "2026-05-09T13:30:58.813Z",
     "status": "Delays",
     "details": [
@@ -204,12 +211,5 @@
     "date": "2026-04-08T13:30:29.494Z",
     "status": "Good Service",
     "details": []
-  },
-  {
-    "date": "2026-04-07T13:30:37.541Z",
-    "status": "Delays",
-    "details": [
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times at 96 St (up to 13 mins, normally every 11 mins)."
-    ]
   }
 ]
