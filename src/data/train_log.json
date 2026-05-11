@@ -1,5 +1,10 @@
 [
   {
+    "date": "2026-05-11T13:54:21.104Z",
+    "status": "Good Service",
+    "details": []
+  },
+  {
     "date": "2026-05-10T13:30:56.635Z",
     "status": "Service Change",
     "details": [
@@ -206,10 +211,5 @@
       "Southbound: Brighton Beach/Coney Island - Stillwell Av-bound trains are running in 3 sections: between 96 St and Brighton Beach, between Avenue H and Coney Island - Stillwell Av, and between Atlantic Av - Barclays Ctr (4 Av Line) and Coney Island - Stillwell Av.",
       "Southbound: Some Coney Island - Stillwell Av-bound trains are running via <N> between Atlantic Av - Barclays Ctr (4 Av Line) and Coney Island - Stillwell Av."
     ]
-  },
-  {
-    "date": "2026-04-08T13:30:29.494Z",
-    "status": "Good Service",
-    "details": []
   }
 ]
