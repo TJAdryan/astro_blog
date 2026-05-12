@@ -1,5 +1,5 @@
 ---
-title: "Standardizing Privilege: JIT Access and the Emergency Bypass"
+title: "Best Practices of JIT Access"
 description: "Managing an Entra ID tenant requires removing the technical debt of permanent administrative permissions."
 pubDate: "2026-04-24T00:00:00-04:00"
 tags: ["Security", "Entra ID", "JIT", "PIM"]
