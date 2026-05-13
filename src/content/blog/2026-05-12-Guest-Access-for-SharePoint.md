@@ -7,9 +7,21 @@ category: "Security"
 draft: false
 ---
 
-In Microsoft Entra ID, guest invitation policies are often set to "Self-Service" to facilitate quick collaboration. However, when everyone has the power to invite guests but no one is assigned responsibility for their lifecycle, the directory quickly becomes a graveyard of stale, over-privileged accounts.
+### The "Guest Who Wouldn't Leave" Problem
 
-Below is the technical approach used to audit a subset of 20 guest accounts and why the results point to a systemic failure in identity governance.
+In the world of Microsoft Entra, invitations are like glitter: easy to hand out, but they stay in your carpet forever. By default, a guest invitation is a permanent residency permit. Unless you’ve configured a specific lifecycle workflow, that account will outlive your current hardware cycle.
+
+However, SharePoint has a "Site Guest Expiration" feature that acts as a local timer. This creates a confusing—and dangerous—split reality:
+
+- **The SharePoint Side:** A guest’s access to a specific site collection expires after 60 days. They get kicked out, and the Site Owner feels like they’ve done their job.
+- **The Entra Side:** The guest account remains perfectly active in your directory. They still exist. They can still be added to other groups. They are a "ghost in the machine" waiting for someone to accidentally grant them permissions elsewhere.
+
+### The Conditional Access Gap
+
+This is where Conditional Access (CA) usually falls on its face. Most admins set up a single CA policy that says "Guests need MFA," and they call it a day.
+
+But if you aren't delving into the details, you’re missing the Session Controls. You can have the best audit script in the world, but if your CA policy isn't enforcing Sign-in Frequency or Terms of Use specifically for external identities, you’re just documenting your own demise. You need policies that don't just ask "Who are you?" but "Why are you still here, and are you using a managed device to look at these files?"
+
 
 ### The Code: Mapping Guest Access
 
