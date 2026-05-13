@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-05-13T13:42:10.596Z",
+    "status": "Delays",
+    "details": [
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Times Sq - 42 St and Brighton Beach (up to 26 mins, normally every 11 mins)."
+    ]
+  },
+  {
     "date": "2026-05-12T13:35:17.081Z",
     "status": "Delays",
     "details": [
@@ -202,13 +209,6 @@
     "status": "Service Change",
     "details": [
       "<Q> trains are running between 96 St and Prospect Park."
-    ]
-  },
-  {
-    "date": "2026-04-10T13:29:45.854Z",
-    "status": "Service Change",
-    "details": [
-      "Southbound: Brighton Beach/Coney Island - Stillwell Av-bound trains are running in 2 sections: between 96 St and Brighton Beach, and between Beverley Rd and Coney Island - Stillwell Av."
     ]
   }
 ]
