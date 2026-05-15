@@ -87,13 +87,9 @@ When an audit reveals guests with "Owner" permissions who haven't logged in for 
 - **Automated Remediation:** Accounts can be automatically disabled or access removed if a reviewer does not respond.
 - **Audit Compliance:** They provide a documented trail of who approved the access and why.
 
-### Why Access Reviews are Inadequate
+### Why Access Reviews are Inadequate as a Standalone Solution
 
-Despite their benefits, Access Reviews often fail in practice for several reasons:
-
-- **Reviewer Fatigue:** When managers receive lists of hundreds of guests, they often "rubber-stamp" the entire list to save time, effectively approving access they haven't actually reviewed.
-- **The Direct Grant Blindspot:** Most automated reviews focus on Group Membership. If a guest was granted direct permission to a specific SharePoint folder or site, a standard review might miss that access entirely.
-- **Lack of Activity Context:** Reviewers are often presented with a name and an email but no data on when the user last signed in. Without seeing "Last Access" side-by-side with the "Approve" button, the reviewer is making a blind guess.
+Despite their benefits, Access Reviews often fail in practice for several reasons. One of the main issues is reviewer fatigue; when managers receive lists of hundreds of guests, they often "rubber-stamp" the entire list to save time, effectively approving access they haven't actually reviewed. Furthermore, there is a direct grant blindspot because most automated reviews focus on Group Membership. If a guest was granted direct permission to a specific SharePoint folder or site, a standard review might miss that access entirely. Finally, there is a lack of activity context. Reviewers are often presented with a name and an email but no data on when the user last signed in. Without seeing "Last Access" side-by-side with the "Approve" button, the reviewer is making a blind guess.
 
 ### Conclusion
 
