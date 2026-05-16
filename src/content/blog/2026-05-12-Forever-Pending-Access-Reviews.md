@@ -81,7 +81,7 @@ def audit_guest_subset(guest_csv_path):
 
 ### Why Access Reviews are the Answer
 
-When an audit reveals guests with "Owner" permissions who haven't logged in for months, the standard recommendation is to implement Access Reviews. They address the responsibility gap by:
+When an audit reveals guests with "Owner" permissions who haven't logged in for months, the standard recommendation is to implement [Access Reviews](https://learn.microsoft.com/en-us/entra/id-governance/access-reviews-overview). They address the responsibility gap by:
 
 - **Delegating Ownership:** They force the person who invited the guest (or the resource owner) to justify the continued access.
 - **Automated Remediation:** Accounts can be automatically disabled or access removed if a reviewer does not respond.
