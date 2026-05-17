@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-05-17T13:31:16.763Z",
+    "status": "Service Change",
+    "details": [
+      "<Q> trains are running between 96 St and Coney Island - Stillwell Av."
+    ]
+  },
+  {
     "date": "2026-05-16T13:31:11.567Z",
     "status": "Service Change",
     "details": [
@@ -198,15 +205,6 @@
     "status": "Delays",
     "details": [
       "Northbound: 96 St-bound trains are having longer wait times between 14 St - Union Sq and Times Sq - 42 St (up to 13 mins, normally every 10 mins)."
-    ]
-  },
-  {
-    "date": "2026-04-15T13:31:11.631Z",
-    "status": "Service Change",
-    "details": [
-      "Northbound: 96 St-bound trains are running in 2 sections: between Coney Island - Stillwell Av and 96 St, and between New Utrecht Av and 96 St via <N>.",
-      "Northbound: Some 96 St-bound trains are making local stops between Times Sq - 42 St and 57 St - 7 Av.",
-      "Southbound: Brighton Beach/Coney Island - Stillwell Av-bound trains are running in 3 sections: between 96 St and Brighton Beach, between DeKalb Av and Coney Island - Stillwell Av, and between 36 St and Coney Island - Stillwell Av via <N>."
     ]
   }
 ]
