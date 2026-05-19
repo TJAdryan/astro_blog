@@ -1,5 +1,5 @@
 ---
-title: "Forever Pending: Why Access Reviews Are Important but Probably Not Going to Work"
+title: "Guest Access Customizable but Guest Access Invitations for Always and Ever by Default"
 description: "Why guest access reviews are inadequate and how to audit SharePoint for direct guest access."
 pubDate: "2026-05-12T00:00:00-04:00"
 tags: ["Security", "SharePoint", "Entra ID", "Governance"]
