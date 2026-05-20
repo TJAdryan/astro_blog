@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-05-20T13:52:24.127Z",
+    "status": "Service Change",
+    "details": [
+      "<Q> trains are running between 96 St and Coney Island - Stillwell Av."
+    ]
+  },
+  {
     "date": "2026-05-19T13:59:57.058Z",
     "status": "Service Change",
     "details": [
@@ -198,13 +205,6 @@
     "status": "Delays",
     "details": [
       "Northbound: 96 St-bound trains are having longer wait times between Lexington Av/63 St and 96 St (up to 15 mins, normally every 11 mins)."
-    ]
-  },
-  {
-    "date": "2026-04-18T13:26:49.161Z",
-    "status": "Delays",
-    "details": [
-      "Northbound: 96 St-bound trains are having longer wait times between Canal St and 14 St - Union Sq (up to 23 mins, normally every 12 mins)."
     ]
   }
 ]
