@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-05-21T14:06:05.871Z",
+    "status": "Service Change",
+    "details": [
+      "<Q> trains are running between 96 St and Brighton Beach."
+    ]
+  },
+  {
     "date": "2026-05-20T13:52:24.127Z",
     "status": "Service Change",
     "details": [
@@ -198,13 +205,6 @@
     "status": "Service Change",
     "details": [
       "Northbound: Some 96 St-bound trains are skipping Avenue M, Avenue J, Avenue H, Cortelyou Rd, Beverley Rd, and Parkside Av."
-    ]
-  },
-  {
-    "date": "2026-04-19T13:26:28.297Z",
-    "status": "Delays",
-    "details": [
-      "Northbound: 96 St-bound trains are having longer wait times between Lexington Av/63 St and 96 St (up to 15 mins, normally every 11 mins)."
     ]
   }
 ]
