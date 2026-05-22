@@ -24,7 +24,7 @@ const QTrainTracker = () => {
     const hours = nyDate.getHours();
     
     const isWeekday = day >= 1 && day <= 5;
-    const isBTime = hours >= 6 && hours < 23; // 6:00 AM to 10:59 PM
+    const isBTime = hours >= 6 && hours < 22; // B train only operates 6:00 AM to 9:59 PM (inactive after 10:00 PM)
     
     return {
       isWeekday,
@@ -353,47 +353,53 @@ const QTrainTracker = () => {
 
   const rec = getRecommendation();
 
+  // If B train is not currently scheduled to run, hide the switcher and force tab to Q
+  const isBActive = bSchedule.isCurrentlyScheduled;
+  const currentTab = isBActive ? activeTab : 'q';
+
   return (
     <div className="max-w-md mx-auto space-y-6">
-      {/* 1. MTA-Themed Switcher at the very top */}
-      <div className="bg-gray-100 p-1 rounded-xl flex gap-1 border border-gray-200">
-        <button
-          onClick={() => setActiveTab('q')}
-          className={`flex-1 py-2 px-3 text-center text-sm font-bold rounded-lg transition-all duration-150 flex items-center justify-center gap-1.5 ${
-            activeTab === 'q'
-              ? 'bg-white text-gray-800 shadow-sm border border-gray-200'
-              : 'text-gray-500 hover:text-gray-800 hover:bg-gray-50'
-          }`}
-        >
-          <span className="w-4 h-4 rounded-full bg-[#FCCC0A] text-black font-extrabold text-[10px] flex items-center justify-center border border-black leading-none">Q</span>
-          Q Train
-        </button>
-        <button
-          onClick={() => setActiveTab('b')}
-          className={`flex-1 py-2 px-3 text-center text-sm font-bold rounded-lg transition-all duration-150 flex items-center justify-center gap-1.5 ${
-            activeTab === 'b'
-              ? 'bg-white text-gray-800 shadow-sm border border-gray-200'
-              : 'text-gray-500 hover:text-gray-800 hover:bg-gray-50'
-          }`}
-        >
-          <span className="w-4 h-4 rounded-full bg-[#FF6319] text-white font-extrabold text-[10px] flex items-center justify-center leading-none">B</span>
-          B Train
-        </button>
-        <button
-          onClick={() => setActiveTab('helper')}
-          className={`flex-1 py-2 px-3 text-center text-sm font-bold rounded-lg transition-all duration-150 flex items-center justify-center gap-1.5 ${
-            activeTab === 'helper'
-              ? 'bg-white text-gray-800 shadow-sm border border-gray-200'
-              : 'text-gray-500 hover:text-gray-800 hover:bg-gray-50'
-          }`}
-        >
-          <span>🚦</span>
-          Q vs B Helper
-        </button>
-      </div>
+      {/* 1. MTA-Themed Switcher at the very top (only shown when B train is scheduled to run) */}
+      {isBActive && (
+        <div className="bg-gray-100 p-1 rounded-xl flex gap-1 border border-gray-200">
+          <button
+            onClick={() => setActiveTab('q')}
+            className={`flex-1 py-2 px-3 text-center text-sm font-bold rounded-lg transition-all duration-150 flex items-center justify-center gap-1.5 ${
+              activeTab === 'q'
+                ? 'bg-white text-gray-800 shadow-sm border border-gray-200'
+                : 'text-gray-500 hover:text-gray-800 hover:bg-gray-50'
+            }`}
+          >
+            <span className="w-4 h-4 rounded-full bg-[#FCCC0A] text-black font-extrabold text-[10px] flex items-center justify-center border border-black leading-none">Q</span>
+            Q Train
+          </button>
+          <button
+            onClick={() => setActiveTab('b')}
+            className={`flex-1 py-2 px-3 text-center text-sm font-bold rounded-lg transition-all duration-150 flex items-center justify-center gap-1.5 ${
+              activeTab === 'b'
+                ? 'bg-white text-gray-800 shadow-sm border border-gray-200'
+                : 'text-gray-500 hover:text-gray-800 hover:bg-gray-50'
+            }`}
+          >
+            <span className="w-4 h-4 rounded-full bg-[#FF6319] text-white font-extrabold text-[10px] flex items-center justify-center leading-none">B</span>
+            B Train
+          </button>
+          <button
+            onClick={() => setActiveTab('helper')}
+            className={`flex-1 py-2 px-3 text-center text-sm font-bold rounded-lg transition-all duration-150 flex items-center justify-center gap-1.5 ${
+              activeTab === 'helper'
+                ? 'bg-white text-gray-800 shadow-sm border border-gray-200'
+                : 'text-gray-500 hover:text-gray-800 hover:bg-gray-50'
+            }`}
+          >
+            <span>🚦</span>
+            Q vs B Helper
+          </button>
+        </div>
+      )}
 
       {/* 2. Q DETAIL TAB (Identical to original "Regular Q Train" page!) */}
-      {activeTab === 'q' && (
+      {currentTab === 'q' && (
         <div className="space-y-6">
           <div className="p-6 bg-white rounded-xl shadow-md space-y-4">
             <div className="flex items-center space-x-4">
@@ -455,7 +461,7 @@ const QTrainTracker = () => {
       )}
 
       {/* 3. B DETAIL TAB (Styled identically to the Q, but for B!) */}
-      {activeTab === 'b' && (
+      {currentTab === 'b' && (
         <div className="space-y-6">
           <div className="p-6 bg-white rounded-xl shadow-md space-y-4">
             <div className="flex items-center space-x-4">
@@ -521,7 +527,7 @@ const QTrainTracker = () => {
       )}
 
       {/* 4. HELPER TAB (Commuter Decision Assistant) */}
-      {activeTab === 'helper' && (
+      {currentTab === 'helper' && (
         <div className="space-y-6 animate-fadeIn">
           {/* Smart Recommendation Card */}
           <div className={`p-5 rounded-xl border-2 bg-gradient-to-br from-white to-gray-50 shadow-md flex flex-col md:flex-row gap-4 items-start transition-all duration-300 ${
