@@ -17,21 +17,43 @@ const QTrainTracker = () => {
 
   // Convert current time to US Eastern (New York) Time to check B train operation hours
   const getBTrainScheduleInfo = () => {
-    const nyDateString = new Date().toLocaleString("en-US", { timeZone: "America/New_York" });
-    const nyDate = new Date(nyDateString);
-    
-    const day = nyDate.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
-    const hours = nyDate.getHours();
-    
-    const isWeekday = day >= 1 && day <= 5;
-    const isBTime = hours >= 6 && hours < 22; // B train only operates 6:00 AM to 9:59 PM (inactive after 10:00 PM)
-    
-    return {
-      isWeekday,
-      isBTime,
-      isCurrentlyScheduled: isWeekday && isBTime,
-      nyDate
-    };
+    try {
+      const now = new Date();
+      
+      // Use Intl.DateTimeFormat to robustly get the short weekday ("Mon", "Tue", etc.) in NY timezone
+      const weekdayFormatter = new Intl.DateTimeFormat("en-US", {
+        timeZone: "America/New_York",
+        weekday: "short"
+      });
+      const weekday = weekdayFormatter.format(now);
+      
+      // Use Intl.DateTimeFormat to robustly get the 24-hour hour in NY timezone
+      const hourFormatter = new Intl.DateTimeFormat("en-US", {
+        timeZone: "America/New_York",
+        hour: "numeric",
+        hour12: false
+      });
+      const hour = parseInt(hourFormatter.format(now), 10);
+      
+      const isWeekday = weekday !== 'Sat' && weekday !== 'Sun';
+      const isBTime = !isNaN(hour) && hour >= 6 && hour < 22; // B train only operates 6:00 AM to 9:59 PM (inactive after 10:00 PM)
+      
+      return {
+        isWeekday,
+        isBTime,
+        isCurrentlyScheduled: isWeekday && isBTime,
+        nyDate: now
+      };
+    } catch (e) {
+      console.error('Error calculating B train schedule (falling back to Q only):', e);
+      // Graceful fallback to prevent script crashes on any environment
+      return {
+        isWeekday: false,
+        isBTime: false,
+        isCurrentlyScheduled: false,
+        nyDate: new Date()
+      };
+    }
   };
 
   const determineStatus = (result) => {
@@ -200,11 +222,14 @@ const QTrainTracker = () => {
     });
 
     const uniqueTrips = new Map();
-    Object.values(routeData.trips[direction]).flat().forEach(trip => {
-      if (!uniqueTrips.has(trip.id)) {
-        uniqueTrips.set(trip.id, trip);
-      }
-    });
+    const tripsForDir = routeData.trips[direction];
+    if (tripsForDir && typeof tripsForDir === 'object') {
+      Object.values(tripsForDir).flat().forEach(trip => {
+        if (trip && trip.id && !uniqueTrips.has(trip.id)) {
+          uniqueTrips.set(trip.id, trip);
+        }
+      });
+    }
 
     let candidates = Array.from(uniqueTrips.values())
       .map(trip => {
