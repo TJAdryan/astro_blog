@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-05-23T13:31:37.489Z",
+    "status": "Delays",
+    "details": [
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Newkirk Plaza and Ocean Pkwy (up to 15 mins, normally every 12 mins)."
+    ]
+  },
+  {
     "date": "2026-05-22T13:46:52.937Z",
     "status": "Service Change",
     "details": [
@@ -197,14 +204,6 @@
     "status": "Service Change",
     "details": [
       "Northbound: Some 96 St-bound trains are skipping Avenue M, Avenue J, Avenue H, Cortelyou Rd, Beverley Rd, and Parkside Av."
-    ]
-  },
-  {
-    "date": "2026-04-22T13:32:06.256Z",
-    "status": "Service Change",
-    "details": [
-      "Northbound: Some 96 St-bound trains are skipping Avenue M, Avenue J, Avenue H, Cortelyou Rd, Beverley Rd, and Parkside Av.",
-      "Northbound: Some 96 St-bound trains are making local stops between Times Sq - 42 St and 57 St - 7 Av."
     ]
   }
 ]
