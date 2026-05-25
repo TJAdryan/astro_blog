@@ -1,0 +1,149 @@
+---
+import Layout from "../layouts/BaseLayout.astro";
+
+const title = "BMT Brighton Line History";
+const description = "A historical timeline of the BMT Brighton Line and the Q/B subway corridor from 1878 to the present.";
+---
+
+<Layout title={title} description={description}>
+  <main class="container mx-auto px-4 py-12 max-w-xl">
+    <!-- Back to live status link -->
+    <div class="mb-8">
+      <a 
+        href="/q-train" 
+        class="inline-flex items-center gap-2 text-sm font-bold text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors group"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transform group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Back to Live Brighton Line Status
+      </a>
+    </div>
+
+    <!-- Header styled like a vintage BMT sign -->
+    <header class="text-center mb-16">
+      <div class="inline-flex items-center justify-center gap-1.5 mb-6">
+        <span class="w-10 h-10 rounded-full bg-[#FCCC0A] text-black font-black text-xl flex items-center justify-center border-2 border-black shadow-sm">Q</span>
+        <span class="w-10 h-10 rounded-full bg-[#FF6319] text-white font-black text-xl flex items-center justify-center border-2 border-white shadow-sm">B</span>
+      </div>
+      <h1 class="text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-none mb-4">
+        BMT Brighton Line History
+      </h1>
+      <p class="text-slate-500 dark:text-slate-400 text-base md:text-lg max-w-md mx-auto leading-relaxed">
+        Chronological Timeline of the Brighton Beach Line and the Q/B Subway Corridor.
+      </p>
+    </header>
+
+    <!-- The Timeline Section -->
+    <section class="relative space-y-12 pb-8">
+      <!-- Colored track representing the Q/B lines -->
+      <div class="absolute left-6 top-3 bottom-3 w-2 bg-gradient-to-b from-[#FCCC0A] via-[#FF6319] to-[#FCCC0A] rounded-full shadow-inner dark:shadow-none"></div>
+
+      <!-- 1878: Brighton Beach Line Opens -->
+      <div class="relative pl-16 group">
+        <!-- Bullet stop -->
+        <div class="absolute left-[18px] top-1.5 w-6 h-6 rounded-full bg-white dark:bg-slate-900 border-4 border-[#FCCC0A] group-hover:border-yellow-400 transition-all duration-300 shadow-md flex items-center justify-center z-10">
+          <div class="w-2 h-2 rounded-full bg-slate-800 dark:bg-white group-hover:scale-125 transition-transform duration-300"></div>
+        </div>
+        <!-- Card content -->
+        <div class="bg-white dark:bg-slate-800/40 p-6 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-sm group-hover:shadow-md group-hover:border-slate-200 dark:group-hover:border-slate-700 transition-all duration-300">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-black tracking-widest text-[#FCCC0A] uppercase dark:text-yellow-400">Brighton Beach Line Opens</span>
+            <span class="text-xl font-black text-slate-955 dark:text-white bg-slate-100 dark:bg-slate-800/80 px-2.5 py-0.5 rounded-lg border border-slate-200/40 dark:border-slate-700/40">1878</span>
+          </div>
+          <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed font-medium">
+            Opened as a surface-level steam railroad from Prospect Park to Coney Island to serve vacationers heading to the Brighton Beach Hotel.
+          </p>
+        </div>
+      </div>
+
+      <!-- 1899: BRT Acquisition -->
+      <div class="relative pl-16 group">
+        <div class="absolute left-[18px] top-1.5 w-6 h-6 rounded-full bg-white dark:bg-slate-900 border-4 border-[#FF6319] group-hover:border-orange-500 transition-all duration-300 shadow-md flex items-center justify-center z-10">
+          <div class="w-2 h-2 rounded-full bg-slate-800 dark:bg-white group-hover:scale-125 transition-transform duration-300"></div>
+        </div>
+        <div class="bg-white dark:bg-slate-800/40 p-6 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-sm group-hover:shadow-md group-hover:border-slate-200 dark:group-hover:border-slate-700 transition-all duration-300">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-black tracking-widest text-[#FF6319] uppercase dark:text-orange-400">BRT Acquisition</span>
+            <span class="text-xl font-black text-slate-955 dark:text-white bg-slate-100 dark:bg-slate-800/80 px-2.5 py-0.5 rounded-lg border border-slate-200/40 dark:border-slate-700/40">1899</span>
+          </div>
+          <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed font-medium">
+            The Brooklyn Rapid Transit Company acquires the line, beginning the transition from a seasonal steam railroad to an electrified rapid transit system.
+          </p>
+        </div>
+      </div>
+
+      <!-- 1913: The Dual Contracts -->
+      <div class="relative pl-16 group">
+        <div class="absolute left-[18px] top-1.5 w-6 h-6 rounded-full bg-white dark:bg-slate-900 border-4 border-slate-400 group-hover:border-slate-500 transition-all duration-300 shadow-md flex items-center justify-center z-10">
+          <div class="w-2 h-2 rounded-full bg-slate-800 dark:bg-white group-hover:scale-125 transition-transform duration-300"></div>
+        </div>
+        <div class="bg-white dark:bg-slate-800/40 p-6 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-sm group-hover:shadow-md group-hover:border-slate-200 dark:group-hover:border-slate-700 transition-all duration-300">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-black tracking-widest text-slate-500 dark:text-slate-400 uppercase">The Dual Contracts</span>
+            <span class="text-xl font-black text-slate-955 dark:text-white bg-slate-100 dark:bg-slate-800/80 px-2.5 py-0.5 rounded-lg border border-slate-200/40 dark:border-slate-700/40">1913</span>
+          </div>
+          <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed font-medium">
+            The city and the BRT sign a public-private contract. Public funds pay for the reconstruction of the line into an open cut, removing surface street crossings.
+          </p>
+        </div>
+      </div>
+
+      <!-- 1920: Montague Street Tunnel Connection -->
+      <div class="relative pl-16 group">
+        <div class="absolute left-[18px] top-1.5 w-6 h-6 rounded-full bg-white dark:bg-slate-950 border-4 border-[#FCCC0A] group-hover:border-yellow-400 transition-all duration-300 shadow-md flex items-center justify-center z-10">
+          <div class="w-2 h-2 rounded-full bg-slate-800 dark:bg-white group-hover:scale-125 transition-transform duration-300"></div>
+        </div>
+        <div class="bg-white dark:bg-slate-800/40 p-6 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-sm group-hover:shadow-md group-hover:border-slate-200 dark:group-hover:border-slate-700 transition-all duration-300">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-black tracking-widest text-[#FCCC0A] uppercase dark:text-yellow-400">Montague Tunnel Connection</span>
+            <span class="text-xl font-black text-slate-955 dark:text-white bg-slate-100 dark:bg-slate-800/80 px-2.5 py-0.5 rounded-lg border border-slate-200/40 dark:border-slate-700/40">1920</span>
+          </div>
+          <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed font-medium">
+            The Brighton Line is connected to the subway system under the East River via the Montague Street Tunnel, allowing direct trains into Manhattan.
+          </p>
+        </div>
+      </div>
+
+      <!-- 1940: Municipal Unification -->
+      <div class="relative pl-16 group">
+        <div class="absolute left-[18px] top-1.5 w-6 h-6 rounded-full bg-white dark:bg-slate-900 border-4 border-[#FF6319] group-hover:border-orange-500 transition-all duration-300 shadow-md flex items-center justify-center z-10">
+          <div class="w-2 h-2 rounded-full bg-slate-800 dark:bg-white group-hover:scale-125 transition-transform duration-300"></div>
+        </div>
+        <div class="bg-white dark:bg-slate-800/40 p-6 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-sm group-hover:shadow-md group-hover:border-slate-200 dark:group-hover:border-slate-700 transition-all duration-300">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-black tracking-widest text-[#FF6319] uppercase dark:text-orange-400">Municipal Unification</span>
+            <span class="text-xl font-black text-slate-955 dark:text-white bg-slate-100 dark:bg-slate-800/80 px-2.5 py-0.5 rounded-lg border border-slate-200/40 dark:border-slate-700/40">1940</span>
+          </div>
+          <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed font-medium">
+            The City of New York purchases the BMT assets for approximately $175 million, ending private operation of the line and consolidating it under public control.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Wikipedia CTA Card -->
+    <footer class="mt-16 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 dark:from-slate-950 dark:via-slate-900 dark:to-black text-white p-8 rounded-2xl border border-slate-800 dark:border-slate-800/80 shadow-lg flex flex-col items-center gap-4 transition-all duration-300 hover:scale-[1.01] hover:shadow-xl">
+      <div class="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0 shadow-inner">
+        <span class="text-2xl leading-none">📖</span>
+      </div>
+      <div class="space-y-1.5 text-center">
+        <h3 class="font-black text-xl text-white">Dive Deeper on Wikipedia</h3>
+        <p class="text-slate-300 text-sm leading-relaxed font-medium">
+          To read the complete, detailed history of the BMT Brighton Line and learn about all its operational patterns, follow this link to the official Wikipedia article.
+        </p>
+      </div>
+      <a 
+        href="https://en.wikipedia.org/wiki/BMT_Brighton_Line" 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        class="w-full mt-3 px-6 py-3.5 bg-[#FCCC0A] hover:bg-yellow-400 text-slate-950 font-black rounded-xl transition-all duration-200 shadow-md text-center inline-flex items-center justify-center gap-2 tracking-wide border border-black/10 hover:-translate-y-0.5"
+      >
+        Read Wikipedia Article
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg>
+      </a>
+    </footer>
+  </main>
+</Layout>
