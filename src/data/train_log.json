@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-05-27T14:08:32.105Z",
+    "status": "Delays",
+    "details": [
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between 7 Av and Avenue U (up to 16 mins, normally every 10 mins)."
+    ]
+  },
+  {
     "date": "2026-05-26T14:01:34.518Z",
     "status": "Delays",
     "details": [
@@ -194,13 +201,6 @@
     "status": "Delays",
     "details": [
       "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times at Avenue U (up to 13 mins, normally every 11 mins)."
-    ]
-  },
-  {
-    "date": "2026-04-26T13:28:32.150Z",
-    "status": "Service Change",
-    "details": [
-      "Southbound: Coney Island - Stillwell Av-bound trains are running via <R> between Canal St and DeKalb Av."
     ]
   }
 ]
