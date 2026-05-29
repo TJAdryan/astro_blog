@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-05-29T14:02:33.510Z",
+    "status": "Service Change",
+    "details": [
+      "Southbound: Some Coney Island - Stillwell Av-bound trains are skipping Ocean Pkwy, and W 8 St - NY Aquarium."
+    ]
+  },
+  {
     "date": "2026-05-28T14:15:14.951Z",
     "status": "Service Change",
     "details": [
@@ -194,13 +201,5 @@
     "date": "2026-04-30T13:33:23.404Z",
     "status": "Good Service",
     "details": []
-  },
-  {
-    "date": "2026-04-29T13:33:36.112Z",
-    "status": "Delays",
-    "details": [
-      "Northbound: 96 St-bound trains are having longer wait times between Cortelyou Rd and Prospect Park (up to 19 mins, normally every 11 mins).",
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times at 34 St - Herald Sq (up to 14 mins, normally every 11 mins)."
-    ]
   }
 ]
