@@ -1,5 +1,10 @@
 [
   {
+    "date": "2026-05-31T13:32:31.780Z",
+    "status": "Good Service",
+    "details": []
+  },
+  {
     "date": "2026-05-30T13:32:03.496Z",
     "status": "Delays",
     "details": [
@@ -198,10 +203,5 @@
     "details": [
       "<Q> trains are running between 96 St and Brighton Beach."
     ]
-  },
-  {
-    "date": "2026-05-01T13:31:07.068Z",
-    "status": "Good Service",
-    "details": []
   }
 ]
