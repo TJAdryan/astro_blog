@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-06-06T13:32:00.665Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times between 7 Av and 96 St (up to 17 mins, normally every 12 mins)."
+    ]
+  },
+  {
     "date": "2026-06-05T13:59:08.517Z",
     "status": "Service Change",
     "details": [
@@ -191,13 +198,6 @@
   },
   {
     "date": "2026-05-08T13:32:44.221Z",
-    "status": "Service Change",
-    "details": [
-      "Northbound: Some 96 St-bound trains are skipping Avenue M, Avenue J, Avenue H, Cortelyou Rd, Beverley Rd, and Parkside Av."
-    ]
-  },
-  {
-    "date": "2026-05-07T13:34:25.417Z",
     "status": "Service Change",
     "details": [
       "Northbound: Some 96 St-bound trains are skipping Avenue M, Avenue J, Avenue H, Cortelyou Rd, Beverley Rd, and Parkside Av."
