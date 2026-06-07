@@ -151,20 +151,22 @@ import Layout from "../layouts/BlogPost.astro";
 				}
 
 				// --- Proposal Video Controls ---
-				const proposalVideo = document.getElementById("proposal-video");
-				const proposalOverlay = document.getElementById("proposal-overlay");
-				const btnPlayProposal = document.getElementById("btn-play-proposal");
+				document.addEventListener("DOMContentLoaded", () => {
+					const proposalVideo = document.getElementById("proposal-video");
+					const proposalOverlay = document.getElementById("proposal-overlay");
+					const btnPlayProposal = document.getElementById("btn-play-proposal");
 
-				if (btnPlayProposal && proposalVideo && proposalOverlay) {
-					btnPlayProposal.addEventListener("click", () => {
-						proposalVideo.play();
-						proposalVideo.controls = true;
-						proposalOverlay.style.opacity = "0";
-						setTimeout(() => {
-							proposalOverlay.style.display = "none";
-						}, 500);
-					});
-				}
+					if (btnPlayProposal && proposalVideo && proposalOverlay) {
+						btnPlayProposal.addEventListener("click", () => {
+							proposalVideo.play();
+							proposalVideo.controls = true;
+							proposalOverlay.style.opacity = "0";
+							setTimeout(() => {
+								proposalOverlay.style.display = "none";
+							}, 500);
+						});
+					}
+				});
 
 				// --- Translation Logic ---
 				const langBtn = document.getElementById("lang-toggle");
