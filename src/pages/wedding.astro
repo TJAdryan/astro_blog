@@ -805,6 +805,9 @@ import Layout from "../layouts/BlogPost.astro";
 			const container = document.getElementById("heart-rain-container");
 			if (!container) return;
 
+			// Move the container directly under body immediately on load to prevent constraints from nested parent containers
+			document.body.appendChild(container);
+
 			const colors = [
 				"#ffb6c1",
 				"#ff69b4",
