@@ -168,6 +168,69 @@ import Layout from "../layouts/BlogPost.astro";
 					}
 				});
 
+				// --- Proposal Story Audio Controls ---
+				document.addEventListener("DOMContentLoaded", () => {
+					const proposalAudioEng = document.getElementById("proposal-audio-eng");
+					const proposalAudioGeo = document.getElementById("proposal-audio-geo");
+					const btnPlayProposalStory = document.getElementById("proposal-read-aloud");
+
+					const stopProposalReading = () => {
+						if (proposalAudioGeo) {
+							proposalAudioGeo.pause();
+							proposalAudioGeo.currentTime = 0;
+						}
+						if (proposalAudioEng) {
+							proposalAudioEng.pause();
+							proposalAudioEng.currentTime = 0;
+						}
+						if (btnPlayProposalStory) {
+							btnPlayProposalStory.textContent = isGeorgian
+								? "ისტორიის მოსმენა 🔊"
+								: "Listen to Story 🔊";
+						}
+					};
+
+					// If the main language toggle button is clicked, stop proposal story audio too
+					const langBtn = document.getElementById("lang-toggle");
+					if (langBtn) {
+						langBtn.addEventListener("click", stopProposalReading);
+					}
+
+					if (btnPlayProposalStory) {
+						btnPlayProposalStory.addEventListener("click", () => {
+							const isSpeakingEng = proposalAudioEng && !proposalAudioEng.paused;
+							const isSpeakingGeo = proposalAudioGeo && !proposalAudioGeo.paused;
+
+							if (isSpeakingEng || isSpeakingGeo) {
+								stopProposalReading();
+								return;
+							}
+
+							btnPlayProposalStory.textContent = isGeorgian
+								? "შეჩერება ⏹️"
+								: "Stop Story ⏹️";
+
+							if (isGeorgian) {
+								if (proposalAudioGeo) {
+									proposalAudioGeo.play().catch((e) => {
+										console.error("Proposal audio play failed", e);
+										stopProposalReading();
+									});
+									proposalAudioGeo.onended = stopProposalReading;
+								}
+							} else {
+								if (proposalAudioEng) {
+									proposalAudioEng.play().catch((e) => {
+										console.error("Proposal audio play failed", e);
+										stopProposalReading();
+									});
+									proposalAudioEng.onended = stopProposalReading;
+								}
+							}
+						});
+					}
+				});
+
 				// --- Translation Logic ---
 				const langBtn = document.getElementById("lang-toggle");
 				let isGeorgian = false;
@@ -203,6 +266,13 @@ import Layout from "../layouts/BlogPost.astro";
 					"text-proposal-title": "ხელის თხოვნა",
 					"text-proposal-desc":
 						"მიუხედავად იმისა, რომ სოფოს ამაღელვებელი ხელის თხოვნა ასობით მოწმის წინაშე ძალიან ლამაზად და ემოციურად ჩატარდა, ის ვიდეოზე არ ჩაწერილა, რადგან ვიდეოგრაფი მომენტის ემოციამ იმდენად გაიტაცა, რომ ჩაწერის ღილაკზე დაჭერა დაავიწყდა. ეს აღდგენილი ვერსია ძალიან ზუსტად შეესაბამება ჩემს საუკეთესო მოგონებებს ამ მოვლენაზე.",
+					"proposal-story-summary": "ხელის თხოვნის ისტორია ❤️",
+					"proposal-read-aloud": "ისტორიის მოსმენა 🔊",
+					"proposal-story-p1": "თბილ ზაფხულის შაბათს, სოფიომ დომინიკისთვის ხელის სათხოვნელად განსაკუთრებული დღე დაგეგმა. ბრანჩზე დაპატიჟების შემდეგ, ისინი გაემგზავრნენ MoMA PS1-ში კვინსში, რომელიც ძველი სკოლის შენობაში მოწყობილ გალერეას წარმოადგენს. სანამ ისინი თანამედროვე ხელოვნების ინსტალაციებს ათვალიერებდნენ, სოფიოს ჯიბეში პატარა ხავერდის ყუთში დამალული ბეჭედი ედო.",
+					"proposal-story-p2": "სანამ დომინიკი დიდ ქანდაკებას აკვირდებოდა, სოფიო ფიქრობდა მის ურყევ მხარდაჭერაზე, როგორც პარტნიორზე. გადაწყვიტა, რომ მასთან ერთად სურდა დარჩენილი ცხოვრების გატარება, ხელი ჩაჰკიდა და ოთახის ცენტრში, მაღალი ფანჯრების ქვეშ გაიყვანა.",
+					"proposal-story-p3": "\"ჩვენ იმდენ დროს ვატარებთ სხვების შექმნილის ყურებაში,\" - თქვა სოფიომ, - \"მაგრამ ყველაზე ლამაზი რამ, რაც კი ოდესმე მინახავს, ის ცხოვრებაა, რომელიც ჩვენ ერთად ავაშენეთ.\"",
+					"proposal-story-p4": "იგი ცალ მუხლზე დაეშვა, ბეჭდის ყუთი გახსნა და ჰკითხა: \"დომინიკ, შენ ჩემი სახლი და ჩემი უდიდესი თავგადასავალი ხარ. ჩემზე დაქორწინდები?\"",
+					"proposal-story-p5": "დომინიკმა მაშინვე თანხმობა უთხრა და ძლიერად ჩაეხუტა მას, ხოლო გალერეის გარშემო მყოფი სტუმრები მხიარული შეძახილებითა და აპლოდისმენტებით აფეთქდნენ."
 				};
 
 				if (langBtn) {
@@ -477,6 +547,42 @@ import Layout from "../layouts/BlogPost.astro";
 				While Sopo's moving proposal was gracefully executed in front of hundreds of witnesses, it was not captured on video because the videographer was too caught up in the moment to press record. This recreation closely matches my best recollection of the event.
 			</p>
 
+			<!-- Collapsible Proposal Story -->
+			<details class="story-details" id="proposal-story-details" style="margin: 2rem auto 3rem auto; max-width: 65%; text-align: left;">
+				<summary id="proposal-story-summary" style="font-family: 'Georgia', serif; font-size: 1.4rem; font-weight: bold; color: #d6336c; cursor: pointer; text-align: center; list-style: none; outline: none; margin-bottom: 1rem; transition: all 0.3s ease; display: inline-flex; align-items: center; justify-content: center; width: 100%; gap: 0.5rem; text-decoration: underline; text-underline-offset: 4px;">
+					Read the Proposal Story ❤️
+				</summary>
+				
+				<div class="story-content-box" style="background: rgba(255, 240, 245, 0.4); border: 2px dashed #ffb6c1; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(214, 51, 108, 0.05); margin-top: 0.5rem;">
+					<!-- Audio Controls for Proposal Story -->
+					<div style="display: flex; justify-content: center; margin-bottom: 1.5rem;">
+						<button id="proposal-read-aloud" class="lang-btn" style="background: #fff0f5; border-color: #ff69b4; font-size: 1rem; padding: 8px 16px;">
+							Listen to Story 🔊
+						</button>
+					</div>
+					
+					<p id="proposal-story-p1" style="margin-bottom: 1.2rem; font-size: 1.1rem; line-height: 1.8; color: #4a4a4a;">
+						On a warm summer Saturday, Sophio planned a special day to propose to Dominick. After treating him to brunch, they traveled to MoMA PS1 in Queens, an old schoolhouse-turned-gallery. As they explored the contemporary art installations, Sophio carried a small velvet ring box hidden in her pocket.
+					</p>
+					<p id="proposal-story-p2" style="margin-bottom: 1.2rem; font-size: 1.1rem; line-height: 1.8; color: #4a4a4a;">
+						Watching Dominick contemplate a large sculpture, Sophio reflected on his unwavering support as her partner. Deciding she wanted to spend the rest of her life with him, she took his hands and drew him into the center of the room beneath the high windows.
+					</p>
+					<p id="proposal-story-p3" style="margin-bottom: 1.2rem; font-size: 1.1rem; line-height: 1.8; color: #4a4a4a;">
+						"We spend so much time looking at what others have created," Sophio said, "but the most beautiful thing I’ve ever seen is the life we’ve built together."
+					</p>
+					<p id="proposal-story-p4" style="margin-bottom: 1.2rem; font-size: 1.1rem; line-height: 1.8; color: #4a4a4a;">
+						She dropped to one knee, opened the ring box, and asked, "Dominick, you are my home and my greatest adventure. Will you marry me?"
+					</p>
+					<p id="proposal-story-p5" style="margin-bottom: 0; font-size: 1.1rem; line-height: 1.8; color: #4a4a4a;">
+						Dominick immediately answered yes, pulling her into a fierce embrace as the surrounding gallery visitors erupted into cheers and applause.
+					</p>
+				</div>
+			</details>
+
+			<!-- Audio Players for Proposal Story -->
+			<audio id="proposal-audio-eng" src="/audio/english_proposal.mp3" preload="none"></audio>
+			<audio id="proposal-audio-geo" src="/audio/georgian_proposal.mp3" preload="none"></audio>
+
 			<div class="video-container relative" id="proposal-video-wrapper" style="transform: rotate(-1deg);">
 				<video
 					id="proposal-video"
@@ -552,6 +658,14 @@ import Layout from "../layouts/BlogPost.astro";
 			font-family: "Georgia", serif;
 			line-height: 1.8;
 			color: #4a4a4a;
+		}
+
+		/* Details Collapsible Story */
+		details#proposal-story-details summary::-webkit-details-marker {
+			display: none;
+		}
+		details#proposal-story-details summary {
+			list-style: none;
 		}
 
 		.romantic-title {
