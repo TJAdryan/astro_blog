@@ -1,5 +1,10 @@
 [
   {
+    "date": "2026-06-11T14:17:21.687Z",
+    "status": "Good Service",
+    "details": []
+  },
+  {
     "date": "2026-06-10T14:07:42.682Z",
     "status": "Good Service",
     "details": []
@@ -193,10 +198,5 @@
     "details": [
       "Northbound: 96 St-bound trains are having longer wait times at DeKalb Av (up to 14 mins, normally every 11 mins)."
     ]
-  },
-  {
-    "date": "2026-05-11T13:54:21.104Z",
-    "status": "Good Service",
-    "details": []
   }
 ]
