@@ -6,7 +6,9 @@ tags: ["Python", "uv", "Data Engineering"]
 category: "Data Engineering"
 ---
 
-Historically, experimenting with alpha versions of Python was a tedious chore, often requiring manual compilation or risking conflict with your system-level package managers. But with `uv`, target-testing next-generation Python is entirely frictionless. You can spin up isolated, version-pinned environments in seconds.
+Before `uv`, I mostly ignored new Python features. The idea of installing the new version alongside existing versions was such a pain it hardly seemed worth it.
+
+But `uv` allows you to create isolated versions pinned inside environments in seconds. This has allowed me to experiment in ways that used to not be possible.
 
 One of the most exciting additions coming in Python 3.15 (which you can explore in detail in the official [What's New in Python 3.15](https://docs.python.org/3.15/whatsnew/3.15.html) release notes) is **PEP 798 (Unpacking in Comprehensions)**. This feature introduces support for iterable unpacking (`*`) and dictionary unpacking (`**`) directly within comprehensions. Rather than writing verbose nested loops, relying on complex list generator expansions, or chaining utilities like `itertools.chain`, you now have a unified, native tool to flatten and merge data streams in-line. It's a prime example of Python's evolution: bringing syntax elegance and feature consistency to our daily data pipelines.
 
