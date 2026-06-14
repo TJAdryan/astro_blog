@@ -1,5 +1,57 @@
 import React, { useState, useEffect } from 'react';
 import stationMap from '../data/stations.json';
+const getWeatherDetails = (code) => {
+  switch (code) {
+    case 0: return { label: 'Clear Sky', emoji: '☀️', bgClass: 'from-amber-50 to-orange-50/20 border-amber-200 dark:from-amber-950/20 dark:to-orange-950/10 dark:border-amber-900/40 text-amber-800 dark:text-amber-300' };
+    case 1: return { label: 'Mainly Clear', emoji: '🌤️', bgClass: 'from-sky-50 to-amber-50/20 border-sky-150 dark:from-sky-950/20 dark:to-amber-950/10 dark:border-sky-900/40 text-sky-800 dark:text-sky-300' };
+    case 2: return { label: 'Partly Cloudy', emoji: '⛅', bgClass: 'from-slate-50 to-sky-50/20 border-slate-200 dark:from-slate-900/30 dark:to-sky-950/10 dark:border-slate-800 text-slate-800 dark:text-slate-300' };
+    case 3: return { label: 'Overcast', emoji: '☁️', bgClass: 'from-slate-100 to-slate-50/50 border-slate-200 dark:from-slate-800/40 dark:to-slate-900/30 dark:border-slate-800 text-slate-700 dark:text-slate-300' };
+    case 45:
+    case 48: return { label: 'Foggy', emoji: '🌫️', bgClass: 'from-zinc-100 to-zinc-50 border-zinc-200 dark:from-zinc-800/40 dark:to-zinc-900/30 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300' };
+    case 51:
+    case 53:
+    case 55: return { label: 'Drizzle', emoji: '🌧️', bgClass: 'from-cyan-50 to-slate-50 border-cyan-200 dark:from-cyan-950/20 dark:to-slate-900/10 dark:border-cyan-900/40 text-cyan-800 dark:text-cyan-300' };
+    case 56:
+    case 57: return { label: 'Freezing Drizzle', emoji: '🌧️❄️', bgClass: 'from-cyan-100 to-blue-50 border-cyan-300 dark:from-cyan-900/30 dark:to-blue-950/20 dark:border-cyan-800/60 text-cyan-900 dark:text-cyan-200' };
+    case 61:
+    case 63:
+    case 65: return { label: 'Rain', emoji: '🌧️', bgClass: 'from-blue-50 to-cyan-50 border-blue-200 dark:from-blue-950/20 dark:to-cyan-950/10 dark:border-blue-900/40 text-blue-800 dark:text-blue-300' };
+    case 66:
+    case 67: return { label: 'Freezing Rain', emoji: '🌧️❄️', bgClass: 'from-blue-100 to-indigo-50 border-blue-300 dark:from-blue-900/30 dark:to-indigo-950/20 dark:border-blue-800/60 text-blue-950 dark:text-blue-200' };
+    case 71:
+    case 73:
+    case 75: return { label: 'Snowfall', emoji: '❄️', bgClass: 'from-indigo-50 to-sky-50 border-indigo-200 dark:from-indigo-950/20 dark:to-sky-950/10 dark:border-indigo-900/40 text-indigo-800 dark:text-indigo-300' };
+    case 77: return { label: 'Snow Grains', emoji: '❄️', bgClass: 'from-indigo-50 to-sky-50 border-indigo-200 dark:from-indigo-950/20 dark:to-sky-950/10 dark:border-indigo-900/40 text-indigo-800 dark:text-indigo-300' };
+    case 80:
+    case 81:
+    case 82: return { label: 'Rain Showers', emoji: '🌧️', bgClass: 'from-blue-50 to-cyan-50 border-blue-200 dark:from-blue-950/20 dark:to-cyan-950/10 dark:border-blue-900/40 text-blue-800 dark:text-blue-300' };
+    case 85:
+    case 86: return { label: 'Snow Showers', emoji: '❄️', bgClass: 'from-indigo-50 to-sky-50 border-indigo-200 dark:from-indigo-950/20 dark:to-sky-950/10 dark:border-indigo-900/40 text-indigo-800 dark:text-indigo-300' };
+    case 95:
+    case 96:
+    case 99: return { label: 'Thunderstorm', emoji: '⛈️', bgClass: 'from-purple-50 to-slate-50 border-purple-200 dark:from-purple-950/20 dark:to-slate-900/10 dark:border-purple-900/40 text-purple-800 dark:text-purple-300' };
+    default: return { label: 'Weather', emoji: '🌤️', bgClass: 'from-slate-50 to-blue-50/20 border-slate-200 dark:from-slate-900/30 dark:to-blue-950/10 dark:border-slate-800 text-slate-800 dark:text-slate-300' };
+  }
+};
+
+const getCommuteAdvisory = (code, tempMax, tempMin) => {
+  if (code === 95 || code === 96 || code === 99) {
+    return "⛈️ Storms ahead. Expect potential platform dampness and delays. Keep an eye on status changes!";
+  }
+  if ([71, 73, 75, 77, 85, 86].includes(code) || [56, 57, 66, 67].includes(code)) {
+    return "❄️ Snow or freezing precipitation. Brighton Line runs outdoors; expect ice delays. Dress warmly!";
+  }
+  if ([51, 53, 55, 61, 63, 65, 80, 81, 82].includes(code)) {
+    return "🌧️ Rainy conditions. Platforms might be slippery. Don't forget your umbrella!";
+  }
+  if (tempMax >= 90) {
+    return "🔥 High temperatures. Subway platforms will feel extra hot. Stay hydrated!";
+  }
+  if (tempMin <= 32) {
+    return "🥶 Freezing commute. Wrap up warmly while waiting on outdoor Brighton Line platforms.";
+  }
+  return "✨ Excellent weather for your commute. Enjoy the walk to your station!";
+};
 
 const QTrainTracker = () => {
   const [activeTab, setActiveTab] = useState('q');
@@ -14,6 +66,8 @@ const QTrainTracker = () => {
     isCurrentlyScheduled: false,
     nyDate: new Date()
   });
+  const [weatherData, setWeatherData] = useState(null);
+  const [weatherStatus, setWeatherStatus] = useState('loading');
 
   // Convert current time to US Eastern (New York) Time to check B train operation hours
   const getBTrainScheduleInfo = () => {
@@ -76,6 +130,24 @@ const QTrainTracker = () => {
     }
   };
 
+  const fetchWeather = async () => {
+    try {
+      const response = await fetch(
+        'https://api.open-meteo.com/v1/forecast?latitude=40.6782&longitude=-73.9442&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&temperature_unit=fahrenheit&timezone=America/New_York&forecast_days=3'
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setWeatherData(data);
+        setWeatherStatus('success');
+      } else {
+        setWeatherStatus('error');
+      }
+    } catch (e) {
+      console.error('Error fetching weather:', e);
+      setWeatherStatus('error');
+    }
+  };
+
   const fetchData = async () => {
     const scheduleInfo = getBTrainScheduleInfo();
     setBSchedule(scheduleInfo);
@@ -116,7 +188,11 @@ const QTrainTracker = () => {
 
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 60000); // Refresh every minute
+    fetchWeather();
+    const interval = setInterval(() => {
+      fetchData();
+      fetchWeather();
+    }, 60000); // Refresh every minute
     return () => clearInterval(interval);
   }, []);
 
@@ -653,6 +729,81 @@ const QTrainTracker = () => {
           )}
         </div>
       )}
+
+      {/* 4.5. 3-Day Commute Weather Widget */}
+      <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
+        <h3 className="font-extrabold text-lg text-gray-800 dark:text-white flex items-center justify-between border-b border-gray-100 dark:border-slate-800 pb-3">
+          <span>🌤️ 3-Day Commute Weather</span>
+          <span className="text-xs font-semibold text-gray-400">Brooklyn Forecast</span>
+        </h3>
+
+        {weatherStatus === 'loading' && (
+          <div className="text-center py-6 text-gray-500 dark:text-slate-400 text-sm">
+            Loading weather forecast...
+          </div>
+        )}
+
+        {weatherStatus === 'error' && (
+          <div className="text-center py-6 text-red-500 dark:text-red-400 text-sm">
+            ⚠️ Unable to load weather forecast.
+          </div>
+        )}
+
+        {weatherStatus === 'success' && weatherData && (
+          <div className="space-y-4">
+            {/* The 3 Columns Grid */}
+            <div className="grid grid-cols-3 gap-3">
+              {weatherData.daily.time.map((time, index) => {
+                const dateObj = new Date(time + 'T00:00:00');
+                const dayLabel = index === 0 ? 'Today' : dateObj.toLocaleDateString('en-US', { weekday: 'short' });
+                
+                const weatherCode = weatherData.daily.weather_code[index];
+                const tempMax = Math.round(weatherData.daily.temperature_2m_max[index]);
+                const tempMin = Math.round(weatherData.daily.temperature_2m_min[index]);
+                const rainProb = Math.round(weatherData.daily.precipitation_probability_max[index]);
+                
+                const details = getWeatherDetails(weatherCode);
+
+                return (
+                  <div key={time} className={`p-3 rounded-xl border flex flex-col items-center text-center justify-between bg-gradient-to-b ${details.bgClass} shadow-sm transition-transform hover:scale-[1.02]`}>
+                    <div className="font-bold text-[10px] uppercase tracking-wide opacity-80">
+                      {dayLabel}
+                    </div>
+                    <div className="text-3xl my-2" title={details.label}>
+                      {details.emoji}
+                    </div>
+                    <div className="space-y-1">
+                      <div className="font-black text-sm">
+                        {tempMax}° <span className="opacity-50 font-medium text-xs">/ {tempMin}°</span>
+                      </div>
+                      <div className="text-[10px] font-bold text-blue-600 dark:text-blue-400 flex items-center justify-center gap-0.5">
+                        <span>💧</span> {rainProb}%
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Commute Advisory Banner */}
+            {(() => {
+              const todayCode = weatherData.daily.weather_code[0];
+              const todayMax = weatherData.daily.temperature_2m_max[0];
+              const todayMin = weatherData.daily.temperature_2m_min[0];
+              const advisory = getCommuteAdvisory(todayCode, todayMax, todayMin);
+
+              return (
+                <div className="bg-slate-50 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-800 p-3 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 leading-relaxed flex items-start gap-2.5 shadow-inner">
+                  <div className="flex-1 animate-fadeIn">
+                    <span className="font-bold text-slate-800 dark:text-white block mb-0.5">Commute Guide</span>
+                    {advisory}
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+        )}
+      </div>
 
       {/* 5. Classic Footer Actions & Logo Credit */}
       <div className="pt-2 text-center space-y-4">
