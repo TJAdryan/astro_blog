@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-06-14T13:33:35.515Z",
+    "status": "Service Change",
+    "details": [
+      "<Q> trains are running via <R> between Canal St and DeKalb Av."
+    ]
+  },
+  {
     "date": "2026-06-13T13:33:20.387Z",
     "status": "Service Change",
     "details": [
@@ -190,13 +197,5 @@
     "date": "2026-05-15T13:34:10.302Z",
     "status": "Good Service",
     "details": []
-  },
-  {
-    "date": "2026-05-14T13:34:49.935Z",
-    "status": "Service Change",
-    "details": [
-      "Northbound: 96 St-bound trains are running in 2 sections: between Coney Island - Stillwell Av and 96 St, and between W 4 St - Washington Sq and 96 St.",
-      "Northbound: Some 96 St-bound trains are running via <W> between DeKalb Av and Canal St."
-    ]
   }
 ]
