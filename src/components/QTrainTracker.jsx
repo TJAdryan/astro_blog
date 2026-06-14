@@ -68,6 +68,7 @@ const QTrainTracker = () => {
   });
   const [weatherData, setWeatherData] = useState(null);
   const [weatherStatus, setWeatherStatus] = useState('loading');
+  const [isWeatherExpanded, setIsWeatherExpanded] = useState(false);
 
   // Convert current time to US Eastern (New York) Time to check B train operation hours
   const getBTrainScheduleInfo = () => {
@@ -460,6 +461,93 @@ const QTrainTracker = () => {
 
   return (
     <div className="max-w-md mx-auto space-y-6">
+      {/* 0.5. Collapsible Weather Forecast Banner */}
+      {weatherStatus === 'success' && weatherData && (
+        <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm transition-all duration-200">
+          <button
+            onClick={() => setIsWeatherExpanded(!isWeatherExpanded)}
+            className="w-full p-4 flex items-center justify-between text-left hover:bg-gray-50 dark:hover:bg-slate-800/40 transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">
+                {getWeatherDetails(weatherData.daily.weather_code[0]).emoji}
+              </span>
+              <div>
+                <h4 className="font-extrabold text-sm text-gray-800 dark:text-white leading-tight">
+                  Brooklyn Weather: {Math.round(weatherData.daily.temperature_2m_max[0])}°F / {Math.round(weatherData.daily.temperature_2m_min[0])}°F
+                </h4>
+                <p className="text-xs text-gray-400 font-semibold mt-0.5">
+                  {getWeatherDetails(weatherData.daily.weather_code[0]).label} • {isWeatherExpanded ? 'Click to hide forecast' : 'Click to see 3-day forecast'}
+                </p>
+              </div>
+            </div>
+            <svg
+              className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${isWeatherExpanded ? 'rotate-180' : ''}`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+
+          {isWeatherExpanded && (
+            <div className="px-4 pb-4 border-t border-gray-100 dark:border-slate-800/80 pt-4 space-y-4">
+              {/* The 3 Columns Grid */}
+              <div className="grid grid-cols-3 gap-3">
+                {weatherData.daily.time.map((time, index) => {
+                  const dateObj = new Date(time + 'T00:00:00');
+                  const dayLabel = index === 0 ? 'Today' : dateObj.toLocaleDateString('en-US', { weekday: 'short' });
+                  
+                  const weatherCode = weatherData.daily.weather_code[index];
+                  const tempMax = Math.round(weatherData.daily.temperature_2m_max[index]);
+                  const tempMin = Math.round(weatherData.daily.temperature_2m_min[index]);
+                  const rainProb = Math.round(weatherData.daily.precipitation_probability_max[index]);
+                  
+                  const details = getWeatherDetails(weatherCode);
+
+                  return (
+                    <div key={time} className={`p-3 rounded-xl border flex flex-col items-center text-center justify-between bg-gradient-to-b ${details.bgClass} shadow-sm transition-transform hover:scale-[1.02]`}>
+                      <div className="font-bold text-[10px] uppercase tracking-wide opacity-80">
+                        {dayLabel}
+                      </div>
+                      <div className="text-3xl my-2" title={details.label}>
+                        {details.emoji}
+                      </div>
+                      <div className="space-y-1">
+                        <div className="font-black text-sm">
+                          {tempMax}° <span className="opacity-50 font-medium text-xs">/ {tempMin}°</span>
+                        </div>
+                        <div className="text-[10px] font-bold text-blue-600 dark:text-blue-400 flex items-center justify-center gap-0.5">
+                          <span>💧</span> {rainProb}%
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Commute Advisory Banner */}
+              {(() => {
+                const todayCode = weatherData.daily.weather_code[0];
+                const todayMax = weatherData.daily.temperature_2m_max[0];
+                const todayMin = weatherData.daily.temperature_2m_min[0];
+                const advisory = getCommuteAdvisory(todayCode, todayMax, todayMin);
+
+                return (
+                  <div className="bg-slate-50 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-800 p-3 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 leading-relaxed flex items-start gap-2.5 shadow-inner">
+                    <div className="flex-1">
+                      <span className="font-bold text-slate-800 dark:text-white block mb-0.5">Commute Guide</span>
+                      {advisory}
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* 1. MTA-Themed Switcher at the very top (only shown when B train is scheduled to run) */}
       {isBActive && (
         <div className="bg-gray-100 p-1 rounded-xl flex gap-1 border border-gray-200">
@@ -730,80 +818,6 @@ const QTrainTracker = () => {
         </div>
       )}
 
-      {/* 4.5. 3-Day Commute Weather Widget */}
-      <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
-        <h3 className="font-extrabold text-lg text-gray-800 dark:text-white flex items-center justify-between border-b border-gray-100 dark:border-slate-800 pb-3">
-          <span>🌤️ 3-Day Commute Weather</span>
-          <span className="text-xs font-semibold text-gray-400">Brooklyn Forecast</span>
-        </h3>
-
-        {weatherStatus === 'loading' && (
-          <div className="text-center py-6 text-gray-500 dark:text-slate-400 text-sm">
-            Loading weather forecast...
-          </div>
-        )}
-
-        {weatherStatus === 'error' && (
-          <div className="text-center py-6 text-red-500 dark:text-red-400 text-sm">
-            ⚠️ Unable to load weather forecast.
-          </div>
-        )}
-
-        {weatherStatus === 'success' && weatherData && (
-          <div className="space-y-4">
-            {/* The 3 Columns Grid */}
-            <div className="grid grid-cols-3 gap-3">
-              {weatherData.daily.time.map((time, index) => {
-                const dateObj = new Date(time + 'T00:00:00');
-                const dayLabel = index === 0 ? 'Today' : dateObj.toLocaleDateString('en-US', { weekday: 'short' });
-                
-                const weatherCode = weatherData.daily.weather_code[index];
-                const tempMax = Math.round(weatherData.daily.temperature_2m_max[index]);
-                const tempMin = Math.round(weatherData.daily.temperature_2m_min[index]);
-                const rainProb = Math.round(weatherData.daily.precipitation_probability_max[index]);
-                
-                const details = getWeatherDetails(weatherCode);
-
-                return (
-                  <div key={time} className={`p-3 rounded-xl border flex flex-col items-center text-center justify-between bg-gradient-to-b ${details.bgClass} shadow-sm transition-transform hover:scale-[1.02]`}>
-                    <div className="font-bold text-[10px] uppercase tracking-wide opacity-80">
-                      {dayLabel}
-                    </div>
-                    <div className="text-3xl my-2" title={details.label}>
-                      {details.emoji}
-                    </div>
-                    <div className="space-y-1">
-                      <div className="font-black text-sm">
-                        {tempMax}° <span className="opacity-50 font-medium text-xs">/ {tempMin}°</span>
-                      </div>
-                      <div className="text-[10px] font-bold text-blue-600 dark:text-blue-400 flex items-center justify-center gap-0.5">
-                        <span>💧</span> {rainProb}%
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Commute Advisory Banner */}
-            {(() => {
-              const todayCode = weatherData.daily.weather_code[0];
-              const todayMax = weatherData.daily.temperature_2m_max[0];
-              const todayMin = weatherData.daily.temperature_2m_min[0];
-              const advisory = getCommuteAdvisory(todayCode, todayMax, todayMin);
-
-              return (
-                <div className="bg-slate-50 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-800 p-3 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 leading-relaxed flex items-start gap-2.5 shadow-inner">
-                  <div className="flex-1 animate-fadeIn">
-                    <span className="font-bold text-slate-800 dark:text-white block mb-0.5">Commute Guide</span>
-                    {advisory}
-                  </div>
-                </div>
-              );
-            })()}
-          </div>
-        )}
-      </div>
 
       {/* 5. Classic Footer Actions & Logo Credit */}
       <div className="pt-2 text-center space-y-4">
