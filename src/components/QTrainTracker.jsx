@@ -69,6 +69,14 @@ const QTrainTracker = () => {
   const [weatherData, setWeatherData] = useState(null);
   const [weatherStatus, setWeatherStatus] = useState('loading');
   const [isWeatherExpanded, setIsWeatherExpanded] = useState(false);
+  const [tempUnit, setTempUnit] = useState('C');
+
+  const formatTemp = (celsiusVal) => {
+    if (tempUnit === 'F') {
+      return Math.round(celsiusVal * 1.8 + 32);
+    }
+    return Math.round(celsiusVal);
+  };
 
   // Convert current time to US Eastern (New York) Time to check B train operation hours
   const getBTrainScheduleInfo = () => {
@@ -134,7 +142,7 @@ const QTrainTracker = () => {
   const fetchWeather = async () => {
     try {
       const response = await fetch(
-        'https://api.open-meteo.com/v1/forecast?latitude=40.6782&longitude=-73.9442&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&temperature_unit=fahrenheit&timezone=America/New_York&forecast_days=3'
+        'https://api.open-meteo.com/v1/forecast?latitude=40.6782&longitude=-73.9442&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=America/New_York&forecast_days=3'
       );
       if (response.ok) {
         const data = await response.json();
@@ -474,21 +482,51 @@ const QTrainTracker = () => {
               </span>
               <div>
                 <h4 className="font-extrabold text-sm text-gray-800 dark:text-white leading-tight">
-                  Brooklyn Weather: {Math.round(weatherData.daily.temperature_2m_max[0])}°F / {Math.round(weatherData.daily.temperature_2m_min[0])}°F
+                  Brooklyn Weather: {formatTemp(weatherData.daily.temperature_2m_max[0])}°{tempUnit} / {formatTemp(weatherData.daily.temperature_2m_min[0])}°{tempUnit}
                 </h4>
                 <p className="text-xs text-gray-400 font-semibold mt-0.5">
                   {getWeatherDetails(weatherData.daily.weather_code[0]).label} • {isWeatherExpanded ? 'Click to hide forecast' : 'Click to see 3-day forecast'}
                 </p>
               </div>
             </div>
-            <svg
-              className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${isWeatherExpanded ? 'rotate-180' : ''}`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
-            </svg>
+            
+            <div className="flex items-center gap-2.5">
+              {/* C / F Toggle Pill */}
+              <div 
+                className="flex items-center bg-gray-100 dark:bg-slate-800 rounded-lg p-0.5 border border-gray-200 dark:border-slate-700 text-[10px] font-black"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <button
+                  onClick={() => setTempUnit('C')}
+                  className={`px-1.5 py-0.5 rounded transition-all ${
+                    tempUnit === 'C'
+                      ? 'bg-white dark:bg-slate-600 text-blue-600 dark:text-white shadow-sm'
+                      : 'text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:hover:text-slate-350'
+                  }`}
+                >
+                  °C
+                </button>
+                <button
+                  onClick={() => setTempUnit('F')}
+                  className={`px-1.5 py-0.5 rounded transition-all ${
+                    tempUnit === 'F'
+                      ? 'bg-white dark:bg-slate-600 text-blue-600 dark:text-white shadow-sm'
+                      : 'text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:hover:text-slate-350'
+                  }`}
+                >
+                  °F
+                </button>
+              </div>
+              
+              <svg
+                className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${isWeatherExpanded ? 'rotate-180' : ''}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
           </button>
 
           {isWeatherExpanded && (
@@ -500,8 +538,8 @@ const QTrainTracker = () => {
                   const dayLabel = index === 0 ? 'Today' : dateObj.toLocaleDateString('en-US', { weekday: 'short' });
                   
                   const weatherCode = weatherData.daily.weather_code[index];
-                  const tempMax = Math.round(weatherData.daily.temperature_2m_max[index]);
-                  const tempMin = Math.round(weatherData.daily.temperature_2m_min[index]);
+                  const tempMax = weatherData.daily.temperature_2m_max[index];
+                  const tempMin = weatherData.daily.temperature_2m_min[index];
                   const rainProb = Math.round(weatherData.daily.precipitation_probability_max[index]);
                   
                   const details = getWeatherDetails(weatherCode);
@@ -516,7 +554,7 @@ const QTrainTracker = () => {
                       </div>
                       <div className="space-y-1">
                         <div className="font-black text-sm">
-                          {tempMax}° <span className="opacity-50 font-medium text-xs">/ {tempMin}°</span>
+                          {formatTemp(tempMax)}° <span className="opacity-50 font-medium text-xs">/ {formatTemp(tempMin)}°</span>
                         </div>
                         <div className="text-[10px] font-bold text-blue-600 dark:text-blue-400 flex items-center justify-center gap-0.5">
                           <span>💧</span> {rainProb}%
