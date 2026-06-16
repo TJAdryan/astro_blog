@@ -553,8 +553,8 @@ const QTrainTracker = () => {
                         {details.emoji}
                       </div>
                       <div className="space-y-1">
-                        <div className="font-black text-sm">
-                          {formatTemp(tempMax)}° <span className="opacity-50 font-medium text-xs">/ {formatTemp(tempMin)}°</span>
+                        <div className="font-extrabold text-xl text-gray-800 dark:text-white">
+                          {formatTemp(tempMax)}° <span className="opacity-60 font-semibold text-sm text-gray-500 dark:text-slate-450">/ {formatTemp(tempMin)}°</span>
                         </div>
                         <div className="text-[10px] font-bold text-blue-600 dark:text-blue-400 flex items-center justify-center gap-0.5">
                           <span>💧</span> {rainProb}%
