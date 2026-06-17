@@ -4,34 +4,14 @@ import Footer from "../components/Footer.astro";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
 import "../styles/global.css";
 import "../styles/custom.css";
-import PostHogScript from "../components/PostHogScript.astro";
-const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props;
+import BaseHead from "../components/BaseHead.astro";
+const { title = SITE_TITLE, description = SITE_DESCRIPTION, image, favicon } = Astro.props;
 ---
 
 <!doctype html>
 <html lang="en" class="scroll-smooth">
   <head>
-    <meta charset="UTF-8" />
-    <PostHogScript />
-    <meta name="description" content={description} />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link
-      rel="preload"
-      href="/fonts/atkinson-regular.woff"
-      as="font"
-      type="font/woff"
-      crossorigin
-    />
-    <link
-      rel="preload"
-      href="/fonts/atkinson-bold.woff"
-      as="font"
-      type="font/woff"
-      crossorigin
-    />
-    <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
+    <BaseHead title={title} description={description} image={image} favicon={favicon} />
     <style is:global>
       /* Reset any default max-width constraints */
       body {

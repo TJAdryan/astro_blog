@@ -27,7 +27,7 @@ const {
 } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description} mainClass="max-w-5xl">
+<BaseLayout title={title} description={description} mainClass="max-w-5xl" image={ogImage || heroImage} favicon={favicon} noindex={noindex}>
 	<style>
 		.hero-image {
 			width: 100%;
