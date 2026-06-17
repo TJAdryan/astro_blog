@@ -71,14 +71,6 @@ XML (eXtensible Markup Language) was created in the late 1990s to replace SGML w
 - Use Excel's "Inspect Document" feature to see what XML data is embedded in your XLSX files.
 - Explore using Python's `openpyxl` or `pandas` libraries for advanced Excel file manipulations beyond the XML structure.
 
-## Recommended diagram — CRISPR mechanics
-
-For a clear, well-labeled diagram that demonstrates CRISPR mechanics (target recognition, guide RNA, and nuclease cutting), see this figure from IJMS:
-
-[CRISPR mechanism diagram — IJMS Fig.1](https://www.mdpi.com/ijms/ijms-26-04420/article_deploy/html/images/ijms-26-04420-g001.png)
-
-This diagram is a useful reference when explaining how guide RNAs direct nucleases to specific DNA sequences.
-
 ---
 
 ## Conclusion
