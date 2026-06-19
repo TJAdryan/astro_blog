@@ -1,5 +1,10 @@
 [
   {
+    "date": "2026-06-19T14:02:46.248Z",
+    "status": "Good Service",
+    "details": []
+  },
+  {
     "date": "2026-06-18T14:03:08.881Z",
     "status": "Service Change",
     "details": [
@@ -186,13 +191,6 @@
   },
   {
     "date": "2026-05-19T13:59:57.058Z",
-    "status": "Service Change",
-    "details": [
-      "<Q> trains are running between 96 St and Coney Island - Stillwell Av."
-    ]
-  },
-  {
-    "date": "2026-05-18T14:10:29.477Z",
     "status": "Service Change",
     "details": [
       "<Q> trains are running between 96 St and Coney Island - Stillwell Av."
