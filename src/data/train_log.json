@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-06-21T13:34:41.969Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times between Atlantic Av - Barclays Ctr and DeKalb Av (up to 21 mins, normally every 11 mins)."
+    ]
+  },
+  {
     "date": "2026-06-20T13:33:32.104Z",
     "status": "Delays",
     "details": [
@@ -187,13 +194,6 @@
     "status": "Service Change",
     "details": [
       "<Q> trains are running between 96 St and Brighton Beach."
-    ]
-  },
-  {
-    "date": "2026-05-20T13:52:24.127Z",
-    "status": "Service Change",
-    "details": [
-      "<Q> trains are running between 96 St and Coney Island - Stillwell Av."
     ]
   }
 ]
