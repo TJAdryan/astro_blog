@@ -57,11 +57,39 @@ const {
 			margin-right: auto;
 		}
 
-		/* Allow code blocks to expand */
+		/* Allow code blocks to expand and add spacing */
 		.prose :global(pre) {
 			max-width: 100%;
 			border-radius: 8px;
-			/* Optional: ensure it doesn't touch edges on mobile */
+			margin: 1.5rem 0;
+		}
+
+		/* Unordered lists styling */
+		.prose :global(ul) {
+			list-style-type: disc;
+			margin-top: 1rem;
+			margin-bottom: 1.5rem;
+			padding-left: 2rem;
+			max-width: 720px;
+			margin-left: auto;
+			margin-right: auto;
+		}
+
+		/* Ordered lists styling */
+		.prose :global(ol) {
+			list-style-type: decimal;
+			margin-top: 1rem;
+			margin-bottom: 1.5rem;
+			padding-left: 2rem;
+			max-width: 720px;
+			margin-left: auto;
+			margin-right: auto;
+		}
+
+		/* List items styling */
+		.prose :global(li) {
+			margin-bottom: 0.5rem;
+			line-height: 1.7;
 		}
 
 		.title {
