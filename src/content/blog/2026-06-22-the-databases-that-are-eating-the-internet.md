@@ -6,7 +6,7 @@ tags: ["Databases", "Vector Search", "Data Engineering", "AI"]
 category: "Data Engineering"
 ---
 
-If you consume M365 services, you may have noticed that in the past year reliability has decreased. The quick-witted among you might be saying, "So what's changed?" Seriously though, in East US some VM purchases have been restricted because of "Over Utilization." I had a M365 Machine that was just shut off by Microsoft for three days. Even redeploying it did not bring it up. This was a $60 a month service just shutdown. For a service that is supposed to have four nines, the message is clear: something more important than your box is happening.
+If you consume M365 services, you may have noticed that in the past year reliability has decreased. The quick-witted among you might be saying, "So what's changed?" Seriously though, in East US some VM purchases have been restricted because of "Over Utilization." I had a Windows 365 Cloud PC that was just shut off by Microsoft for three days. Even redeploying it did not bring it up. This was a $60 a month service just shutdown. For a service that is supposed to have four nines, the message is clear: something more important than your box is happening.
 
 If you immediately knew I was going to talk about LLMs, you win a prize. The massive data going back and forth to people's machines in prompts and feedback is enormous. But it pales to the actual text and database utilization that is occurring on the backend servers. Most people never touch the databases that are used for these systems. I imagine that is going to change in the future so I thought I would take a look at them, and what they do well.
 
