@@ -1,5 +1,10 @@
 [
   {
+    "date": "2026-06-25T13:42:43.661Z",
+    "status": "Good Service",
+    "details": []
+  },
+  {
     "date": "2026-06-24T13:43:03.822Z",
     "status": "Delays",
     "details": [
@@ -188,12 +193,5 @@
     "date": "2026-05-24T13:31:35.114Z",
     "status": "Good Service",
     "details": []
-  },
-  {
-    "date": "2026-05-23T13:31:37.489Z",
-    "status": "Delays",
-    "details": [
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Newkirk Plaza and Ocean Pkwy (up to 15 mins, normally every 12 mins)."
-    ]
   }
 ]
