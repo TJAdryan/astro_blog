@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-06-26T13:40:26.509Z",
+    "status": "Delays",
+    "details": [
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between 7 Av and Ocean Pkwy (up to 12 mins, normally every 10 mins)."
+    ]
+  },
+  {
     "date": "2026-06-25T13:42:43.661Z",
     "status": "Good Service",
     "details": []
@@ -188,10 +195,5 @@
     "details": [
       "Southbound: Some Coney Island - Stillwell Av-bound trains are skipping Parkside Av, Beverley Rd, Cortelyou Rd, Avenue H, Avenue J, and Avenue M."
     ]
-  },
-  {
-    "date": "2026-05-24T13:31:35.114Z",
-    "status": "Good Service",
-    "details": []
   }
 ]
