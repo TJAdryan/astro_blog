@@ -72,7 +72,7 @@ How do these individual, logical decisions create complex feedback loops that dr
 As much as I tried to make this an impartial look at a simplified version of today's housing market, I have opinions and probably some biases. It’s a symptom of a larger economic reality defined by two powerful trends: the rising bar for entry and the shifting psychological rewards for clearing it.
 
 **1. Credential Inflation**  
-More jobs now require a bachelor's degree, even when the work hasn't become more complex. Research from Harvard Business School, such as the ["Dismissed by Degrees" report](https://www.hbs.edu/managing-the-future-of-work/Documents/dismissed-by-degrees.pdf), shows that this often functions as a screening tool in a crowded labor market, rather than a true measure of skill, creating costly barriers for individuals without improving performance.
+More jobs now require a bachelor's degree, even when the work hasn't become more complex. Research from Harvard Business School, such as the ["Dismissed by Degrees" report](https://www.hbs.edu/faculty/Pages/item.aspx?num=53735), shows that this often functions as a screening tool in a crowded labor market, rather than a true measure of skill, creating costly barriers for individuals without improving performance.
 
 **2. The Psychology of Inequality**  
 For years, the prevailing wisdom came from a 2010 study by Daniel Kahneman and Angus Deaton ([see the original PNAS study](https://www.pnas.org/doi/10.1073/pnas.1011492107)). They found that while life satisfaction continued to rise with income, day-to-day emotional well-being tended to plateau at around $75,000 per year.

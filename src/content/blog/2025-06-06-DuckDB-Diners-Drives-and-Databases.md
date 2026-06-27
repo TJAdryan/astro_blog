@@ -19,7 +19,7 @@ If you’ve been coding in Python for a while, you’re likely familiar with tra
 
 Let’s put it to the test with some real-world data anyone can access. We’ll be using the NYC Department of Health’s restaurant inspection results:
 
-[https://data.cityofofnewyork.us/Health/DOHMH-New-York-City-Restaurant-Inspection-Results/43nn-pn8j/about_data](https://data.cityofofnewyork.us/Health/DOHMH-New-York-City-Restaurant-Inspection-Results/43nn-pn8j/about_data)
+[https://data.cityofnewyork.us/Health/DOHMH-New-York-City-Restaurant-Inspection-Results/43nn-pn8j/about_data](https://data.cityofnewyork.us/Health/DOHMH-New-York-City-Restaurant-Inspection-Results/43nn-pn8j/about_data)
 
 To get the data, just click the ‘Actions’ button in the top right corner on that page, select ‘Query Data’, and then hit ‘Export’ to download the CSV file. It should appear in your downloads folder in less than a minute.
 
