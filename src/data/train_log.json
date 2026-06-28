@@ -1,5 +1,10 @@
 [
   {
+    "date": "2026-06-28T13:32:19.670Z",
+    "status": "Good Service",
+    "details": []
+  },
+  {
     "date": "2026-06-27T13:32:28.342Z",
     "status": "Delays",
     "details": [
@@ -186,14 +191,6 @@
     "status": "Delays",
     "details": [
       "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between 7 Av and Avenue U (up to 16 mins, normally every 10 mins)."
-    ]
-  },
-  {
-    "date": "2026-05-26T14:01:34.518Z",
-    "status": "Delays",
-    "details": [
-      "Northbound: 96 St-bound trains are taking 7 mins longer to travel between 57 St - 7 Av and 96 St.",
-      "Southbound: Coney Island - Stillwell Av-bound trains are taking 5 mins longer to travel between 57 St - 7 Av and Atlantic Av - Barclays Ctr, and having longer wait times between Church Av and Kings Hwy (up to 22 mins, normally every 10 mins)."
     ]
   }
 ]
