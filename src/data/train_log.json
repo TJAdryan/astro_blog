@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-06-30T13:35:03.719Z",
+    "status": "Service Change",
+    "details": [
+      "Northbound: Some 96 St-bound trains are skipping Neck Rd, and Avenue U."
+    ]
+  },
+  {
     "date": "2026-06-29T14:23:05.960Z",
     "status": "Delays",
     "details": [
@@ -184,13 +191,6 @@
     "status": "Service Change",
     "details": [
       "Southbound: Some Coney Island - Stillwell Av-bound trains are skipping Ocean Pkwy, and W 8 St - NY Aquarium."
-    ]
-  },
-  {
-    "date": "2026-05-28T14:15:14.951Z",
-    "status": "Service Change",
-    "details": [
-      "Northbound: Some 96 St-bound trains are making local stops between Times Sq - 42 St and 57 St - 7 Av."
     ]
   }
 ]
