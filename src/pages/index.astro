@@ -58,63 +58,70 @@ const latestPosts = posts.slice(0, 3);
       </div>
     </div>
 
-    <!-- Latest Posts (top 3) -->
-    {
-      latestPosts.length > 0 && (
-        <div class="latest-posts mb-12">
-          <div class="section-header mb-4">
-            <h2 class="text-2xl font-bold default-title">Latest Posts</h2>
-            <img
-              src="/img/holiday/latest_posts.png"
-              alt="Latest Posts"
-              class="holiday-title"
-              hidden
-            />
+    <div class="main-sections-grid">
+      <!-- Latest Posts (top 3) -->
+      {
+        latestPosts.length > 0 && (
+          <div class="latest-posts">
+            <div class="section-header mb-4">
+              <h2 class="text-2xl font-bold default-title">My Writing</h2>
+              <img
+                src="/img/holiday/latest_posts.png"
+                alt="Latest Posts"
+                class="holiday-title"
+                hidden
+              />
+            </div>
+            <div class="writing-stack">
+              {latestPosts.map((post) => (
+                <article class="writing-card">
+                  <div class="writing-card-meta">
+                    <span class="writing-category">{post.data.category}</span>
+                    <span class="writing-date">
+                      <FormattedDate date={post.data.pubDate} />
+                    </span>
+                  </div>
+                  <h3 class="writing-card-title">
+                    <a href={`/blog/${post.slug}/`}>{post.data.title}</a>
+                  </h3>
+                  <p class="writing-card-desc">
+                    {post.data.description}
+                  </p>
+                  <div class="writing-card-tags">
+                    {post.data.tags.map((tag) => (
+                      <span class="writing-tag">#{tag}</span>
+                    ))}
+                  </div>
+                </article>
+              ))}
+            </div>
+            <div class="mt-6 text-center">
+              <a
+                href="/blog"
+                class="inline-block px-6 py-2 bg-slate-800 dark:bg-slate-700 text-white rounded-lg font-semibold shadow hover:bg-slate-700 dark:hover:bg-slate-600 transition-colors"
+              >
+                View All Writing
+              </a>
+            </div>
           </div>
-          <div class="flex flex-col gap-6 mt-4">
-            {latestPosts.map((post, index) => (
-              <div class={`border-b pb-4 last:border-b-0`}>
-                <a
-                  href={`/blog/${post.slug}/`}
-                  class="text-xl md:text-2xl font-bold text-slate-800 dark:text-slate-200 hover:underline block leading-tight mb-2"
-                >
-                  {post.data.title}
-                </a>
-                <p class="mt-2 text-base md:text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
-                  {post.data.description}
-                </p>
-                <p class="text-base md:text-sm text-gray-500 mt-2">
-                  <FormattedDate date={post.data.pubDate} />
-                </p>
-              </div>
-            ))}
-          </div>
-          <div class="mt-6 text-center">
-            <a
-              href="/blog"
-              class="inline-block px-6 py-2 bg-slate-800 dark:bg-slate-700 text-white rounded-lg font-semibold shadow hover:bg-slate-700 dark:hover:bg-slate-600 transition-colors"
-            >
-              View All Blog Posts
-            </a>
-          </div>
-        </div>
-      )
-    }
+        )
+      }
 
-    <!-- Interesting Articles: show 3 random from public/data/articles.json -->
-    <section id="all-articles" class="mb-12">
-      <h2 class="text-2xl font-bold mb-4">From my Reading List</h2>
-      <div id="articles-list" class="space-y-4">
-        <!-- client-side will render 3 random articles here -->
-      </div>
-      <div class="mt-6 text-center">
-        <a
-          href="/interesting-articles/"
-          class="inline-block px-6 py-2 bg-slate-800 dark:bg-slate-700 text-white rounded-lg font-semibold shadow hover:bg-slate-700 dark:hover:bg-slate-600 transition-colors"
-          >View All Articles</a
-        >
-      </div>
-    </section>
+      <!-- Interesting Articles: show 3 random from public/data/articles.json -->
+      <section id="all-articles" class="reading-list-section">
+        <h2 class="text-2xl font-bold mb-4">My Reading List</h2>
+        <div id="articles-list" class="reading-stack">
+          <!-- client-side will render 3 random articles here -->
+        </div>
+        <div class="mt-6 text-center">
+          <a
+            href="/interesting-articles/"
+            class="inline-block px-6 py-2 bg-slate-800 dark:bg-slate-700 text-white rounded-lg font-semibold shadow hover:bg-slate-700 dark:hover:bg-slate-600 transition-colors"
+            >View Full Reading List</a
+          >
+        </div>
+      </section>
+    </div>
   </div>
 </BaseLayout>
 
@@ -241,38 +248,56 @@ const latestPosts = posts.slice(0, 3);
           }
           return arr;
         }
+        function getDomain(urlStr) {
+          try {
+            const hostname = new URL(urlStr).hostname;
+            return hostname.replace(/^www\./, '');
+          } catch (e) {
+            return 'external resource';
+          }
+        }
+
         const three = shuffle(articles).slice(0, 3);
         const container = document.getElementById("articles-list");
         if (!container) return;
         container.innerHTML = "";
-        three.forEach((article, index) => {
-          const wrapper = document.createElement("div");
-          // Show all items on mobile
-          const visibilityClass = "";
-          wrapper.className = "border-b pb-4 last:border-b-0" + visibilityClass;
+        three.forEach((article) => {
+          const card = document.createElement("div");
+          card.className = "reading-list-card";
+
+          const header = document.createElement("div");
+          header.className = "reading-card-header";
+
+          const areaBadge = document.createElement("span");
+          areaBadge.className = "reading-area-badge";
+          areaBadge.textContent = article.area || "Resource";
+          header.appendChild(areaBadge);
+
+          const domainBadge = document.createElement("span");
+          domainBadge.className = "reading-domain-badge";
+          domainBadge.innerHTML = `
+            <svg style="width: 12px; height: 12px; margin-right: 4px; display: inline-block;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+            </svg>
+            ${getDomain(article.url)}
+          `;
+          header.appendChild(domainBadge);
+          card.appendChild(header);
+
           const a = document.createElement("a");
           a.href = article.url;
           a.target = "_blank";
           a.rel = "noopener";
-          a.className =
-            "text-xl md:text-2xl font-bold text-slate-800 dark:text-slate-200 hover:underline block leading-tight mb-2";
+          a.className = "reading-card-title";
           a.textContent = article.title;
-          wrapper.appendChild(a);
+          card.appendChild(a);
 
-          if (article.description) {
-            const pDesc = document.createElement("p");
-            pDesc.className =
-              "mt-2 text-base md:text-lg text-gray-700 dark:text-gray-300 leading-relaxed";
-            pDesc.textContent = article.description;
-            wrapper.appendChild(pDesc);
-          }
+          const author = document.createElement("p");
+          author.className = "reading-card-author";
+          author.textContent = `By ${article.author || "Unknown"}`;
+          card.appendChild(author);
 
-          const meta = document.createElement("p");
-          meta.className = "text-base md:text-sm text-gray-500 mt-2";
-          meta.textContent = `${article.author || ""}${article.author ? " — " : ""}${article.area || ""}`;
-          wrapper.appendChild(meta);
-
-          container.appendChild(wrapper);
+          container.appendChild(card);
         });
       })
       .catch((err) => {
@@ -596,6 +621,177 @@ const latestPosts = posts.slice(0, 3);
     display: block;
     max-width: 250px; /* Adjust size to fit header area properly */
     height: auto;
+  }
+
+  /* Grid layout for main content */
+  .main-sections-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 3rem;
+    margin-bottom: 4rem;
+  }
+
+  @media (max-width: 900px) {
+    .main-sections-grid {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+  }
+
+  /* Writing stack and card styling */
+  .writing-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .writing-card {
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 107, 53, 0.08);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+
+  .writing-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(255, 107, 53, 0.08);
+    border-color: rgba(255, 107, 53, 0.25);
+    background: white;
+  }
+
+  .writing-card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .writing-category {
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .writing-date {
+    color: rgb(var(--gray));
+  }
+
+  .writing-card-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin: 0 0 0.5rem 0;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+  }
+
+  .writing-card-title a {
+    color: rgb(var(--black));
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .writing-card-title a:hover {
+    color: var(--accent);
+  }
+
+  .writing-card-desc {
+    font-size: 0.98rem;
+    color: rgb(var(--gray-dark));
+    line-height: 1.5;
+    margin-bottom: 1rem;
+  }
+
+  .writing-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .writing-tag {
+    font-size: 0.8rem;
+    background: rgba(var(--gray-light), 0.8);
+    color: rgb(var(--gray-dark));
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+
+  /* Reading stack and card styling */
+  .reading-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .reading-list-card {
+    background: rgba(248, 250, 252, 0.6); /* Cool background */
+    border-left: 4px solid #6366f1; /* Distinct indigo left border */
+    border-top: 1px solid rgba(99, 102, 241, 0.08);
+    border-right: 1px solid rgba(99, 102, 241, 0.08);
+    border-bottom: 1px solid rgba(99, 102, 241, 0.08);
+    border-radius: 0 12px 12px 0;
+    padding: 1.25rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.01);
+    transition: all 0.3s ease;
+  }
+
+  .reading-list-card:hover {
+    transform: translateX(4px);
+    background: rgba(248, 250, 252, 1);
+    box-shadow: 0 8px 16px rgba(99, 102, 241, 0.08);
+    border-left-color: var(--accent);
+  }
+
+  .reading-card-header {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .reading-area-badge {
+    background: #e0e7ff;
+    color: #4f46e5;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 0.72rem;
+  }
+
+  .reading-domain-badge {
+    display: inline-flex;
+    align-items: center;
+    color: #64748b;
+    font-weight: 500;
+    font-size: 0.75rem;
+  }
+
+  .reading-card-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    line-height: 1.35;
+    color: rgb(var(--black));
+    text-decoration: none;
+    display: block;
+    transition: color 0.2s;
+  }
+
+  .reading-card-title:hover {
+    color: #4f46e5;
+    text-decoration: underline;
+  }
+
+  .reading-card-author {
+    font-size: 0.88rem;
+    font-style: italic;
+    color: #64748b;
+    margin: 0;
   }
 
   /* End CSS */

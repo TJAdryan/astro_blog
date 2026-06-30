@@ -170,12 +170,19 @@ const posts = (await getCollection("blog")).sort(
 	</style>
 
 	<section>
+		<div class="text-left mb-8">
+			<h1 class="text-4xl font-extrabold tracking-tight mb-2">My Writing</h1>
+			<p class="text-lg text-gray-600 dark:text-gray-400">
+				Technical essays, data engineering guides, and software development walkthroughs.
+			</p>
+		</div>
+
 		<div class="search-container">
 			<input
 				type="text"
 				id="blog-search"
 				class="search-input"
-				placeholder="Search articles..."
+				placeholder="Search writing..."
 				autocomplete="off"
 			/>
 		</div>
