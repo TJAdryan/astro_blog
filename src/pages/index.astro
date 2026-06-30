@@ -76,7 +76,6 @@ const latestPosts = posts.slice(0, 3);
               {latestPosts.map((post) => (
                 <article class="writing-card">
                   <div class="writing-card-meta">
-                    <span class="writing-category">{post.data.category}</span>
                     <span class="writing-date">
                       <FormattedDate date={post.data.pubDate} />
                     </span>
@@ -660,13 +659,6 @@ const latestPosts = posts.slice(0, 3);
     align-items: center;
     font-size: 0.85rem;
     margin-bottom: 0.75rem;
-  }
-
-  .writing-category {
-    font-weight: 700;
-    color: var(--accent);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
   }
 
   .writing-date {
