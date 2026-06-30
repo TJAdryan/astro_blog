@@ -623,19 +623,12 @@ const latestPosts = posts.slice(0, 3);
     height: auto;
   }
 
-  /* Grid layout for main content */
+  /* Stacked layout for main content */
   .main-sections-grid {
-    display: grid;
-    grid-template-columns: 1.15fr 0.85fr;
-    gap: 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
     margin-bottom: 4rem;
-  }
-
-  @media (max-width: 900px) {
-    .main-sections-grid {
-      grid-template-columns: 1fr;
-      gap: 2.5rem;
-    }
   }
 
   /* Writing stack and card styling */
@@ -720,11 +713,23 @@ const latestPosts = posts.slice(0, 3);
     font-weight: 500;
   }
 
-  /* Reading stack and card styling */
+  /* Reading stack as a balanced horizontal grid under the writing */
   .reading-stack {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
+  }
+
+  @media (max-width: 960px) {
+    .reading-stack {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .reading-stack {
+      grid-template-columns: 1fr;
+    }
   }
 
   .reading-list-card {
