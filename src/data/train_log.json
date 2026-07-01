@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-07-01T13:47:58.034Z",
+    "status": "Service Change",
+    "details": [
+      "Northbound: Some 96 St-bound trains are skipping Neck Rd, and Avenue U."
+    ]
+  },
+  {
     "date": "2026-06-30T13:35:03.719Z",
     "status": "Service Change",
     "details": [
@@ -184,13 +191,6 @@
     "status": "Delays",
     "details": [
       "Northbound: 96 St-bound trains are having longer wait times between 34 St - Herald Sq and Times Sq - 42 St (up to 14 mins, normally every 12 mins)."
-    ]
-  },
-  {
-    "date": "2026-05-29T14:02:33.510Z",
-    "status": "Service Change",
-    "details": [
-      "Southbound: Some Coney Island - Stillwell Av-bound trains are skipping Ocean Pkwy, and W 8 St - NY Aquarium."
     ]
   }
 ]
