@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-07-02T13:33:48.136Z",
+    "status": "Service Change",
+    "details": [
+      "Northbound: Some 96 St-bound trains are skipping Neck Rd, and Avenue U."
+    ]
+  },
+  {
     "date": "2026-07-01T13:47:58.034Z",
     "status": "Service Change",
     "details": [
@@ -185,12 +192,5 @@
     "date": "2026-05-31T13:32:31.780Z",
     "status": "Good Service",
     "details": []
-  },
-  {
-    "date": "2026-05-30T13:32:03.496Z",
-    "status": "Delays",
-    "details": [
-      "Northbound: 96 St-bound trains are having longer wait times between 34 St - Herald Sq and Times Sq - 42 St (up to 14 mins, normally every 12 mins)."
-    ]
   }
 ]
