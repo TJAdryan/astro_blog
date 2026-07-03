@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-07-03T15:03:07.577Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times between Parkside Av and Prospect Park (up to 12 mins, normally every 9 mins).",
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times at 7 Av (up to 14 mins, normally every 11 mins)."
+    ]
+  },
+  {
     "date": "2026-07-02T13:33:48.136Z",
     "status": "Service Change",
     "details": [
@@ -185,11 +193,6 @@
   },
   {
     "date": "2026-06-01T15:02:42.255Z",
-    "status": "Good Service",
-    "details": []
-  },
-  {
-    "date": "2026-05-31T13:32:31.780Z",
     "status": "Good Service",
     "details": []
   }
