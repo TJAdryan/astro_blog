@@ -18,15 +18,6 @@
     "dateAdded": "2026-01-26T13:16:57.469Z"
   },
   {
-    "id": "http://arxiv.org/abs/2504.10950v2",
-    "title": "Unveiling Challenges for LLMs in Enterprise Data Engineering",
-    "summary": "Large Language Models (LLMs) promise to automate data engineering on tabular data, offering enterprises a valuable opportunity to cut the high costs of manual data handling. But the enterprise domain comes with unique challenges that existing LLM-based approaches for data engineering often overlook, such as large table sizes, more complex tasks, and the need for internal knowledge. To bridge these gaps, we identify key enterprise-specific challenges related to data, tasks, and background knowledge and extensively evaluate how they affect data engineering with LLMs. Our analysis reveals that LLMs face substantial limitations in real-world enterprise scenarios, with accuracy declining sharply. Our findings contribute to a systematic understanding of LLMs for enterprise data engineering to support their adoption in industry.",
-    "link": "http://arxiv.org/abs/2504.10950v2",
-    "source": "arXiv",
-    "topic": "Data Engineering",
-    "dateAdded": "2026-02-02T13:24:58.660Z"
-  },
-  {
     "id": "36842543",
     "title": "CRISPR/Cas advancements for genome editing, diagnosis, therapeutics, and vaccine development for Plasmodium parasites, and genetic engineering of Anopheles mosquito vector.",
     "summary": "No abstract available via summary API. Please click link to read.",
