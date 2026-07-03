@@ -207,15 +207,6 @@
     "dateAdded": "2026-04-20T13:32:10.514Z"
   },
   {
-    "id": "http://arxiv.org/abs/2604.07656v3",
-    "title": "MVOS_HSI: A Python Library for Preprocessing Agricultural Crop Hyperspectral Data",
-    "summary": "Hyperspectral imaging (HSI) allows researchers to study plant traits non-destructively. By capturing hundreds of narrow spectral bands per pixel, it reveals details about plant biochemistry and stress that standard cameras miss. However, processing this data is often challenging. Many labs still rely on loosely organized collections of lab-specific MATLAB or Python scripts, which makes workflows difficult to share and results difficult to reproduce. MVOS_HSI is an open-source Python library that provides an end-to-end workflow for processing leaf-level HSI data. The software handles everything from calibrating raw ENVI files to detecting and clipping individual leaves based on multiple vegetation indices (NDVI, CIRedEdge and GCI). It also includes tools for data augmentation to create training-time variations for machine learning and utilities to visualize spectral profiles. MVOS_HSI can be used as an importable Python library or run directly from the command line. The code and documentation are available on GitHub. By consolidating these common tasks into a single package, MVOS_HSI helps researchers produce consistent and reproducible results in plant phenotyping",
-    "link": "http://arxiv.org/abs/2604.07656v3",
-    "source": "arXiv",
-    "topic": "Python",
-    "dateAdded": "2026-04-20T13:32:10.859Z"
-  },
-  {
     "id": "http://arxiv.org/abs/2603.18693v1",
     "title": "Cross-Ecosystem Vulnerability Analysis for Python Applications",
     "summary": "Python applications depend on native libraries that may be vendored within package distributions or installed on the host system. When vulnerabilities are discovered in these libraries, determining which Python packages are affected requires cross-ecosystem analysis spanning Python dependency graphs and OS package versions. Current vulnerability scanners produce false negatives by missing vendored vulnerabilities and false positives by ignoring security patches backported by OS distributions.\n  We present a provenance-aware vulnerability analysis approach that resolves vendored libraries to specific OS package versions or upstream releases. Our approach queries vendored libraries against a database of historical OS package artifacts using content-based hashing, and applies library-specific dynamic analyses to extract version information from binaries built from upstream source. We then construct cross-ecosystem call graphs by stitching together Python and binary call graphs across dependency boundaries, enabling reachability analysis of vulnerable functions. Evaluating on 100,000 Python packages and 10 known CVEs associated with third-party native dependencies, we identify 39 directly vulnerable packages (47M+ monthly downloads) and 312 indirectly vulnerable client packages affected through dependency chains. Our analysis achieves up to 97% false positive reduction compared to upstream version matching.",
