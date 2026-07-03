@@ -106,3 +106,13 @@ For general analytical performance, rely on DuckDB's built-in optimization mecha
 * **Zone Maps:** DuckDB automatically tracks the Min/Max values of column blocks to skip irrelevant data entirely without index overhead.
 * **Data Sorting:** Physical sorting groups similar values together, maximizing block-skipping efficiency via zone maps.
 * **Projection Pushdown:** Select only required columns. Isolating specific fields ensures uncalled column files are never read into memory.
+
+---
+
+## Getting Started with DuckDB
+
+If you're looking to get started with DuckDB, the official guides and documentation are excellent starting points:
+
+* **[Official DuckDB Documentation](https://duckdb.org/docs/)**: The definitive starting point for installation, core concepts, and comprehensive language APIs (Python, R, Java, Node.js, etc.).
+* **[DuckDB Official Guides](https://duckdb.org/docs/guides/)**: Practical recipes for loading data, querying flat files (CSV, Parquet, JSON), and connecting to cloud object stores.
+* **[Awesome DuckDB](https://github.com/duckdb/awesome-duckdb)**: A community-curated collection of tools, tutorials, extensions, and articles.
