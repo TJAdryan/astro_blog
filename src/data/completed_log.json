@@ -59,5 +59,12 @@
     "completedAt": "2026-07-03T17:19:00.609Z",
     "googleDocId": "1va7Ow5uOmNtwLty2KoHX02N-wCI38WFCcvcF4BxGXpM",
     "googleDocLink": "https://docs.google.com/document/d/1va7Ow5uOmNtwLty2KoHX02N-wCI38WFCcvcF4BxGXpM"
+  },
+  {
+    "id": "http://arxiv.org/abs/2503.16079v2",
+    "title": "Efficient Data Ingestion in Cloud-based architecture: a Data Engineering Design Pattern Proposal",
+    "completedAt": "2026-07-03T17:19:56.979Z",
+    "googleDocId": "1va7Ow5uOmNtwLty2KoHX02N-wCI38WFCcvcF4BxGXpM",
+    "googleDocLink": "https://docs.google.com/document/d/1va7Ow5uOmNtwLty2KoHX02N-wCI38WFCcvcF4BxGXpM"
   }
 ]
