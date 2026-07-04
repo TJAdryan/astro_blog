@@ -39,7 +39,7 @@ In transactional databases (OLTP), indexes are the default fix for slow queries.
 A common misconception is that an index speeds up any query filtering on an indexed column. When retrieving entire rows, a full table scan and an index lookup perform identically.
 
 ### The Setup: Generating Mock Data
-To see this in action, we can use DuckDB's built-in functions to spin up a table with 10 million rows and a secondary index:
+To see this in action, we can use DuckDB's built-in functions to spin up a table with 10 million rows and a secondary index. If you are running this in a Python environment, you can refer to the [DuckDB Python Getting Started Guide](https://duckdb.org/docs/api/python/overview) to set up your connection:
 
 ```sql
 -- Create an analytical schema
@@ -109,9 +109,9 @@ For general analytical performance, rely on DuckDB's built-in optimization mecha
 
 ---
 
-## Getting Started with DuckDB
+## Further Resources
 
-If you're looking to get started with DuckDB, the official guides and documentation are excellent starting points:
+For more detailed guides and community resources on working with DuckDB, explore these links:
 
 * **[Official DuckDB Documentation](https://duckdb.org/docs/)**: The definitive starting point for installation, core concepts, and comprehensive language APIs (Python, R, Java, Node.js, etc.).
 * **[DuckDB Official Guides](https://duckdb.org/docs/guides/)**: Practical recipes for loading data, querying flat files (CSV, Parquet, JSON), and connecting to cloud object stores.
