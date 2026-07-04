@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-07-04T14:24:51.912Z",
+    "status": "Delays",
+    "details": [
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Prospect Park and Parkside Av (up to 15 mins, normally every 12 mins)."
+    ]
+  },
+  {
     "date": "2026-07-03T15:03:07.577Z",
     "status": "Delays",
     "details": [
@@ -190,10 +197,5 @@
     "details": [
       "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Ocean Pkwy and Coney Island - Stillwell Av (up to 13 mins, normally every 10 mins)."
     ]
-  },
-  {
-    "date": "2026-06-01T15:02:42.255Z",
-    "status": "Good Service",
-    "details": []
   }
 ]
