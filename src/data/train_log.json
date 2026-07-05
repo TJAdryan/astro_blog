@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-07-05T14:26:53.337Z",
+    "status": "Delays",
+    "details": [
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Atlantic Av - Barclays Ctr and Kings Hwy (up to 16 mins, normally every 13 mins)."
+    ]
+  },
+  {
     "date": "2026-07-04T14:24:51.912Z",
     "status": "Delays",
     "details": [
@@ -189,13 +196,6 @@
     "details": [
       "Northbound: 96 St-bound trains are having longer wait times between Canal St and 96 St (up to 14 mins, normally every 12 mins).",
       "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Avenue M and Sheepshead Bay (up to 20 mins, normally every 10 mins)."
-    ]
-  },
-  {
-    "date": "2026-06-02T14:25:33.556Z",
-    "status": "Delays",
-    "details": [
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Ocean Pkwy and Coney Island - Stillwell Av (up to 13 mins, normally every 10 mins)."
     ]
   }
 ]
