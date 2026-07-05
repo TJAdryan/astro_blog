@@ -19,24 +19,21 @@ Microsoft didn't have to call their product "Blob" storage—they chose to wrap 
 
 ## ETL vs. ELT: Where the Compute Happens
 
-Data pipeline paradigms differ based on where the heavy lifting occurs.
+The real distinction between ETL and ELT isn't about the acronyms; it's about where you choose to pay the compute tax. With ETL, you are forced to spin up and maintain external middleware—like Spark or a dedicated Python runtime—to clean the data before it hits the destination. If your transformation logic changes tomorrow, you have to rerun the entire pipeline from scratch:
 
 * **ETL:** Source ──> `[ External Compute Engine ]` ──> Target Database
+
+ELT shifts that heavy lifting directly to the target system. Using a vectorized analytical engine like DuckDB allows you to dump raw data directly into the database and handle transformations natively via local SQL (`CREATE TABLE AS SELECT`), cutting out the middleware infrastructure entirely:
+
 * **ELT:** Source ──> Target Database ──> `[ Internal Compute Engine (SQL) ]`
-
-### ETL (Extract, Transform, Load)
-Data is transformed by an external middleware layer (like Spark or Python scripts) before hitting the target database. This requires separate infrastructure and forces full pipeline reruns if transformation logic changes.
-
-### ELT (Extract, Load, Transform)
-Raw data is dumped directly into the target system, and transformations are executed inside the database. Vectorized, local analytical engines like DuckDB make ELT highly efficient, letting you transform data natively via SQL (`CREATE TABLE AS SELECT`).
 
 ---
 
 ## DuckDB Indexing: The SELECT * Fallacy
 
-In transactional databases (OLTP), indexes are the default fix for slow queries. In an analytical engine (OLAP) like DuckDB, secondary indexes are highly specialized and often bypassed by design.
+Bringing traditional indexing habits to DuckDB will backfire. In transactional OLTP setups, slapping a secondary index on a column is the default reflex to fix a slow query. In an OLAP engine like DuckDB, the query planner often bypasses secondary indexes by design because the engine is already optimized for fast columnar scans.
 
-A common misconception is that an index speeds up any query filtering on an indexed column. When retrieving entire rows, a full table scan and an index lookup perform identically.
+The common trap is assuming an index speeds up everything. If you execute a `SELECT *` query, an index lookup and a full table scan perform identically. The index might locate the row instantly, but the engine still has to fetch every single column across the disk blocks, completely wiping out any theoretical performance gain.
 
 ### The Setup: Generating Mock Data
 To see this in action, we can use DuckDB's built-in functions to spin up a table with 10 million rows and a secondary index. If you are running this in a Python environment, you can refer to the [DuckDB Python Getting Started Guide](https://duckdb.org/docs/api/python/overview) to set up your connection:
