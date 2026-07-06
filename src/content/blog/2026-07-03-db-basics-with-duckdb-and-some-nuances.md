@@ -93,16 +93,11 @@ Retrieving a single column for a specific row, avoiding the materialization bott
 SELECT extended_price FROM lineitem WHERE order_id = 543210;
 ```
 
-### Constraint Enforcement
-DuckDB automatically builds unique indexes behind the scenes to enforce `PRIMARY KEY` and `UNIQUE` properties.
+### Constraint Enforcement and Performance Mechanics
 
----
+DuckDB automatically constructs internal unique indexes exclusively to enforce `PRIMARY KEY` and `UNIQUE` constraints. These system-generated structures guarantee data integrity but incur storage and write-amplification overhead, meaning they should never be intentionally created or relied upon for query acceleration.
 
-For general analytical performance, rely on DuckDB's built-in optimization mechanics instead of manual indexes:
-
-* **Zone Maps:** DuckDB automatically tracks the Min/Max values of column blocks to skip irrelevant data entirely without index overhead.
-* **Data Sorting:** Physical sorting groups similar values together, maximizing block-skipping efficiency via zone maps.
-* **Projection Pushdown:** Select only required columns. Isolating specific fields ensures uncalled column files are never read into memory.
+Analytical performance instead depends on DuckDB's columnar storage architecture and automatic optimization mechanics. The engine utilizes zone maps to automatically track the minimum and maximum values of column blocks, allowing queries to skip irrelevant data entirely without index maintenance. This block-skipping efficiency is directly maximized by physical data sorting, which groups similar values together and tightens the zone map boundaries. Furthermore, projection pushdown ensures that the engine isolates specific fields and reads only the explicitly required columns, completely preventing uncalled column files from loading into memory.
 
 ---
 
