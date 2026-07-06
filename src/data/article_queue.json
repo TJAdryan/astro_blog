@@ -232,5 +232,32 @@
     "source": "arXiv",
     "topic": "Python",
     "dateAdded": "2026-06-22T14:53:13.582Z"
+  },
+  {
+    "id": "http://arxiv.org/abs/2507.13892v2",
+    "title": "Towards Next Generation Data Engineering Pipelines",
+    "summary": "Data engineering pipelines are a widespread way to provide high-quality data for all kinds of data science applications. However, numerous challenges still remain in the composition and operation of such pipelines. Data engineering pipelines do not always deliver high-quality data. By default, they are also not reactive to changes. When new data is coming in which deviates from prior data, the pipeline could crash or output undesired results. We therefore envision three levels of next generation data engineering pipelines: optimized data pipelines, self-aware data pipelines, and self-adapting data pipelines. Pipeline optimization addresses the composition of operators and their parametrization in order to achieve the highest possible data quality. Self-aware data engineering pipelines enable a continuous monitoring of its current state, notifying data engineers on significant changes. Self-adapting data engineering pipelines are then even able to automatically react to those changes. We propose approaches to achieve each of these levels.",
+    "link": "http://arxiv.org/abs/2507.13892v2",
+    "source": "arXiv",
+    "topic": "Data Engineering",
+    "dateAdded": "2026-07-06T14:12:07.825Z"
+  },
+  {
+    "id": "42309898",
+    "title": "A modular all-in-one genetic engineering tool for the diatom Phaeodactylum tricornutum based on CRISPR-Cas12a.",
+    "summary": "No abstract available via summary API. Please click link to read.",
+    "link": "https://pubmed.ncbi.nlm.nih.gov/42309898/",
+    "source": "PubMed",
+    "topic": "CRISPR",
+    "dateAdded": "2026-07-06T14:12:08.409Z"
+  },
+  {
+    "id": "http://arxiv.org/abs/2606.01882v1",
+    "title": "Comparing ML-Specific and General Python Code Smells Across Project Characteristics",
+    "summary": "Machine learning systems consist of general-purpose code as well as machine-learning-specific code. While ML-specific code smells have been identified, their connection to project characteristics and their interaction with overall code quality are not well understood. Without this knowledge, quality assurance strategies remain one-size-fits-all, failing to account for the contextual factors that drive technical debt in ML systems. We present empirical evidence by examining how six project features (size, age, contributors, commit frequency, CI/CD adoption, and domain) relate to both ML-specific and general Python code quality in 279 open-source ML projects on GitHub. Using CodeSmile for ML code smells and Pylint for general Python smells, our results show: (1) ML code smells are 41-94 times less frequent than general Python smells; (2) commit frequency and domain are significantly associated with ML-specific quality, while project size, team size, age, and CI/CD adoption are not, challenging traditional views on technical debt; (3) general Python smells are not linked to any project characteristic, indicating systemic coding issues that are independent of project context; (4) domains that suffer most from ML-specific smells are not necessarily the same domains that suffer most from general Python smells, necessitating tailored quality strategies for each smell type. MLOps often involves configuration issues, Reinforcement Learning faces challenges with tensor manipulation, and Computer Vision encounters problems with GPU workflows. Overall, ML code quality depends on domain-specific practices and specialized CI/CD quality gates, as standard automation often overlooks domain-specific correctness problems.",
+    "link": "http://arxiv.org/abs/2606.01882v1",
+    "source": "arXiv",
+    "topic": "Python",
+    "dateAdded": "2026-07-06T14:12:08.723Z"
   }
 ]
