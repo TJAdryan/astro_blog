@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-07-06T16:13:56.566Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times between Coney Island - Stillwell Av and 72 St (up to 16 mins, normally every 9 mins).",
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Parkside Av and Avenue H (up to 18 mins, normally every 10 mins)."
+    ]
+  },
+  {
     "date": "2026-07-05T14:26:53.337Z",
     "status": "Delays",
     "details": [
@@ -188,14 +196,6 @@
     "details": [
       "Northbound: Some 96 St-bound trains are making local stops between Times Sq - 42 St and 57 St - 7 Av.",
       "Southbound: Coney Island - Stillwell Av-bound trains are running via <R> between Canal St and DeKalb Av."
-    ]
-  },
-  {
-    "date": "2026-06-03T14:32:39.632Z",
-    "status": "Delays",
-    "details": [
-      "Northbound: 96 St-bound trains are having longer wait times between Canal St and 96 St (up to 14 mins, normally every 12 mins).",
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Avenue M and Sheepshead Bay (up to 20 mins, normally every 10 mins)."
     ]
   }
 ]
