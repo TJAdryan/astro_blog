@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-07-08T15:10:49.558Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times between 7 Av and DeKalb Av (up to 18 mins, normally every 11 mins).",
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times at Brighton Beach (up to 13 mins, normally every 10 mins)."
+    ]
+  },
+  {
     "date": "2026-07-07T15:41:27.996Z",
     "status": "Delays",
     "details": [
@@ -189,13 +197,6 @@
     "status": "Delays",
     "details": [
       "Northbound: 96 St-bound trains are having longer wait times between 7 Av and 96 St (up to 17 mins, normally every 12 mins)."
-    ]
-  },
-  {
-    "date": "2026-06-05T13:59:08.517Z",
-    "status": "Service Change",
-    "details": [
-      "Northbound: Some 96 St-bound trains are making local stops between Times Sq - 42 St and 57 St - 7 Av."
     ]
   }
 ]
