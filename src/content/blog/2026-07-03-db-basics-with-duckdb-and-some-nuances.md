@@ -6,7 +6,13 @@ tags: ["Databases", "DuckDB", "Data Engineering", "SQL"]
 category: "Data Engineering"
 ---
 
-Database engineering can be gatekept by terminology. Tech vocabulary is highly fragmented: one manager demands academic definitions, another uses legacy enterprise jargon, and a third relies on vendor buzzwords. This variance creates arbitrary barriers, treating a subjective dialect as a proxy for competence. Unfortunately, this problem is not the fault of hiring managers; they are just looking for someone who can help them, and assessing the relative competence of an applicant can be a challenge. As my friend Aaron wisely says, "If you really want to learn, learn to help."
+Database engineering can be gatekept by terminology. Tech vocabulary is highly fragmented: one manager demands academic definitions, another uses legacy enterprise terms, and a third relies on vendor buzzwords. This variance creates arbitrary barriers, treating jargon as a proxy for competence. This is not the intention of hiring managers; they are just looking for someone who can help them, and assessing the relative competence of an applicant is definitely an imperfect science.
+
+The friction reminds me of a fall I took near the Barclays Center. I came up too fast on a deceptively slippery curb and went down, catching myself but bending back the ring finger of my right hand. The pain was delayed, but by the time I got to work, the finger had swollen into a shade of purple I couldn't quite name. When I asked my friend Aaron what color he thought it was, he bypassed the vocabulary completely and said, “You should get that checked out.”
+
+I regularly cite Aaron's wisdom in this blog, so I wanted to ensure I captured his exact point. When I asked him, "Do you mean learning to help, helps you to learn?" Aaron retorted, "No, I think you should go see a doctor today."
+
+Maybe it was the fall talking, I felt a little woozy Aaron was right, learning to help people does help you to learn. I took his head shake as further confirmation.
 
 Consider cloud object storage. Architecturally, AWS S3 and Azure Blob Storage are identical paradigms: flat, virtually infinite file stores optimized for decoupled compute. If you understand how to stream a Parquet file into DuckDB from one, you know how to do it for both. Yet, the vocabulary layer is completely fragmented:
 
