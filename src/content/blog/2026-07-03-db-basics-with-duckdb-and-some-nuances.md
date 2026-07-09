@@ -12,7 +12,7 @@ The friction reminds me of a fall I took near the Barclays Center. I came up too
 
 I regularly cite Aaron's wisdom in this blog, so I wanted to ensure I captured his exact point. When I asked him, "Do you mean learning to help, helps you to learn?" Aaron retorted, "No, I think you should go see a doctor today."
 
-Maybe it was the fall talking but Arron was starting to make a lot of sense, learning to help people does help you to learn.  I was confused for a moment, was Aaron was shaking his head no or the room was spinning.  If I was going to write this blog post I would need to focus.
+Maybe it was the fall talking but Arron was starting to make a lot of sense, learning to help people does help you to learn. I was confused for a moment, was Aaron was shaking his head no or was the room spinning?  Either way I knew I would feel better once I got to work.
 
 Consider cloud object storage. Architecturally, AWS S3 and Azure Blob Storage are identical paradigms: flat, virtually infinite file stores optimized for decoupled compute. If you understand how to stream a Parquet file into DuckDB from one, you know how to do it for both. Yet, the vocabulary layer is completely fragmented:
 
