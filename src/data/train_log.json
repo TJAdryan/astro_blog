@@ -1,5 +1,10 @@
 [
   {
+    "date": "2026-07-09T15:54:27.556Z",
+    "status": "Good Service",
+    "details": []
+  },
+  {
     "date": "2026-07-08T15:10:49.558Z",
     "status": "Delays",
     "details": [
@@ -191,12 +196,5 @@
     "date": "2026-06-07T13:32:49.529Z",
     "status": "Good Service",
     "details": []
-  },
-  {
-    "date": "2026-06-06T13:32:00.665Z",
-    "status": "Delays",
-    "details": [
-      "Northbound: 96 St-bound trains are having longer wait times between 7 Av and 96 St (up to 17 mins, normally every 12 mins)."
-    ]
   }
 ]
