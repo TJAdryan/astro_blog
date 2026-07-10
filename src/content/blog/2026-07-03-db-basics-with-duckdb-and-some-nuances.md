@@ -10,16 +10,16 @@ Database engineering can be gatekept by terminology. Tech vocabulary is highly f
 
 The friction reminds me of a fall I took near the Barclays Center. I came up too fast on a deceptively slippery curb and went down, catching myself but bending back the ring finger of my right hand. The pain was delayed, but by the time I got to work, the finger had swollen into a shade of purple I couldn't quite name. When I asked my friend Aaron what color he thought it was, he bypassed the vocabulary completely and said, “You should get that checked out.”
 
-I regularly cite Aaron's wisdom in this blog, so I wanted to ensure I captured his exact point. When I asked him, "Do you mean learning to help, helps you to learn?" Aaron retorted, "No, I think you should go see a doctor today."
+I regularly cite Aaron's wisdom in this blog, so I wanted to ensure I captured his exact point. When I asked him, "Do you mean learning to help helps you to learn?" Aaron retorted, "No, I think you should go see a doctor today."
 
-Maybe it was the fall talking but Arron was starting to make a lot of sense, learning to help people does help you to learn. I was confused for a moment, was Aaron was shaking his head no or was the room spinning?  Either way I knew I would feel better once I got to work.
+Maybe it was the fall talking, but Aaron was starting to make a lot of sense; learning to help people does help you to learn. I was confused for a moment: was Aaron shaking his head no or was the room spinning? Either way, I knew I would feel better once I got to work.
 
 Consider cloud object storage. Architecturally, AWS S3 and Azure Blob Storage are identical paradigms: flat, virtually infinite file stores optimized for decoupled compute. If you understand how to stream a Parquet file into DuckDB from one, you know how to do it for both. Yet, the vocabulary layer is completely fragmented:
 
 * **AWS Framework:** Bucket ──> Object ──> S3 Endpoint
 * **Azure Framework:** Container ──> Block Blob ──> Blob Endpoint
 
-Microsoft didn't have to call their product "Blob" storage—they chose to wrap a universal engineering concept in proprietary enterprise branding. Having a good definition on hand is great, but I always feel that a little practice with a concept makes remembering the definition more salient. Here are a couple of concepts that are frequently reviewed, some with some practical exercises:
+Microsoft didn't have to call its product "Blob" storage—it chose to wrap a universal engineering concept in proprietary enterprise branding. Having a good definition on hand is great, but I always feel that a little practice with a concept makes remembering the definition more salient. Here are a couple of concepts that are frequently reviewed, along with some practical exercises:
 
 ---
 
@@ -71,7 +71,7 @@ CREATE INDEX idx_order_id ON lineitem (order_id);
 ```
 
 ### Comparing Execution
-If you query a single transaction by its ID requesting every attribute, the index offers no resource savings over a localized sequential scan:
+If you query a single transaction by its ID to request every attribute, the index offers no resource savings over a localized sequential scan:
 
 ```sql
 -- Query 1: Forcing a full row retrieval via the index
