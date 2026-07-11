@@ -1,0 +1,25 @@
+---
+title: "The Volatility of Systems: Modeling Structural Collapse"
+description: "Why early atmospheric simulations 'blew up' and what it teaches us about systemic equilibrium."
+pubDate: "2026-07-11"
+tags: ["Simulation", "Systems", "Cellular-Automata"]
+category: "Bioinformatics"
+---
+
+When early computer models ran climate calculations, they frequently devolved. 
+This wasn't a flaw in the math—it was a reflection of how volatile non-linear 
+systems behave when forced out of baseline parameters.
+
+### Interactive Thought Experiment
+
+The cell matrix below runs on an altered Conway's Game of Life algorithm. 
+Left alone at baseline settings, the population auto-regulates. Shift the sliders 
+too far, and observe how difficult it becomes to return to baseline once a 
+tipping point is crossed.
+
+import ClimateGameOfLife from '../../components/ClimateGameOfLife.jsx';
+
+<ClimateGameOfLife client:visible />
+
+Notice that if you push the temperature past 40°C for even a few generations, 
+simply lowering it back down does not instantly fix the population...
