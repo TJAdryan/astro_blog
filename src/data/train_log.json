@@ -1,5 +1,10 @@
 [
   {
+    "date": "2026-07-11T14:20:07.703Z",
+    "status": "Good Service",
+    "details": []
+  },
+  {
     "date": "2026-07-10T15:27:49.140Z",
     "status": "Delays",
     "details": [
@@ -192,12 +197,5 @@
     "date": "2026-06-10T14:07:42.682Z",
     "status": "Good Service",
     "details": []
-  },
-  {
-    "date": "2026-06-09T13:51:44.091Z",
-    "status": "Delays",
-    "details": [
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Times Sq - 42 St and Canal St (up to 14 mins, normally every 10 mins)."
-    ]
   }
 ]
