@@ -24,6 +24,7 @@ export default function ClimateGameOfLife() {
   const [populationDensity, setPopulationDensity] = useState(20);
   const [systemStatus, setSystemStatus] = useState('Stable Equilibrium');
   const [speed, setSpeed] = useState(100); // ms per step
+  const [isGameOver, setIsGameOver] = useState(false);
 
   const isRunningRef = useRef(isRunning);
   isRunningRef.current = isRunning;
@@ -42,18 +43,30 @@ export default function ClimateGameOfLife() {
     // Determine system structural state
     if (density === 0) {
       setSystemStatus('Mass Extinction / Collapse');
+      if (generation > 0) {
+        setIsGameOver(true);
+        setIsRunning(false);
+      }
     } else if (configRef.current.temperature > 40 || configRef.current.resources < 40) {
       setSystemStatus('Degrading / High Stress');
     } else {
       setSystemStatus('Stable Equilibrium');
     }
-  }, [grid]);
+  }, [grid, generation]);
 
   // Game loop tick calculations
   const runSimulation = useCallback(() => {
     if (!isRunningRef.current) return;
 
+    let isGameOverDetected = false;
+
     setGrid((currentGrid) => {
+      const aliveCells = currentGrid.flat().reduce((acc, cell) => acc + cell, 0);
+      if (aliveCells === 0) {
+        isGameOverDetected = true;
+        return currentGrid;
+      }
+
       const nextGrid = currentGrid.map((row) => [...row]);
       const { temperature: temp, resources: res } = configRef.current;
 
@@ -91,8 +104,21 @@ export default function ClimateGameOfLife() {
           }
         }
       }
+
+      // Check if next grid is completely empty
+      const nextAliveCells = nextGrid.flat().reduce((acc, cell) => acc + cell, 0);
+      if (nextAliveCells === 0) {
+        isGameOverDetected = true;
+      }
+
       return nextGrid;
     });
+
+    if (isGameOverDetected) {
+      setIsRunning(false);
+      setIsGameOver(true);
+      return;
+    }
 
     setGeneration((g) => g + 1);
     setTimeout(runSimulation, configRef.current.speed);
@@ -108,11 +134,26 @@ export default function ClimateGameOfLife() {
 
   // Handle cell click toggling
   const handleCellClick = (r, c) => {
+    if (isGameOver) return; // Prevent editing when game is over
     setGrid((currentGrid) => {
       const nextGrid = currentGrid.map((row) => [...row]);
       nextGrid[r][c] = nextGrid[r][c] === 1 ? 0 : 1;
       return nextGrid;
     });
+  };
+
+  // Helper to reset the simulation
+  const handleReset = () => {
+    setGrid(seedGrid(0.2));
+    setGeneration(0);
+    setIsGameOver(false);
+  };
+
+  // Helper to clear the simulation grid
+  const handleClear = () => {
+    setGrid(createEmptyGrid());
+    setGeneration(0);
+    setIsGameOver(false);
   };
 
   // Helper to load presets
@@ -122,6 +163,7 @@ export default function ClimateGameOfLife() {
     setSpeed(speedMs);
     setGrid(seedGrid(density));
     setGeneration(0);
+    setIsGameOver(false);
   };
 
   // Determine color status theme classes
@@ -173,7 +215,7 @@ export default function ClimateGameOfLife() {
         
         {/* Left Side: Game Grid viewport */}
         <div className="lg:col-span-7 flex flex-col items-center">
-          <div className="w-full bg-slate-950 p-3 rounded-2xl border border-slate-800 shadow-inner">
+          <div className="w-full bg-slate-950 p-3 rounded-2xl border border-slate-800 shadow-inner relative">
             <div 
               className="grid gap-[1px] bg-slate-850 overflow-hidden rounded-lg aspect-square cursor-crosshair select-none"
               style={{ gridTemplateColumns: `repeat(${GRID_SIZE}, minmax(0, 1fr))` }}
@@ -193,6 +235,31 @@ export default function ClimateGameOfLife() {
                 ))
               )}
             </div>
+
+            {/* Game Over Screen Overlay */}
+            {isGameOver && (
+              <div className="absolute inset-3 bg-slate-950/90 backdrop-blur-[2px] rounded-lg flex flex-col items-center justify-center text-center p-6 border border-rose-500/20 shadow-2xl">
+                <span className="p-3 bg-rose-500/10 rounded-full text-rose-500 mb-3 animate-bounce">
+                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                </span>
+                <h3 className="text-xl md:text-2xl font-black text-rose-500 uppercase tracking-wider">All Life Has Ended</h3>
+                <p className="text-slate-400 text-xs md:text-sm mt-2 max-w-xs">
+                  The ecosystem has collapsed.
+                </p>
+                <div className="mt-4 px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl">
+                  <span className="text-[10px] text-slate-500 uppercase font-bold tracking-wider block">Survival Record</span>
+                  <span className="text-sm font-bold text-slate-300">Life existed for <strong className="text-white text-base">{generation}</strong> cycles</span>
+                </div>
+                <button 
+                  onClick={handleReset} 
+                  className="mt-6 px-5 py-2.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl font-bold text-xs transition-all shadow-[0_4px_12px_rgba(225,29,72,0.3)]"
+                >
+                  Re-Seed Biosphere
+                </button>
+              </div>
+            )}
           </div>
           <div className="text-xs text-slate-500 mt-2 text-center">
             Click on cells in the grid to seed or toggle life directly.
@@ -341,7 +408,7 @@ export default function ClimateGameOfLife() {
             
             <div className="flex gap-2">
               <button 
-                onClick={() => { setGrid(seedGrid(0.2)); setGeneration(0); }} 
+                onClick={handleReset} 
                 className="py-3 px-4 bg-slate-800 hover:bg-slate-750 border border-slate-700 hover:border-slate-600 text-slate-300 font-semibold rounded-xl text-sm transition-all flex items-center justify-center gap-1"
                 title="Reset with random 20% seed"
               >
@@ -351,7 +418,7 @@ export default function ClimateGameOfLife() {
                 Reset
               </button>
               <button 
-                onClick={() => { setGrid(createEmptyGrid()); setGeneration(0); }} 
+                onClick={handleClear} 
                 className="py-3 px-4 bg-slate-800 hover:bg-slate-750 border border-slate-700 hover:border-slate-600 text-slate-400 font-semibold rounded-xl text-sm transition-all flex items-center justify-center gap-1"
                 title="Clear all cells"
               >
