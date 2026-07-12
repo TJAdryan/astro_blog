@@ -14,7 +14,7 @@ const seedGrid = (density = 0.2) => {
 
 export default function ClimateGameOfLife() {
   // Environmental Variables governed by the user
-  const [temperature, setTemperature] = useState(25); // Baseline 25°C
+  const [temperature, setTemperature] = useState(15); // Baseline 15°C
   const [resources, setResources] = useState(100);    // Baseline 100%
 
   // Simulation State
@@ -47,7 +47,7 @@ export default function ClimateGameOfLife() {
         setIsGameOver(true);
         setIsRunning(false);
       }
-    } else if (configRef.current.temperature > 40 || configRef.current.resources < 40) {
+    } else if (configRef.current.temperature > 16 || configRef.current.resources < 40) {
       setSystemStatus('Degrading / High Stress');
     } else {
       setSystemStatus('Stable Equilibrium');
@@ -71,7 +71,7 @@ export default function ClimateGameOfLife() {
       const { temperature: temp, resources: res } = configRef.current;
 
       // Map environmental degradation multipliers
-      const heatStressDieOffChance = temp > 35 ? (temp - 35) * 0.02 : 0;
+      const heatStressDieOffChance = temp > 15 ? (temp - 15) * 0.1 : 0;
       const starvationMultiplier = res < 70 ? (70 - res) * 0.01 : 0;
 
       for (let r = 0; r < GRID_SIZE; r++) {
@@ -281,7 +281,7 @@ export default function ClimateGameOfLife() {
             </div>
             <div className="text-center p-2 rounded-xl bg-slate-900/50">
               <span className="block text-slate-500 text-[10px] uppercase font-bold tracking-wider">Temp</span>
-              <strong className="text-lg md:text-xl font-black text-orange-400">{temperature}°C</strong>
+              <strong className="text-lg md:text-xl font-black text-orange-400">{temperature.toFixed(2)}°C</strong>
             </div>
           </div>
 
@@ -290,32 +290,32 @@ export default function ClimateGameOfLife() {
             <span className="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">Sim Pre-sets</span>
             <div className="grid grid-cols-2 gap-2">
               <button 
-                onClick={() => applyPreset(25, 100, 100, 0.2)}
+                onClick={() => applyPreset(15, 100, 100, 0.2)}
                 className="text-left p-2.5 bg-slate-850 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 rounded-xl text-xs transition-all flex flex-col gap-0.5"
               >
                 <span className="font-bold text-emerald-400">Stable Biosphere</span>
-                <span className="text-[10px] text-slate-400">Temp: 25°C • Res: 100%</span>
+                <span className="text-[10px] text-slate-400">Temp: 15.00°C • Res: 100%</span>
               </button>
               <button 
-                onClick={() => applyPreset(45, 120, 80, 0.35)}
+                onClick={() => applyPreset(17.5, 120, 80, 0.35)}
                 className="text-left p-2.5 bg-slate-850 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 rounded-xl text-xs transition-all flex flex-col gap-0.5"
               >
                 <span className="font-bold text-orange-400">Thermal Greenhouse</span>
-                <span className="text-[10px] text-slate-400">Temp: 45°C • Res: 120%</span>
+                <span className="text-[10px] text-slate-400">Temp: 17.50°C • Res: 120%</span>
               </button>
               <button 
-                onClick={() => applyPreset(22, 35, 120, 0.15)}
+                onClick={() => applyPreset(14.5, 35, 120, 0.15)}
                 className="text-left p-2.5 bg-slate-850 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 rounded-xl text-xs transition-all flex flex-col gap-0.5"
               >
                 <span className="font-bold text-amber-500">Resource Starvation</span>
-                <span className="text-[10px] text-slate-400">Temp: 22°C • Res: 35%</span>
+                <span className="text-[10px] text-slate-400">Temp: 14.50°C • Res: 35%</span>
               </button>
               <button 
-                onClick={() => applyPreset(16, 140, 50, 0.45)}
+                onClick={() => applyPreset(13.75, 140, 50, 0.45)}
                 className="text-left p-2.5 bg-slate-850 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 rounded-xl text-xs transition-all flex flex-col gap-0.5"
               >
                 <span className="font-bold text-cyan-400">Hyper Growth</span>
-                <span className="text-[10px] text-slate-400">Temp: 16°C • Res: 140%</span>
+                <span className="text-[10px] text-slate-400">Temp: 13.75°C • Res: 140%</span>
               </button>
             </div>
           </div>
@@ -328,17 +328,17 @@ export default function ClimateGameOfLife() {
             <div className="flex flex-col gap-1">
               <div className="flex justify-between text-sm font-semibold">
                 <span className="text-slate-300">Global Temperature</span>
-                <span className="text-orange-400 font-mono">{temperature}°C</span>
+                <span className="text-orange-400 font-mono">{temperature.toFixed(2)}°C</span>
               </div>
               <input 
-                type="range" min="15" max="50" value={temperature} 
+                type="range" min="13" max="18" step="0.25" value={temperature} 
                 onChange={(e) => setTemperature(Number(e.target.value))} 
                 className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-orange-500"
               />
               <div className="flex justify-between text-[10px] text-slate-500">
-                <span>15°C (Cool)</span>
-                <span>Baseline: 25°C</span>
-                <span>50°C (Extreme)</span>
+                <span>13.00°C (Cool)</span>
+                <span>Baseline: 15.00°C</span>
+                <span>18.00°C (Extreme)</span>
               </div>
             </div>
 
@@ -441,7 +441,7 @@ export default function ClimateGameOfLife() {
             Heat Stress Mechanics
           </h4>
           <p className="leading-relaxed text-slate-400">
-            Temperatures above <strong className="text-white">35°C</strong> initiate a stress factor. Active cells experience a random chance of dying off during each turn due to heat stress (increasing by <strong className="text-white">2%</strong> per degree above 35°C), simulating thermal boundaries.
+            Temperatures above <strong className="text-white">15.00°C</strong> initiate a stress anomaly. Active cells experience a random chance of dying off during each turn due to heat stress (increasing by <strong className="text-white">10%</strong> per degree above 15°C). At <strong className="text-white">17.00°C</strong>, die-off becomes statistically unavoidable (20% die-off rate per turn).
           </p>
         </div>
         <div className="bg-slate-950/30 p-4 rounded-xl border border-slate-850">
