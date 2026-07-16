@@ -1,0 +1,15 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ClimateGameOfLife from "../../components/ClimateGameOfLife.jsx";
+---
+
+<BaseLayout title="Ecosystem Cellular Automata - Game of Life" mainClass="max-w-5xl">
+  <div class="py-6">
+    <div class="mb-6">
+      <a href="/interactive" class="text-accent hover:underline font-semibold flex items-center gap-1">
+        ← Back to Interactive Gallery
+      </a>
+    </div>
+    <ClimateGameOfLife client:only="react" />
+  </div>
+</BaseLayout>

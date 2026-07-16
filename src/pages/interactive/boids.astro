@@ -1,0 +1,15 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import BoidsSimulation from "../../components/BoidsSimulation.tsx";
+---
+
+<BaseLayout title="Boids Flocking Simulation - Emergent Complexity" mainClass="max-w-5xl">
+  <div class="py-6">
+    <div class="mb-6">
+      <a href="/interactive" class="text-accent hover:underline font-semibold flex items-center gap-1">
+        ← Back to Interactive Gallery
+      </a>
+    </div>
+    <BoidsSimulation client:only="react" />
+  </div>
+</BaseLayout>

@@ -1,10 +1,217 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import BoidsSimulation from "../components/BoidsSimulation.tsx";
 ---
 
-<BaseLayout title="Emergent Complexity Boids Simulation" mainClass="max-w-5xl">
-  <div class="py-4">
-    <BoidsSimulation client:only="react" />
+<BaseLayout title="Interactive Simulations Gallery" mainClass="max-w-6xl">
+  <div class="py-8">
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+        Interactive Simulations
+      </h1>
+      <p class="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
+        Explore complex systems, emergent behavior, and economic models through real-time, interactive computational simulations.
+      </p>
+    </div>
+
+    <!-- Gallery Grid -->
+    <div class="simulation-grid">
+      <!-- Card 1: Boids -->
+      <a href="/interactive/boids" class="sim-card-link">
+        <div class="sim-card">
+          <div class="image-container">
+            <img src="/img/boids_sim.jpg" alt="Boids Flocking Simulation" class="sim-image" />
+            <div class="hover-overlay">
+              <span class="overlay-text">Launch Simulation →</span>
+            </div>
+          </div>
+          <div class="card-content">
+            <span class="category-badge boids-badge">Physics & Complexity</span>
+            <h3 class="card-title">Boids Flocking</h3>
+            <p class="card-description">
+              Observe emergent complexity through three simple rules: Separation, Alignment, and Cohesion. Adjust steering vectors in real-time to guide the flock.
+            </p>
+          </div>
+        </div>
+      </a>
+
+      <!-- Card 2: Game of Life -->
+      <a href="/interactive/game-of-life" class="sim-card-link">
+        <div class="sim-card">
+          <div class="image-container">
+            <img src="/img/game_of_life_sim.jpg" alt="Conway's Game of Life Simulation" class="sim-image" />
+            <div class="hover-overlay">
+              <span class="overlay-text">Launch Simulation →</span>
+            </div>
+          </div>
+          <div class="card-content">
+            <span class="category-badge gol-badge">Ecology & Systems</span>
+            <h3 class="card-title">Ecosystem Cellular Automata</h3>
+            <p class="card-description">
+              A modified Conway's Game of Life simulation demonstrating non-linear feedback loops. Test systemic thresholds under varying temperature and resource stress.
+            </p>
+          </div>
+        </div>
+      </a>
+
+      <!-- Card 3: Housing Sim -->
+      <a href="/interactive/housing-simulation" class="sim-card-link">
+        <div class="sim-card">
+          <div class="image-container">
+            <img src="/img/housing_sim.jpg" alt="U.S. Housing Market Simulation" class="sim-image" />
+            <div class="hover-overlay">
+              <span class="overlay-text">Launch Simulation →</span>
+            </div>
+          </div>
+          <div class="card-content">
+            <span class="category-badge housing-badge">Economics & Models</span>
+            <h3 class="card-title">Housing Market Simulation</h3>
+            <p class="card-description">
+              Interact with a macroeconomic model simulating regional listing volumes, inventory level indices, foreclosure rates, and market pricing dynamics.
+            </p>
+          </div>
+        </div>
+      </a>
+    </div>
   </div>
 </BaseLayout>
+
+<style>
+  .simulation-grid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  @media (min-width: 768px) {
+    .simulation-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .sim-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    outline: none;
+  }
+
+  .sim-card {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 16px;
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+
+  .sim-card-link:hover .sim-card {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    border-color: var(--accent);
+  }
+
+  .image-container {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%; /* 16:9 Aspect Ratio */
+    overflow: hidden;
+    background-color: #f1f5f9;
+  }
+
+  .sim-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .sim-card-link:hover .sim-image {
+    transform: scale(1.05);
+  }
+
+  .hover-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .sim-card-link:hover .hover-overlay {
+    opacity: 1;
+  }
+
+  .overlay-text {
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 0.5rem 1rem;
+    background: rgba(var(--black), 0.8);
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+  }
+
+  .card-content {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+
+  .category-badge {
+    display: inline-block;
+    align-self: flex-start;
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.6rem;
+    border-radius: 9999px;
+    margin-bottom: 0.75rem;
+  }
+
+  .boids-badge {
+    background-color: #e0f2fe;
+    color: #0369a1;
+  }
+
+  .gol-badge {
+    background-color: #ffedd5;
+    color: #c2410c;
+  }
+
+  .housing-badge {
+    background-color: #f3e8ff;
+    color: #6b21a8;
+  }
+
+  .card-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .card-description {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: #475569;
+    margin: 0;
+  }
+</style>

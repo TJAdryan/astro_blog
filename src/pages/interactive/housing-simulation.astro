@@ -1,0 +1,24 @@
+---
+import FullWidthLayout from "../../layouts/FullWidthLayout.astro";
+import HousingSimulationComponent from "../../components/HousingSim/HousingSimulation.jsx";
+---
+
+<FullWidthLayout title="Housing Simulation">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div class="mb-6">
+      <a href="/interactive" style="color: var(--accent); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
+        ← Back to Interactive Gallery
+      </a>
+    </div>
+  </div>
+  <div class="housing-simulation-page">
+    <div class="housing-simulation-container">
+      <HousingSimulationComponent client:only="react" />
+    </div>
+  </div>
+</FullWidthLayout>
+<style>
+  .housing-simulation-container {
+    width: 100%;
+  }
+</style>
