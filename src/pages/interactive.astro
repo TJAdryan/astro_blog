@@ -1,0 +1,10 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import BoidsSimulation from "../components/BoidsSimulation.tsx";
+---
+
+<BaseLayout title="Emergent Complexity Boids Simulation" mainClass="max-w-5xl">
+  <div class="py-4">
+    <BoidsSimulation client:only="react" />
+  </div>
+</BaseLayout>
