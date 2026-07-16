@@ -64,87 +64,132 @@ export default function AaronsParadox() {
     return { rankedAgents, selected, systemEfficiency };
   }, [agents, volumeBias, noiseLevel]);
 
+  // Role Badge Styling classes
+  const getBadgeClass = (type: string) => {
+    switch (type) {
+      case "Quiet Expert":
+        return "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20";
+      case "Amplified Presenter":
+        return "bg-amber-500/10 text-amber-400 border border-amber-500/20";
+      default:
+        return "bg-purple-500/10 text-purple-400 border border-purple-500/20";
+    }
+  };
+
   return (
-    <div style={{ padding: '24px', maxWidth: '900px', margin: '0 auto', backgroundColor: '#121212', color: '#e0e0e0', borderRadius: '12px', boxShadow: '0 8px 32px rgba(0,0,0,0.3)' }}>
-      <h2 style={{ marginTop: 0, borderBottom: '1px solid #333', paddingBottom: '12px', color: '#ffffff' }}>Aaron's Paradox: Transmission vs. Competence</h2>
-      
-      {/* Controls Container */}
-      <div style={{ display: 'grid', gap: '20px', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', marginBottom: '24px', backgroundColor: '#1e1e1e', padding: '16px', borderRadius: '8px', border: '1px solid #2d2d2d' }}>
+    <div className="w-full max-w-5xl mx-auto p-4 md:p-6 bg-slate-900 text-slate-100 rounded-3xl shadow-2xl border border-slate-800 font-sans mt-4">
+      {/* Header section */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-6 border-b border-slate-800">
         <div>
-          <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 'bold' }}>
-            Network Attention Filter Bias: <span style={{ color: '#4dadff' }}>{volumeBias}% Loudness</span>
-          </label>
+          <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white flex items-center gap-2">
+            <span className="p-2 bg-rose-500/10 rounded-lg text-rose-400">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </span>
+            Aaron's Paradox
+          </h2>
+          <p className="text-slate-400 text-sm mt-1">
+            transmission versus competence in communication networks.
+          </p>
+        </div>
+        
+        {/* Status indicator */}
+        <div className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border ${
+          processedData.systemEfficiency > 70 
+            ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
+            : processedData.systemEfficiency > 45 
+            ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' 
+            : 'bg-rose-500/10 text-rose-400 border-rose-500/20'
+        }`}>
+          {processedData.systemEfficiency > 70 ? 'High-Performance Flow' : processedData.systemEfficiency > 45 ? 'Sub-Optimal Channel' : 'Communication Collapse'}
+        </div>
+      </div>
+
+      {/* Control panel section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-850 p-5 rounded-2xl border border-slate-800 mb-6">
+        {/* Attention slider */}
+        <div className="flex flex-col gap-2">
+          <div className="flex justify-between items-center text-sm font-semibold">
+            <span className="text-slate-300">Network Attention Filter Bias</span>
+            <span className="text-cyan-400 font-mono">{volumeBias}% Loudness</span>
+          </div>
           <input 
             type="range" 
             min="0" 
             max="100" 
             value={volumeBias} 
             onChange={(e) => setVolumeBias(Number(e.target.value))}
-            style={{ width: '100%', accentColor: '#4dadff', cursor: 'pointer' }}
+            className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-500"
           />
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#888', marginTop: '4px' }}>
-            <span>Filter by Competence</span>
-            <span>Filter by Volume</span>
+          <div className="flex justify-between text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+            <span>Competence Filter</span>
+            <span>Volume/Loudness Filter</span>
           </div>
         </div>
 
-        <div>
-          <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 'bold' }}>
-            Structural Noise Level: <span style={{ color: '#ff6b6b' }}>{noiseLevel}%</span>
-          </label>
+        {/* Noise level slider */}
+        <div className="flex flex-col gap-2">
+          <div className="flex justify-between items-center text-sm font-semibold">
+            <span className="text-slate-300">Structural Ambient Noise</span>
+            <span className="text-rose-400 font-mono">{noiseLevel}%</span>
+          </div>
           <input 
             type="range" 
             min="0" 
             max="100" 
             value={noiseLevel} 
             onChange={(e) => setNoiseLevel(Number(e.target.value))}
-            style={{ width: '100%', accentColor: '#ff6b6b', cursor: 'pointer' }}
+            className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-rose-500"
           />
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#888', marginTop: '4px' }}>
+          <div className="flex justify-between text-[10px] text-slate-500 font-bold uppercase tracking-wider">
             <span>Clear Channels</span>
             <span>High Saturation</span>
           </div>
         </div>
       </div>
 
-      {/* Main Dashboard Layout */}
-      <div style={{ display: 'grid', gap: '24px', gridTemplateColumns: isMobile ? '1fr' : '1.2fr 1fr' }}>
+      {/* Main dashboard content */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
-        {/* Left Column: Complete Agent Registry */}
-        <div>
-          <h3 style={{ fontSize: '16px', marginBottom: '12px', color: '#ffffff' }}>Network Nodes (All Available Talent)</h3>
-          <div style={{ display: 'grid', gap: '8px' }}>
+        {/* Left Side: Agent Registry */}
+        <div className="lg:col-span-7">
+          <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+            Network Nodes (Talent Pool)
+          </h3>
+          <div className="grid gap-2.5 max-h-[500px] overflow-y-auto pr-1">
             {processedData.rankedAgents.map((agent) => {
               const isSelected = processedData.selected.some(s => s.id === agent.id);
               return (
                 <div 
                   key={agent.id} 
-                  style={{ 
-                    padding: '12px', 
-                    backgroundColor: isSelected ? '#1a2e40' : '#1e1e1e', 
-                    border: isSelected ? '1px solid #4dadff' : '1px solid #2d2d2d',
-                    borderRadius: '6px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    transition: 'all 0.2s ease'
-                  }}
+                  className={`p-3.5 rounded-xl border transition-all duration-200 flex items-center justify-between ${
+                    isSelected 
+                      ? 'bg-blue-600/10 border-blue-500/35 shadow-[0_0_12px_rgba(59,130,246,0.15)]' 
+                      : 'bg-slate-850 border-slate-800/80 hover:border-slate-700'
+                  }`}
                 >
-                  <div>
-                    <div style={{ fontWeight: 'bold', fontSize: '14px', color: isSelected ? '#4dadff' : '#fff' }}>
-                      {agent.name} 
-                      <span style={{ fontSize: '11px', fontWeight: 'normal', color: '#888', marginLeft: '8px' }}>
-                        [{agent.type}]
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-2">
+                      <span className={`font-bold text-sm ${isSelected ? 'text-blue-400' : 'text-white'}`}>
+                        {agent.name}
+                      </span>
+                      <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wide ${getBadgeClass(agent.type)}`}>
+                        {agent.type}
                       </span>
                     </div>
-                    <div style={{ fontSize: '12px', color: '#aaa', marginTop: '4px' }}>
-                      Competence: <strong style={{ color: '#2ecc71' }}>{agent.competence}</strong> | 
-                      Signal Volume: <strong style={{ color: '#e67e22' }}>{agent.volume}</strong>
+                    <div className="text-xs text-slate-400 flex gap-3">
+                      <span>Competence: <strong className="text-emerald-400 font-mono">{agent.competence}</strong></span>
+                      <span className="text-slate-600">•</span>
+                      <span>Signal Volume: <strong className="text-orange-400 font-mono">{agent.volume}</strong></span>
                     </div>
                   </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: '11px', color: '#888' }}>Network Priority</div>
-                    <div style={{ fontWeight: 'bold', fontSize: '14px', color: isSelected ? '#4dadff' : '#fff' }}>{Math.round(agent.networkScore)}</div>
+                  <div className="text-right">
+                    <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Network Priority</div>
+                    <div className={`font-mono font-black text-sm ${isSelected ? 'text-blue-400 text-base' : 'text-slate-300'}`}>
+                      {Math.round(agent.networkScore)}
+                    </div>
                   </div>
                 </div>
               );
@@ -152,59 +197,83 @@ export default function AaronsParadox() {
           </div>
         </div>
 
-        {/* Right Column: Output & System Metrics */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        {/* Right Side: Efficiency Metric & Aggregated Output */}
+        <div className="lg:col-span-5 flex flex-col gap-6">
           
-          {/* Efficiency Metric Panel */}
-          <div style={{ backgroundColor: '#1e1e1e', padding: '20px', borderRadius: '8px', textAlign: 'center', border: '1px solid #2d2d2d' }}>
-            <div style={{ fontSize: '13px', color: '#aaa', textTransform: 'uppercase', letterSpacing: '1px' }}>
+          {/* Circular Efficiency Gauge */}
+          <div className="bg-slate-850 p-6 rounded-2xl border border-slate-800 text-center flex flex-col items-center">
+            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-4 block">
               Overall System Efficiency
+            </span>
+            
+            {/* Efficiency metric display */}
+            <div className="relative flex items-center justify-center">
+              <svg className="w-32 h-32 transform -rotate-90">
+                <circle
+                  cx="64"
+                  cy="64"
+                  r="56"
+                  stroke="currentColor"
+                  strokeWidth="8"
+                  className="text-slate-800"
+                  fill="transparent"
+                />
+                <circle
+                  cx="64"
+                  cy="64"
+                  r="56"
+                  stroke="currentColor"
+                  strokeWidth="8"
+                  fill="transparent"
+                  strokeDasharray={2 * Math.PI * 56}
+                  strokeDashoffset={2 * Math.PI * 56 * (1 - processedData.systemEfficiency / 100)}
+                  className={`transition-all duration-500 ${
+                    processedData.systemEfficiency > 70 
+                      ? 'text-emerald-400' 
+                      : processedData.systemEfficiency > 45 
+                      ? 'text-amber-400' 
+                      : 'text-rose-500'
+                  }`}
+                />
+              </svg>
+              <div className="absolute text-3xl font-black font-mono text-white">
+                {processedData.systemEfficiency}%
+              </div>
             </div>
-            <div style={{ 
-              fontSize: '48px', 
-              fontWeight: 'bold', 
-              margin: '12px 0',
-              color: processedData.systemEfficiency > 75 ? '#2ecc71' : processedData.systemEfficiency > 45 ? '#f1c40f' : '#e74c3c'
-            }}>
-              {processedData.systemEfficiency}%
-            </div>
-            <p style={{ fontSize: '12px', color: '#888', margin: 0, lineHeight: '1.4' }}>
-              Calculated as the average actual competence of the top 3 ideas aggregated by the network.
+            
+            <p className="text-xs text-slate-400 mt-4 leading-relaxed">
+              Calculated as the average actual competence of the top 3 ideas aggregated by the network filter.
             </p>
           </div>
 
-          {/* Selected Ideas Panel */}
-          <div style={{ backgroundColor: '#1e1e1e', padding: '16px', borderRadius: '8px', border: '1px solid #2d2d2d', flexGrow: 1 }}>
-            <h3 style={{ fontSize: '16px', marginTop: 0, marginBottom: '12px', color: '#4dadff' }}>
-              Aggregated System Outputs
-            </h3>
-            <div style={{ display: 'grid', gap: '10px' }}>
-              {processedData.selected.map((agent, index) => (
-                <div 
-                  key={agent.id} 
-                  style={{ 
-                    padding: '10px', 
-                    backgroundColor: '#151515', 
-                    borderRadius: '6px', 
-                    borderLeft: '4px solid #4dadff',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center'
-                  }}
-                >
-                  <div>
-                    <span style={{ fontSize: '12px', color: '#888', marginRight: '6px' }}>#{index + 1}</span>
-                    <span style={{ fontSize: '14px', fontWeight: 'bold', color: '#ffffff' }}>{agent.name}</span>
+          {/* Aggregated Output Panel */}
+          <div className="bg-slate-850 p-5 rounded-2xl border border-slate-800 flex-grow flex flex-col justify-between">
+            <div>
+              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                Aggregated Network Outputs
+              </h3>
+              <div className="grid gap-2">
+                {processedData.selected.map((agent, index) => (
+                  <div 
+                    key={agent.id} 
+                    className="p-3 bg-slate-900 border border-slate-800/80 rounded-xl flex justify-between items-center"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-bold text-slate-500">#{index + 1}</span>
+                      <span className="text-sm font-semibold text-white">{agent.name}</span>
+                    </div>
+                    <div className="text-xs bg-slate-850 border border-slate-850 px-2 py-1 rounded-md font-mono">
+                      Value: <strong className="text-emerald-400 font-bold">{Math.round(agent.finalEffectiveValue)}</strong>
+                    </div>
                   </div>
-                  <div style={{ fontSize: '12px', backgroundColor: '#222', padding: '4px 8px', borderRadius: '4px' }}>
-                    Value: <strong style={{ color: '#2ecc71' }}>{Math.round(agent.finalEffectiveValue)}</strong>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
             
-            <div style={{ marginTop: '16px', padding: '12px', backgroundColor: '#251818', border: '1px solid #4a2323', borderRadius: '6px', fontSize: '12px', color: '#cca3a3', lineHeight: '1.4' }}>
-              <strong>Systemic Summary:</strong> When attention filters favor volume over internal validity metrics, high-competence, low-volume agents (such as Aaron) are structurally suppressed from execution pipelines.
+            {/* Systemic Summary */}
+            <div className="mt-5 p-3.5 bg-rose-950/20 border border-rose-900/30 rounded-xl text-xs text-rose-300/85 leading-relaxed">
+              <strong>Systemic Paradox:</strong> When attention filters favor volume/loudness over competence, quiet experts (like Aaron) are structurally filtered out, causing overall system quality to collapse.
             </div>
           </div>
 

@@ -25,10 +25,10 @@ const INCOME_TIERS = weights.INCOME_TIERS;
 
 // --- Helper Components ---
 const Card = ({ label, value, subValue }) => (
-  <div className="bg-white p-3 rounded-lg shadow text-center">
-    <label className="block text-xs text-gray-500 mb-1 font-medium">{label}</label>
-    <span className="text-xl font-bold text-gray-800">{value}</span>
-    {subValue && <span className="block text-sm font-bold text-green-600">{subValue}</span>}
+  <div className="bg-slate-850 border border-slate-800/80 p-4 rounded-2xl text-center shadow-md transition-all hover:border-slate-700/60">
+    <label className="block text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-1.5">{label}</label>
+    <span className="text-lg md:text-xl font-extrabold text-white block">{value}</span>
+    {subValue && <span className="block text-xs font-semibold mt-1">{subValue}</span>}
   </div>
 );
 
@@ -133,8 +133,8 @@ export default function HousingSimulation() {
   const getPercentChange = (initial, current) => {
     if (initial === 0 || !initial) return 'N/A';
     const change = ((current - initial) / initial) * 100;
-    const color = change >= 0 ? 'text-green-600' : 'text-red-600';
-    return <span className={color}>{`${change >= 0 ? '+' : ''}${change.toFixed(1)}%`}</span>;
+    const color = change >= 0 ? 'text-emerald-400' : 'text-rose-455 text-rose-400';
+    return <span className={`${color} font-mono font-bold`}>{`${change >= 0 ? '+' : ''}${change.toFixed(1)}%`}</span>;
   };
   
   // --- Data Computation for Display ---
@@ -808,210 +808,298 @@ export default function HousingSimulation() {
   };
 
   return (
-  <div style={{ width: '100%', maxWidth: '100vw', margin: 0, padding: 0 }} className="bg-slate-50 font-sans min-h-screen">
-  <div style={{ width: '100%', maxWidth: '100vw', margin: 0, padding: 0 }}>
-    <div className="text-center py-4 bg-white border-b border-gray-100">
-      <p className="text-gray-600">
-        To read about this simulation and get the code to run it locally, <a href="https://nextvaldata.com/blog/2025-09-14-an-imperfect-model-for-an-imperfect-market/" className="text-blue-600 hover:text-blue-800 underline" target="_blank" rel="noopener noreferrer">click here</a>.
-      </p>
-    </div>
+    <div className="w-full max-w-7xl mx-auto p-4 md:p-6 bg-slate-900 text-slate-100 rounded-3xl shadow-2xl border border-slate-800 font-sans mt-4">
+      {/* Header section */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-6 border-b border-slate-800">
+        <div>
+          <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white flex items-center gap-2">
+            <span className="p-2 bg-indigo-500/10 rounded-lg text-indigo-400">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+              </svg>
+            </span>
+            U.S. Housing Market Simulation
+          </h2>
+          <p className="text-slate-400 text-sm mt-1">
+            Macroeconomic model of regional listing volumes, inventory indices, and pricing dynamics.
+          </p>
+        </div>
         
-  <div className="space-y-2 mb-4">
-      <div className="flex flex-col items-center gap-4">
-        <div className="flex flex-wrap gap-4 items-center justify-center">
-          <div></div>
+        {/* Status display */}
+        <div className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border ${
+          collapseTriggered 
+            ? 'bg-rose-500/10 text-rose-455 text-rose-400 border-rose-500/20' 
+            : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+        }`}>
+          {collapseTriggered ? 'Market Crash Mode' : 'Standard Market'}
         </div>
       </div>
-        </div>
-        
-        <main>
-          <h3 className="text-2xl font-bold text-center mb-4">Current Market Stats</h3>
-          <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8 w-full">
-            <Card label="Total Population" value={displayData.totalPopulation} subValue="Housed & Seeking" />
-            <Card label="Seeking Housing" value={displayData.seekerCount} />
-            <Card label="Homeowners" value={displayData.homeowners} subValue={displayData.pctOwnerOccupied} />
-            <Card label="Landlords" value={displayData.landlords} subValue={displayData.pctLandlords} />
-            <Card label="Mortgage-Eligible Seekers" value={displayData.mortgageEligible} subValue="Can Afford Median Home" />
-            <Card label="Median Home Price" value={`$${Math.round((displayData.medianPrice || 0) / 1000)}k`} subValue={displayData.pctMedianPrice} />
-            <Card label="Median Seeker Income" 
-                  value={displayData.seekerCount > 0 ? `$${Math.round((displayData.medianIncome || 0)/1000)}k` : 'N/A'} 
-                  subValue={displayData.pctMedianIncome} />
-            <Card 
-              label="Median Homeowner Income" 
-              value={displayData.medianHomeownerIncome > 0 ? `$${Math.round(displayData.medianHomeownerIncome / 1000)}k` : 'N/A'}
-              subValue={displayData.pctMedianHomeownerIncome}
-            />
-            <Card label="Median Rent" value={`$${Math.round(displayData.medianRent || 0)}`} subValue={displayData.pctMedianRent} />
-            <Card label="Median Rent Burden" value={displayData.medianRentBurden} subValue="% of Median Seeker Income" />
-            <Card label="Vacant Rental Units" value={displayData.vacantRentals} subValue={`${displayData.vacancyRate} Rental Rate`} />
-            <Card label="Short-Term Rentals" value={displayData.shortTermRentals} subValue="Total Units" />
-          </div>
 
-          <div id="housing-visual-grid" className="grid grid-cols-[repeat(40,1fr)] gap-2 p-4 bg-gray-200 rounded-lg overflow-x-auto shadow-inner w-full max-w-none">
-            {housingStock.map((home, idx) => {
-                // Color palette: group similar types with related shades
-                let fill = '#9ca3af'; // default gray
-                if (home.status === 'OwnerOccupied') fill = '#22c55e'; // green
-                else if (home.usage === 'LongTermRental' && home.status === 'Occupied') fill = '#1e40af'; // dark blue
-                else if (home.usage === 'LongTermRental' && home.status === 'Vacant') fill = '#60a5fa'; // light blue
-                else if (home.status === 'UnsoldNew' || home.status === 'Unsold') fill = '#ffbf00'; // yellow for all unsold homes
-                else if (home.usage === 'ShortTermRental') fill = '#a21caf'; // purple
-                const formatPrice = (price) => `$${Math.round(price).toLocaleString()}`;
-                const getTooltipText = (home) => {
-                  let text = `ID: ${home.id}\nPrice: ${formatPrice(home.price)}`;
-                  if (home.ownerType === 'landlord' && home.rent) {
-                    if (home.usage === 'ShortTermRental') {
-                      text += `\nNightly Rate: ${formatPrice(home.nightlyRate)}`;
-                      text += `\nMonthly Revenue: ${formatPrice(home.rent)}`;
-                    } else {
-                      text += `\nRent: ${formatPrice(home.rent)}/month`;
-                    }
-                  }
-                  return text;
-                };
-                
-                // Show tooltip below for top row (first 40 houses)
-                const isTopRow = idx < 40;
-                return (
-                  <div key={home.id} className="group relative">
-                    <svg width="27" height="27" viewBox="0 0 24 24" className="mx-auto" style={{height: '1.6875rem', width: '1.6875rem'}}>
-                      <rect x="6" y="10" width="12" height="8" rx="2" fill={fill} />
-                      <polygon points="12,4 4,12 20,12" fill={fill} />
-                    </svg>
-                    <div className={`absolute z-10 ${isTopRow ? 'top-full mt-2' : 'bottom-full mb-2'} left-1/2 transform -translate-x-1/2 px-2 py-1 bg-gray-900 text-white text-xs rounded whitespace-pre opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none`}>
-                      {getTooltipText(home)}
-                    </div>
-                  </div>
-                );
-              })}
-          </div>
-
-           <div className="flex justify-center flex-wrap gap-6 mt-4 text-sm p-4 bg-white rounded-lg shadow">
-           <div className="flex justify-center flex-wrap gap-6 mt-4 text-sm p-4 bg-white rounded-lg shadow">
-            <div className="flex gap-3 items-center justify-center">
-              <button onClick={handleRunSimulation} className={`font-bold px-4 py-2 rounded-md text-white ${simulationRunning ? 'bg-orange-500 hover:bg-orange-600' : 'bg-green-600 hover:bg-green-700'}`}>{simulationRunning ? 'Pause' : 'Run'}</button>
-              <input type="number" value={yearsToRun} onChange={e => setYearsToRun(Math.max(0, Number(e.target.value)))} className="w-16 p-1 border rounded-md text-center" />
-            </div>
-            <div className="flex items-center gap-4 justify-center mt-2">
-              <button onClick={handleReset} disabled={simulationRunning} className="border border-gray-400 px-3 py-2 rounded-md bg-white hover:bg-gray-100">Reset</button>
-              <button onClick={advanceYear} disabled={simulationRunning} className="border border-gray-400 px-3 py-2 rounded-md bg-white hover:bg-gray-100">Advance Year</button>
-              <button onClick={() => setCollapseTriggered(true)} disabled={simulationRunning || collapseTriggered} className="font-bold border border-red-500 text-red-600 px-3 py-2 rounded-md bg-white hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed">Trigger Mortgage Collapse</button>
-              <div className="text-2xl font-bold">Year: <span>{year}</span></div>
-            </div>
-          </div>
-              <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full" style={{background:'#22c55e'}}></div>Owner Occupied</div>
-              <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full" style={{background:'#1e40af'}}></div>Rental Occupied</div>
-              <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full" style={{background:'#60a5fa'}}></div>Rental Vacant</div>
-              <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full" style={{background:'#a21caf'}}></div>Short-Term Rental</div>
-              <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full" style={{background:'#ffbf00'}}></div>Unsold Homes</div>
-           </div>
-           <div className="flex justify-center gap-4 py-3 bg-white border-t border-gray-200">
-             <span className="text-gray-600">Sort by:</span>
-             <button 
-               onClick={() => {
-                 setSortBy('color');
-                 setHousingStock(prev => sortHouses([...prev], 'color'));
-               }}
-               className={`px-3 py-1 rounded transition-colors ${sortBy === 'color' ? 'bg-blue-600 text-white' : 'bg-gray-100 hover:bg-gray-200'}`}
-             >
-               Color
-             </button>
-             <button 
-               onClick={() => {
-                 setSortBy('price');
-                 setHousingStock(prev => sortHouses([...prev], 'price'));
-               }}
-               className={`px-3 py-1 rounded transition-colors ${sortBy === 'price' ? 'bg-blue-600 text-white' : 'bg-gray-100 hover:bg-gray-200'}`}
-             >
-               Price
-             </button>
-             <button 
-               onClick={() => {
-                 setSortBy('id');
-                 setHousingStock(prev => sortHouses([...prev], 'id'));
-               }}
-               className={`px-3 py-1 rounded transition-colors ${sortBy === 'id' ? 'bg-blue-600 text-white' : 'bg-gray-100 hover:bg-gray-200'}`}
-             >
-               ID
-             </button>
-           </div>
-
-           <div className="bg-gray-50 p-2 rounded-lg shadow mt-2">
-            <h4 className="text-base font-semibold text-center mb-2">Simulation Variables</h4>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
-              <div className="flex flex-col">
-                <label className="text-xs text-gray-600">Initial Homeowners</label>
-                <input
-                  type="number"
-                  value={initialHomeowners}
-                  onChange={e => updateBalancedOwnership('homeowners', Number(e.target.value))}
-                  className="mt-0.5 px-1 py-0.5 border rounded text-sm w-full"
-                  min="0"
-                  max={HOMES_TOTAL}
-                />
-              </div>
-              <div className="flex flex-col">
-                <label className="text-xs text-gray-600">Initial Landlords</label>
-                <input
-                  type="number"
-                  value={initialLandlords}
-                  onChange={e => updateBalancedOwnership('landlords', Number(e.target.value))}
-                  className="mt-0.5 px-1 py-0.5 border rounded text-sm w-full"
-                  min="0"
-                  max={HOMES_TOTAL}
-                />
-              </div>
-              <div className="flex flex-col">
-                <label className="text-xs text-gray-600">Initial Seekers</label>
-                <input
-                  type="number"
-                  value={initialSeekersCount}
-                  onChange={e => setInitialSeekersCount(Number(e.target.value))}
-                  className="mt-0.5 px-1 py-0.5 border rounded text-sm w-full"
-                />
-              </div>
-              <div className="flex flex-col">
-                <label className="text-xs text-gray-600">New Homes/Year</label>
-                <input
-                  type="number"
-                  value={newHomes}
-                  onChange={e => setNewHomes(Number(e.target.value))}
-                  className="mt-0.5 px-1 py-0.5 border rounded text-sm w-full"
-                />
-              </div>
-              <div className="flex flex-col">
-                <label className="text-xs text-gray-600">Turnover (%)</label>
-                <input
-                  type="number"
-                  value={turnoverRate}
-                  onChange={e => setTurnoverRate(Number(e.target.value))}
-                  className="mt-0.5 px-1 py-0.5 border rounded text-sm w-full"
-                />
-              </div>
-              <div className="flex flex-col">
-                <label className="text-xs text-gray-600">Landlord Cap (%)</label>
-                <input
-                  type="number"
-                  value={landlordCap}
-                  onChange={e => setLandlordCap(Number(e.target.value))}
-                  className="mt-0.5 px-1 py-0.5 border rounded text-sm w-full"
-                />
-              </div>
-            </div>
-           </div>
-
-           <hr className="my-5" />
-
-          <h3 className="text-2xl font-bold text-center mb-2">Simulation Results</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 mt-4 mb-4 w-full">
-            <Card label="Total Unsold Homes" value={housingStock.filter(h => h.status === 'Unsold' || h.status === 'UnsoldNew').length} />
-            <Card label="Homeowner Purchases" value={marketResults.current.purchasesByHomeowner} />
-            <Card label="Landlord Purchases" value={marketResults.current.purchasesByLandlord} />
-            <Card label="Converted to STR" value={marketResults.current.convertedToShortTerm} />
-            <Card label="Displacements" value={marketResults.current.displacements} />
-          </div>
-        </main>
+      {/* Info link banner */}
+      <div className="mb-6 p-4 bg-slate-950/40 border border-slate-800 rounded-2xl text-xs md:text-sm text-slate-400 flex items-center gap-3">
+        <svg className="w-5 h-5 text-indigo-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        <span>
+          To read about the mechanics of this simulation and download the source code, see the article: {' '}
+          <a href="https://nextvaldata.com/blog/2025-09-14-an-imperfect-model-for-an-imperfect-market/" className="text-indigo-455 text-indigo-400 hover:text-indigo-300 underline font-semibold" target="_blank" rel="noopener noreferrer">An Imperfect Model for an Imperfect Market</a>.
+        </span>
       </div>
+
+      <main>
+        {/* Statistics section */}
+        <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+          <svg className="w-4 h-4 text-indigo-455 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+          Current Market Stats
+        </h3>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-8 w-full">
+          <Card label="Total Population" value={displayData.totalPopulation} subValue="Housed & Seeking" />
+          <Card label="Seeking Housing" value={displayData.seekerCount} />
+          <Card label="Homeowners" value={displayData.homeowners} subValue={displayData.pctOwnerOccupied} />
+          <Card label="Landlords" value={displayData.landlords} subValue={displayData.pctLandlords} />
+          <Card label="Mortgage-Eligible" value={displayData.mortgageEligible} subValue="Cheapest Home Capable" />
+          <Card label="Median Price" value={displayData.medianPrice ? `$${Math.round(displayData.medianPrice / 1000)}k` : 'N/A'} subValue={displayData.pctMedianPrice} />
+          <Card label="Median Seeker Income" value={displayData.seekerCount > 0 ? `$${Math.round((displayData.medianIncome || 0)/1000)}k` : 'N/A'} subValue={displayData.pctMedianIncome} />
+          <Card label="Median Homeowner Income" value={displayData.medianHomeownerIncome > 0 ? `$${Math.round(displayData.medianHomeownerIncome / 1000)}k` : 'N/A'} subValue={displayData.pctMedianHomeownerIncome} />
+          <Card label="Median Rent" value={displayData.medianRent ? `$${Math.round(displayData.medianRent)}` : 'N/A'} subValue={displayData.pctMedianRent} />
+          <Card label="Median Rent Burden" value={displayData.medianRentBurden} subValue="% of Seeker Income" />
+          <Card label="Vacant Rentals" value={displayData.vacantRentals} subValue={`${displayData.vacancyRate} Rental Vacancy`} />
+          <Card label="Short-Term Rentals" value={displayData.shortTermRentals} subValue="Total Units" />
+        </div>
+
+        {/* Visual housing grid */}
+        <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+          <svg className="w-4 h-4 text-indigo-455 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V4zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V4zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+          Regional Housing Stock Map
+        </h3>
+        <div id="housing-visual-grid" className="grid grid-cols-[repeat(40,1fr)] gap-2 p-5 bg-slate-950 rounded-2xl border border-slate-800 shadow-inner overflow-x-auto w-full max-w-none">
+          {housingStock.map((home, idx) => {
+            let fill = '#64748b'; // default slate-500 gray
+            if (home.status === 'OwnerOccupied') fill = '#10b981'; // emerald green
+            else if (home.usage === 'LongTermRental' && home.status === 'Occupied') fill = '#3b82f6'; // vibrant blue
+            else if (home.usage === 'LongTermRental' && home.status === 'Vacant') fill = '#93c5fd'; // light blue
+            else if (home.status === 'UnsoldNew' || home.status === 'Unsold') fill = '#ffbf00'; // yellow
+            else if (home.usage === 'ShortTermRental') fill = '#a21caf'; // purple
+            
+            const formatPrice = (price) => `$${Math.round(price).toLocaleString()}`;
+            const getTooltipText = (home) => {
+              let text = `ID: ${home.id}\nPrice: ${formatPrice(home.price)}`;
+              if (home.ownerType === 'landlord' && home.rent) {
+                if (home.usage === 'ShortTermRental') {
+                  text += `\nNightly Rate: ${formatPrice(home.nightlyRate)}`;
+                  text += `\nMonthly Revenue: ${formatPrice(home.rent)}`;
+                } else {
+                  text += `\nRent: ${formatPrice(home.rent)}/month`;
+                }
+              }
+              return text;
+            };
+            
+            const isTopRow = idx < 40;
+            return (
+              <div key={home.id} className="group relative transition-transform duration-150 hover:scale-110">
+                <svg width="27" height="27" viewBox="0 0 24 24" className="mx-auto cursor-help" style={{height: '1.6875rem', width: '1.6875rem'}}>
+                  <rect x="6" y="10" width="12" height="8" rx="1.5" fill={fill} />
+                  <polygon points="12,3 4,11 20,11" fill={fill} />
+                </svg>
+                <div className={`absolute z-20 ${isTopRow ? 'top-full mt-2' : 'bottom-full mb-2'} left-1/2 transform -translate-x-1/2 px-2.5 py-1.5 bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-xl shadow-xl whitespace-pre opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none`}>
+                  {getTooltipText(home)}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Controls, Legend & Filters block */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6">
+          {/* Main Simulation Actions Card */}
+          <div className="lg:col-span-8 bg-slate-850 p-5 rounded-2xl border border-slate-800 flex flex-col justify-between gap-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-800 pb-4 w-full">
+              <div className="flex gap-3 items-center">
+                <button 
+                  onClick={handleRunSimulation} 
+                  className={`font-bold px-5 py-2.5 rounded-xl text-xs uppercase tracking-wider text-white transition-all shadow-md ${
+                    simulationRunning ? 'bg-orange-500 hover:bg-orange-655 hover:bg-orange-600' : 'bg-green-655 hover:bg-green-600 bg-green-600'
+                  }`}
+                >
+                  {simulationRunning ? 'Pause' : 'Run'}
+                </button>
+                <div className="flex items-center gap-1.5 text-xs text-slate-400">
+                  <span>Years to Run:</span>
+                  <input 
+                    type="number" 
+                    value={yearsToRun} 
+                    onChange={e => setYearsToRun(Math.max(0, Number(e.target.value)))} 
+                    className="w-14 px-2 py-1 bg-slate-900 border border-slate-850 rounded-lg text-center font-bold text-white text-xs" 
+                  />
+                </div>
+              </div>
+              
+              <div className="text-sm font-black text-white flex items-center gap-2 ml-auto">
+                <span className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Current Cycle</span>
+                <span className="font-mono text-base text-indigo-400">Year {year}</span>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-3 items-center">
+              <button 
+                onClick={handleReset} 
+                disabled={simulationRunning} 
+                className="bg-slate-800 hover:bg-slate-750 border border-slate-700/80 px-4 py-2 rounded-xl text-xs text-slate-350 transition-all font-bold disabled:opacity-50"
+              >
+                Reset
+              </button>
+              <button 
+                onClick={advanceYear} 
+                disabled={simulationRunning} 
+                className="bg-slate-800 hover:bg-slate-750 border border-slate-700/80 px-4 py-2 rounded-xl text-xs text-slate-350 transition-all font-bold disabled:opacity-50"
+              >
+                Advance Year
+              </button>
+              <button 
+                onClick={() => setCollapseTriggered(true)} 
+                disabled={simulationRunning || collapseTriggered} 
+                className="font-bold border border-red-500/30 hover:border-red-500 text-red-400 px-4 py-2 rounded-xl bg-red-950/10 hover:bg-red-950/30 text-xs transition-all disabled:opacity-30 disabled:cursor-not-allowed ml-auto"
+              >
+                Trigger Mortgage Collapse
+              </button>
+            </div>
+          </div>
+
+          {/* Map Legend Card */}
+          <div className="lg:col-span-4 bg-slate-850 p-5 rounded-2xl border border-slate-800 flex flex-col justify-center gap-3">
+            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block border-b border-slate-800 pb-2">
+              Status Map Legend
+            </span>
+            <div className="grid grid-cols-2 gap-2 text-xs text-slate-300">
+              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full" style={{background:'#10b981'}}></div>Owner Occupied</div>
+              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full" style={{background:'#3b82f6'}}></div>Rental Occupied</div>
+              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full" style={{background:'#93c5fd'}}></div>Rental Vacant</div>
+              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full" style={{background:'#a21caf'}}></div>Short-Term Rental</div>
+              <div className="flex items-center gap-2 col-span-2"><div className="w-3 h-3 rounded-full" style={{background:'#ffbf00'}}></div>Unsold Homes / Listings</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Sorting controls */}
+        <div className="flex items-center gap-4 py-3 px-5 bg-slate-850 rounded-2xl border border-slate-800 mt-6 text-xs">
+          <span className="text-slate-400 font-bold uppercase tracking-wider">Sort Map by:</span>
+          <div className="flex gap-2">
+            <button 
+              onClick={() => {
+                setSortBy('color');
+                setHousingStock(prev => sortHouses([...prev], 'color'));
+              }}
+              className={`px-3 py-1.5 rounded-lg transition-colors font-bold uppercase tracking-wider ${
+                sortBy === 'color' ? 'bg-indigo-600 text-white shadow' : 'bg-slate-800 text-slate-400 hover:bg-slate-750'
+              }`}
+            >
+              Status Color
+            </button>
+            <button 
+              onClick={() => {
+                setSortBy('price');
+                setHousingStock(prev => sortHouses([...prev], 'price'));
+              }}
+              className={`px-3 py-1.5 rounded-lg transition-colors font-bold uppercase tracking-wider ${
+                sortBy === 'price' ? 'bg-indigo-600 text-white shadow' : 'bg-slate-800 text-slate-400 hover:bg-slate-750'
+              }`}
+            >
+              Price
+            </button>
+            <button 
+              onClick={() => {
+                setSortBy('id');
+                setHousingStock(prev => sortHouses([...prev], 'id'));
+              }}
+              className={`px-3 py-1.5 rounded-lg transition-colors font-bold uppercase tracking-wider ${
+                sortBy === 'id' ? 'bg-indigo-600 text-white shadow' : 'bg-slate-800 text-slate-400 hover:bg-slate-750'
+              }`}
+            >
+              Lot ID
+            </button>
+          </div>
+        </div>
+
+        {/* Parameters input grid */}
+        <div className="bg-slate-850 p-5 rounded-2xl border border-slate-800 mt-6">
+          <h4 className="text-sm font-bold text-slate-305 text-slate-300 uppercase tracking-wider mb-4 flex items-center gap-2">
+            <svg className="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+            Simulation Variables
+          </h4>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+            <div className="flex flex-col bg-slate-900/50 p-3 rounded-xl border border-slate-800">
+              <label className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Init Owners</label>
+              <input
+                type="number"
+                value={initialHomeowners}
+                onChange={e => updateBalancedOwnership('homeowners', Number(e.target.value))}
+                className="mt-1 px-2.5 py-1.5 bg-slate-955 bg-slate-950 border border-slate-850 rounded-lg text-white font-bold text-xs w-full text-center"
+                min="0"
+                max={HOMES_TOTAL}
+              />
+            </div>
+            <div className="flex flex-col bg-slate-900/50 p-3 rounded-xl border border-slate-800">
+              <label className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Init Landlords</label>
+              <input
+                type="number"
+                value={initialLandlords}
+                onChange={e => updateBalancedOwnership('landlords', Number(e.target.value))}
+                className="mt-1 px-2.5 py-1.5 bg-slate-955 bg-slate-950 border border-slate-850 rounded-lg text-white font-bold text-xs w-full text-center"
+                min="0"
+                max={HOMES_TOTAL}
+              />
+            </div>
+            <div className="flex flex-col bg-slate-900/50 p-3 rounded-xl border border-slate-800">
+              <label className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Seeker Pool</label>
+              <input
+                type="number"
+                value={initialSeekersCount}
+                onChange={e => setInitialSeekersCount(Number(e.target.value))}
+                className="mt-1 px-2.5 py-1.5 bg-slate-955 bg-slate-950 border border-slate-850 rounded-lg text-white font-bold text-xs w-full text-center"
+              />
+            </div>
+            <div className="flex flex-col bg-slate-900/50 p-3 rounded-xl border border-slate-800">
+              <label className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">New Homes/Yr</label>
+              <input
+                type="number"
+                value={newHomes}
+                onChange={e => setNewHomes(Number(e.target.value))}
+                className="mt-1 px-2.5 py-1.5 bg-slate-955 bg-slate-950 border border-slate-850 rounded-lg text-white font-bold text-xs w-full text-center"
+              />
+            </div>
+            <div className="flex flex-col bg-slate-900/50 p-3 rounded-xl border border-slate-800">
+              <label className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Turnover %</label>
+              <input
+                type="number"
+                value={turnoverRate}
+                onChange={e => setTurnoverRate(Number(e.target.value))}
+                className="mt-1 px-2.5 py-1.5 bg-slate-955 bg-slate-950 border border-slate-850 rounded-lg text-white font-bold text-xs w-full text-center"
+              />
+            </div>
+            <div className="flex flex-col bg-slate-900/50 p-3 rounded-xl border border-slate-800">
+              <label className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Landlord Cap %</label>
+              <input
+                type="number"
+                value={landlordCap}
+                onChange={e => setLandlordCap(Number(e.target.value))}
+                className="mt-1 px-2.5 py-1.5 bg-slate-955 bg-slate-950 border border-slate-850 rounded-lg text-white font-bold text-xs w-full text-center"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Results section */}
+        <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 mt-8 flex items-center gap-2">
+          <svg className="w-4 h-4 text-indigo-455 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          Simulation Aggregated Results
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 mt-4 mb-4 w-full">
+          <Card label="Total Unsold Homes" value={housingStock.filter(h => h.status === 'Unsold' || h.status === 'UnsoldNew').length} />
+          <Card label="Homeowner Purchases" value={marketResults.current.purchasesByHomeowner || 0} />
+          <Card label="Landlord Purchases" value={marketResults.current.purchasesByLandlord || 0} />
+          <Card label="Converted to STR" value={marketResults.current.convertedToShortTerm || 0} />
+          <Card label="Displacements" value={marketResults.current.displacements || 0} />
+        </div>
+      </main>
     </div>
   );
 }

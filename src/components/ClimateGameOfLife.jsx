@@ -42,12 +42,12 @@ export default function ClimateGameOfLife() {
 
     // Determine system structural state
     if (density === 0) {
-      setSystemStatus('Mass Extinction / Collapse');
+      setSystemStatus('Mass Extinction');
       if (generation > 0) {
         setIsGameOver(true);
         setIsRunning(false);
       }
-    } else if (configRef.current.temperature > 16 || configRef.current.resources < 40) {
+    } else if (configRef.current.temperature > 16.5 || configRef.current.resources < 45) {
       setSystemStatus('Degrading / High Stress');
     } else {
       setSystemStatus('Stable Equilibrium');
@@ -71,8 +71,8 @@ export default function ClimateGameOfLife() {
       const { temperature: temp, resources: res } = configRef.current;
 
       // Map environmental degradation multipliers
-      const heatStressDieOffChance = temp > 15 ? (temp - 15) * 0.1 : 0;
-      const starvationMultiplier = res < 70 ? (70 - res) * 0.01 : 0;
+      const heatStressDieOffChance = temp > 15 ? (temp - 15) * 0.12 : 0;
+      const starvationMultiplier = res < 70 ? (70 - res) * 0.015 : 0;
 
       for (let r = 0; r < GRID_SIZE; r++) {
         for (let c = 0; c < GRID_SIZE; c++) {
@@ -168,7 +168,7 @@ export default function ClimateGameOfLife() {
 
   // Determine color status theme classes
   const getStatusColorClass = () => {
-    if (systemStatus.includes('Collapse')) {
+    if (systemStatus.includes('Extinction')) {
       return 'bg-rose-500/10 text-rose-400 border border-rose-500/20';
     } else if (systemStatus.includes('Stress')) {
       return 'bg-amber-500/10 text-amber-400 border border-amber-500/20';
@@ -177,7 +177,7 @@ export default function ClimateGameOfLife() {
   };
 
   const getStatusPulseColor = () => {
-    if (systemStatus.includes('Collapse')) return 'bg-rose-400';
+    if (systemStatus.includes('Extinction')) return 'bg-rose-400';
     if (systemStatus.includes('Stress')) return 'bg-amber-400';
     return 'bg-emerald-400';
   };
@@ -196,7 +196,7 @@ export default function ClimateGameOfLife() {
             Ecosystem Cellular Automata
           </h2>
           <p className="text-slate-400 text-sm mt-1">
-            An interactive Conway's Game of Life model governed by global temperature and resource constraints.
+            Conway's Game of Life model governed by global temperature and resource feedback loops.
           </p>
         </div>
 
@@ -217,7 +217,7 @@ export default function ClimateGameOfLife() {
         <div className="lg:col-span-7 flex flex-col items-center">
           <div className="w-full bg-slate-950 p-3 rounded-2xl border border-slate-800 shadow-inner relative">
             <div 
-              className="grid gap-[1px] bg-slate-850 overflow-hidden rounded-lg aspect-square cursor-crosshair select-none"
+              className="grid gap-[1.5px] bg-slate-900 overflow-hidden rounded-lg aspect-square cursor-crosshair select-none"
               style={{ gridTemplateColumns: `repeat(${GRID_SIZE}, minmax(0, 1fr))` }}
             >
               {grid.map((row, rIdx) => 
@@ -225,10 +225,10 @@ export default function ClimateGameOfLife() {
                   <div 
                     key={`${rIdx}-${cIdx}`} 
                     onClick={() => handleCellClick(rIdx, cIdx)}
-                    className={`w-full h-0 pb-[100%] transition-colors duration-[80ms] rounded-[1px] ${
+                    className={`w-full h-0 pb-[100%] transition-colors duration-[120ms] rounded-[2px] ${
                       cell === 1 
-                        ? 'bg-gradient-to-br from-emerald-400 to-cyan-400 shadow-[0_0_4px_rgba(52,211,153,0.5)]' 
-                        : 'bg-slate-900 hover:bg-slate-800'
+                        ? 'bg-gradient-to-br from-emerald-400 via-cyan-400 to-teal-500 shadow-[0_0_8px_rgba(52,211,153,0.7)]' 
+                        : 'bg-slate-900/80 hover:bg-slate-800/80'
                     }`}
                     title={`Cell: ${rIdx},${cIdx}`}
                   />
@@ -238,30 +238,30 @@ export default function ClimateGameOfLife() {
 
             {/* Game Over Screen Overlay */}
             {isGameOver && (
-              <div className="absolute inset-3 bg-slate-950/90 backdrop-blur-[2px] rounded-lg flex flex-col items-center justify-center text-center p-6 border border-rose-500/20 shadow-2xl">
+              <div className="absolute inset-3 bg-slate-950/95 backdrop-blur-[4px] rounded-lg flex flex-col items-center justify-center text-center p-6 border border-rose-500/20 shadow-2xl">
                 <span className="p-3 bg-rose-500/10 rounded-full text-rose-500 mb-3 animate-bounce">
                   <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                   </svg>
                 </span>
                 <h3 className="text-xl md:text-2xl font-black text-rose-500 uppercase tracking-wider">All Life Has Ended</h3>
-                <p className="text-slate-400 text-xs md:text-sm mt-2 max-w-xs">
-                  The ecosystem has collapsed.
+                <p className="text-slate-400 text-xs md:text-sm mt-2 max-w-xs leading-relaxed">
+                  The environmental stress thresholds were exceeded, causing a mass systemic extinction.
                 </p>
-                <div className="mt-4 px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl">
+                <div className="mt-4 px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl">
                   <span className="text-[10px] text-slate-500 uppercase font-bold tracking-wider block">Survival Record</span>
-                  <span className="text-sm font-bold text-slate-300">Life existed for <strong className="text-white text-base">{generation}</strong> cycles</span>
+                  <span className="text-sm font-bold text-slate-300">Life existed for <strong className="text-white font-mono text-base">{generation}</strong> cycles</span>
                 </div>
                 <button 
                   onClick={handleReset} 
-                  className="mt-6 px-5 py-2.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl font-bold text-xs transition-all shadow-[0_4px_12px_rgba(225,29,72,0.3)]"
+                  className="mt-6 px-6 py-3 bg-rose-600 hover:bg-rose-500 text-white rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-[0_4px_12px_rgba(225,29,72,0.3)] hover:-translate-y-0.5 active:translate-y-0"
                 >
                   Re-Seed Biosphere
                 </button>
               </div>
             )}
           </div>
-          <div className="text-xs text-slate-500 mt-2 text-center">
+          <div className="text-[11px] text-slate-500 mt-3 text-center">
             Click on cells in the grid to seed or toggle life directly.
           </div>
         </div>
@@ -270,18 +270,18 @@ export default function ClimateGameOfLife() {
         <div className="lg:col-span-5 flex flex-col gap-6 justify-between">
           
           {/* Section 1: Dashboard Stats */}
-          <div className="grid grid-cols-3 gap-3 bg-slate-850 p-4 rounded-2xl border border-slate-800 shadow-sm">
-            <div className="text-center p-2 rounded-xl bg-slate-900/50">
-              <span className="block text-slate-500 text-[10px] uppercase font-bold tracking-wider">Gen</span>
-              <strong className="text-lg md:text-xl font-black text-white">{generation}</strong>
+          <div className="grid grid-cols-3 gap-3 bg-slate-850 p-4 rounded-2xl border border-slate-800/80">
+            <div className="text-center p-2 rounded-xl bg-slate-900/50 border border-slate-800/60">
+              <span className="block text-slate-500 text-[10px] uppercase font-bold tracking-wider mb-0.5">Gen</span>
+              <strong className="text-lg md:text-xl font-black font-mono text-white">{generation}</strong>
             </div>
-            <div className="text-center p-2 rounded-xl bg-slate-900/50">
-              <span className="block text-slate-500 text-[10px] uppercase font-bold tracking-wider">Density</span>
-              <strong className="text-lg md:text-xl font-black text-emerald-400">{populationDensity}%</strong>
+            <div className="text-center p-2 rounded-xl bg-slate-900/50 border border-slate-800/60">
+              <span className="block text-slate-500 text-[10px] uppercase font-bold tracking-wider mb-0.5">Density</span>
+              <strong className="text-lg md:text-xl font-black font-mono text-emerald-400">{populationDensity}%</strong>
             </div>
-            <div className="text-center p-2 rounded-xl bg-slate-900/50">
-              <span className="block text-slate-500 text-[10px] uppercase font-bold tracking-wider">Temp</span>
-              <strong className="text-lg md:text-xl font-black text-orange-400">{temperature.toFixed(2)}°C</strong>
+            <div className="text-center p-2 rounded-xl bg-slate-900/50 border border-slate-800/60">
+              <span className="block text-slate-500 text-[10px] uppercase font-bold tracking-wider mb-0.5">Temp</span>
+              <strong className="text-lg md:text-xl font-black font-mono text-orange-450 text-orange-400">{temperature.toFixed(2)}°C</strong>
             </div>
           </div>
 
@@ -291,31 +291,31 @@ export default function ClimateGameOfLife() {
             <div className="grid grid-cols-2 gap-2">
               <button 
                 onClick={() => applyPreset(15, 100, 100, 0.2)}
-                className="text-left p-2.5 bg-slate-850 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 rounded-xl text-xs transition-all flex flex-col gap-0.5"
+                className="text-left p-3 bg-slate-850 hover:bg-slate-800 border border-slate-800 hover:border-slate-700/80 rounded-xl text-xs transition-all duration-200 flex flex-col gap-0.5 hover:-translate-y-0.5"
               >
                 <span className="font-bold text-emerald-400">Stable Biosphere</span>
-                <span className="text-[10px] text-slate-400">Temp: 15.00°C • Res: 100%</span>
+                <span className="text-[10px] text-slate-500">Temp: 15.00°C • Res: 100%</span>
               </button>
               <button 
-                onClick={() => applyPreset(17.5, 120, 80, 0.35)}
-                className="text-left p-2.5 bg-slate-850 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 rounded-xl text-xs transition-all flex flex-col gap-0.5"
+                onClick={() => applyPreset(17.25, 120, 80, 0.35)}
+                className="text-left p-3 bg-slate-850 hover:bg-slate-800 border border-slate-800 hover:border-slate-700/80 rounded-xl text-xs transition-all duration-200 flex flex-col gap-0.5 hover:-translate-y-0.5"
               >
-                <span className="font-bold text-orange-400">Thermal Greenhouse</span>
-                <span className="text-[10px] text-slate-400">Temp: 17.50°C • Res: 120%</span>
+                <span className="font-bold text-orange-400">Greenhouse Cycle</span>
+                <span className="text-[10px] text-slate-500">Temp: 17.25°C • Res: 120%</span>
               </button>
               <button 
                 onClick={() => applyPreset(14.5, 35, 120, 0.15)}
-                className="text-left p-2.5 bg-slate-850 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 rounded-xl text-xs transition-all flex flex-col gap-0.5"
+                className="text-left p-3 bg-slate-850 hover:bg-slate-800 border border-slate-800 hover:border-slate-700/80 rounded-xl text-xs transition-all duration-200 flex flex-col gap-0.5 hover:-translate-y-0.5"
               >
                 <span className="font-bold text-amber-500">Resource Starvation</span>
-                <span className="text-[10px] text-slate-400">Temp: 14.50°C • Res: 35%</span>
+                <span className="text-[10px] text-slate-500">Temp: 14.50°C • Res: 35%</span>
               </button>
               <button 
                 onClick={() => applyPreset(13.75, 140, 50, 0.45)}
-                className="text-left p-2.5 bg-slate-850 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 rounded-xl text-xs transition-all flex flex-col gap-0.5"
+                className="text-left p-3 bg-slate-850 hover:bg-slate-800 border border-slate-800 hover:border-slate-700/80 rounded-xl text-xs transition-all duration-200 flex flex-col gap-0.5 hover:-translate-y-0.5"
               >
-                <span className="font-bold text-cyan-400">Hyper Growth</span>
-                <span className="text-[10px] text-slate-400">Temp: 13.75°C • Res: 140%</span>
+                <span className="font-bold text-cyan-400 font-semibold">Hyper Growth</span>
+                <span className="text-[10px] text-slate-500">Temp: 13.75°C • Res: 140%</span>
               </button>
             </div>
           </div>
@@ -327,15 +327,15 @@ export default function ClimateGameOfLife() {
             {/* Temp slider */}
             <div className="flex flex-col gap-1">
               <div className="flex justify-between text-sm font-semibold">
-                <span className="text-slate-300">Global Temperature</span>
-                <span className="text-orange-400 font-mono">{temperature.toFixed(2)}°C</span>
+                <span className="text-slate-350">Global Temperature</span>
+                <span className="text-orange-400 font-mono font-bold">{temperature.toFixed(2)}°C</span>
               </div>
               <input 
                 type="range" min="13" max="18" step="0.25" value={temperature} 
                 onChange={(e) => setTemperature(Number(e.target.value))} 
-                className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-orange-500"
+                className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-orange-500"
               />
-              <div className="flex justify-between text-[10px] text-slate-500">
+              <div className="flex justify-between text-[10px] text-slate-550 text-slate-500 font-medium">
                 <span>13.00°C (Cool)</span>
                 <span>Baseline: 15.00°C</span>
                 <span>18.00°C (Extreme)</span>
@@ -345,15 +345,15 @@ export default function ClimateGameOfLife() {
             {/* Resources slider */}
             <div className="flex flex-col gap-1">
               <div className="flex justify-between text-sm font-semibold">
-                <span className="text-slate-300">Resource Allocation</span>
-                <span className="text-cyan-400 font-mono">{resources}%</span>
+                <span className="text-slate-350">Resource Allocation</span>
+                <span className="text-cyan-400 font-mono font-bold">{resources}%</span>
               </div>
               <input 
                 type="range" min="20" max="150" value={resources} 
                 onChange={(e) => setResources(Number(e.target.value))} 
-                className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-500"
+                className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-500"
               />
-              <div className="flex justify-between text-[10px] text-slate-500">
+              <div className="flex justify-between text-[10px] text-slate-550 text-slate-500 font-medium">
                 <span>20% (Barren)</span>
                 <span>Baseline: 100%</span>
                 <span>150% (Abundant)</span>
@@ -363,15 +363,15 @@ export default function ClimateGameOfLife() {
             {/* Simulation speed slider */}
             <div className="flex flex-col gap-1">
               <div className="flex justify-between text-sm font-semibold">
-                <span className="text-slate-300">Simulation Interval</span>
-                <span className="text-slate-400 font-mono">{speed}ms</span>
+                <span className="text-slate-350">Simulation Interval</span>
+                <span className="text-slate-400 font-mono font-bold">{speed}ms</span>
               </div>
               <input 
                 type="range" min="50" max="500" step="25" value={speed} 
                 onChange={(e) => setSpeed(Number(e.target.value))} 
-                className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-slate-400"
+                className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-slate-400"
               />
-              <div className="flex justify-between text-[10px] text-slate-500">
+              <div className="flex justify-between text-[10px] text-slate-550 text-slate-500 font-medium">
                 <span>50ms (Fast)</span>
                 <span>500ms (Slow)</span>
               </div>
@@ -382,10 +382,10 @@ export default function ClimateGameOfLife() {
           <div className="flex flex-col sm:flex-row gap-3">
             <button 
               onClick={() => setIsRunning(!isRunning)} 
-              className={`flex-1 flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl font-bold transition-all text-sm ${
+              className={`flex-1 flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl font-bold transition-all text-sm uppercase tracking-wider ${
                 isRunning 
-                  ? 'bg-rose-600 hover:bg-rose-500 text-white shadow-[0_4px_12px_rgba(225,29,72,0.3)]' 
-                  : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-[0_4px_12px_rgba(5,150,105,0.3)]'
+                  ? 'bg-rose-650 hover:bg-rose-600 bg-rose-600 text-white shadow-[0_4px_12px_rgba(225,29,72,0.3)]' 
+                  : 'bg-emerald-650 hover:bg-emerald-600 bg-emerald-600 text-white shadow-[0_4px_12px_rgba(5,150,105,0.3)]'
               }`}
             >
               {isRunning ? (
@@ -409,7 +409,7 @@ export default function ClimateGameOfLife() {
             <div className="flex gap-2">
               <button 
                 onClick={handleReset} 
-                className="py-3 px-4 bg-slate-800 hover:bg-slate-750 border border-slate-700 hover:border-slate-600 text-slate-300 font-semibold rounded-xl text-sm transition-all flex items-center justify-center gap-1"
+                className="py-3.5 px-4 bg-slate-800 hover:bg-slate-750 border border-slate-700/80 text-slate-300 font-semibold rounded-xl text-xs transition-all flex items-center justify-center gap-1 uppercase tracking-wider font-bold"
                 title="Reset with random 20% seed"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -419,7 +419,7 @@ export default function ClimateGameOfLife() {
               </button>
               <button 
                 onClick={handleClear} 
-                className="py-3 px-4 bg-slate-800 hover:bg-slate-750 border border-slate-700 hover:border-slate-600 text-slate-400 font-semibold rounded-xl text-sm transition-all flex items-center justify-center gap-1"
+                className="py-3.5 px-4 bg-slate-800 hover:bg-slate-750 border border-slate-700/80 text-slate-400 font-semibold rounded-xl text-xs transition-all flex items-center justify-center gap-1 uppercase tracking-wider font-bold"
                 title="Clear all cells"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -437,20 +437,20 @@ export default function ClimateGameOfLife() {
       <div className="mt-8 pt-6 border-t border-slate-800 grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-slate-400">
         <div className="bg-slate-950/30 p-4 rounded-xl border border-slate-850">
           <h4 className="font-bold text-white mb-2 flex items-center gap-1.5 text-xs uppercase tracking-wider text-orange-400">
-            <span className="w-1.5 h-1.5 rounded-full bg-orange-400"></span>
+            <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse"></span>
             Heat Stress Mechanics
           </h4>
-          <p className="leading-relaxed text-slate-400">
-            Temperatures above <strong className="text-white">15.00°C</strong> initiate a stress anomaly. Active cells experience a random chance of dying off during each turn due to heat stress (increasing by <strong className="text-white">10%</strong> per degree above 15°C). At <strong className="text-white">17.00°C</strong>, die-off becomes statistically unavoidable (20% die-off rate per turn).
+          <p className="leading-relaxed text-slate-400 text-xs">
+            Temperatures above <strong className="text-white">15.00°C</strong> trigger heat stress. Active cells experience a random chance of dying off each cycle (increasing by <strong className="text-white">12%</strong> per degree above 15°C). At <strong className="text-white">17.25°C+</strong>, extinction dynamics accelerate.
           </p>
         </div>
         <div className="bg-slate-950/30 p-4 rounded-xl border border-slate-850">
           <h4 className="font-bold text-white mb-2 flex items-center gap-1.5 text-xs uppercase tracking-wider text-cyan-400">
-            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
             Resource Scarcity Mechanics
           </h4>
-          <p className="leading-relaxed text-slate-400">
-            When resources fall below <strong className="text-white">70%</strong>, the threshold of neighboring organisms required to birth a new cell shifts. In environments with severe deprivation, cells require more neighbor support to grow.
+          <p className="leading-relaxed text-slate-400 text-xs">
+            When global resources fall below <strong className="text-white">70%</strong>, the neighbor threshold required for cellular birth rises (requiring more than the standard 3 neighbors). This mimics resource competition in stressed ecosystems.
           </p>
         </div>
       </div>

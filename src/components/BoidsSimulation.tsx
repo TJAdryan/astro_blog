@@ -22,6 +22,7 @@ export default function BoidsSimulation() {
   const [separation, setSeparation] = useState(0.15);
   const [alignment, setAlignment] = useState(0.05);
   const [cohesion, setCohesion] = useState(0.01);
+  const [showVectorTrails, setShowVectorTrails] = useState(true);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -97,8 +98,8 @@ export default function BoidsSimulation() {
         }
 
         // Keep within walls (soft boundaries)
-        const margin = 50;
-        const turnFactor = 0.2;
+        const margin = 40;
+        const turnFactor = 0.25;
         if (boid.x < margin) boid.vx += turnFactor;
         if (boid.x > WIDTH - margin) boid.vx -= turnFactor;
         if (boid.y < margin) boid.vy += turnFactor;
@@ -119,27 +120,61 @@ export default function BoidsSimulation() {
 
     // --- Rendering Loop ---
     const draw = () => {
-      ctx.clearRect(0, 0, WIDTH, HEIGHT);
-      ctx.fillStyle = '#1e1e2e';
-      ctx.fillRect(0, 0, WIDTH, HEIGHT);
+      // 1. Trail effect: fill with transparent slate background
+      if (showVectorTrails) {
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.18)'; // Dark slate-900 with transparency for trails
+        ctx.fillRect(0, 0, WIDTH, HEIGHT);
+      } else {
+        ctx.fillStyle = '#0f172a'; // Clear solid background
+        ctx.fillRect(0, 0, WIDTH, HEIGHT);
+      }
 
+      // 2. Draw a faint grid system
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
+      ctx.lineWidth = 1;
+      const gridSize = 50;
+      for (let x = 0; x < WIDTH; x += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, HEIGHT);
+        ctx.stroke();
+      }
+      for (let y = 0; y < HEIGHT; y += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(WIDTH, y);
+        ctx.stroke();
+      }
+
+      // 3. Draw boids
       boids.forEach((boid) => {
-        // Calculate heading angle
         const angle = Math.atan2(boid.vy, boid.vx);
 
         ctx.save();
         ctx.translate(boid.x, boid.y);
         ctx.rotate(angle);
 
-        // Draw Boid (simple triangle pointing in direction of velocity)
+        // Streamlined arrow shape
         ctx.beginPath();
-        ctx.moveTo(8, 0);
-        ctx.lineTo(-6, -4);
-        ctx.lineTo(-6, 4);
+        ctx.moveTo(9, 0);
+        ctx.lineTo(-7, -4);
+        ctx.lineTo(-3, 0);
+        ctx.lineTo(-7, 4);
         ctx.closePath();
 
-        ctx.fillStyle = '#89b4fa';
+        // Beautiful gradient fill from orange to coral
+        const grad = ctx.createLinearGradient(-7, 0, 9, 0);
+        grad.addColorStop(0, '#ff6b35'); // Jupyter Orange accent
+        grad.addColorStop(1, '#ff9e7d'); // Soft highlight coral
+        ctx.fillStyle = grad;
         ctx.fill();
+
+        // Subtle glow effect
+        ctx.shadowColor = '#ff6b35';
+        ctx.shadowBlur = 4;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
+
         ctx.restore();
       });
     };
@@ -153,26 +188,71 @@ export default function BoidsSimulation() {
     loop();
 
     return () => cancelAnimationFrame(animationId);
-  }, [separation, alignment, cohesion]);
+  }, [separation, alignment, cohesion, showVectorTrails]);
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-      <canvas
-        ref={canvasRef}
-        width={WIDTH}
-        height={HEIGHT}
-        style={{ width: '100%', height: 'auto', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.15)', display: 'block' }}
-      />
-      
-      {/* --- Control Panel --- */}
-      <div style={{ marginTop: '20px', padding: '20px', backgroundColor: 'rgba(255, 255, 255, 0.65)', border: '1px solid rgba(0, 0, 0, 0.08)', borderRadius: '12px', backdropFilter: 'blur(8px)', boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.03)' }}>
-        <h3 style={{ margin: '0 0 15px 0', fontSize: '1.1rem', color: '#1d1d1f' }}>Boid Steering Variables</h3>
-        
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px' }}>
-          <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 'bold', marginBottom: '5px' }}>
-              Separation: {separation.toFixed(2)}
-            </label>
+    <div className="w-full max-w-4xl mx-auto p-4 md:p-6 bg-slate-900 text-slate-100 rounded-3xl shadow-2xl border border-slate-800 font-sans mt-4">
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-6 border-b border-slate-800">
+        <div>
+          <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white flex items-center gap-2">
+            <span className="p-2 bg-orange-500/10 rounded-lg text-orange-500">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+              </svg>
+            </span>
+            Boids Flocking Simulation
+          </h2>
+          <p className="text-slate-400 text-sm mt-1">
+            Observe complex emergent system patterns governed by three simple vector-steering rules.
+          </p>
+        </div>
+
+        {/* Trail Toggle */}
+        <button
+          onClick={() => setShowVectorTrails(!showVectorTrails)}
+          className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all border ${
+            showVectorTrails
+              ? 'bg-orange-500/10 text-orange-400 border-orange-500/20'
+              : 'bg-slate-800 text-slate-400 border-slate-700'
+          }`}
+        >
+          <span className="relative flex h-2 w-2">
+            {showVectorTrails && (
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+            )}
+            <span className={`relative inline-flex rounded-full h-2 w-2 ${showVectorTrails ? 'bg-orange-400' : 'bg-slate-500'}`}></span>
+          </span>
+          {showVectorTrails ? 'Motion Trails Active' : 'Solid Rendering'}
+        </button>
+      </div>
+
+      {/* Simulation Viewport */}
+      <div className="w-full bg-slate-950 p-2 rounded-2xl border border-slate-800 shadow-inner overflow-hidden">
+        <canvas
+          ref={canvasRef}
+          width={WIDTH}
+          height={HEIGHT}
+          className="w-full h-auto rounded-xl block bg-slate-950 aspect-[16/10]"
+        />
+      </div>
+
+      {/* Control Dashboard */}
+      <div className="mt-6 p-5 bg-slate-850 rounded-2xl border border-slate-800/80">
+        <h3 className="text-sm font-bold text-slate-300 uppercase tracking-wider mb-4 flex items-center gap-2">
+          <svg className="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+          </svg>
+          Steering Variables
+        </h3>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Separation */}
+          <div className="flex flex-col gap-2 p-4 bg-slate-900/50 rounded-xl border border-slate-800">
+            <div className="flex justify-between items-center">
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Separation</span>
+              <span className="text-sm font-mono text-orange-400 font-bold">{separation.toFixed(2)}</span>
+            </div>
             <input
               type="range"
               min="0.0"
@@ -180,14 +260,19 @@ export default function BoidsSimulation() {
               step="0.01"
               value={separation}
               onChange={(e) => setSeparation(parseFloat(e.target.value))}
-              style={{ width: '100%' }}
+              className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-orange-500"
             />
+            <p className="text-[11px] text-slate-500 leading-normal">
+              Steer to avoid crowding or crashing into local flockmates.
+            </p>
           </div>
-          
-          <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 'bold', marginBottom: '5px' }}>
-              Alignment: {alignment.toFixed(3)}
-            </label>
+
+          {/* Alignment */}
+          <div className="flex flex-col gap-2 p-4 bg-slate-900/50 rounded-xl border border-slate-800">
+            <div className="flex justify-between items-center">
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Alignment</span>
+              <span className="text-sm font-mono text-orange-400 font-bold">{alignment.toFixed(3)}</span>
+            </div>
             <input
               type="range"
               min="0.0"
@@ -195,14 +280,19 @@ export default function BoidsSimulation() {
               step="0.005"
               value={alignment}
               onChange={(e) => setAlignment(parseFloat(e.target.value))}
-              style={{ width: '100%' }}
+              className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-orange-500"
             />
+            <p className="text-[11px] text-slate-500 leading-normal">
+              Steer toward the average heading direction of local flockmates.
+            </p>
           </div>
-          
-          <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 'bold', marginBottom: '5px' }}>
-              Cohesion: {cohesion.toFixed(3)}
-            </label>
+
+          {/* Cohesion */}
+          <div className="flex flex-col gap-2 p-4 bg-slate-900/50 rounded-xl border border-slate-800">
+            <div className="flex justify-between items-center">
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Cohesion</span>
+              <span className="text-sm font-mono text-orange-400 font-bold">{cohesion.toFixed(3)}</span>
+            </div>
             <input
               type="range"
               min="0.0"
@@ -210,8 +300,11 @@ export default function BoidsSimulation() {
               step="0.001"
               value={cohesion}
               onChange={(e) => setCohesion(parseFloat(e.target.value))}
-              style={{ width: '100%' }}
+              className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-orange-500"
             />
+            <p className="text-[11px] text-slate-500 leading-normal">
+              Steer toward the average center of mass of local flockmates.
+            </p>
           </div>
         </div>
       </div>
