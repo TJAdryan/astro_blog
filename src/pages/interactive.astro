@@ -71,6 +71,25 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           </div>
         </div>
       </a>
+
+      <!-- Card 4: Aaron's Paradox -->
+      <a href="/interactive/aarons-paradox" class="sim-card-link">
+        <div class="sim-card">
+          <div class="image-container">
+            <img src="/img/aarons_paradox.jpg" alt="Aaron's Paradox Simulation" class="sim-image" />
+            <div class="hover-overlay">
+              <span class="overlay-text">Launch Simulation →</span>
+            </div>
+          </div>
+          <div class="card-content">
+            <span class="category-badge paradox-badge">Social Dynamics</span>
+            <h3 class="card-title">Aaron's Paradox</h3>
+            <p class="card-description">
+              Model transmission versus competence. Explore how filtering attention based on volume over validity structurally suppresses quiet experts in communication networks.
+            </p>
+          </div>
+        </div>
+      </a>
     </div>
   </div>
 </BaseLayout>
@@ -83,9 +102,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     margin-top: 2rem;
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: 640px) {
     .simulation-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
@@ -199,6 +218,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   .housing-badge {
     background-color: #f3e8ff;
     color: #6b21a8;
+  }
+
+  .paradox-badge {
+    background-color: #fee2e2;
+    color: #991b1b;
   }
 
   .card-title {

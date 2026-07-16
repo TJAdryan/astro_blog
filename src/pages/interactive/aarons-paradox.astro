@@ -1,0 +1,15 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import AaronsParadox from "../../components/AaronsParadox.tsx";
+---
+
+<BaseLayout title="Aaron's Paradox - Transmission vs. Competence" mainClass="max-w-5xl">
+  <div class="py-6">
+    <div class="mb-6">
+      <a href="/interactive" class="text-accent hover:underline font-semibold flex items-center gap-1">
+        ← Back to Interactive Gallery
+      </a>
+    </div>
+    <AaronsParadox client:only="react" />
+  </div>
+</BaseLayout>
