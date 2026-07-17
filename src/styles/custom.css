@@ -33,8 +33,8 @@ pre code {
 }
 
 /* Remove default hover/focus effects on textboxes */
-input:hover, textarea:hover,
-input:focus, textarea:focus {
+input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):hover, textarea:hover,
+input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):focus, textarea:focus {
   box-shadow: none;
   border-color: #ccc;
   outline: none;
@@ -42,7 +42,7 @@ input:focus, textarea:focus {
 }
 
 /* Override WebKit autofill and transparency effects */
-input,
+input:not([type="range"]):not([type="checkbox"]):not([type="radio"]),
 textarea {
   background: #fff !important;
   color: #222 !important;
