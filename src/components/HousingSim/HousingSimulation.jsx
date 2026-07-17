@@ -821,7 +821,7 @@ export default function HousingSimulation() {
             U.S. Housing Market Simulation
           </h2>
           <p className="text-slate-400 text-sm mt-1">
-            Macroeconomic model of regional listing volumes, inventory indices, and pricing dynamics.
+            Macroeconomic model of regional listing volumes, inventory level indices, foreclosure rates, and market pricing dynamics.
           </p>
         </div>
         

@@ -196,7 +196,7 @@ export default function ClimateGameOfLife() {
             Ecosystem Cellular Automata
           </h2>
           <p className="text-slate-400 text-sm mt-1">
-            Conway's Game of Life model governed by global temperature and resource feedback loops.
+            A modified Conway's Game of Life simulation demonstrating non-linear feedback loops.
           </p>
         </div>
 

@@ -204,7 +204,7 @@ export default function BoidsSimulation() {
             Boids Flocking Simulation
           </h2>
           <p className="text-slate-400 text-sm mt-1">
-            Observe complex emergent system patterns governed by three simple vector-steering rules.
+            Observe emergent complexity through three simple rules: Separation, Alignment, and Cohesion.
           </p>
         </div>
 
