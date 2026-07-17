@@ -1,0 +1,21 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import AaronsDivergence from "../../components/AaronsDivergence.tsx";
+---
+
+<BaseLayout title="Aaron's Divergence - When Cadence Overtakes Competence" mainClass="max-w-5xl">
+  <div class="py-6">
+    <div class="mb-6">
+      <a href="/interactive" class="text-accent hover:underline font-semibold flex items-center gap-1">
+        ← Back to Interactive Gallery
+      </a>
+    </div>
+    <div class="mb-6">
+      <h1 class="text-3xl font-bold text-slate-900 dark:text-white mb-2">Aaron's Divergence</h1>
+      <p class="text-slate-600 dark:text-slate-350 text-lg max-w-4xl leading-relaxed">
+        <strong>Definition:</strong> The precise threshold in a communication network where a node's transmission frequency ($V_i$) completely decouples from and masks its empirical validity ($C_i$), causing the routing layer to systematically favor high-velocity noise over low-frequency precision.
+      </p>
+    </div>
+    <AaronsDivergence client:only="react" />
+  </div>
+</BaseLayout>

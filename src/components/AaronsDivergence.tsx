@@ -9,7 +9,7 @@ interface Agent {
   type: string;
 }
 
-export default function AaronsParadox() {
+export default function AaronsDivergence() {
   const [volumeBias, setVolumeBias] = useState(70); // 0 = Filter by Competence, 100 = Filter by Loudness
   const [noiseLevel, setNoiseLevel] = useState(30);
   const [isMobile, setIsMobile] = useState(false);
@@ -85,10 +85,10 @@ export default function AaronsParadox() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
             </span>
-            Aaron's Paradox
+            Aaron's Divergence
           </h2>
           <p className="text-slate-400 text-sm mt-1">
-            Model transmission versus competence in communication networks.
+            When Cadence Overtakes Competence
           </p>
         </div>
         
@@ -271,7 +271,7 @@ export default function AaronsParadox() {
             
             {/* Systemic Summary */}
             <div className="mt-5 p-3.5 bg-rose-950/20 border border-rose-900/30 rounded-xl text-xs text-rose-300/85 leading-relaxed">
-              <strong>Systemic Paradox:</strong> When attention filters favor volume/loudness over competence, quiet experts (like Aaron) are structurally filtered out, causing overall system quality to collapse.
+              <strong>Aaron's Divergence:</strong> The precise threshold in a communication network where a node's transmission frequency ($V_i$) completely decouples from and masks its empirical validity ($C_i$), causing the routing layer to systematically favor high-velocity noise over low-frequency precision.
             </div>
           </div>
 
