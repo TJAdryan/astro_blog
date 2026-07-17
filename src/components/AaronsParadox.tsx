@@ -41,7 +41,7 @@ export default function AaronsParadox() {
   const processedData = useMemo(() => {
     const biasFactor = volumeBias / 100;
     
-    // Score agents based on how the network currently filters information
+    // Score agents based on how the network currently filters information and sort descending by priority
     const rankedAgents = agents.map(agent => {
       // Network score combines Competence and Volume based on slider bias
       const networkScore = (agent.competence * (1 - biasFactor)) + (agent.volume * biasFactor);
@@ -50,11 +50,9 @@ export default function AaronsParadox() {
       const finalEffectiveValue = Math.max(0, agent.competence - noisePenalty);
 
       return { ...agent, networkScore, finalEffectiveValue };
-    });
+    }).sort((a, b) => b.networkScore - a.networkScore);
 
-    // Sort by network score descending and take top 3 "Selected Ideas"
-    const sorted = [...rankedAgents].sort((a, b) => b.networkScore - a.networkScore);
-    const selected = sorted.slice(0, 3);
+    const selected = rankedAgents.slice(0, 3);
 
     // System efficiency is the average competence of the selected ideas
     const systemEfficiency = Math.round(
