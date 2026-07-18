@@ -1,0 +1,16 @@
+---
+import BaseHead from "../components/BaseHead.astro";
+import VaultRunner from "../components/VaultRunner.tsx";
+import "../styles/global.css";
+import "../styles/custom.css";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title="Vault Runner" description="A hidden rogue-like vault escape game." />
+  </head>
+  <body class="bg-black text-white overflow-hidden m-0 p-0 w-full h-screen">
+    <VaultRunner client:only="react" />
+  </body>
+</html>
