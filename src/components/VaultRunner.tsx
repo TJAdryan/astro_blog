@@ -423,8 +423,45 @@ export default function VaultRunner() {
   }
 
   return (
-    <div style={styles.gameView}>
-      <div style={styles.sidebar}>
+    <div className="game-view" style={styles.gameView}>
+      <style dangerouslySetInnerHTML={{__html: `
+        @media (max-width: 768px) {
+          .game-view {
+            flex-direction: column !important;
+            overflow-y: auto !important;
+            padding-bottom: 140px !important; /* space for mobile controls */
+            height: auto !important;
+            min-height: 100vh;
+          }
+          .game-sidebar {
+            width: 100% !important;
+            border-right: none !important;
+            border-bottom: 1px solid #333 !important;
+            padding: 15px !important;
+            box-sizing: border-box;
+          }
+          .grid-container {
+            padding: 20px 0 !important;
+            flex: none !important;
+          }
+          .game-cell {
+            width: 22px !important;
+            height: 22px !important;
+            font-size: 12px !important;
+          }
+          .controls-hint {
+            display: none !important;
+          }
+          .mobile-controls-bar {
+            display: flex !important;
+          }
+          .log-box-custom {
+            max-height: 80px !important;
+          }
+        }
+      `}} />
+
+      <div className="game-sidebar" style={styles.sidebar}>
         <div style={{ marginBottom: '15px' }}>
           <a href="/" style={styles.navLink}>
             ← Back to Home
@@ -436,10 +473,10 @@ export default function VaultRunner() {
         <p>ATK: <strong>{playerStats.atk}</strong> | DEF: <strong>{playerStats.def}</strong></p>
         <p>Weapon: <strong>{weaponName}</strong> (Range: ∞)</p>
         <hr style={{ borderColor: '#333' }} />
-        <div style={styles.logBox}>
+        <div className="log-box-custom" style={styles.logBox}>
           {log.map((entry, idx) => <div key={idx} style={styles.logEntry}>{entry}</div>)}
         </div>
-        <p style={styles.controlsHint}>Use Arrow keys or WASD to step/melee. Click an enemy or press Space/F to shoot.</p>
+        <p className="controls-hint" style={styles.controlsHint}>Use Arrow keys or WASD to step/melee. Click an enemy or press Space/F to shoot.</p>
         
         <button 
           onClick={() => setGameState('START')} 
@@ -451,7 +488,7 @@ export default function VaultRunner() {
         </button>
       </div>
 
-      <div style={styles.gridContainer}>
+      <div className="grid-container" style={styles.gridContainer}>
         {grid.map((row, y) => (
           <div key={y} style={styles.row}>
             {row.map((cell, x) => {
@@ -490,6 +527,7 @@ export default function VaultRunner() {
                 <div 
                   key={x} 
                   onClick={() => handleCellClick(x, y)}
+                  className="game-cell"
                   style={{ ...styles.cell, color, cursor, backgroundColor: bg }}
                 >
                   {glyph}
@@ -499,6 +537,182 @@ export default function VaultRunner() {
           </div>
         ))}
       </div>
+
+      {/* Mobile Controls Overlay */}
+      <div 
+        className="mobile-controls-bar"
+        style={{
+          display: 'none',
+          justifyContent: 'space-around',
+          alignItems: 'center',
+          width: '100%',
+          padding: '12px 10px',
+          boxSizing: 'border-box',
+          backgroundColor: '#050505',
+          borderTop: '1px solid #222',
+          position: 'fixed',
+          bottom: 0,
+          left: 0,
+          zIndex: 100,
+          userSelect: 'none',
+        }}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+          <Joystick onMove={handleMove} />
+          <span style={{ fontSize: '10px', color: '#666', fontFamily: 'monospace' }}>MOVE STICK</span>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+          <button 
+            onTouchStart={(e) => { e.preventDefault(); fireAtNearest(); }}
+            onClick={(e) => { e.preventDefault(); fireAtNearest(); }}
+            style={{
+              width: '72px',
+              height: '72px',
+              borderRadius: '50%',
+              backgroundColor: '#ff1744',
+              border: '2px solid #ff5252',
+              color: '#000',
+              fontSize: '15px',
+              fontWeight: 'bold',
+              boxShadow: '0 0 12px rgba(255,23,68,0.5)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              touchAction: 'none',
+              userSelect: 'none',
+              cursor: 'pointer',
+              fontFamily: 'monospace',
+            }}
+          >
+            FIRE
+          </button>
+          <span style={{ fontSize: '10px', color: '#666', fontFamily: 'monospace' }}>SHOOT NEAREST</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// --- JOYSTICK COMPONENT FOR MOBILE ---
+interface JoystickProps {
+  onMove: (dx: number, dy: number) => void;
+}
+
+function Joystick({ onMove }: JoystickProps) {
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [knobPos, setKnobPos] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const activeDirection = React.useRef<{ x: number; y: number } | null>(null);
+  const moveInterval = React.useRef<any>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setIsDragging(true);
+    handleTouchMove(e);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const touch = e.touches[0];
+
+    let dx = touch.clientX - centerX;
+    let dy = touch.clientY - centerY;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    const maxRadius = 30; // max knob travel
+
+    if (distance > maxRadius) {
+      dx = (dx / distance) * maxRadius;
+      dy = (dy / distance) * maxRadius;
+    }
+
+    setKnobPos({ x: dx, y: dy });
+
+    if (distance > 12) {
+      const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+      let dirX = 0;
+      let dirY = 0;
+
+      if (angle >= -45 && angle < 45) {
+        dirX = 1;
+      } else if (angle >= 45 && angle < 135) {
+        dirY = 1;
+      } else if (angle >= -135 && angle < -45) {
+        dirY = -1;
+      } else {
+        dirX = -1;
+      }
+
+      if (!activeDirection.current || activeDirection.current.x !== dirX || activeDirection.current.y !== dirY) {
+        activeDirection.current = { x: dirX, y: dirY };
+        onMove(dirX, dirY);
+
+        if (moveInterval.current) clearInterval(moveInterval.current);
+        moveInterval.current = setInterval(() => {
+          if (activeDirection.current) {
+            onMove(activeDirection.current.x, activeDirection.current.y);
+          }
+        }, 220);
+      }
+    } else {
+      activeDirection.current = null;
+      if (moveInterval.current) {
+        clearInterval(moveInterval.current);
+        moveInterval.current = null;
+      }
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+    setKnobPos({ x: 0, y: 0 });
+    activeDirection.current = null;
+    if (moveInterval.current) {
+      clearInterval(moveInterval.current);
+      moveInterval.current = null;
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (moveInterval.current) clearInterval(moveInterval.current);
+    };
+  }, []);
+
+  return (
+    <div
+      ref={containerRef}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      style={{
+        width: '80px',
+        height: '80px',
+        borderRadius: '50%',
+        backgroundColor: 'rgba(255, 255, 255, 0.04)',
+        border: '2px solid rgba(255, 255, 255, 0.15)',
+        position: 'relative',
+        touchAction: 'none',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        userSelect: 'none',
+      }}
+    >
+      <div
+        style={{
+          width: '32px',
+          height: '32px',
+          borderRadius: '50%',
+          backgroundColor: '#00e5ff',
+          boxShadow: '0 0 8px #00e5ff',
+          transform: `translate(${knobPos.x}px, ${knobPos.y}px)`,
+          transition: isDragging ? 'none' : 'transform 0.1s ease',
+          pointerEvents: 'none',
+        }}
+      />
     </div>
   );
 }
