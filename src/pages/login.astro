@@ -7,65 +7,93 @@ import { SignIn, SignedIn, SignedOut, UserButton, SignInButton } from "@clerk/as
 <BaseLayout>
   <div class="min-h-[80vh] flex flex-col items-center justify-center p-4 bg-gradient-to-b from-white to-blue-50/30">
     
-      <div class="text-center w-full max-w-md animate-in fade-in zoom-in duration-500">
-        <div class="mb-8">
+      <div class="text-center w-full max-w-4xl animate-in fade-in zoom-in duration-500">
+        <div class="mb-12">
             <h1 class="text-5xl font-black text-gray-900 mb-4 tracking-tight">Access Restricted</h1>
              <p class="text-xl text-gray-600 font-light">
-                Authentication required for Control Center.
-            </p>
+                Authentication required for Control Center, or choose to play a game.
+             </p>
         </div>
         
-        <div class="bg-white/80 backdrop-blur-sm p-10 rounded-[2.5rem] shadow-2xl shadow-blue-900/10 border border-white">
-            <div class="mb-10">
-                 <div class="w-20 h-20 bg-blue-50 rounded-3xl flex items-center justify-center mx-auto text-blue-600 mb-6 border border-blue-100 shadow-sm">
-                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                 </div>
-                 <p class="text-gray-500 font-medium">Please verify your identity to proceed.</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+            {/* Card 1: Authentication */}
+            <div class="bg-white/80 backdrop-blur-sm p-10 rounded-[2.5rem] shadow-2xl shadow-blue-900/5 border border-white flex flex-col justify-between h-full text-center">
+                <div class="mb-10">
+                     <div class="w-20 h-20 bg-blue-50 rounded-3xl flex items-center justify-center mx-auto text-blue-600 mb-6 border border-blue-100 shadow-sm animate-pulse">
+                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                     </div>
+                     <p class="text-gray-500 font-medium">Please verify your identity to proceed.</p>
+                </div>
+
+                <div>
+                    {/* Vanilla JS Logic Button */}
+                    <button 
+                        id="manual-auth-trigger"
+                        class="w-full py-4 px-8 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white text-lg font-bold rounded-2xl shadow-lg shadow-blue-600/30 transition-all hover:-translate-y-1 hover:shadow-blue-600/40 border border-blue-500/20 cursor-pointer"
+                    >
+                        Authenticate Session
+                    </button>
+                    
+                    <p class="mt-8 text-xs text-gray-400 uppercase tracking-widest font-semibold">Secure Connection</p>
+                </div>
             </div>
 
-            {/* Vanilla JS Logic Button */}
-            <button 
-                id="manual-auth-trigger"
-                class="w-full py-4 px-8 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white text-lg font-bold rounded-2xl shadow-lg shadow-blue-600/30 transition-all hover:-translate-y-1 hover:shadow-blue-600/40 border border-blue-500/20 cursor-pointer"
-            >
-                Authenticate Session
-            </button>
-            
-            <script is:inline>
-              const btn = document.getElementById('manual-auth-trigger');
-              
-              btn?.addEventListener('click', () => {
-                if (!window.Clerk) {
-                  btn.innerText = "Initializing Security...";
-                  setTimeout(() => window.location.reload(), 1000);
-                  return;
-                }
+            {/* Card 2: Play Game */}
+            <div class="bg-white/80 backdrop-blur-sm p-10 rounded-[2.5rem] shadow-2xl shadow-purple-900/5 border border-white flex flex-col justify-between h-full text-center">
+                <div class="mb-10">
+                     <div class="w-20 h-20 bg-purple-50 rounded-3xl flex items-center justify-center mx-auto text-purple-600 mb-6 border border-purple-100 shadow-sm">
+                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <rect x="2" y="6" width="20" height="12" rx="3" stroke-width="2"></rect>
+                          <path d="M6 12h4M8 10v4" stroke-width="2" stroke-linecap="round"></path>
+                          <circle cx="15" cy="12" r="1.5" fill="currentColor"></circle>
+                          <circle cx="18" cy="10" r="1.5" fill="currentColor"></circle>
+                        </svg>
+                     </div>
+                     <p class="text-gray-500 font-medium">Step away from work and test your survival skills.</p>
+                </div>
 
-                if (window.Clerk.user) {
-                  // Already authenticated, proceed to control center
-                  window.location.href = '/dashboard';
-                } else {
-                  // Need to sign in
-                  window.Clerk.openSignIn({
-                    afterSignInUrl: '/dashboard',
-                    afterSignUpUrl: '/dashboard'
-                  });
-                }
-              });
-            </script>
-            
-            <p class="mt-6 text-xs text-gray-400 uppercase tracking-widest font-semibold">Secure Connection</p>
-
-            <div class="mt-6 pt-5 border-t border-gray-100/50 flex flex-col items-center">
-              <a
-                href="/VaultRunner"
-                class="text-xs font-mono text-gray-400 hover:text-blue-600 transition-colors flex items-center gap-1.5 group no-underline"
-              >
-                <span class="w-1.5 h-1.5 bg-gray-400 group-hover:bg-blue-600 rounded-full animate-pulse"></span>
-                Would you like to play a game?
-              </a>
+                <div>
+                    <a 
+                        href="/VaultRunner"
+                        class="w-full py-4 px-8 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white text-lg font-bold rounded-2xl shadow-lg shadow-purple-600/30 transition-all hover:-translate-y-1 hover:shadow-purple-600/40 border border-purple-500/20 cursor-pointer block no-underline text-center"
+                    >
+                        Play Game
+                    </a>
+                    
+                    <div class="mt-8 flex flex-col items-center">
+                      <span
+                        class="text-xs font-mono text-gray-400 flex items-center gap-1.5"
+                      >
+                        <span class="w-1.5 h-1.5 bg-purple-500 rounded-full animate-pulse"></span>
+                        Would you like to play a game?
+                      </span>
+                    </div>
+                </div>
             </div>
         </div>
+
+        <script is:inline>
+          const btn = document.getElementById('manual-auth-trigger');
+          
+          btn?.addEventListener('click', () => {
+            if (!window.Clerk) {
+              btn.innerText = "Initializing Security...";
+              setTimeout(() => window.location.reload(), 1000);
+              return;
+            }
+
+            if (window.Clerk.user) {
+              // Already authenticated, proceed to control center
+              window.location.href = '/dashboard';
+            } else {
+              // Need to sign in
+              window.Clerk.openSignIn({
+                afterSignInUrl: '/dashboard',
+                afterSignUpUrl: '/dashboard'
+              });
+            }
+          });
+        </script>
       </div>
 
   </div>
