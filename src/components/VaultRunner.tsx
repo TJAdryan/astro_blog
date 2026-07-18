@@ -398,7 +398,7 @@ export default function VaultRunner() {
             ← Back to Home
           </a>
         </div>
-        <h1 style={{ ...styles.title, color: '#4caf50' }}>CONGRATULATIONS WINNER</h1>
+        <h1 style={{ ...styles.title, color: '#4caf50' }}>CONGRATULATIONS {playerClass.toUpperCase()}</h1>
         <p style={styles.subtitle}>You successfully ran the Vault and survived with your life.</p>
         <button onClick={() => setGameState('START')} style={styles.btn}>Run Again</button>
       </div>
