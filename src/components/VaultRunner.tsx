@@ -62,10 +62,9 @@ export default function VaultRunner() {
 
     while (true) {
       if (curX === x2 && curY === y2) return true;
-      // Check if current cell is a wall, but ignore starting and ending cells
       if ((curX !== x1 || curY !== y1) && (curX !== x2 || curY !== y2)) {
         if (currentGrid[curY] && currentGrid[curY][curX] === '#') {
-          return false; // Blocked by a wall
+          return false;
         }
       }
 
@@ -81,7 +80,7 @@ export default function VaultRunner() {
     }
   }, []);
 
-  // --- GET BRESENHAM LINE PATH (For rendering projectile trail) ---
+  // --- GET BRESENHAM LINE PATH ---
   const getBresenhamPath = useCallback((x1: number, y1: number, x2: number, y2: number) => {
     const path: Position[] = [];
     const dx = Math.abs(x2 - x1);
@@ -114,14 +113,12 @@ export default function VaultRunner() {
 
   // --- PROCEDURAL LEVEL GENERATION ---
   const generateLevel = useCallback((level: number, pClass: CharacterClass) => {
-    // Initialize blank map with outer walls
     const newGrid = Array(GRID_SIZE).fill(null).map((_, y) =>
       Array(GRID_SIZE).fill(null).map((_, x) =>
         x === 0 || x === GRID_SIZE - 1 || y === 0 || y === GRID_SIZE - 1 ? '#' : '.'
       )
     );
 
-    // Add random internal wall structures (Rogue/Gauntlet style obstacles)
     for (let i = 0; i < 25; i++) {
       const rx = Math.floor(Math.random() * (GRID_SIZE - 2)) + 1;
       const ry = Math.floor(Math.random() * (GRID_SIZE - 2)) + 1;
@@ -130,7 +127,6 @@ export default function VaultRunner() {
       }
     }
 
-    // Set Random Exit stairs
     let exitX = GRID_SIZE - 2;
     let exitY = GRID_SIZE - 2;
     let attempts = 0;
@@ -144,7 +140,6 @@ export default function VaultRunner() {
     );
     newGrid[exitY][exitX] = 'S';
 
-    // Generate Scaled Enemies
     const enemyCount = 3 + level;
     const newEnemies: Enemy[] = [];
     for (let i = 0; i < enemyCount; i++) {
@@ -188,7 +183,6 @@ export default function VaultRunner() {
       const dy = pY - enemy.y;
       const distance = Math.abs(dx) + Math.abs(dy);
 
-      // Attack if adjacent
       if (distance === 1) {
         const dmg = Math.max(1, enemy.atk - playerStats.def);
         currentHp = Math.max(0, currentHp - dmg);
@@ -196,7 +190,6 @@ export default function VaultRunner() {
         return enemy;
       }
 
-      // Move closer toward player if within line of sight (5 tiles)
       if (distance <= 5) {
         const moveX = dx !== 0 ? Math.sign(dx) : 0;
         const moveY = dy !== 0 ? Math.sign(dy) : 0;
@@ -281,13 +274,12 @@ export default function VaultRunner() {
     processEnemyTurns(newX, newY, enemies);
   };
 
-  // --- RANGED COMBAT RESOLUTION (Infinite range, visible trail) ---
+  // --- RANGED COMBAT RESOLUTION ---
   const handleRangedAttack = useCallback((targetEnemy: Enemy) => {
     if (gameState !== 'PLAYING') return;
 
     const weaponName = playerStats.class === 'Fighter' ? 'Throwing Axe' : playerStats.class === 'Rogue' ? 'Recurve Bow' : 'Magic Bolt';
     
-    // Check Line of Sight
     if (!hasLineOfSight(playerPosition.x, playerPosition.y, targetEnemy.x, targetEnemy.y, grid)) {
       setLog(prev => [`Line of sight to enemy is blocked by a wall!`, ...prev.slice(0, 4)]);
       return;
@@ -299,7 +291,6 @@ export default function VaultRunner() {
     const updatedEnemies = [...enemies];
     const target = updatedEnemies[enemyIndex];
 
-    // Calculate damage based on class
     const damageModifier = playerStats.class === 'Fighter' ? 0.8 : playerStats.class === 'Rogue' ? 0.9 : 1.0;
     const playerDamage = Math.max(1, Math.floor(playerStats.atk * damageModifier) - Math.floor(Math.random() * 4));
     target.hp -= playerDamage;
@@ -310,13 +301,11 @@ export default function VaultRunner() {
       updatedEnemies.splice(enemyIndex, 1);
     }
 
-    // Set visible projectile path trail
     const path = getBresenhamPath(playerPosition.x, playerPosition.y, targetEnemy.x, targetEnemy.y);
-    const color = playerStats.class === 'Mage' ? '#00e5ff' : playerStats.class === 'Rogue' ? '#00e676' : '#ff1744'; // blue, green, red
+    const color = playerStats.class === 'Mage' ? '#00e5ff' : playerStats.class === 'Rogue' ? '#00e676' : '#ff1744';
     setProjectilePath(path);
     setProjectileColor(color);
 
-    // Clear visible path after short delay
     setTimeout(() => {
       setProjectilePath([]);
       setProjectileColor('');
@@ -330,7 +319,6 @@ export default function VaultRunner() {
   const fireAtNearest = useCallback(() => {
     if (gameState !== 'PLAYING') return;
 
-    // Filter enemies in Line of Sight
     const validEnemies = enemies.filter(enemy => {
       return hasLineOfSight(playerPosition.x, playerPosition.y, enemy.x, enemy.y, grid);
     });
@@ -340,7 +328,6 @@ export default function VaultRunner() {
       return;
     }
 
-    // Sort by distance (closest first)
     validEnemies.sort((a, b) => {
       const distA = Math.sqrt((a.x - playerPosition.x) ** 2 + (a.y - playerPosition.y) ** 2);
       const distB = Math.sqrt((b.x - playerPosition.x) ** 2 + (b.y - playerPosition.y) ** 2);
@@ -378,6 +365,63 @@ export default function VaultRunner() {
   // Weapon meta calculations
   const weaponName = playerStats.class === 'Fighter' ? 'Throwing Axe' : playerStats.class === 'Rogue' ? 'Recurve Bow' : 'Magic Bolt';
 
+  // --- RENDERING VIEWS ---
+  if (gameState === 'START') {
+    return (
+      <div style={styles.container}>
+        <div style={styles.backLinkAbsolute}>
+          <a href="/" style={styles.navLink}>
+            ← Back to Home
+          </a>
+        </div>
+        <h1 style={styles.title}>VAULT RUNNER</h1>
+        <p style={styles.subtitle}>Select your operative. Reach Level 5 to escape.</p>
+        <div style={styles.selectionZone}>
+          {(['Fighter', 'Mage', 'Rogue'] as CharacterClass[]).map(cls => (
+            <button key={cls} onClick={() => startGame(cls)} style={styles.btn}>
+              {cls} <br />
+              <span style={{ fontSize: '12px', opacity: 0.8 }}>
+                HP: {CLASS_PRESETS[cls].hp} | ATK: {CLASS_PRESETS[cls].atk}
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (gameState === 'VICTORY') {
+    return (
+      <div style={styles.container}>
+        <div style={styles.backLinkAbsolute}>
+          <a href="/" style={styles.navLink}>
+            ← Back to Home
+          </a>
+        </div>
+        <h1 style={{ ...styles.title, color: '#4caf50' }}>CONGRATULATIONS WINNER</h1>
+        <p style={styles.subtitle}>You successfully ran the Vault and survived with your life.</p>
+        <button onClick={() => setGameState('START')} style={styles.btn}>Run Again</button>
+      </div>
+    );
+  }
+
+  if (gameState === 'DEFEAT') {
+    return (
+      <div style={styles.container}>
+        <div style={styles.backLinkAbsolute}>
+          <a href="/" style={styles.navLink}>
+            ← Back to Home
+          </a>
+        </div>
+        <h1 style={{ ...styles.title, color: '#f44336' }}>YOU DIED</h1>
+        <p style={{ ...styles.subtitle, fontStyle: 'italic' }}>
+          "Your death has been recorded as another victory for the Vault"
+        </p>
+        <button onClick={() => setGameState('START')} style={styles.btn}>Try Again</button>
+      </div>
+    );
+  }
+
   return (
     <div style={styles.gameView}>
       <div style={styles.sidebar}>
@@ -396,6 +440,15 @@ export default function VaultRunner() {
           {log.map((entry, idx) => <div key={idx} style={styles.logEntry}>{entry}</div>)}
         </div>
         <p style={styles.controlsHint}>Use Arrow keys or WASD to step/melee. Click an enemy or press Space/F to shoot.</p>
+        
+        <button 
+          onClick={() => setGameState('START')} 
+          style={styles.restartBtn}
+          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#ff1744'; e.currentTarget.style.color = '#000'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#111'; e.currentTarget.style.color = '#fff'; }}
+        >
+          Restart Game
+        </button>
       </div>
 
       <div style={styles.gridContainer}>
@@ -426,11 +479,10 @@ export default function VaultRunner() {
                   color = '#222';
                 }
 
-                // If this coordinate is in the firing path and doesn't contain an active enemy
                 if (inPath && !hasEnemy) {
                   glyph = '*';
                   color = projectileColor;
-                  bg = projectileColor + '22'; // hex transparency tint
+                  bg = projectileColor + '22';
                 }
               }
 
@@ -482,5 +534,20 @@ const styles = {
   logEntry: { marginBottom: '8px', borderBottom: '1px solid #151515', paddingBottom: '4px' },
   controlsHint: { fontSize: '11px', color: '#666', marginTop: 'auto' },
   backLinkAbsolute: { position: 'absolute' as const, top: '20px', left: '20px' },
-  navLink: { color: '#00e5ff', textDecoration: 'none', fontSize: '14px', fontWeight: 'bold' as const }
+  navLink: { color: '#00e5ff', textDecoration: 'none', fontSize: '14px', fontWeight: 'bold' as const },
+  restartBtn: {
+    padding: '8px 12px',
+    fontSize: '12px',
+    backgroundColor: '#111',
+    color: '#fff',
+    border: '1px solid #ff1744',
+    cursor: 'pointer',
+    fontFamily: 'monospace',
+    borderRadius: '4px',
+    marginTop: '15px',
+    width: '100%',
+    textAlign: 'center' as const,
+    fontWeight: 'bold' as const,
+    transition: 'background-color 0.2s ease',
+  }
 };
