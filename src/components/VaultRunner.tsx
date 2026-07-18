@@ -46,6 +46,38 @@ export default function VaultRunner() {
   const [enemies, setEnemies] = useState<Enemy[]>([]);
   const [log, setLog] = useState<string[]>(['Welcome to the Vault. Find the stairs (S) to descend.']);
 
+  // --- LINE OF SIGHT CHECK (Bresenham's Line Algorithm) ---
+  const hasLineOfSight = useCallback((x1: number, y1: number, x2: number, y2: number, currentGrid: string[][]) => {
+    const dx = Math.abs(x2 - x1);
+    const dy = Math.abs(y2 - y1);
+    const sx = x1 < x2 ? 1 : -1;
+    const sy = y1 < y2 ? 1 : -1;
+    let err = dx - dy;
+
+    let curX = x1;
+    let curY = y1;
+
+    while (true) {
+      if (curX === x2 && curY === y2) return true;
+      // Check if current cell is a wall, but ignore starting and ending cells
+      if ((curX !== x1 || curY !== y1) && (curX !== x2 || curY !== y2)) {
+        if (currentGrid[curY] && currentGrid[curY][curX] === '#') {
+          return false; // Blocked by a wall
+        }
+      }
+
+      const e2 = 2 * err;
+      if (e2 > -dy) {
+        err -= dy;
+        curX += sx;
+      }
+      if (e2 < dx) {
+        err += dx;
+        curY += sy;
+      }
+    }
+  }, []);
+
   // --- PROCEDURAL LEVEL GENERATION ---
   const generateLevel = useCallback((level: number, pClass: CharacterClass) => {
     // Initialize blank map with outer walls
@@ -59,14 +91,23 @@ export default function VaultRunner() {
     for (let i = 0; i < 25; i++) {
       const rx = Math.floor(Math.random() * (GRID_SIZE - 2)) + 1;
       const ry = Math.floor(Math.random() * (GRID_SIZE - 2)) + 1;
-      if ((rx !== 1 || ry !== 1) && (rx !== GRID_SIZE - 2 || ry !== GRID_SIZE - 2)) {
+      if ((rx !== 1 || ry !== 1)) {
         newGrid[ry][rx] = '#';
       }
     }
 
-    // Set Exit stairs
-    const exitX = GRID_SIZE - 2;
-    const exitY = GRID_SIZE - 2;
+    // Set Random Exit stairs (guaranteed to be on a walkable space and at least 6 tiles away from player start)
+    let exitX = GRID_SIZE - 2;
+    let exitY = GRID_SIZE - 2;
+    let attempts = 0;
+    do {
+      exitX = Math.floor(Math.random() * (GRID_SIZE - 2)) + 1;
+      exitY = Math.floor(Math.random() * (GRID_SIZE - 2)) + 1;
+      attempts++;
+    } while (
+      (newGrid[exitY][exitX] !== '.' || (Math.abs(exitX - 1) + Math.abs(exitY - 1) < 6)) &&
+      attempts < 100
+    );
     newGrid[exitY][exitX] = 'S';
 
     // Generate Scaled Enemies (50% win metric adjustment per level)
@@ -77,7 +118,7 @@ export default function VaultRunner() {
       do {
         ex = Math.floor(Math.random() * (GRID_SIZE - 2)) + 1;
         ey = Math.floor(Math.random() * (GRID_SIZE - 2)) + 1;
-      } while (newGrid[ey][ex] !== '.' || (ex === 1 && ey === 1));
+      } while (newGrid[ey][ex] !== '.' || (ex === 1 && ey === 1) || (ex === exitX && ey === exitY));
 
       newEnemies.push({
         id: `${level}-${i}`,
@@ -103,44 +144,52 @@ export default function VaultRunner() {
     generateLevel(1, selectedClass);
   };
 
-  // --- TURN ENGINE & MOVEMENT ---
-  const handleMove = (dx: number, dy: number) => {
-    if (gameState !== 'PLAYING') return;
+  // --- ENEMY AI TURN ---
+  const processEnemyTurns = useCallback((pX: number, pY: number, currentEnemiesList: Enemy[]) => {
+    let currentHp = playerStats.hp;
+    const nextLogs: string[] = [];
 
-    const newX = playerPosition.x + dx;
-    const newY = playerPosition.y + dy;
+    const updatedEnemies = currentEnemiesList.map(enemy => {
+      // Direct distance check
+      const dx = pX - enemy.x;
+      const dy = pY - enemy.y;
+      const distance = Math.abs(dx) + Math.abs(dy);
 
-    // Boundary & Wall check
-    if (grid[newY][newX] === '#') return;
-
-    // Combat Check (Collision with Enemy)
-    const enemyIndex = enemies.findIndex(e => e.x === newX && e.y === newY);
-    if (enemyIndex !== -1) {
-      resolveCombat(enemyIndex);
-      return;
-    }
-
-    // Progression Check (Stairs)
-    if (grid[newY][newX] === 'S') {
-      if (currentLevel === TOTAL_LEVELS) {
-        setGameState('VICTORY');
-      } else {
-        const nextLevel = currentLevel + 1;
-        setCurrentLevel(nextLevel);
-        setLog(prev => [`Descended to level ${nextLevel}. Danger grows.`, ...prev]);
-        generateLevel(nextLevel, playerClass);
+      // Attack if adjacent
+      if (distance === 1) {
+        const dmg = Math.max(1, enemy.atk - playerStats.def);
+        currentHp = Math.max(0, currentHp - dmg);
+        nextLogs.push(`An enemy ambushes you for ${dmg} DMG!`);
+        return enemy;
       }
-      return;
+
+      // Move closer toward player if within line of sight (5 tiles)
+      if (distance <= 5) {
+        const moveX = dx !== 0 ? Math.sign(dx) : 0;
+        const moveY = dy !== 0 ? Math.sign(dy) : 0;
+        
+        const nextX = enemy.x + moveX;
+        const nextY = enemy.y + (moveX === 0 ? moveY : 0); // Prefer axis aligned movement
+
+        if (grid[nextY] && grid[nextY][nextX] === '.' && !(nextX === pX && nextY === pY)) {
+          return { ...enemy, x: nextX, y: nextY };
+        }
+      }
+      return enemy;
+    });
+
+    if (currentHp <= 0) {
+      setGameState('DEFEAT');
     }
 
-    // Move Player
-    setPlayerPosition({ x: newX, y: newY });
-    
-    // Process Enemy AI Turn
-    processEnemyTurns(newX, newY);
-  };
+    setEnemies(updatedEnemies);
+    setPlayerStats(prev => ({ ...prev, hp: currentHp }));
+    if (nextLogs.length > 0) {
+      setLog(prev => [...nextLogs, ...prev.slice(0, 4)]);
+    }
+  }, [playerStats.hp, playerStats.def, grid]);
 
-  // --- COMBAT RESOLUTION ---
+  // --- COMBAT RESOLUTION (Melee Collision) ---
   const resolveCombat = (index: number) => {
     const updatedEnemies = [...enemies];
     const target = updatedEnemies[index];
@@ -170,48 +219,117 @@ export default function VaultRunner() {
     setLog(prev => [...nextLog, ...prev.slice(0, 4)]);
   };
 
-  // --- ENEMY AI TURN ---
-  const processEnemyTurns = (pX: number, pY: number) => {
-    let currentHp = playerStats.hp;
-    const nextLogs: string[] = [];
+  // --- TURN ENGINE & MOVEMENT ---
+  const handleMove = (dx: number, dy: number) => {
+    if (gameState !== 'PLAYING') return;
 
-    const updatedEnemies = enemies.map(enemy => {
-      // Direct distance check
-      const dx = pX - enemy.x;
-      const dy = pY - enemy.y;
-      const distance = Math.abs(dx) + Math.abs(dy);
+    const newX = playerPosition.x + dx;
+    const newY = playerPosition.y + dy;
 
-      // Attack if adjacent
-      if (distance === 1) {
-        const dmg = Math.max(1, enemy.atk - playerStats.def);
-        currentHp = Math.max(0, currentHp - dmg);
-        nextLogs.push(`An enemy ambushes you for ${dmg} DMG!`);
-        return enemy;
-      }
+    // Boundary & Wall check
+    if (grid[newY] && grid[newY][newX] === '#') return;
 
-      // Move closer toward player if within line of sight (5 tiles)
-      if (distance <= 5) {
-        const moveX = dx !== 0 ? Math.sign(dx) : 0;
-        const moveY = dy !== 0 ? Math.sign(dy) : 0;
-        
-        const nextX = enemy.x + moveX;
-        const nextY = enemy.y + (moveX === 0 ? moveY : 0); // Prefer axis aligned movement
-
-        if (grid[nextY][nextX] === '.' && !(nextX === pX && nextY === pY)) {
-          return { ...enemy, x: nextX, y: nextY };
-        }
-      }
-      return enemy;
-    });
-
-    if (currentHp <= 0) {
-      setGameState('DEFEAT');
+    // Combat Check (Collision with Enemy)
+    const enemyIndex = enemies.findIndex(e => e.x === newX && e.y === newY);
+    if (enemyIndex !== -1) {
+      resolveCombat(enemyIndex);
+      return;
     }
 
-    setEnemies(updatedEnemies);
-    setPlayerStats(prev => ({ ...prev, hp: currentHp }));
-    if (nextLogs.length > 0) {
-      setLog(prev => [...nextLogs, ...prev.slice(0, 4)]);
+    // Progression Check (Stairs)
+    if (grid[newY] && grid[newY][newX] === 'S') {
+      if (currentLevel === TOTAL_LEVELS) {
+        setGameState('VICTORY');
+      } else {
+        const nextLevel = currentLevel + 1;
+        setCurrentLevel(nextLevel);
+        setLog(prev => [`Descended to level ${nextLevel}. Danger grows.`, ...prev]);
+        generateLevel(nextLevel, playerClass);
+      }
+      return;
+    }
+
+    // Move Player
+    setPlayerPosition({ x: newX, y: newY });
+    
+    // Process Enemy AI Turn
+    processEnemyTurns(newX, newY, enemies);
+  };
+
+  // --- RANGED COMBAT RESOLUTION ---
+  const handleRangedAttack = useCallback((targetEnemy: Enemy) => {
+    if (gameState !== 'PLAYING') return;
+
+    const weaponName = playerStats.class === 'Fighter' ? 'Throwing Axe' : playerStats.class === 'Rogue' ? 'Recurve Bow' : 'Magic Bolt';
+    const range = playerStats.class === 'Fighter' ? 2 : playerStats.class === 'Rogue' ? 4 : 6;
+
+    const dx = targetEnemy.x - playerPosition.x;
+    const dy = targetEnemy.y - playerPosition.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    if (distance > range) {
+      setLog(prev => [`Enemy is out of range for your ${weaponName}! (Range: ${range})`, ...prev.slice(0, 4)]);
+      return;
+    }
+
+    if (!hasLineOfSight(playerPosition.x, playerPosition.y, targetEnemy.x, targetEnemy.y, grid)) {
+      setLog(prev => [`Line of sight to enemy is blocked by a wall!`, ...prev.slice(0, 4)]);
+      return;
+    }
+
+    const enemyIndex = enemies.findIndex(e => e.id === targetEnemy.id);
+    if (enemyIndex === -1) return;
+
+    const updatedEnemies = [...enemies];
+    const target = updatedEnemies[enemyIndex];
+
+    const damageModifier = playerStats.class === 'Fighter' ? 0.8 : playerStats.class === 'Rogue' ? 0.9 : 1.0;
+    const playerDamage = Math.max(1, Math.floor(playerStats.atk * damageModifier) - Math.floor(Math.random() * 4));
+    target.hp -= playerDamage;
+    let nextLog = [`You fire ${weaponName} at enemy for ${playerDamage} DMG.`];
+
+    if (target.hp <= 0) {
+      nextLog.unshift(`Enemy defeated!`);
+      updatedEnemies.splice(enemyIndex, 1);
+    }
+
+    setLog(prev => [...nextLog, ...prev.slice(0, 4)]);
+    processEnemyTurns(playerPosition.x, playerPosition.y, updatedEnemies);
+  }, [gameState, playerStats.class, playerStats.atk, playerPosition, grid, enemies, hasLineOfSight, processEnemyTurns]);
+
+  // --- AUTO TARGET NEAREST ---
+  const fireAtNearest = useCallback(() => {
+    if (gameState !== 'PLAYING') return;
+
+    const range = playerStats.class === 'Fighter' ? 2 : playerStats.class === 'Rogue' ? 4 : 6;
+
+    const validEnemies = enemies.filter(enemy => {
+      const dx = enemy.x - playerPosition.x;
+      const dy = enemy.y - playerPosition.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      return distance <= range && hasLineOfSight(playerPosition.x, playerPosition.y, enemy.x, enemy.y, grid);
+    });
+
+    if (validEnemies.length === 0) {
+      setLog(prev => ["No targets in range/line of sight.", ...prev.slice(0, 4)]);
+      return;
+    }
+
+    validEnemies.sort((a, b) => {
+      const distA = Math.sqrt((a.x - playerPosition.x) ** 2 + (a.y - playerPosition.y) ** 2);
+      const distB = Math.sqrt((b.x - playerPosition.x) ** 2 + (b.y - playerPosition.y) ** 2);
+      return distA - distB;
+    });
+
+    handleRangedAttack(validEnemies[0]);
+  }, [gameState, playerStats.class, enemies, playerPosition, grid, hasLineOfSight, handleRangedAttack]);
+
+  // --- CLICK INTERACTION ---
+  const handleCellClick = (x: number, y: number) => {
+    if (gameState !== 'PLAYING') return;
+    const clickedEnemy = enemies.find(e => e.x === x && e.y === y);
+    if (clickedEnemy) {
+      handleRangedAttack(clickedEnemy);
     }
   };
 
@@ -224,11 +342,16 @@ export default function VaultRunner() {
         case 'ArrowDown':  case 's': handleMove(0, 1);  break;
         case 'ArrowLeft':  case 'a': handleMove(-1, 0); break;
         case 'ArrowRight': case 'd': handleMove(1, 0);  break;
+        case 'f':          case ' ': e.preventDefault(); fireAtNearest(); break;
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [playerPosition, gameState, enemies, grid]);
+  }, [playerPosition, gameState, enemies, grid, playerStats, fireAtNearest]);
+
+  // Weapon meta calculations
+  const weaponName = playerStats.class === 'Fighter' ? 'Throwing Axe' : playerStats.class === 'Rogue' ? 'Recurve Bow' : 'Magic Bolt';
+  const range = playerStats.class === 'Fighter' ? 2 : playerStats.class === 'Rogue' ? 4 : 6;
 
   // --- RENDERING VIEWS ---
   if (gameState === 'START') {
@@ -299,11 +422,12 @@ export default function VaultRunner() {
         <p>Level: <strong>{currentLevel} / {TOTAL_LEVELS}</strong></p>
         <p>HP: <strong>{playerStats.hp} / {playerStats.maxHp}</strong></p>
         <p>ATK: <strong>{playerStats.atk}</strong> | DEF: <strong>{playerStats.def}</strong></p>
+        <p>Weapon: <strong>{weaponName}</strong> (Range: {range})</p>
         <hr style={{ borderColor: '#333' }} />
         <div style={styles.logBox}>
           {log.map((entry, idx) => <div key={idx} style={styles.logEntry}>{entry}</div>)}
         </div>
-        <p style={styles.controlsHint}>Use Arrow keys or WASD to step/attack.</p>
+        <p style={styles.controlsHint}>Use Arrow keys or WASD to step/melee. Click an enemy or press Space/F to shoot.</p>
       </div>
 
       <div style={styles.gridContainer}>
@@ -312,6 +436,7 @@ export default function VaultRunner() {
             {row.map((cell, x) => {
               let glyph = cell;
               let color = '#444';
+              let cursor = 'default';
 
               if (x === playerPosition.x && y === playerPosition.y) {
                 glyph = '@';
@@ -321,6 +446,7 @@ export default function VaultRunner() {
                 if (hasEnemy) {
                   glyph = 'E';
                   color = '#ff1744';
+                  cursor = 'pointer';
                 } else if (cell === 'S') {
                   color = '#ffea00';
                 } else if (cell === '#') {
@@ -331,7 +457,11 @@ export default function VaultRunner() {
               }
 
               return (
-                <div key={x} style={{ ...styles.cell, color, backgroundColor: cell === '#' ? '#222' : '#0a0a0a' }}>
+                <div 
+                  key={x} 
+                  onClick={() => handleCellClick(x, y)}
+                  style={{ ...styles.cell, color, cursor, backgroundColor: cell === '#' ? '#222' : '#0a0a0a' }}
+                >
                   {glyph}
                 </div>
               );
