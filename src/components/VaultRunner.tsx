@@ -111,43 +111,98 @@ export default function VaultRunner() {
     return path;
   }, []);
 
-  // --- PROCEDURAL LEVEL GENERATION ---
-  const generateLevel = useCallback((level: number, pClass: CharacterClass) => {
-    const newGrid = Array(GRID_SIZE).fill(null).map((_, y) =>
-      Array(GRID_SIZE).fill(null).map((_, x) =>
-        x === 0 || x === GRID_SIZE - 1 || y === 0 || y === GRID_SIZE - 1 ? '#' : '.'
-      )
-    );
+  // --- BFS PATHFINDING VALIDATION ---
+  const hasValidPath = useCallback((testGrid: string[][], startX: number, startY: number, targetX: number, targetY: number) => {
+    const visited = Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(false));
+    const queue: Position[] = [{ x: startX, y: startY }];
+    visited[startY][startX] = true;
 
-    for (let i = 0; i < 25; i++) {
-      const rx = Math.floor(Math.random() * (GRID_SIZE - 2)) + 1;
-      const ry = Math.floor(Math.random() * (GRID_SIZE - 2)) + 1;
-      if ((rx !== 1 || ry !== 1)) {
-        newGrid[ry][rx] = '#';
+    const dirs = [
+      { x: 0, y: -1 },
+      { x: 0, y: 1 },
+      { x: -1, y: 0 },
+      { x: 1, y: 0 }
+    ];
+
+    while (queue.length > 0) {
+      const curr = queue.shift()!;
+      if (curr.x === targetX && curr.y === targetY) return true;
+
+      for (const d of dirs) {
+        const nx = curr.x + d.x;
+        const ny = curr.y + d.y;
+
+        if (
+          nx >= 0 && nx < GRID_SIZE &&
+          ny >= 0 && ny < GRID_SIZE &&
+          !visited[ny][nx] &&
+          testGrid[ny][nx] !== '#'
+        ) {
+          visited[ny][nx] = true;
+          queue.push({ x: nx, y: ny });
+        }
       }
     }
 
+    return false;
+  }, []);
+
+  // --- PROCEDURAL LEVEL GENERATION ---
+  const generateLevel = useCallback((level: number, pClass: CharacterClass) => {
+    let newGrid: string[][] = [];
     let exitX = GRID_SIZE - 2;
     let exitY = GRID_SIZE - 2;
-    let attempts = 0;
-    do {
-      exitX = Math.floor(Math.random() * (GRID_SIZE - 2)) + 1;
-      exitY = Math.floor(Math.random() * (GRID_SIZE - 2)) + 1;
-      attempts++;
-    } while (
-      (newGrid[exitY][exitX] !== '.' || (Math.abs(exitX - 1) + Math.abs(exitY - 1) < 6)) &&
-      attempts < 100
-    );
-    newGrid[exitY][exitX] = 'S';
+    let validLayout = false;
+    let layoutAttempts = 0;
+
+    while (!validLayout && layoutAttempts < 200) {
+      layoutAttempts++;
+      newGrid = Array(GRID_SIZE).fill(null).map((_, y) =>
+        Array(GRID_SIZE).fill(null).map((_, x) =>
+          x === 0 || x === GRID_SIZE - 1 || y === 0 || y === GRID_SIZE - 1 ? '#' : '.'
+        )
+      );
+
+      for (let i = 0; i < 28; i++) {
+        const rx = Math.floor(Math.random() * (GRID_SIZE - 2)) + 1;
+        const ry = Math.floor(Math.random() * (GRID_SIZE - 2)) + 1;
+        if (rx !== 1 || ry !== 1) {
+          newGrid[ry][rx] = '#';
+        }
+      }
+
+      let attempts = 0;
+      do {
+        exitX = Math.floor(Math.random() * (GRID_SIZE - 2)) + 1;
+        exitY = Math.floor(Math.random() * (GRID_SIZE - 2)) + 1;
+        attempts++;
+      } while (
+        (newGrid[exitY][exitX] !== '.' || (Math.abs(exitX - 1) + Math.abs(exitY - 1) < 6)) &&
+        attempts < 100
+      );
+      newGrid[exitY][exitX] = 'S';
+
+      if (hasValidPath(newGrid, 1, 1, exitX, exitY)) {
+        validLayout = true;
+      }
+    }
 
     const enemyCount = 3 + level;
     const newEnemies: Enemy[] = [];
     for (let i = 0; i < enemyCount; i++) {
       let ex, ey;
+      let eAttempts = 0;
       do {
         ex = Math.floor(Math.random() * (GRID_SIZE - 2)) + 1;
         ey = Math.floor(Math.random() * (GRID_SIZE - 2)) + 1;
-      } while (newGrid[ey][ex] !== '.' || (ex === 1 && ey === 1) || (ex === exitX && ey === exitY));
+        eAttempts++;
+      } while (
+        (newGrid[ey][ex] !== '.' ||
+          (ex === 1 && ey === 1) ||
+          (ex === exitX && ey === exitY) ||
+          !hasValidPath(newGrid, 1, 1, ex, ey)) &&
+        eAttempts < 100
+      );
 
       newEnemies.push({
         id: `${level}-${i}`,
@@ -161,7 +216,7 @@ export default function VaultRunner() {
     setGrid(newGrid);
     setEnemies(newEnemies);
     setPlayerPosition({ x: 1, y: 1 });
-  }, []);
+  }, [hasValidPath]);
 
   // --- START GAME ---
   const startGame = (selectedClass: CharacterClass) => {
@@ -183,6 +238,7 @@ export default function VaultRunner() {
       const dy = pY - enemy.y;
       const distance = Math.abs(dx) + Math.abs(dy);
 
+      // 1. Melee attack if adjacent
       if (distance === 1) {
         const dmg = Math.max(1, enemy.atk - playerStats.def);
         currentHp = Math.max(0, currentHp - dmg);
@@ -190,6 +246,7 @@ export default function VaultRunner() {
         return enemy;
       }
 
+      // 2. Chase player if within range
       if (distance <= 5) {
         const moveX = dx !== 0 ? Math.sign(dx) : 0;
         const moveY = dy !== 0 ? Math.sign(dy) : 0;
@@ -197,10 +254,42 @@ export default function VaultRunner() {
         const nextX = enemy.x + moveX;
         const nextY = enemy.y + (moveX === 0 ? moveY : 0);
 
-        if (grid[nextY] && grid[nextY][nextX] === '.' && !(nextX === pX && nextY === pY)) {
+        const occupied = currentEnemiesList.some(e => e.id !== enemy.id && e.x === nextX && e.y === nextY);
+
+        if (grid[nextY] && (grid[nextY][nextX] === '.' || grid[nextY][nextX] === 'S') && !(nextX === pX && nextY === pY) && !occupied) {
           return { ...enemy, x: nextX, y: nextY };
         }
       }
+
+      // 3. Roam randomly if out of range or blocked
+      const possibleDirs = [
+        { x: 0, y: -1 },
+        { x: 0, y: 1 },
+        { x: -1, y: 0 },
+        { x: 1, y: 0 },
+        { x: 0, y: 0 }
+      ];
+
+      const shuffled = [...possibleDirs].sort(() => Math.random() - 0.5);
+
+      for (const d of shuffled) {
+        if (d.x === 0 && d.y === 0) break;
+
+        const roamX = enemy.x + d.x;
+        const roamY = enemy.y + d.y;
+
+        const occupied = currentEnemiesList.some(e => e.id !== enemy.id && e.x === roamX && e.y === roamY);
+
+        if (
+          grid[roamY] &&
+          (grid[roamY][roamX] === '.' || grid[roamY][roamX] === 'S') &&
+          !(roamX === pX && roamY === pY) &&
+          !occupied
+        ) {
+          return { ...enemy, x: roamX, y: roamY };
+        }
+      }
+
       return enemy;
     });
 
