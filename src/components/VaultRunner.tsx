@@ -428,26 +428,31 @@ export default function VaultRunner() {
         @media (max-width: 768px) {
           .game-view {
             flex-direction: column !important;
+            align-items: center !important;
+            overflow-x: hidden !important;
             overflow-y: auto !important;
-            padding-bottom: 140px !important; /* space for mobile controls */
+            padding-bottom: 120px !important; /* space for mobile controls */
             height: auto !important;
             min-height: 100vh;
           }
-          .game-sidebar {
-            width: 100% !important;
-            border-right: none !important;
-            border-bottom: 1px solid #333 !important;
-            padding: 15px !important;
-            box-sizing: border-box;
+          .desktop-only-sidebar {
+            display: none !important;
+          }
+          .mobile-header {
+            display: flex !important;
           }
           .grid-container {
-            padding: 20px 0 !important;
+            padding: 10px 0 !important;
             flex: none !important;
+            width: 100% !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
           }
           .game-cell {
-            width: 22px !important;
-            height: 22px !important;
-            font-size: 12px !important;
+            width: 20px !important;
+            height: 20px !important;
+            font-size: 11px !important;
           }
           .controls-hint {
             display: none !important;
@@ -455,13 +460,60 @@ export default function VaultRunner() {
           .mobile-controls-bar {
             display: flex !important;
           }
-          .log-box-custom {
-            max-height: 80px !important;
-          }
         }
       `}} />
 
-      <div className="game-sidebar" style={styles.sidebar}>
+      {/* Mobile Top Header (Visible only on mobile) */}
+      <div 
+        className="mobile-header"
+        style={{
+          display: 'none',
+          flexDirection: 'column',
+          backgroundColor: '#0a0a0a',
+          borderBottom: '1px solid #222',
+          padding: '8px 12px',
+          gap: '4px',
+          width: '100%',
+          boxSizing: 'border-box',
+        }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <a href="/" style={styles.navLink}>← Home</a>
+          <span style={{ fontSize: '13px', fontWeight: 'bold', color: '#00e5ff' }}>
+            {playerStats.class.toUpperCase()} <span style={{ color: '#aaa' }}>(Lvl {currentLevel}/{TOTAL_LEVELS})</span>
+          </span>
+          <button 
+            onClick={() => setGameState('START')} 
+            style={{
+              padding: '3px 8px',
+              fontSize: '11px',
+              backgroundColor: '#111',
+              color: '#ff1744',
+              border: '1px solid #ff1744',
+              borderRadius: '4px',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+            }}
+          >
+            Restart
+          </button>
+        </div>
+
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#ccc', backgroundColor: '#111', padding: '4px 8px', borderRadius: '4px' }}>
+          <span>HP: <strong style={{ color: '#4caf50' }}>{playerStats.hp}/{playerStats.maxHp}</strong></span>
+          <span>ATK: <strong>{playerStats.atk}</strong> | DEF: <strong>{playerStats.def}</strong></span>
+          <span>Wpn: <strong>{weaponName}</strong></span>
+        </div>
+
+        {log.length > 0 && (
+          <div style={{ fontSize: '11px', color: '#00e5ff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', backgroundColor: '#050505', padding: '3px 6px', borderRadius: '3px', border: '1px solid #1a1a1a' }}>
+            ▶ {log[0]}
+          </div>
+        )}
+      </div>
+
+      {/* Desktop Sidebar (Hidden on mobile) */}
+      <div className="desktop-only-sidebar" style={styles.sidebar}>
         <div style={{ marginBottom: '15px' }}>
           <a href="/" style={styles.navLink}>
             ← Back to Home
