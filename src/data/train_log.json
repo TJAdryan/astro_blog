@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-07-19T14:21:49.204Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times between Canal St and DeKalb Av (up to 13 mins, normally every 11 mins)."
+    ]
+  },
+  {
     "date": "2026-07-18T14:17:15.654Z",
     "status": "Good Service",
     "details": []
@@ -193,13 +200,6 @@
     "status": "Service Change",
     "details": [
       "<Q> trains are running between 96 St and Brighton Beach."
-    ]
-  },
-  {
-    "date": "2026-06-17T14:12:59.177Z",
-    "status": "Service Change",
-    "details": [
-      "Northbound: Some 96 St-bound trains are making local stops between Times Sq - 42 St and 57 St - 7 Av."
     ]
   }
 ]
