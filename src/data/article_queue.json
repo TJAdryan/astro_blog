@@ -268,5 +268,32 @@
     "source": "arXiv",
     "topic": "Python",
     "dateAdded": "2026-07-13T15:39:28.434Z"
+  },
+  {
+    "id": "http://arxiv.org/abs/2511.03393v1",
+    "title": "Formalizing ETLT and ELTL Design Patterns and Proposing Enhanced Variants: A Systematic Framework for Modern Data Engineering",
+    "summary": "Traditional ETL and ELT design patterns struggle to meet modern requirements of scalability, governance, and real-time data processing. Hybrid approaches such as ETLT (Extract-Transform-Load-Transform) and ELTL (Extract-Load-Transform-Load) are already used in practice, but the literature lacks best practices and formal recognition of these approaches as design patterns. This paper formalizes ETLT and ELTL as reusable design patterns by codifying implicit best practices and introduces enhanced variants, ETLT++ and ELTL++, to address persistent gaps in governance, quality assurance, and observability. We define ETLT and ELTL patterns systematically within a design pattern framework, outlining their structure, trade-offs, and use cases. Building on this foundation, we extend them into ETLT++ and ELTL++ by embedding explicit contracts, versioning, semantic curation, and continuous monitoring as mandatory design obligations. The proposed framework offers practitioners a structured roadmap to build auditable, scalable, and cost-efficient pipelines, unifying quality enforcement, lineage, and usability across multi-cloud and real-time contexts. By formalizing ETLT and ELTL, and enhancing them through ETLT++ and ELTL++, this work bridges the gap between ad hoc practice and systematic design, providing a reusable foundation for modern, trustworthy data engineering.",
+    "link": "http://arxiv.org/abs/2511.03393v1",
+    "source": "arXiv",
+    "topic": "Data Engineering",
+    "dateAdded": "2026-07-20T15:02:50.711Z"
+  },
+  {
+    "id": "41071231",
+    "title": "Genetic Engineering of Esophageal Organoids: CRISPR-Based Knock-In for Cell Lineage Tracing.",
+    "summary": "No abstract available via summary API. Please click link to read.",
+    "link": "https://pubmed.ncbi.nlm.nih.gov/41071231/",
+    "source": "PubMed",
+    "topic": "CRISPR",
+    "dateAdded": "2026-07-20T15:02:51.148Z"
+  },
+  {
+    "id": "http://arxiv.org/abs/2606.08588v1",
+    "title": "LLM vs. Human Unit Tests: Fault Detection on Real Python Bugs",
+    "summary": "Large language models (LLMs) have shown considerable promise for automated unit test generation, yet their practical effectiveness relative to human-written tests remains poorly understood. Existing evaluations commonly rely on coverage-oriented benchmarks that do not assess fault-detection capability directly. We present an empirical comparison of LLM-generated and human-written unit tests across three complementary Python benchmarks: 29 real historical bugs from BugsInPy, a function-level benchmark drawn from python-slugify and packaging, and a controlled paired benchmark. Our generation pipeline couples Gemini 2.5 Flash with a lightweight lexical retrieval mechanism that supplies bug-relevant context at generation time. Across eight quality dimensions, LLM-generated tests with retrieval-augmented context detect faults in 69% of cases compared to 17.2% for general-purpose human-written tests (Fisher's exact, $p < 0.001$, Cohen's $h = 1.10$). Critically, line and branch coverage are nearly identical between the two approaches (84.8% vs. 88.5% and 75.2% vs. 82.1%), confirming that coverage is an insufficient proxy for fault-detection capability. We discuss the conditions under which each approach excels, characterize their complementary strengths, and identify the critical role of retrieval context and reproducible benchmark construction in meaningful test-quality evaluation.",
+    "link": "http://arxiv.org/abs/2606.08588v1",
+    "source": "arXiv",
+    "topic": "Python",
+    "dateAdded": "2026-07-20T15:02:51.709Z"
   }
 ]
