@@ -175,42 +175,44 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           <div class="bg-slate-800/40 rounded-2xl p-6 border border-slate-700/50 mb-8">
             <h3 class="text-lg font-bold text-white mb-3">Quickstart Instructions for Python Users</h3>
             <ol class="list-decimal list-inside text-sm text-slate-300 space-y-2 font-light">
-              <li><strong class="text-white">Initialize Project:</strong> Run <code class="bg-slate-900 px-2 py-0.5 rounded text-cyan-300 font-mono text-xs">npx create-vite my-app --template react-ts</code> in your terminal.</li>
+              <li><strong class="text-white">Install JavaScript Environment:</strong> Install Node.js & npm (see installation reference below) so you have access to <code class="bg-slate-900 px-2 py-0.5 rounded text-cyan-300 font-mono text-xs">node</code> and <code class="bg-slate-900 px-2 py-0.5 rounded text-cyan-300 font-mono text-xs">npx</code> in your terminal.</li>
+              <li><strong class="text-white">Initialize React Project:</strong> Run <code class="bg-slate-900 px-2 py-0.5 rounded text-cyan-300 font-mono text-xs">npx create-vite my-app --template react-ts</code> in your terminal.</li>
               <li><strong class="text-white">Think in State:</strong> Instead of modifying DOM nodes manually, define state variables using <code class="bg-slate-900 px-2 py-0.5 rounded text-cyan-300 font-mono text-xs">useState</code> and let React update the view.</li>
-              <li><strong class="text-white">Pair with Python Backends:</strong> Pair React frontends with FastAPI, Flask, or Django REST Framework for high-performance interactive web applets!</li>
+              <li><strong class="text-white">Pair with Python Backends:</strong> Connect your React frontend to Python APIs (FastAPI, Flask, or Django REST Framework) for high-performance interactive web applets!</li>
             </ol>
           </div>
 
           <!-- Installation & Resources Block -->
           <div class="bg-slate-800/40 rounded-2xl p-6 border border-slate-700/50">
             <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
-              <span>🛠️</span> Installation Resources for JavaScript & React
+              <span>🛠️</span> Reference for Installing JavaScript & React
             </h3>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
               <!-- JS Runtime (Node.js & npm) -->
               <div class="bg-slate-900/60 p-5 rounded-xl border border-slate-700/40">
-                <h4 class="text-cyan-400 font-mono font-bold text-xs uppercase tracking-wider mb-2">1. Install JavaScript Runtime (Node.js & npm)</h4>
+                <h4 class="text-cyan-400 font-mono font-bold text-xs uppercase tracking-wider mb-2">1. Reference for Installing JavaScript (Node.js & npm)</h4>
                 <p class="text-xs text-slate-300 mb-3 leading-relaxed">
-                  Node.js executes JavaScript on your computer and comes bundled with <strong>npm</strong> (Node Package Manager) — JavaScript's equivalent to Python's <code>pip</code>.
+                  JavaScript requires a runtime environment to execute outside the browser. Installing <strong>Node.js</strong> provides both the JS engine and <strong>npm</strong> (Node Package Manager) — JavaScript's counterpart to Python's <code>pip</code>.
                 </p>
                 <ul class="text-xs text-slate-300 space-y-2 list-disc list-inside">
-                  <li><strong>Official Downloads:</strong> <a href="https://nodejs.org/" target="_blank" rel="noopener noreferrer" class="text-cyan-400 hover:underline">nodejs.org — Download Node.js LTS</a></li>
+                  <li><strong>Official Downloads:</strong> <a href="https://nodejs.org/" target="_blank" rel="noopener noreferrer" class="text-cyan-400 hover:underline">nodejs.org — Download Node.js (LTS Version)</a></li>
                   <li><strong>macOS (Homebrew):</strong> <code class="bg-slate-950 px-1.5 py-0.5 rounded text-cyan-300 font-mono">brew install node</code></li>
-                  <li><strong>Node Version Manager:</strong> <a href="https://github.com/nvm-sh/nvm" target="_blank" rel="noopener noreferrer" class="text-cyan-400 hover:underline">nvm (GitHub)</a></li>
+                  <li><strong>Windows (winget):</strong> <code class="bg-slate-950 px-1.5 py-0.5 rounded text-cyan-300 font-mono">winget install OpenJS.NodeJS.LTS</code></li>
+                  <li><strong>Linux / macOS (nvm):</strong> <code class="bg-slate-950 px-1.5 py-0.5 rounded text-cyan-300 font-mono">nvm install --lts</code> (<a href="https://github.com/nvm-sh/nvm" target="_blank" rel="noopener noreferrer" class="text-cyan-400 hover:underline">nvm GitHub</a>)</li>
                 </ul>
               </div>
 
               <!-- React Docs & Setup -->
               <div class="bg-slate-900/60 p-5 rounded-xl border border-slate-700/40">
-                <h4 class="text-cyan-400 font-mono font-bold text-xs uppercase tracking-wider mb-2">2. Official React Documentation & Setup</h4>
+                <h4 class="text-cyan-400 font-mono font-bold text-xs uppercase tracking-wider mb-2">2. Reference for Installing & Learning React</h4>
                 <p class="text-xs text-slate-300 mb-3 leading-relaxed">
                   React is a UI library built on top of JavaScript. Learn from the official documentation or scaffold a project in seconds.
                 </p>
                 <ul class="text-xs text-slate-300 space-y-2 list-disc list-inside">
-                  <li><strong>Official Docs:</strong> <a href="https://react.dev/" target="_blank" rel="noopener noreferrer" class="text-cyan-400 hover:underline">react.dev — Learn React</a></li>
-                  <li><strong>Scaffold App (Vite):</strong> <code class="bg-slate-950 px-1.5 py-0.5 rounded text-cyan-300 font-mono">npm create vite@latest my-app -- --template react-ts</code></li>
-                  <li><strong>Run App:</strong> <code class="bg-slate-950 px-1.5 py-0.5 rounded text-cyan-300 font-mono">cd my-app && npm install && npm run dev</code></li>
+                  <li><strong>Official React Docs:</strong> <a href="https://react.dev/" target="_blank" rel="noopener noreferrer" class="text-cyan-400 hover:underline">react.dev — Official React Documentation</a></li>
+                  <li><strong>Scaffold Project (Vite):</strong> <code class="bg-slate-950 px-1.5 py-0.5 rounded text-cyan-300 font-mono">npm create vite@latest my-app -- --template react-ts</code></li>
+                  <li><strong>Install & Launch:</strong> <code class="bg-slate-950 px-1.5 py-0.5 rounded text-cyan-300 font-mono">cd my-app && npm install && npm run dev</code></li>
                 </ul>
               </div>
             </div>
