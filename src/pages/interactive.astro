@@ -367,4 +367,22 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     color: #475569;
     margin: 0;
   }
+
+  /* High contrast code highlight styling inside interactive page */
+  code {
+    background-color: #0f172a !important;
+    color: #38bdf8 !important;
+    border: 1px solid rgba(56, 189, 248, 0.35) !important;
+    padding: 0.15rem 0.4rem !important;
+    border-radius: 0.375rem !important;
+    font-weight: 600 !important;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  }
+
+  pre code {
+    background-color: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    color: inherit !important;
+  }
 </style>
