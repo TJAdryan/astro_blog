@@ -91,6 +91,98 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         </div>
       </a>
     </div>
+
+    <!-- React for Python Engineers Section -->
+    <section class="mt-16 pt-12 border-t border-slate-200 dark:border-slate-800">
+      <div class="bg-slate-900 text-slate-100 rounded-3xl p-8 md:p-12 shadow-2xl border border-slate-800 relative overflow-hidden">
+        <!-- Accent glow -->
+        <div class="absolute -right-24 -top-24 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="relative z-10">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="px-3 py-1 bg-cyan-500/20 text-cyan-400 text-xs font-mono font-bold uppercase tracking-wider rounded-full border border-cyan-500/30">
+              Tech Stack Insights
+            </span>
+            <span class="text-xs text-slate-400 font-mono">Python ➔ React</span>
+          </div>
+
+          <h2 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight mb-4">
+            Getting Started with React as a Python Engineer
+          </h2>
+
+          <p class="text-slate-300 text-base md:text-lg leading-relaxed max-w-3xl mb-8 font-light">
+            All the interactive computational simulations in this gallery are powered client-side by <strong>React</strong> components embedded inside Astro. If your background is in Python (Data Engineering, Backend Services, or Analytics), React is easy to pick up when mapped to Python paradigms.
+          </p>
+
+          <!-- Concept Mapping Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+            <div class="bg-slate-800/80 p-5 rounded-2xl border border-slate-700/60">
+              <div class="text-xs font-mono text-cyan-400 font-bold mb-1 uppercase tracking-wider">Functions ➔ Components</div>
+              <h3 class="text-white font-semibold mb-2 text-base">UI as Pure Functions</h3>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                In Python, functions process data and return results. In React, components are functions that take <code>props</code> (kwargs) and return UI markup (JSX).
+              </p>
+            </div>
+
+            <div class="bg-slate-800/80 p-5 rounded-2xl border border-slate-700/60">
+              <div class="text-xs font-mono text-cyan-400 font-bold mb-1 uppercase tracking-wider">Variables ➔ useState</div>
+              <h3 class="text-white font-semibold mb-2 text-base">Reactive State</h3>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                Updating a Python variable doesn't update the UI. <code>useState()</code> creates reactive variables that automatically re-render the view when modified.
+              </p>
+            </div>
+
+            <div class="bg-slate-800/80 p-5 rounded-2xl border border-slate-700/60">
+              <div class="text-xs font-mono text-cyan-400 font-bold mb-1 uppercase tracking-wider">f-strings ➔ JSX</div>
+              <h3 class="text-white font-semibold mb-2 text-base">Dynamic Layouts</h3>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                JSX combines HTML with JS expressions inside <code>&#123; curly braces &#125;</code>, behaving much like Python <code>f"&#123;expr&#125;"</code> or Jinja2 template tags.
+              </p>
+            </div>
+
+            <div class="bg-slate-800/80 p-5 rounded-2xl border border-slate-700/60">
+              <div class="text-xs font-mono text-cyan-400 font-bold mb-1 uppercase tracking-wider">Callbacks ➔ useEffect</div>
+              <h3 class="text-white font-semibold mb-2 text-base">Side Effects & Loops</h3>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                Equivalent to Python event loops or property listeners. <code>useEffect()</code> runs code in response to state changes or canvas animation frames.
+              </p>
+            </div>
+          </div>
+
+          <!-- Code Comparison Block -->
+          <div class="bg-slate-950 rounded-2xl p-6 border border-slate-800 mb-8 font-mono text-xs overflow-x-auto">
+            <div class="text-slate-400 text-[11px] uppercase tracking-wider mb-3 font-semibold text-cyan-400">
+              🐍 Python Mental Model ➔ ⚛️ React Implementation
+            </div>
+            <pre class="text-slate-200 leading-relaxed"><code><span class="text-slate-500">// 1. Python Concept: State class with a method</span>
+<span class="text-slate-500"># class Counter: count = 0; def increment(self): self.count += 1</span>
+
+<span class="text-slate-500">// 2. React Equivalent Component:</span>
+<span class="text-purple-400">import</span> React, &#123; <span class="text-cyan-400">useState</span> &#125; <span class="text-purple-400">from</span> <span class="text-green-400">'react'</span>;
+
+<span class="text-purple-400">export default function</span> <span class="text-yellow-400">InteractiveCounter</span>(&#123; <span class="text-orange-400">initial</span> = <span class="text-cyan-400">0</span> &#125;) &#123;
+  <span class="text-purple-400">const</span> [count, setCount] = <span class="text-cyan-400">useState</span>(initial);
+
+  <span class="text-purple-400">return</span> (
+    &lt;<span class="text-cyan-400">button</span> onClick=&#123;() =&gt; <span class="text-cyan-400">setCount</span>(count + <span class="text-cyan-400">1</span>)&#125;&gt;
+      Count is &#123;count&#125;
+    &lt;/<span class="text-cyan-400">button</span>&gt;
+  );
+&#125;</code></pre>
+          </div>
+
+          <!-- Quickstart Instructions -->
+          <div class="bg-slate-800/40 rounded-2xl p-6 border border-slate-700/50">
+            <h3 class="text-lg font-bold text-white mb-3">Quickstart Instructions for Python Engineers</h3>
+            <ol class="list-decimal list-inside text-sm text-slate-300 space-y-2 font-light">
+              <li><strong class="text-white">Initialize Project:</strong> Run <code class="bg-slate-900 px-2 py-0.5 rounded text-cyan-300 font-mono text-xs">npx create-vite my-app --template react-ts</code> in your terminal.</li>
+              <li><strong class="text-white">Think in State:</strong> Instead of modifying DOM nodes manually, define state variables using <code class="bg-slate-900 px-2 py-0.5 rounded text-cyan-300 font-mono text-xs">useState</code> and let React update the view.</li>
+              <li><strong class="text-white">Pair with Python Backends:</strong> Pair React frontends with FastAPI, Flask, or Django REST Framework for high-performance interactive web applications!</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 </BaseLayout>
 
