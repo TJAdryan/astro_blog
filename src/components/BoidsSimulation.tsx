@@ -14,6 +14,8 @@ const BOID_COUNT = 150;
 const VISUAL_RANGE = 40;
 const MIN_DISTANCE = 15;
 const SPEED_LIMIT = 4;
+const VISUAL_RANGE_SQ = VISUAL_RANGE * VISUAL_RANGE;
+const MIN_DISTANCE_SQ = MIN_DISTANCE * MIN_DISTANCE;
 
 export default function BoidsSimulation() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -23,6 +25,7 @@ export default function BoidsSimulation() {
   const [alignment, setAlignment] = useState(0.05);
   const [cohesion, setCohesion] = useState(0.01);
   const [showVectorTrails, setShowVectorTrails] = useState(true);
+  const [boidStyle, setBoidStyle] = useState<'bird' | 'fish'>('bird');
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -40,10 +43,26 @@ export default function BoidsSimulation() {
       vy: (Math.random() - 0.5) * SPEED_LIMIT,
     }));
 
-    // --- Math Helper: Distance ---
-    const distance = (b1: Boid, b2: Boid) => {
-      return Math.sqrt((b1.x - b2.x) ** 2 + (b1.y - b2.y) ** 2);
-    };
+    // Prebuild shape paths once per mode for faster frame rendering.
+    const birdPath = new Path2D();
+    birdPath.moveTo(11, 0);
+    birdPath.lineTo(1, -2);
+    birdPath.lineTo(-7, -6);
+    birdPath.lineTo(-3, -1);
+    birdPath.lineTo(-8, 0);
+    birdPath.lineTo(-3, 1);
+    birdPath.lineTo(-7, 6);
+    birdPath.lineTo(1, 2);
+    birdPath.closePath();
+
+    const fishBodyPath = new Path2D();
+    fishBodyPath.ellipse(1, 0, 7.5, 4.5, 0, 0, Math.PI * 2);
+
+    const fishTailPath = new Path2D();
+    fishTailPath.moveTo(-5, 0);
+    fishTailPath.lineTo(-11, -4.5);
+    fishTailPath.lineTo(-11, 4.5);
+    fishTailPath.closePath();
 
     // --- Core Physics Engine Loop ---
     const updatePhysics = () => {
@@ -59,13 +78,15 @@ export default function BoidsSimulation() {
         for (const other of boids) {
           if (boid === other) continue;
 
-          const dist = distance(boid, other);
+          const dx = boid.x - other.x;
+          const dy = boid.y - other.y;
+          const distSq = dx * dx + dy * dy;
 
-          if (dist < VISUAL_RANGE) {
+          if (distSq < VISUAL_RANGE_SQ) {
             // Rule 1: Separation (avoiding immediate neighbors)
-            if (dist < MIN_DISTANCE) {
-              closeX += boid.x - other.x;
-              closeY += boid.y - other.y;
+            if (distSq < MIN_DISTANCE_SQ) {
+              closeX += dx;
+              closeY += dy;
             } else {
               // Rule 2 & 3: Accumulate positions and headings for within-range neighbors
               avgVx += other.vx;
@@ -154,26 +175,28 @@ export default function BoidsSimulation() {
         ctx.translate(boid.x, boid.y);
         ctx.rotate(angle);
 
-        // Streamlined arrow shape
-        ctx.beginPath();
-        ctx.moveTo(9, 0);
-        ctx.lineTo(-7, -4);
-        ctx.lineTo(-3, 0);
-        ctx.lineTo(-7, 4);
-        ctx.closePath();
+        if (boidStyle === 'bird') {
+          // Bird mode: warm winged silhouette.
+          ctx.fillStyle = '#fb923c';
+          ctx.fill(birdPath);
 
-        // Beautiful gradient fill from orange to coral
-        const grad = ctx.createLinearGradient(-7, 0, 9, 0);
-        grad.addColorStop(0, '#ff6b35'); // Jupyter Orange accent
-        grad.addColorStop(1, '#ff9e7d'); // Soft highlight coral
-        ctx.fillStyle = grad;
-        ctx.fill();
+          ctx.lineWidth = 1.1;
+          ctx.strokeStyle = 'rgba(255, 245, 235, 0.7)';
+          ctx.stroke(birdPath);
+        } else {
+          // Fish mode: cool body + distinct tail and eye.
+          ctx.fillStyle = '#22d3ee';
+          ctx.fill(fishBodyPath);
 
-        // Subtle glow effect
-        ctx.shadowColor = '#ff6b35';
-        ctx.shadowBlur = 4;
-        ctx.shadowOffsetX = 0;
-        ctx.shadowOffsetY = 0;
+          ctx.fillStyle = '#0d9488';
+          ctx.fill(fishTailPath);
+
+          // Eye
+          ctx.beginPath();
+          ctx.arc(5, -1.2, 0.9, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+          ctx.fill();
+        }
 
         ctx.restore();
       });
@@ -188,7 +211,7 @@ export default function BoidsSimulation() {
     loop();
 
     return () => cancelAnimationFrame(animationId);
-  }, [separation, alignment, cohesion, showVectorTrails]);
+  }, [separation, alignment, cohesion, showVectorTrails, boidStyle]);
 
   return (
     <div className="w-full max-w-4xl mx-auto p-4 md:p-6 bg-slate-900 text-slate-100 rounded-3xl shadow-2xl border border-slate-800 font-sans mt-4">
@@ -208,23 +231,49 @@ export default function BoidsSimulation() {
           </p>
         </div>
 
-        {/* Trail Toggle */}
-        <button
-          onClick={() => setShowVectorTrails(!showVectorTrails)}
-          className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all border ${
-            showVectorTrails
-              ? 'bg-orange-500/10 text-orange-400 border-orange-500/20'
-              : 'bg-slate-800 text-slate-400 border-slate-700'
-          }`}
-        >
-          <span className="relative flex h-2 w-2">
-            {showVectorTrails && (
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
-            )}
-            <span className={`relative inline-flex rounded-full h-2 w-2 ${showVectorTrails ? 'bg-orange-400' : 'bg-slate-500'}`}></span>
-          </span>
-          {showVectorTrails ? 'Motion Trails Active' : 'Solid Rendering'}
-        </button>
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Boid Style Toggle */}
+          <div className="flex items-center rounded-full border border-slate-700 bg-slate-850 p-1">
+            <button
+              onClick={() => setBoidStyle('bird')}
+              className={`px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider transition-all ${
+                boidStyle === 'bird'
+                  ? 'bg-orange-500/15 text-orange-300 border border-orange-500/30'
+                  : 'text-slate-400'
+              }`}
+            >
+              Bird Mode
+            </button>
+            <button
+              onClick={() => setBoidStyle('fish')}
+              className={`px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider transition-all ${
+                boidStyle === 'fish'
+                  ? 'bg-orange-500/15 text-orange-300 border border-orange-500/30'
+                  : 'text-slate-400'
+              }`}
+            >
+              Fish Mode
+            </button>
+          </div>
+
+          {/* Trail Toggle */}
+          <button
+            onClick={() => setShowVectorTrails(!showVectorTrails)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all border ${
+              showVectorTrails
+                ? 'bg-orange-500/10 text-orange-400 border-orange-500/20'
+                : 'bg-slate-800 text-slate-400 border-slate-700'
+            }`}
+          >
+            <span className="relative flex h-2 w-2">
+              {showVectorTrails && (
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+              )}
+              <span className={`relative inline-flex rounded-full h-2 w-2 ${showVectorTrails ? 'bg-orange-400' : 'bg-slate-500'}`}></span>
+            </span>
+            {showVectorTrails ? 'Motion Trails Active' : 'Solid Rendering'}
+          </button>
+        </div>
       </div>
 
       {/* Simulation Viewport */}
