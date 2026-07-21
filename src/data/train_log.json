@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-07-21T14:56:42.665Z",
+    "status": "Delays",
+    "details": [
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Ocean Pkwy and Coney Island - Stillwell Av (up to 12 mins, normally every 10 mins)."
+    ]
+  },
+  {
     "date": "2026-07-19T14:21:49.204Z",
     "status": "Delays",
     "details": [
@@ -194,12 +201,5 @@
     "date": "2026-06-19T14:02:46.248Z",
     "status": "Good Service",
     "details": []
-  },
-  {
-    "date": "2026-06-18T14:03:08.881Z",
-    "status": "Service Change",
-    "details": [
-      "<Q> trains are running between 96 St and Brighton Beach."
-    ]
   }
 ]
