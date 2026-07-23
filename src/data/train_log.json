@@ -1,5 +1,10 @@
 [
   {
+    "date": "2026-07-23T15:03:59.179Z",
+    "status": "Good Service",
+    "details": []
+  },
+  {
     "date": "2026-07-22T14:57:28.720Z",
     "status": "Service Change",
     "details": [
@@ -195,13 +200,6 @@
     "status": "Delays",
     "details": [
       "Northbound: 96 St-bound trains are having longer wait times between Atlantic Av - Barclays Ctr and DeKalb Av (up to 21 mins, normally every 11 mins)."
-    ]
-  },
-  {
-    "date": "2026-06-20T13:33:32.104Z",
-    "status": "Delays",
-    "details": [
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between 96 St and Times Sq - 42 St (up to 16 mins, normally every 12 mins)."
     ]
   }
 ]
