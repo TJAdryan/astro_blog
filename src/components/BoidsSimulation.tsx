@@ -16,6 +16,30 @@ const MIN_DISTANCE = 15;
 const SPEED_LIMIT = 4;
 const VISUAL_RANGE_SQ = VISUAL_RANGE * VISUAL_RANGE;
 const MIN_DISTANCE_SQ = MIN_DISTANCE * MIN_DISTANCE;
+const CORE_SIMULATION_SNIPPET = `for (const boid of boids) {
+  const neighbors = boids.filter((other) => {
+    if (boid === other) return false;
+    const dx = boid.x - other.x;
+    const dy = boid.y - other.y;
+    return dx * dx + dy * dy < VISUAL_RANGE_SQ;
+  });
+
+  // 1) Separation: avoid crowding
+  boid.vx += closeX * separation;
+  boid.vy += closeY * separation;
+
+  // 2) Alignment: match local heading
+  boid.vx += (avgVx - boid.vx) * alignment;
+  boid.vy += (avgVy - boid.vy) * alignment;
+
+  // 3) Cohesion: steer toward local center
+  boid.vx += (avgX - boid.x) * cohesion;
+  boid.vy += (avgY - boid.y) * cohesion;
+
+  clampSpeed(boid, SPEED_LIMIT);
+  boid.x += boid.vx;
+  boid.y += boid.vy;
+}`;
 
 export default function BoidsSimulation() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -26,6 +50,7 @@ export default function BoidsSimulation() {
   const [cohesion, setCohesion] = useState(0.01);
   const [showVectorTrails, setShowVectorTrails] = useState(true);
   const [boidStyle, setBoidStyle] = useState<'bird' | 'fish'>('bird');
+  const [showCodePanel, setShowCodePanel] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -273,6 +298,18 @@ export default function BoidsSimulation() {
             </span>
             {showVectorTrails ? 'Motion Trails Active' : 'Solid Rendering'}
           </button>
+
+          {/* Code Panel Toggle */}
+          <button
+            onClick={() => setShowCodePanel(!showCodePanel)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all border ${
+              showCodePanel
+                ? 'bg-cyan-500/10 text-cyan-300 border-cyan-500/30'
+                : 'bg-slate-800 text-slate-300 border-slate-700'
+            }`}
+          >
+            <span>{showCodePanel ? 'Hide Simulation Code' : 'Show Simulation Code'}</span>
+          </button>
         </div>
       </div>
 
@@ -285,6 +322,18 @@ export default function BoidsSimulation() {
           className="w-full h-auto rounded-xl block bg-slate-950 aspect-[16/10]"
         />
       </div>
+
+      {showCodePanel && (
+        <div className="mt-6 p-5 bg-slate-950 rounded-2xl border border-cyan-900/40">
+          <h3 className="text-sm font-bold text-cyan-200 uppercase tracking-wider mb-3">Core Simulation Logic</h3>
+          <p className="text-xs text-slate-400 mb-4 leading-relaxed">
+            This excerpt focuses on the flocking loop: finding local neighbors and applying the three steering rules.
+          </p>
+          <pre className="text-xs md:text-sm text-cyan-100 bg-slate-900/70 border border-slate-800 rounded-xl p-4 overflow-x-auto leading-relaxed">
+            <code>{CORE_SIMULATION_SNIPPET}</code>
+          </pre>
+        </div>
+      )}
 
       {/* Control Dashboard */}
       <div className="mt-6 p-5 bg-slate-850 rounded-2xl border border-slate-800/80">
