@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-07-24T14:46:35.994Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times between Beverley Rd and Parkside Av (up to 13 mins, normally every 11 mins).",
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between 96 St and Canal St (up to 12 mins, normally every 10 mins)."
+    ]
+  },
+  {
     "date": "2026-07-23T15:03:59.179Z",
     "status": "Good Service",
     "details": []
@@ -193,13 +201,6 @@
     "status": "Service Change",
     "details": [
       "Southbound: Coney Island - Stillwell Av-bound trains are running in 2 sections: between 96 St and Coney Island - Stillwell Av, and between 36 St and Coney Island - Stillwell Av via <N>."
-    ]
-  },
-  {
-    "date": "2026-06-21T13:34:41.969Z",
-    "status": "Delays",
-    "details": [
-      "Northbound: 96 St-bound trains are having longer wait times between Atlantic Av - Barclays Ctr and DeKalb Av (up to 21 mins, normally every 11 mins)."
     ]
   }
 ]
