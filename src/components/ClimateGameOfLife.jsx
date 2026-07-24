@@ -25,6 +25,7 @@ export default function ClimateGameOfLife() {
   const [systemStatus, setSystemStatus] = useState('Stable Equilibrium');
   const [speed, setSpeed] = useState(100); // ms per step
   const [isGameOver, setIsGameOver] = useState(false);
+  const [showCodeOverview, setShowCodeOverview] = useState(false);
 
   const isRunningRef = useRef(isRunning);
   isRunningRef.current = isRunning;
@@ -453,6 +454,55 @@ export default function ClimateGameOfLife() {
             When global resources fall below <strong className="text-white">70%</strong>, the neighbor threshold required for cellular birth rises (requiring more than the standard 3 neighbors). This mimics resource competition in stressed ecosystems.
           </p>
         </div>
+      </div>
+
+      {/* Toggleable Code Overview */}
+      <div className="mt-6">
+        <button
+          type="button"
+          onClick={() => setShowCodeOverview((current) => !current)}
+          aria-expanded={showCodeOverview}
+          aria-controls="game-of-life-code-overview"
+          className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-800 hover:bg-slate-750 border border-slate-700/80 text-slate-200 rounded-xl text-xs font-bold uppercase tracking-wider transition-all"
+        >
+          {showCodeOverview ? 'Hide Code Overview' : 'View Code Overview'}
+          <svg className={`w-4 h-4 transition-transform ${showCodeOverview ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        {showCodeOverview && (
+          <div
+            id="game-of-life-code-overview"
+            className="mt-4 bg-slate-950/40 border border-slate-800 rounded-2xl p-4 md:p-5"
+          >
+            <h4 className="text-xs uppercase tracking-wider font-bold text-cyan-400 mb-3">Code Overview</h4>
+            <p className="text-xs text-slate-400 leading-relaxed mb-4">
+              The simulation is organized around React state, a timed update loop, and a modified Conway rule set that injects climate stress from temperature and resource inputs.
+            </p>
+            <pre className="overflow-x-auto rounded-xl border border-slate-800 bg-slate-950 p-3 text-[11px] leading-relaxed text-slate-300">
+{`1) State model:
+   - grid: 40x40 matrix of living(1)/dead(0) cells
+   - temperature/resources/speed: environment controls
+   - generation/status flags: runtime metrics and game-over state
+
+2) Loop engine:
+   - runSimulation() reads configRef and clones the current grid
+   - each cell counts 8 neighbors with toroidal wrapping
+   - next generation is written with modified life/death rules
+   - loop repeats via setTimeout(speed)
+
+3) Climate modifications:
+   - heatStressDieOffChance = (temperature - 15) * 0.12 when temp > 15
+   - starvationMultiplier = (70 - resources) * 0.015 when resources < 70
+   - birth threshold becomes 3 + starvationMultiplier under scarcity
+
+4) End conditions:
+   - if no living cells remain, simulation halts
+   - status badge flips to Mass Extinction and overlay appears`}
+            </pre>
+          </div>
+        )}
       </div>
     </div>
   );
