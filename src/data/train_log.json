@@ -1,5 +1,10 @@
 [
   {
+    "date": "2026-07-25T14:28:10.713Z",
+    "status": "Good Service",
+    "details": []
+  },
+  {
     "date": "2026-07-24T14:46:35.994Z",
     "status": "Delays",
     "details": [
@@ -194,13 +199,6 @@
     "status": "Delays",
     "details": [
       "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between 34 St - Herald Sq and 14 St - Union Sq (up to 14 mins, normally every 10 mins)."
-    ]
-  },
-  {
-    "date": "2026-06-23T13:51:25.377Z",
-    "status": "Service Change",
-    "details": [
-      "Southbound: Coney Island - Stillwell Av-bound trains are running in 2 sections: between 96 St and Coney Island - Stillwell Av, and between 36 St and Coney Island - Stillwell Av via <N>."
     ]
   }
 ]
