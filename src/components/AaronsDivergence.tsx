@@ -13,6 +13,7 @@ export default function AaronsDivergence() {
   const [volumeBias, setVolumeBias] = useState(70); // 0 = Filter by Competence, 100 = Filter by Loudness
   const [noiseLevel, setNoiseLevel] = useState(30);
   const [isMobile, setIsMobile] = useState(false);
+  const [showCodeOverview, setShowCodeOverview] = useState(false);
 
   // Handle responsive grid layout in standard React hook
   useEffect(() => {
@@ -276,6 +277,53 @@ export default function AaronsDivergence() {
           </div>
 
         </div>
+      </div>
+
+      {/* Toggleable Code Overview */}
+      <div className="mt-6">
+        <button
+          type="button"
+          onClick={() => setShowCodeOverview((current) => !current)}
+          aria-expanded={showCodeOverview}
+          aria-controls="aarons-divergence-code-overview"
+          className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-800 hover:bg-slate-750 border border-slate-700/80 text-slate-200 rounded-xl text-xs font-bold uppercase tracking-wider transition-all"
+        >
+          {showCodeOverview ? 'Hide Code Overview' : 'View Code Overview'}
+          <svg className={`w-4 h-4 transition-transform ${showCodeOverview ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        {showCodeOverview && (
+          <div
+            id="aarons-divergence-code-overview"
+            className="mt-4 bg-slate-950/40 border border-slate-800 rounded-2xl p-4 md:p-5"
+          >
+            <h4 className="text-xs uppercase tracking-wider font-bold text-cyan-400 mb-3">Code Overview</h4>
+            <p className="text-xs text-slate-400 leading-relaxed mb-4">
+              This simulation ranks agents by a weighted competence-vs-volume score, then computes system efficiency from the top three selected nodes after noise-adjusted degradation.
+            </p>
+            <pre className="overflow-x-auto rounded-xl border border-slate-800 bg-slate-950 p-3 text-[11px] leading-relaxed text-slate-300">
+{`1) Inputs and controls:
+   - volumeBias (0-100): shifts ranking from competence to loudness
+   - noiseLevel (0-100): penalizes effective competence via ambient noise
+
+2) Core ranking model:
+   - biasFactor = volumeBias / 100
+   - networkScore = competence * (1 - biasFactor) + volume * biasFactor
+   - agents sorted descending by networkScore
+
+3) Degradation model:
+   - noisePenalty = (noiseLevel / 100) * (volume * 0.2)
+   - finalEffectiveValue = max(0, competence - noisePenalty)
+
+4) Output metric:
+   - top 3 ranked agents are selected
+   - systemEfficiency = average(finalEffectiveValue of selected)
+   - status label updates from healthy to collapse as efficiency drops`}
+            </pre>
+          </div>
+        )}
       </div>
     </div>
   );
