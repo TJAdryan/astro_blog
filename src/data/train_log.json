@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-07-28T15:13:32.031Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times between 34 St - Herald Sq and 57 St - 7 Av (up to 17 mins, normally every 11 mins).",
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Avenue U and Neck Rd (up to 14 mins, normally every 10 mins)."
+    ]
+  },
+  {
     "date": "2026-07-27T15:38:49.101Z",
     "status": "Delays",
     "details": [
@@ -195,13 +203,6 @@
     "status": "Delays",
     "details": [
       "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Church Av and Ocean Pkwy (up to 18 mins, normally every 12 mins)."
-    ]
-  },
-  {
-    "date": "2026-06-26T13:40:26.509Z",
-    "status": "Delays",
-    "details": [
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between 7 Av and Ocean Pkwy (up to 12 mins, normally every 10 mins)."
     ]
   }
 ]
