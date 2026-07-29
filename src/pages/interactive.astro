@@ -13,26 +13,26 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       </p>
     </div>
 
-    <details class="mb-12 overflow-hidden rounded-3xl border border-slate-700/50 bg-slate-800/40 shadow-lg">
+    <details class="install-reference-card mb-12 overflow-hidden rounded-3xl shadow-lg">
       <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-6 py-4 md:px-8 md:py-5">
         <div class="flex items-center gap-3">
-          <span class="flex h-10 w-10 items-center justify-center rounded-full bg-cyan-500/20 text-cyan-300 text-lg">
+          <span class="flex h-10 w-10 items-center justify-center rounded-full bg-cyan-100 text-cyan-700 text-lg border border-cyan-200">
             🛠️
           </span>
           <div>
-            <h2 class="text-base md:text-lg font-bold text-white">Reference for Installing JavaScript &amp; React</h2>
-            <p class="text-sm text-slate-400">Collapsed by default, available when you need the setup details.</p>
+            <h2 class="text-base md:text-lg font-bold text-slate-900">Reference for Installing JavaScript &amp; React</h2>
+            <p class="text-sm text-slate-600">Collapsed by default, available when you need the setup details.</p>
           </div>
         </div>
-        <svg class="h-5 w-5 flex-none text-slate-400 transition-transform duration-200 details-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <svg class="h-5 w-5 flex-none text-slate-600 transition-transform duration-200 details-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
         </svg>
       </summary>
 
-      <div class="border-t border-slate-700/50 p-6 md:p-8">
+      <div class="border-t border-slate-200 p-6 md:p-8">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
           <!-- JS Runtime (Node.js & npm) -->
-          <div class="bg-slate-900/60 p-5 rounded-xl border border-slate-700/40">
+          <div class="install-pane p-5 rounded-xl border">
             <h4 class="text-cyan-400 font-mono font-bold text-xs uppercase tracking-wider mb-2">1. Reference for Installing JavaScript (Node.js &amp; npm)</h4>
             <p class="text-xs text-slate-300 mb-3 leading-relaxed">
               JavaScript requires a runtime environment to execute outside the browser. Installing <strong>Node.js</strong> provides both the JS engine and <strong>npm</strong> (Node Package Manager) — JavaScript's counterpart to Python's <code>pip</code>.
@@ -46,7 +46,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           </div>
 
           <!-- React Docs & Setup -->
-          <div class="bg-slate-900/60 p-5 rounded-xl border border-slate-700/40">
+          <div class="install-pane p-5 rounded-xl border">
             <h4 class="text-cyan-400 font-mono font-bold text-xs uppercase tracking-wider mb-2">2. Reference for Installing &amp; Learning React</h4>
             <p class="text-xs text-slate-300 mb-3 leading-relaxed">
               React is a UI library built on top of JavaScript. Learn from the official documentation or scaffold a project in seconds.
@@ -256,6 +256,43 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
   .interactive-page details[open] > summary svg {
     transform: rotate(180deg);
+  }
+
+  .install-reference-card {
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    background: linear-gradient(135deg, rgba(255, 247, 237, 0.95) 0%, rgba(239, 246, 255, 0.95) 100%);
+    box-shadow: 0 10px 24px -16px rgba(15, 23, 42, 0.35);
+  }
+
+  .install-reference-card > summary {
+    background: linear-gradient(120deg, rgba(255, 255, 255, 0.8), rgba(248, 250, 252, 0.9));
+  }
+
+  .install-reference-card > summary:hover {
+    background: linear-gradient(120deg, rgba(255, 255, 255, 0.95), rgba(241, 245, 249, 0.95));
+  }
+
+  .install-reference-card .install-pane {
+    border-color: rgba(148, 163, 184, 0.35);
+    background: rgba(255, 255, 255, 0.88);
+  }
+
+  .install-reference-card .install-pane h4 {
+    color: #0f766e !important;
+  }
+
+  .install-reference-card .install-pane :where(p, li, strong) {
+    color: #334155 !important;
+  }
+
+  .install-reference-card .install-pane a {
+    color: #0ea5e9 !important;
+  }
+
+  .install-reference-card .install-pane code {
+    background-color: #e2e8f0 !important;
+    color: #0f172a !important;
+    border-color: #cbd5e1 !important;
   }
 
   .simulation-grid {
