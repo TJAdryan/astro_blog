@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-07-29T15:30:35.924Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times at 7 Av (up to 14 mins, normally every 11 mins).",
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between 57 St - 7 Av and Canal St (up to 12 mins, normally every 10 mins)."
+    ]
+  },
+  {
     "date": "2026-07-28T15:13:32.031Z",
     "status": "Delays",
     "details": [
@@ -197,12 +205,5 @@
     "date": "2026-06-28T13:32:19.670Z",
     "status": "Good Service",
     "details": []
-  },
-  {
-    "date": "2026-06-27T13:32:28.342Z",
-    "status": "Delays",
-    "details": [
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Church Av and Ocean Pkwy (up to 18 mins, normally every 12 mins)."
-    ]
   }
 ]
