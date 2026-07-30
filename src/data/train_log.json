@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-07-30T15:04:00.742Z",
+    "status": "Service Change",
+    "details": [
+      "Southbound: Some Coney Island - Stillwell Av-bound trains are making local stops between 57 St - 7 Av and Times Sq - 42 St."
+    ]
+  },
+  {
     "date": "2026-07-29T15:30:35.924Z",
     "status": "Delays",
     "details": [
@@ -200,10 +207,5 @@
     "details": [
       "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between 7 Av and Brighton Beach (up to 15 mins, normally every 10 mins)."
     ]
-  },
-  {
-    "date": "2026-06-28T13:32:19.670Z",
-    "status": "Good Service",
-    "details": []
   }
 ]
