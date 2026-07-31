@@ -1,5 +1,10 @@
 [
   {
+    "date": "2026-07-31T15:14:13.145Z",
+    "status": "Good Service",
+    "details": []
+  },
+  {
     "date": "2026-07-30T15:04:00.742Z",
     "status": "Service Change",
     "details": [
@@ -199,13 +204,6 @@
     "status": "Service Change",
     "details": [
       "Northbound: Some 96 St-bound trains are skipping Neck Rd, and Avenue U."
-    ]
-  },
-  {
-    "date": "2026-06-29T14:23:05.960Z",
-    "status": "Delays",
-    "details": [
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between 7 Av and Brighton Beach (up to 15 mins, normally every 10 mins)."
     ]
   }
 ]
