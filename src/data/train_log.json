@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-08-02T14:25:21.923Z",
+    "status": "Service Change",
+    "details": [
+      "<Q> trains are running via <R> between Canal St and DeKalb Av."
+    ]
+  },
+  {
     "date": "2026-08-01T14:24:01.907Z",
     "status": "Service Change",
     "details": [
@@ -194,13 +201,6 @@
   },
   {
     "date": "2026-07-02T13:33:48.136Z",
-    "status": "Service Change",
-    "details": [
-      "Northbound: Some 96 St-bound trains are skipping Neck Rd, and Avenue U."
-    ]
-  },
-  {
-    "date": "2026-07-01T13:47:58.034Z",
     "status": "Service Change",
     "details": [
       "Northbound: Some 96 St-bound trains are skipping Neck Rd, and Avenue U."
