@@ -3,114 +3,133 @@
     "title": "A Relational Model of Data for Large Shared Data Banks",
     "author": "E.F. Codd (1970)",
     "url": "https://www.seas.upenn.edu/~zives/03f/cis550/codd.pdf",
-    "area": "Databases"
+    "area": "Databases",
+    "description": "Codd's seminal paper introducing the relational model for databases, establishing concepts like relations, domains, keys, and normalization that revolutionized modern database design."
   },
   {
     "title": "Attention Is All You Need",
     "author": "Vaswani et al. (2017)",
     "url": "https://arxiv.org/abs/1706.03762",
-    "area": "AI"
+    "area": "AI",
+    "description": "The groundbreaking paper that introduced the Transformer architecture, replacing recurrent and convolutional networks with self-attention and forming the foundation of modern Large Language Models."
   },
   {
     "title": "MapReduce: Simplified Data Processing on Large Clusters",
     "author": "Dean & Ghemawat (2004)",
     "url": "https://static.googleusercontent.com/media/research.google.com/en//archive/mapreduce-osdi04.pdf",
-    "area": "Databases"
+    "area": "Databases",
+    "description": "Google's classic paper defining MapReduce, a programming model and implementation for processing large-scale datasets in a parallel, distributed manner on large commodity clusters."
   },
   {
     "title": "The Anatomy of a Large-Scale Hypertextual Web Search Engine",
     "author": "Brin & Page (1998)",
     "url": "http://infolab.stanford.edu/~backrub/google.html",
-    "area": "Databases"
+    "area": "Databases",
+    "description": "The original paper by Google's founders describing the architecture of their prototype search engine, introducing the PageRank algorithm and early web indexing structures."
   },
   {
     "title": "Deep Residual Learning for Image Recognition",
     "author": "He et al. (2015)",
     "url": "https://arxiv.org/abs/1512.03385",
-    "area": "AI"
+    "area": "AI",
+    "description": "Introduced the ResNet architecture and residual connections, enabling the training of extremely deep neural networks by resolving the vanishing gradient problem."
   },
   {
     "title": "The Rigged Monopoly Game: Observer's Attributions and Reactions to Unequal Allocation of Resources",
     "author": "Nitert, M. G. (2022)",
     "url": "https://studenttheses.universiteitleiden.nl/handle/1887/3271867",
-    "area": "Social Science"
+    "area": "Social Science",
+    "description": "This study examines how observers perceive and react to unequal resource allocation through the lens of a rigged Monopoly game, providing insights into attitudes towards economic inequality and resource distribution."
   },
   {
     "title": "The Economics of Healthcare Rationing",
     "author": "Michael Frakes, Matthew Frank, Kyle Rozema (2015)",
     "url": "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2620707",
-    "area": "Economics"
+    "area": "Economics",
+    "description": "This comprehensive analysis examines the economics of healthcare rationing decisions, including cost-benefit and cost-effectiveness analysis. The paper explores how economic analyses inform healthcare coverage decisions and discusses practical and conceptual challenges that span both economics and ethics in healthcare resource allocation."
   },
   {
     "title": "The Google File System",
     "author": "Sanjay Ghemawat, Howard Gobioff, and Shun-Tak Leung (2003)",
     "url": "https://static.googleusercontent.com/media/research.google.com/en//archive/gfs-sosp2003.pdf",
-    "area": "Distributed Systems"
+    "area": "Distributed Systems",
+    "description": "Describes GFS, a scalable distributed file system designed for data-intensive applications, emphasizing fault tolerance, high throughput, and running on commodity hardware."
   },
   {
     "title": "MapReduce: Simplified Data Processing on Large Clusters",
     "author": "Jeffrey Dean and Sanjay Ghemawat (2004)",
     "url": "https://static.googleusercontent.com/media/research.google.com/en//archive/mapreduce-osdi04.pdf",
-    "area": "Distributed Systems"
+    "area": "Distributed Systems",
+    "description": "Google's classic paper defining MapReduce, a programming model and implementation for processing large-scale datasets in a parallel, distributed manner on large commodity clusters."
   },
   {
     "title": "Bigtable: A Distributed Storage System for Structured Data",
     "author": "Fay Chang, Jeffrey Dean, Sanjay Ghemawat, Wilson C. Hsieh, Deborah A. Wallach, Mike Burrows, Tushar Chandra, Andrew Fikes, and Robert E. Gruber (2006)",
     "url": "https://static.googleusercontent.com/media/research.google.com/en//archive/bigtable-osdi06.pdf",
-    "area": "Distributed Systems"
+    "area": "Distributed Systems",
+    "description": "Outlines Bigtable, Google's proprietary wide-column distributed storage system designed to scale to petabytes of structured data across thousands of commodity servers."
   },
   {
     "title": "Dynamo: Amazon’s Highly Available Key-value Store",
     "author": "Giuseppe DeCandia, Deniz Hastorun, Madan Jampani, Gunavardhan Kakulapati, Avinash Lakshman, Alex Pilchin, Swaminathan Sivasubramanian, Peter Vosshall, and Werner Vogels (2007)",
     "url": "https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf",
-    "area": "Distributed Systems"
+    "area": "Distributed Systems",
+    "description": "Details Dynamo, Amazon's highly available, decentralized key-value storage system utilizing consistent hashing and eventual consistency to achieve masterless replication."
   },
   {
     "title": "Dremel: Interactive Analysis of Web-Scale Datasets",
     "author": "Sergey Melnik, Andrey Gubarev, Jing Jing Long, Geoffrey Romer, Shiva Shivakumar, Matt Tolton, and Theo Vassilakis (2010)",
     "url": "https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/36632.pdf",
-    "area": "Distributed Systems"
+    "area": "Distributed Systems",
+    "description": "Describes Dremel, Google's query engine for nested structured data, combining columnar storage and multi-level execution trees to run SQL queries on petabytes in seconds."
   },
   {
     "title": "Resilient Distributed Datasets: A Fault-Tolerant Abstraction for In-Memory Cluster Computing",
     "author": "Matei Zaharia, Mosharaf Chowdhury, Michael J. Franklin, Scott Shenker, and Ion Stoica (2012)",
     "url": "https://www.usenix.org/system/files/conference/nsdi12/nsdi12-final138.pdf",
-    "area": "Distributed Systems"
+    "area": "Distributed Systems",
+    "description": "Introduces RDDs, the core abstraction behind Apache Spark, allowing fault-tolerant, in-memory computations on large clusters for high-performance iterative algorithms."
   },
   {
     "title": "What You See Is What It Does: A Structural Pattern for Legible Software",
     "author": "Eagon Meng & Daniel Jackson (2025)",
     "url": "https://arxiv.org/html/2508.14511v2",
-    "area": "Software Engineering"
+    "area": "Software Engineering",
+    "description": "Explores architectural design patterns in modern software systems that align system internals with user perception, enhancing legibility, usability, and maintainability."
   },
   {
     "title": "Data Structures for Statistical Computing in Python",
     "author": "Wes McKinney (2010)",
     "url": "https://doi.org/10.25080/Majora-92bf1922-00a",
-    "area": "Data Analysis / Python"
+    "area": "Data Analysis / Python",
+    "description": "The classic paper introducing the pandas library to the scientific Python community, detailing the design of high-performance DataFrame data structures for analysis."
   },
   {
     "title": "Python for Data Analysis (2nd ed.)",
     "author": "Wes McKinney (2017)",
     "url": "https://www.oreilly.com/library/view/python-for-data/9781491957653/",
-    "area": "Data Analysis / Book"
+    "area": "Data Analysis / Book",
+    "description": "A comprehensive handbook by pandas creator Wes McKinney, detailing essential techniques for data manipulation, cleaning, exploratory analysis, and visualization in Python."
   },
   {
     "title": "pandas (project)",
     "author": "pandas-dev (orig. Wes McKinney)",
     "url": "https://pandas.pydata.org/",
-    "area": "Data Analysis / Tools"
+    "area": "Data Analysis / Tools",
+    "description": "The open-source project documentation and repository home for pandas, the foundational data analysis and manipulation library for the Python programming language."
   },
   {
     "title": "A Programmable Dual-RNA–Guided DNA Endonuclease in Adaptive Bacterial Immunity",
     "author": "Jinek et al. (2012)",
     "url": "https://doi.org/10.1126/science.1225829",
-    "area": "Genomics / CRISPR"
+    "area": "Genomics / CRISPR",
+    "description": "The landmark study demonstrating that the CRISPR/Cas9 system can be programmed to cut specific DNA sequences, laying the foundation for modern gene editing."
   },
   {
     "title": "MDPI IJMS CRISPR/Cas9 Delivery Systems to Enhance Gene Editing EfficiencyArticle (Vol. 26, No. 9, 4420)",
     "author": "",
     "url": "https://www.mdpi.com/1422-0067/26/9/4420",
-    "area": "Genomics / CRISPR"
+    "area": "Genomics / CRISPR",
+    "description": "A comprehensive scientific review highlighting advanced delivery vehicles (both viral and non-viral) designed to improve CRISPR/Cas9 target efficiency and specificity."
   }
 ]

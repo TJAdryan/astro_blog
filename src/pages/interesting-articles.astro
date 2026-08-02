@@ -143,6 +143,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           art.title,
           art.author,
           art.area,
+          art.description || '',
           getDomain(art.url)
         ].join(' ').toLowerCase();
         
@@ -182,6 +183,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
               </svg>
             </h4>
+            ${art.description ? `<p class="description">${art.description}</p>` : ''}
             <p class="date">By ${art.author || 'Unknown'}</p>
           </a>
         `;
@@ -367,6 +369,19 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     letter-spacing: -0.02em;
     display: inline-flex;
     align-items: center;
+  }
+
+  .description {
+    margin: 0 0 0.75rem 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #475569;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .description {
+      color: #cbd5e1;
+    }
   }
 
   .date {
