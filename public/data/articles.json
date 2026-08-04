@@ -14,13 +14,6 @@
     "description": "The groundbreaking paper that introduced the Transformer architecture, replacing recurrent and convolutional networks with self-attention and forming the foundation of modern Large Language Models."
   },
   {
-    "title": "MapReduce: Simplified Data Processing on Large Clusters",
-    "author": "Dean & Ghemawat (2004)",
-    "url": "https://static.googleusercontent.com/media/research.google.com/en//archive/mapreduce-osdi04.pdf",
-    "area": "Databases",
-    "description": "Google's classic paper defining MapReduce, a programming model and implementation for processing large-scale datasets in a parallel, distributed manner on large commodity clusters."
-  },
-  {
     "title": "The Anatomy of a Large-Scale Hypertextual Web Search Engine",
     "author": "Brin & Page (1998)",
     "url": "http://infolab.stanford.edu/~backrub/google.html",
