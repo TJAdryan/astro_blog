@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-08-05T15:09:52.276Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times between Coney Island - Stillwell Av and 14 St - Union Sq (up to 17 mins, normally every 11 mins).",
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Church Av and Avenue H (up to 16 mins, normally every 10 mins)."
+    ]
+  },
+  {
     "date": "2026-08-04T15:17:05.665Z",
     "status": "Service Change",
     "details": [
@@ -196,14 +204,6 @@
     "status": "Delays",
     "details": [
       "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Prospect Park and Parkside Av (up to 15 mins, normally every 12 mins)."
-    ]
-  },
-  {
-    "date": "2026-07-03T15:03:07.577Z",
-    "status": "Delays",
-    "details": [
-      "Northbound: 96 St-bound trains are having longer wait times between Parkside Av and Prospect Park (up to 12 mins, normally every 9 mins).",
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times at 7 Av (up to 14 mins, normally every 11 mins)."
     ]
   }
 ]
