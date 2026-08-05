@@ -255,46 +255,50 @@ const latestPosts = posts.slice(0, 3);
             return 'external resource';
           }
         }
+        function getCategoryClass(area) {
+          const norm = (area || '').toLowerCase();
+          if (norm.includes('ai') || norm.includes('machine learning')) return 'badge-ai';
+          if (norm.includes('database')) return 'badge-db';
+          if (norm.includes('distributed')) return 'badge-dist';
+          if (norm.includes('social')) return 'badge-social';
+          if (norm.includes('economics')) return 'badge-econ';
+          if (norm.includes('genomics') || norm.includes('crispr')) return 'badge-crispr';
+          if (norm.includes('software') || norm.includes('engineering')) return 'badge-se';
+          return 'badge-default';
+        }
 
         const three = shuffle(articles).slice(0, 3);
         const container = document.getElementById("articles-list");
         if (!container) return;
         container.innerHTML = "";
         three.forEach((article) => {
-          const card = document.createElement("div");
+          const card = document.createElement("a");
+          card.href = article.url;
+          card.target = "_blank";
+          card.rel = "noopener";
           card.className = "reading-list-card";
 
-          const header = document.createElement("div");
-          header.className = "reading-card-header";
+          const badgeClass = getCategoryClass(article.area);
 
-          const areaBadge = document.createElement("span");
-          areaBadge.className = "reading-area-badge";
-          areaBadge.textContent = article.area || "Resource";
-          header.appendChild(areaBadge);
-
-          const domainBadge = document.createElement("span");
-          domainBadge.className = "reading-domain-badge";
-          domainBadge.innerHTML = `
-            <svg style="width: 12px; height: 12px; margin-right: 4px; display: inline-block;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
-            </svg>
-            ${getDomain(article.url)}
+          card.innerHTML = `
+            <div class="reading-card-header">
+              <span class="reading-area-badge ${badgeClass}">${article.area || "Resource"}</span>
+              <span class="reading-domain-badge">
+                <svg style="width: 12px; height: 12px; margin-right: 4px; display: inline-block;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                </svg>
+                ${getDomain(article.url)}
+              </span>
+            </div>
+            <h3 class="reading-card-title">
+              ${article.title}
+              <svg style="width: 12px; height: 12px; margin-left: 4px; display: inline-block;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+              </svg>
+            </h3>
+            ${article.description ? `<p class="reading-card-desc">${article.description}</p>` : ''}
+            <p class="reading-card-author">By ${article.author || "Unknown"}</p>
           `;
-          header.appendChild(domainBadge);
-          card.appendChild(header);
-
-          const a = document.createElement("a");
-          a.href = article.url;
-          a.target = "_blank";
-          a.rel = "noopener";
-          a.className = "reading-card-title";
-          a.textContent = article.title;
-          card.appendChild(a);
-
-          const author = document.createElement("p");
-          author.className = "reading-card-author";
-          author.textContent = `By ${article.author || "Unknown"}`;
-          card.appendChild(author);
 
           container.appendChild(card);
         });
@@ -725,39 +729,96 @@ const latestPosts = posts.slice(0, 3);
   }
 
   .reading-list-card {
-    background: rgba(248, 250, 252, 0.6); /* Cool background */
-    border-left: 4px solid #6366f1; /* Distinct indigo left border */
-    border-top: 1px solid rgba(99, 102, 241, 0.08);
-    border-right: 1px solid rgba(99, 102, 241, 0.08);
-    border-bottom: 1px solid rgba(99, 102, 241, 0.08);
-    border-radius: 0 12px 12px 0;
-    padding: 1.25rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.01);
-    transition: all 0.3s ease;
+    display: block;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 107, 53, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    text-decoration: none;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Shine effect on hover */
+  .reading-list-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.4),
+      transparent
+    );
+    transition: 0.5s;
+    pointer-events: none;
+  }
+
+  .reading-list-card:hover::before {
+    left: 100%;
   }
 
   .reading-list-card:hover {
-    transform: translateX(4px);
-    background: rgba(248, 250, 252, 1);
-    box-shadow: 0 8px 16px rgba(99, 102, 241, 0.08);
-    border-left-color: var(--accent);
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(255, 107, 53, 0.25);
+    border-color: rgba(255, 107, 53, 0.4);
+    background: white;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .reading-list-card {
+      background: rgba(30, 41, 59, 0.8);
+      border-color: rgba(255, 107, 53, 0.15);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+    .reading-list-card:hover {
+      background: rgba(30, 41, 59, 0.95);
+      border-color: rgba(255, 107, 53, 0.5);
+    }
   }
 
   .reading-card-header {
     display: flex;
-    gap: 0.75rem;
+    justify-content: space-between;
     align-items: center;
     font-size: 0.8rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
   }
 
   .reading-area-badge {
-    background: #e0e7ff;
-    color: #4f46e5;
-    padding: 0.15rem 0.5rem;
+    padding: 0.2rem 0.6rem;
     border-radius: 4px;
     font-weight: 700;
     font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  /* Specific Badge Colors */
+  .badge-ai { background-color: #f5f3ff; color: #7c3aed; border: 1px solid #ddd6fe; }
+  .badge-db { background-color: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+  .badge-dist { background-color: #e0e7ff; color: #4f46e5; border: 1px solid #c7d2fe; }
+  .badge-social { background-color: #fdf2f8; color: #db2777; border: 1px solid #fbcfe8; }
+  .badge-econ { background-color: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
+  .badge-crispr { background-color: #fff1f2; color: #e11d48; border: 1px solid #fecdd3; }
+  .badge-se { background-color: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
+  .badge-default { background-color: #f8fafc; color: #475569; border: 1px solid #e2e8f0; }
+
+  @media (prefers-color-scheme: dark) {
+    .badge-ai { background-color: rgba(124, 58, 237, 0.15); color: #c084fc; border-color: rgba(124, 58, 237, 0.3); }
+    .badge-db { background-color: rgba(37, 99, 235, 0.15); color: #93c5fd; border-color: rgba(37, 99, 235, 0.3); }
+    .badge-dist { background-color: rgba(79, 70, 229, 0.15); color: #a5b4fc; border-color: rgba(79, 70, 229, 0.3); }
+    .badge-social { background-color: rgba(219, 39, 119, 0.15); color: #f472b6; border-color: rgba(219, 39, 119, 0.3); }
+    .badge-econ { background-color: rgba(5, 150, 105, 0.15); color: #6ee7b7; border-color: rgba(5, 150, 105, 0.3); }
+    .badge-crispr { background-color: rgba(225, 29, 72, 0.15); color: #fda4af; border-color: rgba(225, 29, 72, 0.3); }
+    .badge-se { background-color: rgba(217, 119, 6, 0.15); color: #fcd34d; border-color: rgba(217, 119, 6, 0.3); }
+    .badge-default { background-color: rgba(71, 85, 105, 0.15); color: #cbd5e1; border-color: rgba(71, 85, 105, 0.3); }
   }
 
   .reading-domain-badge {
@@ -768,20 +829,40 @@ const latestPosts = posts.slice(0, 3);
     font-size: 0.75rem;
   }
 
+  @media (prefers-color-scheme: dark) {
+    .reading-domain-badge {
+      color: #94a3b8;
+    }
+  }
+
   .reading-card-title {
     font-size: 1.25rem;
-    font-weight: 700;
+    font-weight: 800;
     margin: 0 0 0.5rem 0;
     line-height: 1.35;
     color: rgb(var(--black));
-    text-decoration: none;
-    display: block;
+    letter-spacing: -0.02em;
+    display: inline-flex;
+    align-items: center;
     transition: color 0.2s;
   }
 
-  .reading-card-title:hover {
-    color: #4f46e5;
-    text-decoration: underline;
+  .reading-list-card:hover .reading-card-title {
+    color: var(--accent);
+  }
+
+  .reading-card-desc {
+    margin: 0 0 0.75rem 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #475569;
+    font-weight: normal;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .reading-card-desc {
+      color: #cbd5e1;
+    }
   }
 
   .reading-card-author {
@@ -789,6 +870,11 @@ const latestPosts = posts.slice(0, 3);
     font-style: italic;
     color: #64748b;
     margin: 0;
+    transition: color 0.2s;
+  }
+
+  .reading-list-card:hover .reading-card-author {
+    color: var(--accent);
   }
 
   /* End CSS */
