@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-08-06T13:34:03.175Z",
+    "status": "Delays",
+    "details": [
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times at Atlantic Av - Barclays Ctr (up to 13 mins, normally every 10 mins)."
+    ]
+  },
+  {
     "date": "2026-08-05T15:09:52.276Z",
     "status": "Delays",
     "details": [
@@ -197,13 +204,6 @@
     "status": "Delays",
     "details": [
       "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Atlantic Av - Barclays Ctr and Kings Hwy (up to 16 mins, normally every 13 mins)."
-    ]
-  },
-  {
-    "date": "2026-07-04T14:24:51.912Z",
-    "status": "Delays",
-    "details": [
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Prospect Park and Parkside Av (up to 15 mins, normally every 12 mins)."
     ]
   }
 ]
