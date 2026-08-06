@@ -272,6 +272,9 @@ const latestPosts = posts.slice(0, 3);
         if (!container) return;
         container.innerHTML = "";
         three.forEach((article) => {
+          const item = document.createElement("div");
+          item.className = "reading-item-container";
+
           const card = document.createElement("a");
           card.href = article.url;
           card.target = "_blank";
@@ -296,11 +299,19 @@ const latestPosts = posts.slice(0, 3);
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
               </svg>
             </h3>
-            ${article.description ? `<p class="reading-card-desc">${article.description}</p>` : ''}
             <p class="reading-card-author">By ${article.author || "Unknown"}</p>
           `;
 
-          container.appendChild(card);
+          item.appendChild(card);
+
+          if (article.description) {
+            const desc = document.createElement("p");
+            desc.className = "reading-card-desc-free";
+            desc.textContent = article.description;
+            item.appendChild(desc);
+          }
+
+          container.appendChild(item);
         });
       })
       .catch((err) => {
@@ -728,19 +739,25 @@ const latestPosts = posts.slice(0, 3);
     }
   }
 
+  .reading-item-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
   .reading-list-card {
     display: flex;
     flex-direction: column;
-    padding: 1.5rem;
+    padding: 1.25rem 1.5rem;
     background: rgba(255, 255, 255, 0.8);
     border-radius: 12px;
-    border: 1px solid rgba(255, 107, 53, 0.1);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(255, 107, 53, 0.12);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     text-decoration: none;
-    height: 100%;
     position: relative;
     overflow: hidden;
+    margin-bottom: 0.75rem;
   }
 
   /* Shine effect on hover */
@@ -766,8 +783,8 @@ const latestPosts = posts.slice(0, 3);
   }
 
   .reading-list-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 30px rgba(255, 107, 53, 0.25);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(255, 107, 53, 0.18);
     border-color: rgba(255, 107, 53, 0.4);
     background: white;
   }
@@ -776,7 +793,7 @@ const latestPosts = posts.slice(0, 3);
     .reading-list-card {
       background: rgba(30, 41, 59, 0.8);
       border-color: rgba(255, 107, 53, 0.15);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
     .reading-list-card:hover {
       background: rgba(30, 41, 59, 0.95);
@@ -837,7 +854,7 @@ const latestPosts = posts.slice(0, 3);
   }
 
   .reading-card-title {
-    font-size: 1.25rem;
+    font-size: 1.2rem;
     font-weight: 800;
     margin: 0 0 0.5rem 0;
     line-height: 1.35;
@@ -852,28 +869,28 @@ const latestPosts = posts.slice(0, 3);
     color: var(--accent);
   }
 
-  .reading-card-desc {
-    margin: 0 0 0.75rem 0;
-    font-size: 0.95rem;
+  .reading-card-desc-free {
+    font-size: 0.92rem;
     line-height: 1.5;
     color: #475569;
     font-weight: normal;
+    margin: 0;
+    padding: 0 0.25rem;
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    flex-grow: 1;
   }
 
   @media (prefers-color-scheme: dark) {
-    .reading-card-desc {
+    .reading-card-desc-free {
       color: #cbd5e1;
     }
   }
 
   .reading-card-author {
-    font-size: 0.88rem;
+    font-size: 0.85rem;
     font-style: italic;
     color: #64748b;
     margin-top: auto;
