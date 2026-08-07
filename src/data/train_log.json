@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-08-07T13:27:41.629Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times between Canal St and DeKalb Av (up to 14 mins, normally every 12 mins)."
+    ]
+  },
+  {
     "date": "2026-08-06T13:34:03.175Z",
     "status": "Delays",
     "details": [
@@ -197,13 +204,6 @@
     "details": [
       "Northbound: 96 St-bound trains are having longer wait times between Coney Island - Stillwell Av and 72 St (up to 16 mins, normally every 9 mins).",
       "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Parkside Av and Avenue H (up to 18 mins, normally every 10 mins)."
-    ]
-  },
-  {
-    "date": "2026-07-05T14:26:53.337Z",
-    "status": "Delays",
-    "details": [
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Atlantic Av - Barclays Ctr and Kings Hwy (up to 16 mins, normally every 13 mins)."
     ]
   }
 ]
