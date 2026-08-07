@@ -722,27 +722,15 @@ const latestPosts = posts.slice(0, 3);
 
   /* Reading stack as a balanced horizontal grid under the writing */
   .reading-stack {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-  }
-
-  @media (max-width: 960px) {
-    .reading-stack {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  @media (max-width: 640px) {
-    .reading-stack {
-      grid-template-columns: 1fr;
-    }
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
   }
 
   .reading-item-container {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    width: 100%;
   }
 
   .reading-list-card {
@@ -870,17 +858,12 @@ const latestPosts = posts.slice(0, 3);
   }
 
   .reading-card-desc-free {
-    font-size: 0.92rem;
-    line-height: 1.5;
+    font-size: 0.95rem;
+    line-height: 1.6;
     color: #475569;
     font-weight: normal;
-    margin: 0;
-    padding: 0 0.25rem;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    margin: 0 0 0.5rem 0;
+    padding: 0 0.5rem;
   }
 
   @media (prefers-color-scheme: dark) {
