@@ -16,7 +16,7 @@
   {
     "title": "The Anatomy of a Large-Scale Hypertextual Web Search Engine",
     "author": "Brin & Page (1998)",
-    "url": "http://infolab.stanford.edu/~backrub/google.html",
+    "url": "https://infolab.stanford.edu/~backrub/google.html",
     "area": "Databases",
     "description": "The original paper by Google's founders describing the architecture of their prototype search engine, introducing the PageRank algorithm and early web indexing structures."
   },
@@ -100,7 +100,7 @@
   {
     "title": "Python for Data Analysis (2nd ed.)",
     "author": "Wes McKinney (2017)",
-    "url": "https://www.oreilly.com/library/view/python-for-data/9781491957653/",
+    "url": "https://wesmckinney.com/book/",
     "area": "Data Analysis / Book",
     "description": "A comprehensive handbook by pandas creator Wes McKinney, detailing essential techniques for data manipulation, cleaning, exploratory analysis, and visualization in Python."
   },
