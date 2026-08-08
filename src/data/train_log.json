@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-08-08T13:19:44.655Z",
+    "status": "Service Change",
+    "details": [
+      "<Q> trains are making local stops between 57 St - 7 Av and Canal St."
+    ]
+  },
+  {
     "date": "2026-08-07T13:27:41.629Z",
     "status": "Delays",
     "details": [
@@ -196,14 +203,6 @@
     "details": [
       "Northbound: 96 St-bound trains are having longer wait times at Canal St (up to 17 mins, normally every 11 mins).",
       "Southbound: Coney Island - Stillwell Av-bound trains are taking 5 mins longer to travel between Canal St and Parkside Av."
-    ]
-  },
-  {
-    "date": "2026-07-06T16:13:56.566Z",
-    "status": "Delays",
-    "details": [
-      "Northbound: 96 St-bound trains are having longer wait times between Coney Island - Stillwell Av and 72 St (up to 16 mins, normally every 9 mins).",
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Parkside Av and Avenue H (up to 18 mins, normally every 10 mins)."
     ]
   }
 ]
