@@ -44,6 +44,9 @@ export default function VaultRunner() {
   const [grid, setGrid] = useState<string[][]>([]);
   const [enemies, setEnemies] = useState<Enemy[]>([]);
   const [log, setLog] = useState<string[]>(['Welcome to the Vault. Find the stairs (S) to descend.']);
+  const [goldCollected, setGoldCollected] = useState<number>(0);
+  const [monstersKilled, setMonstersKilled] = useState<number>(0);
+  const [score, setScore] = useState<number>(0);
   
   // --- PROJECTILE VISUALS STATE ---
   const [projectilePath, setProjectilePath] = useState<Position[]>([]);
@@ -213,6 +216,27 @@ export default function VaultRunner() {
       });
     }
 
+    // Spawn gold pieces
+    const goldCount = 4 + level;
+    for (let i = 0; i < goldCount; i++) {
+      let gx, gy;
+      let gAttempts = 0;
+      do {
+        gx = Math.floor(Math.random() * (GRID_SIZE - 2)) + 1;
+        gy = Math.floor(Math.random() * (GRID_SIZE - 2)) + 1;
+        gAttempts++;
+      } while (
+        (newGrid[gy][gx] !== '.' ||
+          (gx === 1 && gy === 1) ||
+          (gx === exitX && gy === exitY) ||
+          !hasValidPath(newGrid, 1, 1, gx, gy)) &&
+        gAttempts < 100
+      );
+      if (newGrid[gy][gx] === '.') {
+        newGrid[gy][gx] = 'G';
+      }
+    }
+
     setGrid(newGrid);
     setEnemies(newEnemies);
     setPlayerPosition({ x: 1, y: 1 });
@@ -223,6 +247,9 @@ export default function VaultRunner() {
     setPlayerClass(selectedClass);
     setPlayerStats({ class: selectedClass, ...CLASS_PRESETS[selectedClass] });
     setCurrentLevel(1);
+    setGoldCollected(0);
+    setMonstersKilled(0);
+    setScore(0);
     setLog(['You enter the cold depths of the Vault.']);
     setGameState('PLAYING');
     generateLevel(1, selectedClass);
@@ -256,7 +283,7 @@ export default function VaultRunner() {
 
         const occupied = currentEnemiesList.some(e => e.id !== enemy.id && e.x === nextX && e.y === nextY);
 
-        if (grid[nextY] && (grid[nextY][nextX] === '.' || grid[nextY][nextX] === 'S') && !(nextX === pX && nextY === pY) && !occupied) {
+        if (grid[nextY] && (grid[nextY][nextX] === '.' || grid[nextY][nextX] === 'S' || grid[nextY][nextX] === 'G') && !(nextX === pX && nextY === pY) && !occupied) {
           return { ...enemy, x: nextX, y: nextY };
         }
       }
@@ -282,7 +309,7 @@ export default function VaultRunner() {
 
         if (
           grid[roamY] &&
-          (grid[roamY][roamX] === '.' || grid[roamY][roamX] === 'S') &&
+          (grid[roamY][roamX] === '.' || grid[roamY][roamX] === 'S' || grid[roamY][roamX] === 'G') &&
           !(roamX === pX && roamY === pY) &&
           !occupied
         ) {
@@ -314,8 +341,10 @@ export default function VaultRunner() {
     let nextLog = [`You hit enemy for ${playerDamage} DMG.`];
 
     if (target.hp <= 0) {
-      nextLog.unshift(`Enemy defeated!`);
+      nextLog.unshift(`Enemy defeated! (+20 pts)`);
       updatedEnemies.splice(index, 1);
+      setMonstersKilled(prev => prev + 1);
+      setScore(prev => prev + 20);
     } else {
       const enemyDamage = Math.max(1, target.atk - playerStats.def);
       const newHp = Math.max(0, playerStats.hp - enemyDamage);
@@ -347,7 +376,18 @@ export default function VaultRunner() {
       return;
     }
 
-    if (grid[newY] && grid[newY][newX] === 'S') {
+    let nextGrid = grid;
+    if (grid[newY] && grid[newY][newX] === 'G') {
+      setGoldCollected(prev => prev + 1);
+      setScore(prev => prev + 10);
+      setLog(prev => ['You collected a gold piece! (+10 pts)', ...prev.slice(0, 4)]);
+      nextGrid = grid.map((row, y) =>
+        row.map((cell, x) => (x === newX && y === newY ? '.' : cell))
+      );
+      setGrid(nextGrid);
+    }
+
+    if (nextGrid[newY] && nextGrid[newY][newX] === 'S') {
       if (currentLevel === TOTAL_LEVELS) {
         setGameState('VICTORY');
       } else {
@@ -386,8 +426,10 @@ export default function VaultRunner() {
     let nextLog = [`You fire ${weaponName} at enemy for ${playerDamage} DMG.`];
 
     if (target.hp <= 0) {
-      nextLog.unshift(`Enemy defeated!`);
+      nextLog.unshift(`Enemy defeated! (+20 pts)`);
       updatedEnemies.splice(enemyIndex, 1);
+      setMonstersKilled(prev => prev + 1);
+      setScore(prev => prev + 20);
     }
 
     const path = getBresenhamPath(playerPosition.x, playerPosition.y, targetEnemy.x, targetEnemy.y);
@@ -489,6 +531,13 @@ export default function VaultRunner() {
         </div>
         <h1 style={{ ...styles.title, color: '#4caf50' }}>CONGRATULATIONS {playerClass.toUpperCase()}</h1>
         <p style={styles.subtitle}>You successfully ran the Vault and survived with your life.</p>
+        <div style={{ fontSize: '1.2rem', marginBottom: '30px', textAlign: 'center', lineHeight: '1.6' }}>
+          <div style={{ color: '#ffd700' }}>Gold Pieces Collected: <strong>{goldCollected}</strong> (+{goldCollected * 10} pts)</div>
+          <div style={{ color: '#ff1744' }}>Monsters Defeated: <strong>{monstersKilled}</strong> (+{monstersKilled * 20} pts)</div>
+          <div style={{ fontSize: '1.8rem', fontWeight: 'bold', marginTop: '15px', borderTop: '1px solid #333', paddingTop: '10px' }}>
+            Final Score: <span style={{ color: '#ffd700' }}>{score}</span>
+          </div>
+        </div>
         <button onClick={() => setGameState('START')} style={styles.btn}>Run Again</button>
       </div>
     );
@@ -506,6 +555,14 @@ export default function VaultRunner() {
         <p style={{ ...styles.subtitle, fontStyle: 'italic' }}>
           "Your death has been recorded as another victory for the Vault"
         </p>
+        <div style={{ fontSize: '1.2rem', marginBottom: '30px', textAlign: 'center', lineHeight: '1.6' }}>
+          <div>Level Reached: <strong>{currentLevel}</strong></div>
+          <div style={{ color: '#ffd700' }}>Gold Pieces Collected: <strong>{goldCollected}</strong> (+{goldCollected * 10} pts)</div>
+          <div style={{ color: '#ff1744' }}>Monsters Defeated: <strong>{monstersKilled}</strong> (+{monstersKilled * 20} pts)</div>
+          <div style={{ fontSize: '1.8rem', fontWeight: 'bold', marginTop: '15px', borderTop: '1px solid #333', paddingTop: '10px' }}>
+            Final Score: <span style={{ color: '#ffd700' }}>{score}</span>
+          </div>
+        </div>
         <button onClick={() => setGameState('START')} style={styles.btn}>Try Again</button>
       </div>
     );
@@ -590,8 +647,8 @@ export default function VaultRunner() {
 
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#ccc', backgroundColor: '#111', padding: '4px 8px', borderRadius: '4px' }}>
           <span>HP: <strong style={{ color: '#4caf50' }}>{playerStats.hp}/{playerStats.maxHp}</strong></span>
-          <span>ATK: <strong>{playerStats.atk}</strong> | DEF: <strong>{playerStats.def}</strong></span>
-          <span>Wpn: <strong>{weaponName}</strong></span>
+          <span>Score: <strong style={{ color: '#ffd700' }}>{score}</strong> (Gold: {goldCollected})</span>
+          <span>Lvl: <strong>{currentLevel}</strong></span>
         </div>
 
         {log.length > 0 && (
@@ -613,6 +670,13 @@ export default function VaultRunner() {
         <p>HP: <strong>{playerStats.hp} / {playerStats.maxHp}</strong></p>
         <p>ATK: <strong>{playerStats.atk}</strong> | DEF: <strong>{playerStats.def}</strong></p>
         <p>Weapon: <strong>{weaponName}</strong> (Range: ∞)</p>
+        <p style={{ marginTop: '15px', paddingTop: '15px', borderTop: '1px solid #333' }}>
+          Score: <strong style={{ color: '#ffd700', fontSize: '1.25rem' }}>{score}</strong>
+        </p>
+        <p style={{ fontSize: '13px', color: '#aaa', margin: 0 }}>
+          Gold Pieces: <strong style={{ color: '#ffd700' }}>{goldCollected}</strong> (+{goldCollected * 10} pts) <br />
+          Monsters Killed: <strong style={{ color: '#ff1744' }}>{monstersKilled}</strong> (+{monstersKilled * 20} pts)
+        </p>
         <hr style={{ borderColor: '#333' }} />
         <div className="log-box-custom" style={styles.logBox}>
           {log.map((entry, idx) => <div key={idx} style={styles.logEntry}>{entry}</div>)}
@@ -651,6 +715,9 @@ export default function VaultRunner() {
                   cursor = 'pointer';
                 } else if (cell === 'S') {
                   color = '#ffea00';
+                } else if (cell === 'G') {
+                  glyph = 'G';
+                  color = '#ffd700';
                 } else if (cell === '#') {
                   color = '#888';
                 } else {
