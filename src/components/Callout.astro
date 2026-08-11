@@ -1,0 +1,50 @@
+---
+interface Props {
+  type?: 'info' | 'warning' | 'success' | 'danger';
+}
+
+const { type = 'info' } = Astro.props;
+
+const styles = {
+  info: {
+    bg: 'rgba(59, 130, 246, 0.1)',
+    border: '#3b82f6',
+    color: '#1e3a8a',
+    darkColor: '#93c5fd'
+  },
+  warning: {
+    bg: 'rgba(245, 158, 11, 0.1)',
+    border: '#f59e0b',
+    color: '#78350f',
+    darkColor: '#fcd34d'
+  },
+  success: {
+    bg: 'rgba(16, 185, 129, 0.1)',
+    border: '#10b981',
+    color: '#064e3b',
+    darkColor: '#6ee7b7'
+  },
+  danger: {
+    bg: 'rgba(239, 68, 68, 0.1)',
+    border: '#ef4444',
+    color: '#7f1d1d',
+    darkColor: '#fca5a5'
+  }
+};
+
+const currentStyle = styles[type] || styles.info;
+---
+
+<div class={`callout callout-${type}`} style={`background-color: ${currentStyle.bg}; border-left: 4px solid ${currentStyle.border}; padding: 1rem; border-radius: 4px; margin: 1.5rem 0; font-size: 0.95rem;`}>
+  <style dangerouslySetInnerHTML={{__html: `
+    .callout {
+      color: ${currentStyle.color};
+    }
+    @media (prefers-color-scheme: dark) {
+      .callout {
+        color: ${currentStyle.darkColor} !important;
+      }
+    }
+  `}} />
+  <slot />
+</div>

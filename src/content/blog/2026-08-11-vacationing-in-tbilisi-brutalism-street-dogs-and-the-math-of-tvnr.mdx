@@ -1,0 +1,82 @@
+---
+layout: '../../layouts/BlogPost.astro'
+title: "Vacationing in Tbilisi: Brutalism, Street Dogs, and the Math of TVNR"
+description: "Reflections from Georgia on Soviet brutalist architecture, street dog ecology, and a Python differential population model for municipal TVNR thresholds."
+pubDate: 2026-08-11
+heroImage: "/images/tbilisi-dogs.jpg"
+tags: ["Python", "Data Science", "Georgia", "Travel", "Modeling"]
+category: "Cloud"
+---
+import CodeBlock from '../../components/CodeBlock.astro';
+import Callout from '../../components/Callout.astro';
+
+Gamarjoba, friends! I am writing from my vacation in Georgia! My friend Aaron and others might say, "Well, if you are on vacation, should you be working on your blog?" Maybe, but my blog is something I genuinely enjoy. So there.
+
+I have never been to Georgia before. So far, I have only stayed in Tbilisi, the capital and largest city. Their mix of buildings is remarkable. A lot of the brutalist architecture that you are probably aware of from all the films you have seen featuring Soviet and post-Soviet times stands right alongside truly beautiful older structures that predate anything in NYC by hundreds of years. On top of that, like in many growing hubs, there is a building boom of remarkable proportions underway.
+
+The people are wonderful. There is a big-city indifference that instantly makes me feel at home, but everyone I have spoken to has been kind. If they didn't speak English, they have blessed me by pointing helpfully... mostly. I have to admit I do not know all the hand gestures yet.
+
+I would say the most surprising thing I have seen is the street dogs. Which is exactly what it sounds like: dogs that have no single owner, lying about in the street and getting fed enough by locals to get by. I have heard instances of people being bitten, but for the most part, they are remarkably tame and passive.
+
+Determined to know more, I searched for the Georgian equivalent of NYC Open Data, but had no such luck finding a single unified portal. However, a few primary bodies and sources publish relevant data:
+
+* **Tbilisi Municipal Animal Monitoring Agency (AMA):** Conducts city-level censuses, manages municipal shelters, and records capture/release logs. See [ama.gov.ge](http://ama.gov.ge).
+* **National Food Agency (NFA) / NAITS:** Operates the national animal traceability database for livestock and registered domestic/stray animals. See [nfa.gov.ge](https://nfa.gov.ge).
+* **CRRC Georgia (Caucasus Barometer):** Tracks public sentiment microdata regarding municipal stray animal management. See [caucasusbarometer.org](https://caucasusbarometer.org/en/).
+
+Looking at municipal statistics, there are an estimated 30,000 stray dogs in Tbilisi alone.
+
+If you observe the dogs around the city, you will notice bright plastic tags attached to their ears. An ear tag indicates that the dog has gone through a **TVNR (Trap-Vaccinate-Neuter-Release)** cycle. Municipal or NGO workers capture the dog, administer a rabies vaccination, spay or neuter it, tag it, and return it to its territory. While local rumors suggest tag colors denote temperament (e.g., green for friendly), in practice, tag colors simply indicate different tagging batches, years, or operating organizations.
+
+<Callout type="info">
+  **Key Takeaway:** Ear tags verify rabies vaccination and sterilization status. They do not signify temperament or ownership.
+</Callout>
+
+If municipalities are actively neutering and spaying animals, why does the population remain so large?
+
+The persistence of street populations comes down to demographic threshold math. In epidemiological population modeling, halting growth under a TVNR program requires reaching a critical sterilization coverage threshold—typically **70% of the active roaming population**.
+
+If effective sterilization remains below this threshold, the remaining unsterilized population reproduces at a rate that offsets mortality. Furthermore, municipal efforts face a constant offset parameter: pet abandonment. Unsterilized pets abandoned by owners continuously enter the breeding pool, resetting local eradication timelines.
+
+We can model this dynamic system using Python to calculate the exact annual sterilization rate required to counter birth and abandonment rates and force the population into decline:
+
+```python
+import numpy as np
+import pandas as pd
+
+def simulate_tvnr_threshold(
+    initial_pop: int = 30000,
+    annual_abandonment: int = 2500,
+    birth_rate_unsterilized: float = 0.40,
+    natural_mortality: float = 0.15,
+    years: int = 10
+) -> pd.DataFrame:
+    """
+    Simulates population trajectory across varying annual sterilization rates.
+    """
+    results = []
+    
+    for ster_rate in [0.30, 0.50, 0.70, 0.85]:
+        pop = initial_pop
+        for _ in range(years):
+            sterilized = int(pop * ster_rate)
+            unsterilized = pop - sterilized
+            
+            births = int(unsterilized * birth_rate_unsterilized)
+            deaths = int(pop * natural_mortality)
+            
+            # Net population delta
+            pop = max(0, pop + births + annual_abandonment - deaths)
+            
+        results.append({
+            "Sterilization_Rate": f"{int(ster_rate * 100)}%",
+            "10Y_Projected_Pop": pop,
+            "Trajectory": "Declining" if pop < initial_pop else "Growing/Stable"
+        })
+        
+    return pd.DataFrame(results)
+
+if __name__ == "__main__":
+    df_projection = simulate_tvnr_threshold()
+    print(df_projection.to_string(index=False))
+```
