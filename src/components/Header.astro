@@ -8,24 +8,9 @@ import HolidayToggle from "./HolidayToggle.astro";
 	<nav>
 		<!-- START: EDITED SECTION -->
 		<div class="site-branding">
-			<button
-				id="logo-trigger"
-				class="site-logo-btn"
-				aria-label="Enlarge logo"
-				title="Click to enlarge"
-			>
-				<img
-					src="/img/tosvg.svg"
-					alt="NextValData logo"
-					class="site-logo"
-					width="90"
-					height="90"
-				/>
-			</button>
 			<a href="/" class="site-title-link">
 				<span class="site-title-text"
-					><strong>Next <span class="accent">Val</span> Data</strong
-					></span
+					><strong>Next <span class="accent">Val</span> Data</strong></span
 				>
 			</a>
 		</div>
@@ -133,25 +118,8 @@ import HolidayToggle from "./HolidayToggle.astro";
 		position: relative;
 	}
 
-	.site-logo-btn {
-		background: none;
-		border: none;
-		padding: 0;
-		cursor: zoom-in;
-		display: flex; /* Removes default button line-height issues */
-		transition: transform 0.2s ease;
-	}
-	.site-logo-btn:hover {
-		transform: scale(1.05); /* Slight scale up on hover */
-	}
-
 	.site-title-link:hover {
 		color: rgb(var(--black));
-	}
-
-	.site-logo {
-		width: 90px;
-		height: 90px;
 	}
 
 	.site-title-text {
@@ -180,70 +148,6 @@ import HolidayToggle from "./HolidayToggle.astro";
 		min-width: 0;
 	}
 
-	/* Modal Styles */
-	.logo-modal {
-		border: none;
-		border-radius: 12px;
-		padding: 0;
-		background: transparent;
-		box-shadow:
-			0 20px 25px -5px rgba(0, 0, 0, 0.1),
-			0 10px 10px -5px rgba(0, 0, 0, 0.04);
-		max-width: 90vw;
-		max-height: 90vh;
-		overflow: visible; /* button might stick out */
-	}
-
-	.logo-modal::backdrop {
-		background: rgba(0, 0, 0, 0.5);
-		backdrop-filter: blur(4px);
-	}
-
-	.modal-content {
-		background: white;
-		padding: 2rem;
-		border-radius: 12px;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-	}
-
-	.large-logo {
-		width: auto;
-		height: auto;
-		max-width: 80vw;
-		max-height: 80vh;
-		min-width: 300px; /* Ensure it's significantly larger than the header version */
-	}
-
-	.close-container {
-		position: absolute;
-		top: -15px;
-		right: -15px;
-		z-index: 10;
-	}
-
-	.close-btn {
-		background: var(--accent);
-		color: white;
-		border: 2px solid white;
-		border-radius: 50%;
-		width: 36px;
-		height: 36px;
-		font-size: 18px;
-		font-weight: bold;
-		cursor: pointer;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-		transition: background-color 0.2s;
-	}
-
-	.close-btn:hover {
-		background-color: var(--accent-dark, #d24e00);
-	}
-
 	/* Mobile Optimization */
 	@media (max-width: 768px) {
 		.site-branding {
@@ -251,19 +155,6 @@ import HolidayToggle from "./HolidayToggle.astro";
 		}
 		.site-title-text {
 			font-size: 1.4rem;
-		}
-		.site-logo {
-			width: 50px;
-			height: 50px;
-		}
-
-		/* Adjust modal for mobile */
-		.large-logo {
-			min-width: 250px;
-			max-width: 90vw;
-		}
-		.modal-content {
-			padding: 1rem;
 		}
 
 		/* Wrap header content control */
@@ -338,44 +229,4 @@ import HolidayToggle from "./HolidayToggle.astro";
 	}
 </style>
 
-<dialog id="logo-modal" class="logo-modal">
-	<form method="dialog" class="close-container">
-		<button class="close-btn" aria-label="Close modal">✕</button>
-	</form>
-	<div class="modal-content">
-		<img
-			src="/img/tosvg.svg"
-			alt="Large NextValData logo"
-			class="large-logo"
-		/>
-	</div>
-</dialog>
 
-<script>
-	const modal = document.getElementById("logo-modal") as HTMLDialogElement;
-	const trigger = document.getElementById("logo-trigger");
-
-	if (modal && trigger) {
-		trigger.addEventListener("click", () => {
-			if (typeof modal.showModal === "function") {
-				modal.showModal();
-			} else {
-				// Fallback or polyfill check (rarely needed in modern browsers)
-				alert("Your browser does not support the <dialog> element.");
-			}
-		});
-
-		// Close modal when clicking outside the content
-		modal.addEventListener("click", (event) => {
-			const rect = modal.getBoundingClientRect();
-			const isInDialog =
-				rect.top <= event.clientY &&
-				event.clientY <= rect.top + rect.height &&
-				rect.left <= event.clientX &&
-				event.clientX <= rect.left + rect.width;
-			if (!isInDialog) {
-				modal.close();
-			}
-		});
-	}
-</script>
