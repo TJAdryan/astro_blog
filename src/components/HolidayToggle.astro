@@ -6,7 +6,6 @@
     id="holiday-toggle"
     class="holiday-toggle"
     aria-label="Toggle Holiday Mode"
-    hidden
 >
     🎄 Holiday Mode
 </button>
@@ -16,32 +15,25 @@
         const toggleBtn = document.getElementById("holiday-toggle");
         if (!toggleBtn) return;
 
-        const now = new Date();
-        const currentYear = now.getFullYear();
-        const start = new Date(currentYear, 11, 10); // Dec 10
-        const end = new Date(currentYear, 11, 31, 23, 59, 59); // Dec 31 end of day
+        // Make the holiday toggle button always visible
+        toggleBtn.hidden = false;
 
-        // Check if within date range
-        if (now >= start && now <= end) {
-            toggleBtn.hidden = false;
+        // Check stored preference
+        const isHolidayMode =
+            localStorage.getItem("holiday-mode") === "true";
+        if (isHolidayMode) {
+            enableHolidayMode();
+        }
 
-            // Check stored preference
-            const isHolidayMode =
-                localStorage.getItem("holiday-mode") === "true";
-            if (isHolidayMode) {
+        toggleBtn.addEventListener("click", () => {
+            const isActive =
+                document.documentElement.classList.contains("holiday-mode");
+            if (isActive) {
+                disableHolidayMode();
+            } else {
                 enableHolidayMode();
             }
-
-            toggleBtn.addEventListener("click", () => {
-                const isActive =
-                    document.documentElement.classList.contains("holiday-mode");
-                if (isActive) {
-                    disableHolidayMode();
-                } else {
-                    enableHolidayMode();
-                }
-            });
-        }
+        });
 
         function enableHolidayMode() {
             document.documentElement.classList.add("holiday-mode");
