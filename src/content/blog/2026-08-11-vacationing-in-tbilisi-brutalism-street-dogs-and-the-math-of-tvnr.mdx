@@ -7,6 +7,7 @@ category: "Cloud"
 ---
 import CodeBlock from '../../components/CodeBlock.astro';
 import Callout from '../../components/Callout.astro';
+import TVNRSimulation from '../../components/TVNRSimulation.jsx';
 
 Gamarjoba, friends! I am writing from my vacation in Georgia! My friend Aaron and others might say, "Well, if you are on vacation, should you be working on your blog?" Maybe, but my blog is something I genuinely enjoy. So there.
 
@@ -28,9 +29,42 @@ If you observe the dogs around the city, you will notice bright plastic tags att
 
 If municipalities are actively neutering and spaying animals, why does the population remain so large?
 
-The persistence of street populations comes down to demographic threshold math. In epidemiological population modeling, halting growth under a TVNR program requires reaching a critical sterilization coverage threshold—typically **70% of the active roaming population**.
+### The Mathematical Model of TVNR Dynamics
 
-If effective sterilization remains below this threshold, the remaining unsterilized population reproduces at a rate that offsets mortality. Furthermore, municipal efforts face a constant offset parameter: pet abandonment. Unsterilized pets abandoned by owners continuously enter the breeding pool, resetting local eradication timelines.
+We can represent the annual stray population change through a discrete difference equation:
+
+`P(t+1) = P(t) + B(t) + A - D(t)`
+
+Where:
+*   **`P(t)`**: The total stray dog population at year `t`.
+*   **`B(t)`**: The number of births, which depends only on the *unsterilized* portion of the population:
+    `B(t) = P(t) * (1 - S) * b`
+    *(where `S` is the sterilization coverage rate, and `b` is the birth rate of unsterilized dogs)*.
+*   **`A`**: The annual pet abandonment rate (a constant influx parameter of new unsterilized animals).
+*   **`D(t)`**: The number of deaths, based on natural mortality:
+    `D(t) = P(t) * m`
+    *(where `m` is the natural mortality rate)*.
+
+Substituting these terms yields:
+
+`P(t+1) = P(t) * [1 + b * (1 - S) - m] + A`
+
+#### The Critical Sterilization Threshold (S_crit)
+For the population to decline (`P(t+1) < P(t)`) in the absence of pet abandonment (`A = 0`), the growth term must be negative:
+
+`b * (1 - S) - m < 0  =>  S > 1 - m / b`
+
+Under the default parameters (birth rate `b = 40%` and mortality rate `m = 15%`), the critical sterilization threshold is:
+
+`S_crit = 1 - 0.15 / 0.40 = 62.5%`
+
+However, when ongoing pet abandonment is introduced (`A > 0`), a sterilization rate *exactly* at `S_crit` is no longer enough to achieve decline. The sterilization rate must be significantly higher to offset the continuous influx of new breeding animals, typically requiring **70% to 85% coverage**.
+
+### Interactive Population Simulation
+
+Adjust the parameters below to explore how sterilization, birth rates, and abandonment rates shape the 10-year stray population trajectory of Tbilisi:
+
+<TVNRSimulation client:load />
 
 We can model this dynamic system using Python to calculate the exact annual sterilization rate required to counter birth and abandonment rates and force the population into decline:
 
