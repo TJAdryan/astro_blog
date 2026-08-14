@@ -544,7 +544,7 @@ export default function VaultRunner() {
         <div style={styles.selectionZone}>
           {(['Fighter', 'Mage', 'Rogue', 'Rene', 'Sandro'] as CharacterClass[]).map(cls => (
             <button key={cls} onClick={() => startGame(cls)} style={styles.btn}>
-              {cls === 'Rene' ? 'Rene (Girl)' : cls === 'Sandro' ? 'Sandro (Boy)' : cls} <br />
+              {cls === 'Rene' ? 'რენე (Rene)' : cls === 'Sandro' ? 'სანდრო (Sandro)' : cls} <br />
               <span style={{ fontSize: '12px', opacity: 0.8 }}>
                 HP: {CLASS_PRESETS[cls].hp} | ATK: {CLASS_PRESETS[cls].atk}
               </span>
