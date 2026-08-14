@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 const GRID_SIZE = 15;
 const TOTAL_LEVELS = 5;
 
-type CharacterClass = 'Mage' | 'Fighter' | 'Rogue';
+type CharacterClass = 'Mage' | 'Fighter' | 'Rogue' | 'Rene' | 'Sandro';
 type GameState = 'START' | 'PLAYING' | 'VICTORY' | 'DEFEAT';
 
 interface Position {
@@ -33,6 +33,8 @@ const CLASS_PRESETS: Record<CharacterClass, Omit<PlayerStats, 'class'>> = {
   Fighter: { hp: 120, maxHp: 120, atk: 15, def: 5 },  // High mitigation, steady damage
   Mage:    { hp: 80,  maxHp: 80,  atk: 25, def: 2 },  // Glass cannon, high offense variance
   Rogue:   { hp: 100, maxHp: 100, atk: 18, def: 3 },  // Balanced skirmisher
+  Rene:    { hp: 90,  maxHp: 90,  atk: 22, def: 4 },  // Custom preset for Rene (Girl)
+  Sandro:  { hp: 110, maxHp: 110, atk: 16, def: 4 },  // Custom preset for Sandro (Boy)
 };
 
 export default function VaultRunner() {
@@ -407,7 +409,15 @@ export default function VaultRunner() {
   const handleRangedAttack = useCallback((targetEnemy: Enemy) => {
     if (gameState !== 'PLAYING') return;
 
-    const weaponName = playerStats.class === 'Fighter' ? 'Throwing Axe' : playerStats.class === 'Rogue' ? 'Recurve Bow' : 'Magic Bolt';
+    const weaponName = playerStats.class === 'Fighter'
+      ? 'Throwing Axe'
+      : playerStats.class === 'Rogue'
+      ? 'Recurve Bow'
+      : playerStats.class === 'Rene'
+      ? 'Georgian Saber'
+      : playerStats.class === 'Sandro'
+      ? 'Khevsurian Sword'
+      : 'Magic Bolt';
     
     if (!hasLineOfSight(playerPosition.x, playerPosition.y, targetEnemy.x, targetEnemy.y, grid)) {
       setLog(prev => [`Line of sight to enemy is blocked by a wall!`, ...prev.slice(0, 4)]);
@@ -420,7 +430,15 @@ export default function VaultRunner() {
     const updatedEnemies = [...enemies];
     const target = updatedEnemies[enemyIndex];
 
-    const damageModifier = playerStats.class === 'Fighter' ? 0.8 : playerStats.class === 'Rogue' ? 0.9 : 1.0;
+    const damageModifier = playerStats.class === 'Fighter'
+      ? 0.8
+      : playerStats.class === 'Rogue'
+      ? 0.9
+      : playerStats.class === 'Rene'
+      ? 1.0
+      : playerStats.class === 'Sandro'
+      ? 0.85
+      : 1.0;
     const playerDamage = Math.max(1, Math.floor(playerStats.atk * damageModifier) - Math.floor(Math.random() * 4));
     target.hp -= playerDamage;
     let nextLog = [`You fire ${weaponName} at enemy for ${playerDamage} DMG.`];
@@ -433,7 +451,15 @@ export default function VaultRunner() {
     }
 
     const path = getBresenhamPath(playerPosition.x, playerPosition.y, targetEnemy.x, targetEnemy.y);
-    const color = playerStats.class === 'Mage' ? '#00e5ff' : playerStats.class === 'Rogue' ? '#00e676' : '#ff1744';
+    const color = playerStats.class === 'Mage'
+      ? '#00e5ff'
+      : playerStats.class === 'Rogue'
+      ? '#00e676'
+      : playerStats.class === 'Rene'
+      ? '#e040fb'
+      : playerStats.class === 'Sandro'
+      ? '#ffeb3b'
+      : '#ff1744';
     setProjectilePath(path);
     setProjectileColor(color);
 
@@ -494,7 +520,15 @@ export default function VaultRunner() {
   }, [playerPosition, gameState, enemies, grid, playerStats, fireAtNearest]);
 
   // Weapon meta calculations
-  const weaponName = playerStats.class === 'Fighter' ? 'Throwing Axe' : playerStats.class === 'Rogue' ? 'Recurve Bow' : 'Magic Bolt';
+  const weaponName = playerStats.class === 'Fighter'
+    ? 'Throwing Axe'
+    : playerStats.class === 'Rogue'
+    ? 'Recurve Bow'
+    : playerStats.class === 'Rene'
+    ? 'Georgian Saber'
+    : playerStats.class === 'Sandro'
+    ? 'Khevsurian Sword'
+    : 'Magic Bolt';
 
   // --- RENDERING VIEWS ---
   if (gameState === 'START') {
@@ -508,9 +542,9 @@ export default function VaultRunner() {
         <h1 style={styles.title}>VAULT RUNNER</h1>
         <p style={styles.subtitle}>Select your operative. Reach Level 5 to escape.</p>
         <div style={styles.selectionZone}>
-          {(['Fighter', 'Mage', 'Rogue'] as CharacterClass[]).map(cls => (
+          {(['Fighter', 'Mage', 'Rogue', 'Rene', 'Sandro'] as CharacterClass[]).map(cls => (
             <button key={cls} onClick={() => startGame(cls)} style={styles.btn}>
-              {cls} <br />
+              {cls === 'Rene' ? 'Rene (Girl)' : cls === 'Sandro' ? 'Sandro (Boy)' : cls} <br />
               <span style={{ fontSize: '12px', opacity: 0.8 }}>
                 HP: {CLASS_PRESETS[cls].hp} | ATK: {CLASS_PRESETS[cls].atk}
               </span>
@@ -705,7 +739,13 @@ export default function VaultRunner() {
               const inPath = projectilePath.some(p => p.x === x && p.y === y);
 
               if (x === playerPosition.x && y === playerPosition.y) {
-                glyph = '@';
+                if (playerClass === 'Rene') {
+                  glyph = 'რ';
+                } else if (playerClass === 'Sandro') {
+                  glyph = 'ს';
+                } else {
+                  glyph = '@';
+                }
                 color = '#00e5ff';
               } else {
                 const hasEnemy = enemies.find(e => e.x === x && e.y === y);
@@ -933,7 +973,7 @@ const styles = {
   },
   title: { fontSize: '3rem', letterSpacing: '4px', margin: '0 0 10px 0' },
   subtitle: { fontSize: '1.2rem', color: '#aaa', marginBottom: '30px', textAlign: 'center' as const },
-  selectionZone: { display: 'flex', gap: '20px' },
+  selectionZone: { display: 'flex', gap: '20px', flexWrap: 'wrap' as const, justifyContent: 'center' as const },
   btn: {
     padding: '15px 25px', fontSize: '1rem', backgroundColor: '#111', color: '#fff',
     border: '1px solid #444', cursor: 'pointer', fontFamily: 'monospace', borderRadius: '4px'
