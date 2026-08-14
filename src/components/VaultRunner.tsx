@@ -6,6 +6,141 @@ const TOTAL_LEVELS = 5;
 
 type CharacterClass = 'Mage' | 'Fighter' | 'Rogue' | 'Rene' | 'Sandro';
 type GameState = 'START' | 'PLAYING' | 'VICTORY' | 'DEFEAT';
+type Language = 'en' | 'ka';
+
+const TRANSLATIONS = {
+  en: {
+    backToHome: '← Back to Home',
+    title: 'VAULT RUNNER',
+    subtitle: 'Select your operative. Reach Level 5 to escape.',
+    fighter: 'Fighter',
+    mage: 'Mage',
+    rogue: 'Rogue',
+    rene: 'რენე (Rene)',
+    sandro: 'სანდრო (Sandro)',
+    congrats: 'CONGRATULATIONS',
+    victoryDesc: 'You successfully ran the Vault and survived with your life.',
+    goldCollected: 'Gold Pieces Collected',
+    monstersKilled: 'Monsters Defeated',
+    finalScore: 'Final Score',
+    runAgain: 'Run Again',
+    youDied: 'YOU DIED',
+    deathDesc: '"Your death has been recorded as another victory for the Vault"',
+    levelReached: 'Level Reached',
+    tryAgain: 'Try Again',
+    level: 'Level',
+    hp: 'HP',
+    atk: 'ATK',
+    def: 'DEF',
+    weapon: 'Weapon',
+    range: 'Range',
+    score: 'Score',
+    goldPieces: 'Gold Pieces',
+    monstersKilledSidebar: 'Monsters Killed',
+    restartGame: 'Restart',
+    restartGameSidebar: 'Restart Game',
+    controlsHint: 'Use Arrow keys or WASD to step/melee. Click an enemy or press Space/F to shoot.',
+    moveStick: 'MOVE STICK',
+    fire: 'FIRE',
+    shootNearest: 'SHOOT NEAREST',
+    // Logs
+    welcomeLog: 'Welcome to the Vault. Find the stairs (S) to descend.',
+    enterLog: 'You enter the cold depths of the Vault.',
+    ambushLog: (dmg: number) => `An enemy ambushes you for ${dmg} DMG!`,
+    hitLog: (dmg: number) => `You hit enemy for ${dmg} DMG.`,
+    enemyDefeatedLog: 'Enemy defeated! (+20 pts)',
+    enemyStrikeLog: (dmg: number) => `Enemy strikes you for ${dmg} DMG.`,
+    goldCollectedLog: 'You collected a gold piece! (+10 pts)',
+    descendLog: (lvl: number) => `Descended to level ${lvl}. Danger grows.`,
+    losBlockedLog: 'Line of sight to enemy is blocked by a wall!',
+    fireWeaponLog: (weapon: string, dmg: number) => `You fire ${weapon} at enemy for ${dmg} DMG.`,
+    noTargetsLog: 'No targets in line of sight.',
+    // Weapons
+    throwingAxe: 'Throwing Axe',
+    recurveBow: 'Recurve Bow',
+    georgianSaber: 'Georgian Saber',
+    khevsurianSword: 'Khevsurian Sword',
+    magicBolt: 'Magic Bolt',
+    infinity: '∞'
+  },
+  ka: {
+    backToHome: '← მთავარზე დაბრუნება',
+    title: 'ვაულტ რანერი',
+    subtitle: 'აირჩიეთ თქვენი ოპერატივი. გასაქცევად მიაღწიეთ მე-5 დონეს.',
+    fighter: 'მებრძოლი',
+    mage: 'მაგი',
+    rogue: 'ყაჩაღი',
+    rene: 'რენე (Rene)',
+    sandro: 'სანდრო (Sandro)',
+    congrats: 'გილოცავთ',
+    victoryDesc: 'თქვენ წარმატებით გაიარეთ ვაულტი და გადარჩით.',
+    goldCollected: 'შეგროვებული ოქრო',
+    monstersKilled: 'დამარცხებული მონსტრები',
+    finalScore: 'საბოლოო ქულა',
+    runAgain: 'თავიდან დაწყება',
+    youDied: 'თქვენ გარდაიცვალეთ',
+    deathDesc: '"თქვენი სიკვდილი ჩაიწერა როგორც ვაულტის კიდევ ერთი გამარჯვება"',
+    levelReached: 'მიღწეული დონე',
+    tryAgain: 'კიდევ სცადეთ',
+    level: 'დონე',
+    hp: 'სიცოცხლე (HP)',
+    atk: 'თავდასხმა (ATK)',
+    def: 'დაცვა (DEF)',
+    weapon: 'იარაღი',
+    range: 'მანძილი',
+    score: 'ქულა',
+    goldPieces: 'ოქროს მონეტები',
+    monstersKilledSidebar: 'მოკლული მონსტრები',
+    restartGame: 'გადატვირთვა',
+    restartGameSidebar: 'თამაშის გადატვირთვა',
+    controlsHint: 'გამოიყენეთ ისრები ან WASD გადასაადგილებლად. ესროლეთ მონსტრებს Space/F ღილაკით ან დაწკაპუნებით.',
+    moveStick: 'მართვის ჯოხი',
+    fire: 'სროლა',
+    shootNearest: 'უახლოესის სროლა',
+    // Logs
+    welcomeLog: 'კეთილი იყოს თქვენი მობრძანება ვაულტში. ჩასასვლელად იპოვეთ კიბე (S).',
+    enterLog: 'თქვენ შედიხართ ვაულტის ცივ სიღრმეებში.',
+    ambushLog: (dmg: number) => `მტერმა მოულოდნელად დაგარტყათ და მოგაყენათ ${dmg} ზიანი!`,
+    hitLog: (dmg: number) => `თქვენ დაარტყით მტერს ${dmg} ზიანით.`,
+    enemyDefeatedLog: 'მტერი დამარცხებულია! (+20 ქულა)',
+    enemyStrikeLog: (dmg: number) => `მტერმა დაგარტყათ და მოგაყენათ ${dmg} ზიანი.`,
+    goldCollectedLog: 'თქვენ შეაგროვეთ ოქრო! (+10 ქულა)',
+    descendLog: (lvl: number) => `ჩახვედით მე-${lvl} დონეზე. საფრთხე იზრდება.`,
+    losBlockedLog: 'ხედვის არე მტერთან დაბლოკილია კედლით!',
+    fireWeaponLog: (weapon: string, dmg: number) => `თქვენ ესროლეთ ${weapon} მტერს ${dmg} ზიანით.`,
+    noTargetsLog: 'ხედვის არეში მტერი არ არის.',
+    // Weapons
+    throwingAxe: 'სატყორცნი ცული',
+    recurveBow: 'მშვილდი',
+    georgianSaber: 'ქართული ხმალი',
+    khevsurianSword: 'ხევსურული ფარი-ხმალი',
+    magicBolt: 'მაგიური ნაკადი',
+    infinity: '∞'
+  }
+};
+
+const getWeaponName = (charClass: CharacterClass, lang: Language) => {
+  const t = TRANSLATIONS[lang];
+  switch (charClass) {
+    case 'Fighter': return t.throwingAxe;
+    case 'Rogue': return t.recurveBow;
+    case 'Rene': return t.georgianSaber;
+    case 'Sandro': return t.khevsurianSword;
+    default: return t.magicBolt;
+  }
+};
+
+const getClassName = (cls: CharacterClass, lang: Language) => {
+  const t = TRANSLATIONS[lang];
+  switch (cls) {
+    case 'Fighter': return t.fighter;
+    case 'Mage': return t.mage;
+    case 'Rogue': return t.rogue;
+    case 'Rene': return t.rene;
+    case 'Sandro': return t.sandro;
+    default: return cls;
+  }
+};
 
 interface Position {
   x: number;
@@ -45,10 +180,19 @@ export default function VaultRunner() {
   const [currentLevel, setCurrentLevel] = useState<number>(1);
   const [grid, setGrid] = useState<string[][]>([]);
   const [enemies, setEnemies] = useState<Enemy[]>([]);
-  const [log, setLog] = useState<string[]>(['Welcome to the Vault. Find the stairs (S) to descend.']);
+  const [lang, setLang] = useState<Language>('en');
+  const [log, setLog] = useState<string[]>([]);
   const [goldCollected, setGoldCollected] = useState<number>(0);
   const [monstersKilled, setMonstersKilled] = useState<number>(0);
   const [score, setScore] = useState<number>(0);
+
+  const t = TRANSLATIONS[lang];
+
+  useEffect(() => {
+    if (gameState === 'START') {
+      setLog([TRANSLATIONS[lang].welcomeLog]);
+    }
+  }, [lang, gameState]);
   
   // --- PROJECTILE VISUALS STATE ---
   const [projectilePath, setProjectilePath] = useState<Position[]>([]);
@@ -252,7 +396,7 @@ export default function VaultRunner() {
     setGoldCollected(0);
     setMonstersKilled(0);
     setScore(0);
-    setLog(['You enter the cold depths of the Vault.']);
+    setLog([TRANSLATIONS[lang].enterLog]);
     setGameState('PLAYING');
     generateLevel(1, selectedClass);
   };
@@ -261,6 +405,7 @@ export default function VaultRunner() {
   const processEnemyTurns = useCallback((pX: number, pY: number, currentEnemiesList: Enemy[]) => {
     let currentHp = playerStats.hp;
     const nextLogs: string[] = [];
+    const currentT = TRANSLATIONS[lang];
 
     const updatedEnemies = currentEnemiesList.map(enemy => {
       const dx = pX - enemy.x;
@@ -271,7 +416,7 @@ export default function VaultRunner() {
       if (distance === 1) {
         const dmg = Math.max(1, enemy.atk - playerStats.def);
         currentHp = Math.max(0, currentHp - dmg);
-        nextLogs.push(`An enemy ambushes you for ${dmg} DMG!`);
+        nextLogs.push(currentT.ambushLog(dmg));
         return enemy;
       }
 
@@ -331,7 +476,7 @@ export default function VaultRunner() {
     if (nextLogs.length > 0) {
       setLog(prev => [...nextLogs, ...prev.slice(0, 4)]);
     }
-  }, [playerStats.hp, playerStats.def, grid]);
+  }, [playerStats.hp, playerStats.def, grid, lang]);
 
   // --- COMBAT RESOLUTION (Melee Collision) ---
   const resolveCombat = (index: number) => {
@@ -340,10 +485,10 @@ export default function VaultRunner() {
 
     const playerDamage = Math.max(1, playerStats.atk - Math.floor(Math.random() * 4));
     target.hp -= playerDamage;
-    let nextLog = [`You hit enemy for ${playerDamage} DMG.`];
+    let nextLog = [t.hitLog(playerDamage)];
 
     if (target.hp <= 0) {
-      nextLog.unshift(`Enemy defeated! (+20 pts)`);
+      nextLog.unshift(t.enemyDefeatedLog);
       updatedEnemies.splice(index, 1);
       setMonstersKilled(prev => prev + 1);
       setScore(prev => prev + 20);
@@ -351,7 +496,7 @@ export default function VaultRunner() {
       const enemyDamage = Math.max(1, target.atk - playerStats.def);
       const newHp = Math.max(0, playerStats.hp - enemyDamage);
       playerStats.hp = newHp;
-      nextLog.unshift(`Enemy strikes you for ${enemyDamage} DMG.`);
+      nextLog.unshift(t.enemyStrikeLog(enemyDamage));
 
       if (newHp <= 0) {
         setGameState('DEFEAT');
@@ -382,7 +527,7 @@ export default function VaultRunner() {
     if (grid[newY] && grid[newY][newX] === 'G') {
       setGoldCollected(prev => prev + 1);
       setScore(prev => prev + 10);
-      setLog(prev => ['You collected a gold piece! (+10 pts)', ...prev.slice(0, 4)]);
+      setLog(prev => [t.goldCollectedLog, ...prev.slice(0, 4)]);
       nextGrid = grid.map((row, y) =>
         row.map((cell, x) => (x === newX && y === newY ? '.' : cell))
       );
@@ -395,7 +540,7 @@ export default function VaultRunner() {
       } else {
         const nextLevel = currentLevel + 1;
         setCurrentLevel(nextLevel);
-        setLog(prev => [`Descended to level ${nextLevel}. Danger grows.`, ...prev]);
+        setLog(prev => [t.descendLog(nextLevel), ...prev]);
         generateLevel(nextLevel, playerClass);
       }
       return;
@@ -420,7 +565,7 @@ export default function VaultRunner() {
       : 'Magic Bolt';
     
     if (!hasLineOfSight(playerPosition.x, playerPosition.y, targetEnemy.x, targetEnemy.y, grid)) {
-      setLog(prev => [`Line of sight to enemy is blocked by a wall!`, ...prev.slice(0, 4)]);
+      setLog(prev => [t.losBlockedLog, ...prev.slice(0, 4)]);
       return;
     }
 
@@ -441,10 +586,11 @@ export default function VaultRunner() {
       : 1.0;
     const playerDamage = Math.max(1, Math.floor(playerStats.atk * damageModifier) - Math.floor(Math.random() * 4));
     target.hp -= playerDamage;
-    let nextLog = [`You fire ${weaponName} at enemy for ${playerDamage} DMG.`];
+    const currentWeaponName = getWeaponName(playerStats.class, lang);
+    let nextLog = [t.fireWeaponLog(currentWeaponName, playerDamage)];
 
     if (target.hp <= 0) {
-      nextLog.unshift(`Enemy defeated! (+20 pts)`);
+      nextLog.unshift(t.enemyDefeatedLog);
       updatedEnemies.splice(enemyIndex, 1);
       setMonstersKilled(prev => prev + 1);
       setScore(prev => prev + 20);
@@ -470,7 +616,7 @@ export default function VaultRunner() {
 
     setLog(prev => [...nextLog, ...prev.slice(0, 4)]);
     processEnemyTurns(playerPosition.x, playerPosition.y, updatedEnemies);
-  }, [gameState, playerStats.class, playerStats.atk, playerPosition, grid, enemies, hasLineOfSight, getBresenhamPath, processEnemyTurns]);
+  }, [gameState, playerStats.class, playerStats.atk, playerPosition, grid, enemies, hasLineOfSight, getBresenhamPath, processEnemyTurns, lang]);
 
   // --- AUTO TARGET NEAREST ---
   const fireAtNearest = useCallback(() => {
@@ -481,7 +627,7 @@ export default function VaultRunner() {
     });
 
     if (validEnemies.length === 0) {
-      setLog(prev => ["No targets in line of sight.", ...prev.slice(0, 4)]);
+      setLog(prev => [t.noTargetsLog, ...prev.slice(0, 4)]);
       return;
     }
 
@@ -492,7 +638,7 @@ export default function VaultRunner() {
     });
 
     handleRangedAttack(validEnemies[0]);
-  }, [gameState, enemies, playerPosition, grid, hasLineOfSight, handleRangedAttack]);
+  }, [gameState, enemies, playerPosition, grid, hasLineOfSight, handleRangedAttack, lang]);
 
   // --- CLICK INTERACTION ---
   const handleCellClick = (x: number, y: number) => {
@@ -520,15 +666,7 @@ export default function VaultRunner() {
   }, [playerPosition, gameState, enemies, grid, playerStats, fireAtNearest]);
 
   // Weapon meta calculations
-  const weaponName = playerStats.class === 'Fighter'
-    ? 'Throwing Axe'
-    : playerStats.class === 'Rogue'
-    ? 'Recurve Bow'
-    : playerStats.class === 'Rene'
-    ? 'Georgian Saber'
-    : playerStats.class === 'Sandro'
-    ? 'Khevsurian Sword'
-    : 'Magic Bolt';
+  const weaponName = getWeaponName(playerStats.class, lang);
 
   // --- RENDERING VIEWS ---
   if (gameState === 'START') {
@@ -536,17 +674,24 @@ export default function VaultRunner() {
       <div style={styles.container}>
         <div style={styles.backLinkAbsolute}>
           <a href="/" style={styles.navLink}>
-            ← Back to Home
+            {t.backToHome}
           </a>
         </div>
-        <h1 style={styles.title}>VAULT RUNNER</h1>
-        <p style={styles.subtitle}>Select your operative. Reach Level 5 to escape.</p>
+        <button
+          onClick={() => setLang(prev => prev === 'en' ? 'ka' : 'en')}
+          className="lang-toggle-btn"
+          style={styles.langBtn}
+        >
+          {lang === 'en' ? '🌐 English' : '🌐 ქართული'}
+        </button>
+        <h1 style={styles.title}>{t.title}</h1>
+        <p style={styles.subtitle}>{t.subtitle}</p>
         <div style={styles.selectionZone}>
           {(['Fighter', 'Mage', 'Rogue', 'Rene', 'Sandro'] as CharacterClass[]).map(cls => (
             <button key={cls} onClick={() => startGame(cls)} style={styles.btn}>
-              {cls === 'Rene' ? 'რენე (Rene)' : cls === 'Sandro' ? 'სანდრო (Sandro)' : cls} <br />
+              {getClassName(cls, lang)} <br />
               <span style={{ fontSize: '12px', opacity: 0.8 }}>
-                HP: {CLASS_PRESETS[cls].hp} | ATK: {CLASS_PRESETS[cls].atk}
+                {t.hp}: {CLASS_PRESETS[cls].hp} | {t.atk}: {CLASS_PRESETS[cls].atk}
               </span>
             </button>
           ))}
@@ -560,19 +705,26 @@ export default function VaultRunner() {
       <div style={styles.container}>
         <div style={styles.backLinkAbsolute}>
           <a href="/" style={styles.navLink}>
-            ← Back to Home
+            {t.backToHome}
           </a>
         </div>
-        <h1 style={{ ...styles.title, color: '#4caf50' }}>CONGRATULATIONS {playerClass.toUpperCase()}</h1>
-        <p style={styles.subtitle}>You successfully ran the Vault and survived with your life.</p>
+        <button
+          onClick={() => setLang(prev => prev === 'en' ? 'ka' : 'en')}
+          className="lang-toggle-btn"
+          style={styles.langBtn}
+        >
+          {lang === 'en' ? '🌐 English' : '🌐 ქართული'}
+        </button>
+        <h1 style={{ ...styles.title, color: '#4caf50' }}>{t.congrats} {getClassName(playerClass, lang).toUpperCase()}</h1>
+        <p style={styles.subtitle}>{t.victoryDesc}</p>
         <div style={{ fontSize: '1.2rem', marginBottom: '30px', textAlign: 'center', lineHeight: '1.6' }}>
-          <div style={{ color: '#ffd700' }}>Gold Pieces Collected: <strong>{goldCollected}</strong> (+{goldCollected * 10} pts)</div>
-          <div style={{ color: '#ff1744' }}>Monsters Defeated: <strong>{monstersKilled}</strong> (+{monstersKilled * 20} pts)</div>
+          <div style={{ color: '#ffd700' }}>{t.goldCollected}: <strong>{goldCollected}</strong> (+{goldCollected * 10} pts)</div>
+          <div style={{ color: '#ff1744' }}>{t.monstersKilled}: <strong>{monstersKilled}</strong> (+{monstersKilled * 20} pts)</div>
           <div style={{ fontSize: '1.8rem', fontWeight: 'bold', marginTop: '15px', borderTop: '1px solid #333', paddingTop: '10px' }}>
-            Final Score: <span style={{ color: '#ffd700' }}>{score}</span>
+            {t.finalScore}: <span style={{ color: '#ffd700' }}>{score}</span>
           </div>
         </div>
-        <button onClick={() => setGameState('START')} style={styles.btn}>Run Again</button>
+        <button onClick={() => setGameState('START')} style={styles.btn}>{t.runAgain}</button>
       </div>
     );
   }
@@ -582,22 +734,29 @@ export default function VaultRunner() {
       <div style={styles.container}>
         <div style={styles.backLinkAbsolute}>
           <a href="/" style={styles.navLink}>
-            ← Back to Home
+            {t.backToHome}
           </a>
         </div>
-        <h1 style={{ ...styles.title, color: '#f44336' }}>YOU DIED</h1>
+        <button
+          onClick={() => setLang(prev => prev === 'en' ? 'ka' : 'en')}
+          className="lang-toggle-btn"
+          style={styles.langBtn}
+        >
+          {lang === 'en' ? '🌐 English' : '🌐 ქართული'}
+        </button>
+        <h1 style={{ ...styles.title, color: '#f44336' }}>{t.youDied}</h1>
         <p style={{ ...styles.subtitle, fontStyle: 'italic' }}>
-          "Your death has been recorded as another victory for the Vault"
+          {t.deathDesc}
         </p>
         <div style={{ fontSize: '1.2rem', marginBottom: '30px', textAlign: 'center', lineHeight: '1.6' }}>
-          <div>Level Reached: <strong>{currentLevel}</strong></div>
-          <div style={{ color: '#ffd700' }}>Gold Pieces Collected: <strong>{goldCollected}</strong> (+{goldCollected * 10} pts)</div>
-          <div style={{ color: '#ff1744' }}>Monsters Defeated: <strong>{monstersKilled}</strong> (+{monstersKilled * 20} pts)</div>
+          <div>{t.levelReached}: <strong>{currentLevel}</strong></div>
+          <div style={{ color: '#ffd700' }}>{t.goldCollected}: <strong>{goldCollected}</strong> (+{goldCollected * 10} pts)</div>
+          <div style={{ color: '#ff1744' }}>{t.monstersKilled}: <strong>{monstersKilled}</strong> (+{monstersKilled * 20} pts)</div>
           <div style={{ fontSize: '1.8rem', fontWeight: 'bold', marginTop: '15px', borderTop: '1px solid #333', paddingTop: '10px' }}>
-            Final Score: <span style={{ color: '#ffd700' }}>{score}</span>
+            {t.finalScore}: <span style={{ color: '#ffd700' }}>{score}</span>
           </div>
         </div>
-        <button onClick={() => setGameState('START')} style={styles.btn}>Try Again</button>
+        <button onClick={() => setGameState('START')} style={styles.btn}>{t.tryAgain}</button>
       </div>
     );
   }
@@ -605,6 +764,11 @@ export default function VaultRunner() {
   return (
     <div className="game-view" style={styles.gameView}>
       <style dangerouslySetInnerHTML={{__html: `
+        .lang-toggle-btn:hover {
+          background-color: #222 !important;
+          border-color: #00e5ff !important;
+          color: #00e5ff !important;
+        }
         @media (max-width: 768px) {
           .game-view {
             flex-direction: column !important;
@@ -658,31 +822,49 @@ export default function VaultRunner() {
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <a href="/" style={styles.navLink}>← Home</a>
+          <a href="/" style={styles.navLink}>{t.backToHome}</a>
           <span style={{ fontSize: '13px', fontWeight: 'bold', color: '#00e5ff' }}>
-            {playerStats.class.toUpperCase()} <span style={{ color: '#aaa' }}>(Lvl {currentLevel}/{TOTAL_LEVELS})</span>
+            {getClassName(playerStats.class, lang).toUpperCase()} <span style={{ color: '#aaa' }}>({t.level} {currentLevel}/{TOTAL_LEVELS})</span>
           </span>
-          <button 
-            onClick={() => setGameState('START')} 
-            style={{
-              padding: '3px 8px',
-              fontSize: '11px',
-              backgroundColor: '#111',
-              color: '#ff1744',
-              border: '1px solid #ff1744',
-              borderRadius: '4px',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-            }}
-          >
-            Restart
-          </button>
+          <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
+            <button
+              onClick={() => setLang(prev => prev === 'en' ? 'ka' : 'en')}
+              className="lang-toggle-btn"
+              style={{
+                padding: '3px 6px',
+                fontSize: '11px',
+                backgroundColor: '#111',
+                color: '#fff',
+                border: '1px solid #444',
+                borderRadius: '4px',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+              }}
+            >
+              {lang === 'en' ? '🌐 EN' : '🌐 ქარ'}
+            </button>
+            <button 
+              onClick={() => setGameState('START')} 
+              style={{
+                padding: '3px 8px',
+                fontSize: '11px',
+                backgroundColor: '#111',
+                color: '#ff1744',
+                border: '1px solid #ff1744',
+                borderRadius: '4px',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+              }}
+            >
+              {t.restartGame}
+            </button>
+          </div>
         </div>
 
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#ccc', backgroundColor: '#111', padding: '4px 8px', borderRadius: '4px' }}>
-          <span>HP: <strong style={{ color: '#4caf50' }}>{playerStats.hp}/{playerStats.maxHp}</strong></span>
-          <span>Score: <strong style={{ color: '#ffd700' }}>{score}</strong> (Gold: {goldCollected})</span>
-          <span>Lvl: <strong>{currentLevel}</strong></span>
+          <span>{t.hp}: <strong style={{ color: '#4caf50' }}>{playerStats.hp}/{playerStats.maxHp}</strong></span>
+          <span>{t.score}: <strong style={{ color: '#ffd700' }}>{score}</strong> ({t.goldPieces}: {goldCollected})</span>
+          <span>{t.level}: <strong>{currentLevel}</strong></span>
         </div>
 
         {log.length > 0 && (
@@ -694,28 +876,44 @@ export default function VaultRunner() {
 
       {/* Desktop Sidebar (Hidden on mobile) */}
       <div className="desktop-only-sidebar" style={styles.sidebar}>
-        <div style={{ marginBottom: '15px' }}>
+        <div style={{ marginBottom: '15px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <a href="/" style={styles.navLink}>
-            ← Back to Home
+            {t.backToHome}
           </a>
+          <button
+            onClick={() => setLang(prev => prev === 'en' ? 'ka' : 'en')}
+            className="lang-toggle-btn"
+            style={{
+              padding: '4px 8px',
+              fontSize: '11px',
+              backgroundColor: '#111',
+              color: '#fff',
+              border: '1px solid #444',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontWeight: 'bold',
+            }}
+          >
+            {lang === 'en' ? '🌐 EN' : '🌐 ქარ'}
+          </button>
         </div>
-        <h2>{playerStats.class}</h2>
-        <p>Level: <strong>{currentLevel} / {TOTAL_LEVELS}</strong></p>
-        <p>HP: <strong>{playerStats.hp} / {playerStats.maxHp}</strong></p>
-        <p>ATK: <strong>{playerStats.atk}</strong> | DEF: <strong>{playerStats.def}</strong></p>
-        <p>Weapon: <strong>{weaponName}</strong> (Range: ∞)</p>
+        <h2>{getClassName(playerStats.class, lang)}</h2>
+        <p>{t.level}: <strong>{currentLevel} / {TOTAL_LEVELS}</strong></p>
+        <p>{t.hp}: <strong>{playerStats.hp} / {playerStats.maxHp}</strong></p>
+        <p>{t.atk}: <strong>{playerStats.atk}</strong> | {t.def}: <strong>{playerStats.def}</strong></p>
+        <p>{t.weapon}: <strong>{weaponName}</strong> ({t.range}: {t.infinity})</p>
         <p style={{ marginTop: '15px', paddingTop: '15px', borderTop: '1px solid #333' }}>
-          Score: <strong style={{ color: '#ffd700', fontSize: '1.25rem' }}>{score}</strong>
+          {t.score}: <strong style={{ color: '#ffd700', fontSize: '1.25rem' }}>{score}</strong>
         </p>
         <p style={{ fontSize: '13px', color: '#aaa', margin: 0 }}>
-          Gold Pieces: <strong style={{ color: '#ffd700' }}>{goldCollected}</strong> (+{goldCollected * 10} pts) <br />
-          Monsters Killed: <strong style={{ color: '#ff1744' }}>{monstersKilled}</strong> (+{monstersKilled * 20} pts)
+          {t.goldPieces}: <strong style={{ color: '#ffd700' }}>{goldCollected}</strong> (+{goldCollected * 10} pts) <br />
+          {t.monstersKilledSidebar}: <strong style={{ color: '#ff1744' }}>{monstersKilled}</strong> (+{monstersKilled * 20} pts)
         </p>
         <hr style={{ borderColor: '#333' }} />
         <div className="log-box-custom" style={styles.logBox}>
           {log.map((entry, idx) => <div key={idx} style={styles.logEntry}>{entry}</div>)}
         </div>
-        <p className="controls-hint" style={styles.controlsHint}>Use Arrow keys or WASD to step/melee. Click an enemy or press Space/F to shoot.</p>
+        <p className="controls-hint" style={styles.controlsHint}>{t.controlsHint}</p>
         
         <button 
           onClick={() => setGameState('START')} 
@@ -723,7 +921,7 @@ export default function VaultRunner() {
           onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#ff1744'; e.currentTarget.style.color = '#000'; }}
           onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#111'; e.currentTarget.style.color = '#fff'; }}
         >
-          Restart Game
+          {t.restartGameSidebar}
         </button>
       </div>
 
@@ -807,7 +1005,7 @@ export default function VaultRunner() {
       >
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
           <Joystick onMove={handleMove} />
-          <span style={{ fontSize: '10px', color: '#666', fontFamily: 'monospace' }}>MOVE STICK</span>
+          <span style={{ fontSize: '10px', color: '#666', fontFamily: 'monospace' }}>{t.moveStick}</span>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
@@ -833,9 +1031,9 @@ export default function VaultRunner() {
               fontFamily: 'monospace',
             }}
           >
-            FIRE
+            {t.fire}
           </button>
-          <span style={{ fontSize: '10px', color: '#666', fontFamily: 'monospace' }}>SHOOT NEAREST</span>
+          <span style={{ fontSize: '10px', color: '#666', fontFamily: 'monospace' }}>{t.shootNearest}</span>
         </div>
       </div>
     </div>
@@ -1011,5 +1209,21 @@ const styles = {
     textAlign: 'center' as const,
     fontWeight: 'bold' as const,
     transition: 'background-color 0.2s ease',
+  },
+  langBtn: {
+    position: 'absolute' as const,
+    top: '20px',
+    right: '20px',
+    padding: '8px 12px',
+    fontSize: '14px',
+    backgroundColor: '#111',
+    color: '#fff',
+    border: '1px solid #444',
+    cursor: 'pointer',
+    fontFamily: 'monospace',
+    borderRadius: '4px',
+    zIndex: 1000,
+    fontWeight: 'bold' as const,
+    transition: 'all 0.2s ease',
   }
 };
