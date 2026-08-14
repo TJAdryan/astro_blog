@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 const GRID_SIZE = 15;
 const TOTAL_LEVELS = 5;
 
-type CharacterClass = 'Mage' | 'Fighter' | 'Rogue' | 'Rene' | 'Sandro';
+type CharacterClass = 'Mage' | 'Fighter' | 'Rogue' | 'Rene' | 'Sandro' | 'Bebia';
 type GameState = 'START' | 'PLAYING' | 'VICTORY' | 'DEFEAT';
 type Language = 'en' | 'ka';
 
@@ -18,6 +18,7 @@ const TRANSLATIONS = {
     rogue: 'Rogue',
     rene: 'რენე (Rene)',
     sandro: 'სანდრო (Sandro)',
+    bebia: 'ბებია (Bebia)',
     congrats: 'CONGRATULATIONS',
     victoryDesc: 'You successfully ran the Vault and survived with your life.',
     goldCollected: 'Gold Pieces Collected',
@@ -60,6 +61,7 @@ const TRANSLATIONS = {
     recurveBow: 'Recurve Bow',
     georgianSaber: 'Georgian Saber',
     khevsurianSword: 'Khevsurian Sword',
+    khachapuri: 'Khachapuri',
     magicBolt: 'Magic Bolt',
     infinity: '∞'
   },
@@ -72,6 +74,7 @@ const TRANSLATIONS = {
     rogue: 'ყაჩაღი',
     rene: 'რენე (Rene)',
     sandro: 'სანდრო (Sandro)',
+    bebia: 'ბებია (Bebia)',
     congrats: 'გილოცავთ',
     victoryDesc: 'თქვენ წარმატებით გაიარეთ ვაულტი და გადარჩით.',
     goldCollected: 'შეგროვებული ოქრო',
@@ -114,6 +117,7 @@ const TRANSLATIONS = {
     recurveBow: 'მშვილდი',
     georgianSaber: 'ქართული ხმალი',
     khevsurianSword: 'ხევსურული ფარი-ხმალი',
+    khachapuri: 'ხაჭაპური',
     magicBolt: 'მაგიური ნაკადი',
     infinity: '∞'
   }
@@ -126,6 +130,7 @@ const getWeaponName = (charClass: CharacterClass, lang: Language) => {
     case 'Rogue': return t.recurveBow;
     case 'Rene': return t.georgianSaber;
     case 'Sandro': return t.khevsurianSword;
+    case 'Bebia': return t.khachapuri;
     default: return t.magicBolt;
   }
 };
@@ -138,6 +143,7 @@ const getClassName = (cls: CharacterClass, lang: Language) => {
     case 'Rogue': return t.rogue;
     case 'Rene': return t.rene;
     case 'Sandro': return t.sandro;
+    case 'Bebia': return t.bebia;
     default: return cls;
   }
 };
@@ -170,6 +176,7 @@ const CLASS_PRESETS: Record<CharacterClass, Omit<PlayerStats, 'class'>> = {
   Rogue:   { hp: 100, maxHp: 100, atk: 18, def: 3 },  // Balanced skirmisher
   Rene:    { hp: 90,  maxHp: 90,  atk: 22, def: 4 },  // Custom preset for Rene (Girl)
   Sandro:  { hp: 110, maxHp: 110, atk: 16, def: 4 },  // Custom preset for Sandro (Boy)
+  Bebia:   { hp: 100, maxHp: 100, atk: 999, def: 5 }, // Turns monsters to gold in one shot!
 };
 
 export default function VaultRunner() {
@@ -492,6 +499,13 @@ export default function VaultRunner() {
       updatedEnemies.splice(index, 1);
       setMonstersKilled(prev => prev + 1);
       setScore(prev => prev + 20);
+
+      // Bebia turns monsters to gold!
+      if (playerStats.class === 'Bebia') {
+        setGrid(prevGrid => prevGrid.map((row, y) =>
+          row.map((cell, x) => (x === target.x && y === target.y ? 'G' : cell))
+        ));
+      }
     } else {
       const enemyDamage = Math.max(1, target.atk - playerStats.def);
       const newHp = Math.max(0, playerStats.hp - enemyDamage);
@@ -584,7 +598,8 @@ export default function VaultRunner() {
       : playerStats.class === 'Sandro'
       ? 0.85
       : 1.0;
-    const playerDamage = Math.max(1, Math.floor(playerStats.atk * damageModifier) - Math.floor(Math.random() * 4));
+    const baseDamage = playerStats.class === 'Bebia' ? 999 : playerStats.atk;
+    const playerDamage = Math.max(1, Math.floor(baseDamage * damageModifier) - Math.floor(Math.random() * 4));
     target.hp -= playerDamage;
     const currentWeaponName = getWeaponName(playerStats.class, lang);
     let nextLog = [t.fireWeaponLog(currentWeaponName, playerDamage)];
@@ -594,6 +609,13 @@ export default function VaultRunner() {
       updatedEnemies.splice(enemyIndex, 1);
       setMonstersKilled(prev => prev + 1);
       setScore(prev => prev + 20);
+
+      // Bebia turns monsters to gold!
+      if (playerStats.class === 'Bebia') {
+        setGrid(prevGrid => prevGrid.map((row, y) =>
+          row.map((cell, x) => (x === target.x && y === target.y ? 'G' : cell))
+        ));
+      }
     }
 
     const path = getBresenhamPath(playerPosition.x, playerPosition.y, targetEnemy.x, targetEnemy.y);
@@ -605,6 +627,8 @@ export default function VaultRunner() {
       ? '#e040fb'
       : playerStats.class === 'Sandro'
       ? '#ffeb3b'
+      : playerStats.class === 'Bebia'
+      ? '#ffd700'
       : '#ff1744';
     setProjectilePath(path);
     setProjectileColor(color);
@@ -631,6 +655,51 @@ export default function VaultRunner() {
       return;
     }
 
+    if (playerStats.class === 'Bebia') {
+      // Bebia fires at ALL visible enemies simultaneously!
+      const updatedEnemies = [...enemies];
+      const nextLogEntries: string[] = [];
+      const combinedPaths: Position[] = [];
+      let currentGrid = grid;
+
+      validEnemies.forEach(enemy => {
+        const enemyIndex = updatedEnemies.findIndex(e => e.id === enemy.id);
+        if (enemyIndex === -1) return;
+
+        const target = updatedEnemies[enemyIndex];
+        const ex = target.x;
+        const ey = target.y;
+
+        // Turn to gold
+        currentGrid = currentGrid.map((row, y) =>
+          row.map((cell, x) => (x === ex && y === ey ? 'G' : cell))
+        );
+
+        nextLogEntries.push(t.fireWeaponLog(getWeaponName('Bebia', lang), 999));
+        nextLogEntries.push(t.enemyDefeatedLog);
+
+        updatedEnemies.splice(enemyIndex, 1);
+        setMonstersKilled(prev => prev + 1);
+        setScore(prev => prev + 20);
+
+        const path = getBresenhamPath(playerPosition.x, playerPosition.y, ex, ey);
+        combinedPaths.push(...path);
+      });
+
+      setGrid(currentGrid);
+      setProjectilePath(combinedPaths);
+      setProjectileColor('#ffd700'); // Gold color
+
+      setTimeout(() => {
+        setProjectilePath([]);
+        setProjectileColor('');
+      }, 200);
+
+      setLog(prev => [...nextLogEntries, ...prev.slice(0, 4)]);
+      processEnemyTurns(playerPosition.x, playerPosition.y, updatedEnemies);
+      return;
+    }
+
     validEnemies.sort((a, b) => {
       const distA = Math.sqrt((a.x - playerPosition.x) ** 2 + (a.y - playerPosition.y) ** 2);
       const distB = Math.sqrt((b.x - playerPosition.x) ** 2 + (b.y - playerPosition.y) ** 2);
@@ -638,7 +707,7 @@ export default function VaultRunner() {
     });
 
     handleRangedAttack(validEnemies[0]);
-  }, [gameState, enemies, playerPosition, grid, hasLineOfSight, handleRangedAttack, lang]);
+  }, [gameState, enemies, playerPosition, grid, hasLineOfSight, handleRangedAttack, lang, playerStats.class, getBresenhamPath, processEnemyTurns]);
 
   // --- CLICK INTERACTION ---
   const handleCellClick = (x: number, y: number) => {
@@ -687,7 +756,7 @@ export default function VaultRunner() {
         <h1 style={styles.title}>{t.title}</h1>
         <p style={styles.subtitle}>{t.subtitle}</p>
         <div style={styles.selectionZone}>
-          {(['Fighter', 'Mage', 'Rogue', 'Rene', 'Sandro'] as CharacterClass[]).map(cls => (
+          {(['Fighter', 'Mage', 'Rogue', 'Rene', 'Sandro', 'Bebia'] as CharacterClass[]).map(cls => (
             <button key={cls} onClick={() => startGame(cls)} style={styles.btn}>
               {getClassName(cls, lang)} <br />
               <span style={{ fontSize: '12px', opacity: 0.8 }}>
@@ -941,6 +1010,8 @@ export default function VaultRunner() {
                   glyph = 'რ';
                 } else if (playerClass === 'Sandro') {
                   glyph = 'ს';
+                } else if (playerClass === 'Bebia') {
+                  glyph = '🇬🇪';
                 } else {
                   glyph = '@';
                 }
