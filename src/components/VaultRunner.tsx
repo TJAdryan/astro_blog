@@ -630,13 +630,19 @@ export default function VaultRunner() {
       : playerStats.class === 'Bebia'
       ? '#ffd700'
       : '#ff1744';
-    setProjectilePath(path);
     setProjectileColor(color);
-
-    setTimeout(() => {
-      setProjectilePath([]);
-      setProjectileColor('');
-    }, 200);
+    let step = 0;
+    const animate = () => {
+      if (step < path.length) {
+        setProjectilePath([path[step]]);
+        step++;
+        setTimeout(animate, 50);
+      } else {
+        setProjectilePath([]);
+        setProjectileColor('');
+      }
+    };
+    animate();
 
     setLog(prev => [...nextLog, ...prev.slice(0, 4)]);
     processEnemyTurns(playerPosition.x, playerPosition.y, updatedEnemies);
@@ -659,7 +665,7 @@ export default function VaultRunner() {
       // Bebia fires at ALL visible enemies simultaneously!
       const updatedEnemies = [...enemies];
       const nextLogEntries: string[] = [];
-      const combinedPaths: Position[] = [];
+      const combinedPaths: Position[][] = [];
       let currentGrid = grid;
 
       validEnemies.forEach(enemy => {
@@ -683,17 +689,28 @@ export default function VaultRunner() {
         setScore(prev => prev + 20);
 
         const path = getBresenhamPath(playerPosition.x, playerPosition.y, ex, ey);
-        combinedPaths.push(...path);
+        combinedPaths.push(path);
       });
 
       setGrid(currentGrid);
-      setProjectilePath(combinedPaths);
       setProjectileColor('#ffd700'); // Gold color
 
-      setTimeout(() => {
-        setProjectilePath([]);
-        setProjectileColor('');
-      }, 200);
+      const maxSteps = Math.max(...combinedPaths.map(p => p.length), 0);
+      let step = 0;
+      const animate = () => {
+        if (step < maxSteps) {
+          const activeCells = combinedPaths
+            .map(p => p[step])
+            .filter(cell => cell !== undefined);
+          setProjectilePath(activeCells);
+          step++;
+          setTimeout(animate, 50);
+        } else {
+          setProjectilePath([]);
+          setProjectileColor('');
+        }
+      };
+      animate();
 
       setLog(prev => [...nextLogEntries, ...prev.slice(0, 4)]);
       processEnemyTurns(playerPosition.x, playerPosition.y, updatedEnemies);
@@ -1025,7 +1042,7 @@ export default function VaultRunner() {
                 } else if (cell === 'S') {
                   color = '#ffea00';
                 } else if (cell === 'G') {
-                  glyph = 'G';
+                  glyph = '*';
                   color = '#ffd700';
                 } else if (cell === '#') {
                   color = '#888';
@@ -1034,7 +1051,20 @@ export default function VaultRunner() {
                 }
 
                 if (inPath && !hasEnemy) {
-                  glyph = '*';
+                  const dx = x - playerPosition.x;
+                  const dy = y - playerPosition.y;
+                  let arrow = '→';
+                  if (dx === 0 && dy < 0) arrow = '↑';
+                  else if (dx === 0 && dy > 0) arrow = '↓';
+                  else if (dx < 0 && dy === 0) arrow = '←';
+                  else if (dx > 0 && dy === 0) arrow = '→';
+                  else if (Math.abs(dx) > 0 && Math.abs(dy) > 0) {
+                    if (dx > 0 && dy < 0) arrow = '↗';
+                    else if (dx < 0 && dy < 0) arrow = '↖';
+                    else if (dx > 0 && dy > 0) arrow = '↘';
+                    else if (dx < 0 && dy > 0) arrow = '↙';
+                  }
+                  glyph = arrow;
                   color = projectileColor;
                   bg = projectileColor + '22';
                 }
