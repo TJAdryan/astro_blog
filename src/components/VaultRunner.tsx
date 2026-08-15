@@ -235,7 +235,7 @@ export default function VaultRunner() {
   }, []);
 
   const playBebiaVoice = useCallback(() => {
-    const phrase = voiceToggleRef.current ? 'საქართველოსთვის!' : 'ხაჭაპური, ცეცხლი!';
+    const phrase = voiceToggleRef.current ? 'საქართველოსთვის' : 'ხაჭაპური ცეცხლი';
     voiceToggleRef.current = !voiceToggleRef.current;
     
     if ('speechSynthesis' in window) {
