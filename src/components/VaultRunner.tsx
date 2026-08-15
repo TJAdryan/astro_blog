@@ -207,6 +207,54 @@ export default function VaultRunner() {
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
   const [explosionPositions, setExplosionPositions] = useState<Position[]>([]);
 
+  const voiceToggleRef = React.useRef<boolean>(false);
+
+  const playLaserSound = useCallback(() => {
+    try {
+      const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContext) return;
+      const ctx = new AudioContext();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(800, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(150, ctx.currentTime + 0.15);
+      
+      gain.gain.setValueAtTime(0.15, ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+      
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      
+      osc.start();
+      osc.stop(ctx.currentTime + 0.15);
+    } catch (e) {
+      console.warn("Web Audio failed", e);
+    }
+  }, []);
+
+  const playBebiaVoice = useCallback(() => {
+    const phrase = voiceToggleRef.current ? 'საქართველოსთვის!' : 'ხაჭაპური, ცეცხლი!';
+    voiceToggleRef.current = !voiceToggleRef.current;
+    
+    if ('speechSynthesis' in window) {
+      try {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(phrase);
+        utterance.lang = 'ka-GE';
+        const voices = window.speechSynthesis.getVoices();
+        const geoVoice = voices.find(v => v.lang.startsWith('ka') || v.lang.startsWith('ka-GE'));
+        if (geoVoice) {
+          utterance.voice = geoVoice;
+        }
+        window.speechSynthesis.speak(utterance);
+      } catch (e) {
+        console.warn("Speech Synthesis failed", e);
+      }
+    }
+  }, []);
+
   // --- LINE OF SIGHT CHECK (Bresenham's Line Algorithm) ---
   const hasLineOfSight = useCallback((x1: number, y1: number, x2: number, y2: number, currentGrid: string[][]) => {
     const dx = Math.abs(x2 - x1);
@@ -583,8 +631,12 @@ export default function VaultRunner() {
     if (path.length === 0) return;
 
     setIsAnimating(true);
+    playLaserSound();
 
     const isBebia = playerStats.class === 'Bebia';
+    if (isBebia) {
+      playBebiaVoice();
+    }
     const speed = isBebia ? 150 : 60; // Slower speed for Bebia's kachapuri
 
     const color = playerStats.class === 'Mage'
@@ -658,7 +710,7 @@ export default function VaultRunner() {
       }
     };
     animate();
-  }, [gameState, playerStats.class, playerStats.atk, playerPosition, grid, enemies, hasLineOfSight, getBresenhamPath, processEnemyTurns, lang, isAnimating]);
+  }, [gameState, playerStats.class, playerStats.atk, playerPosition, grid, enemies, hasLineOfSight, getBresenhamPath, processEnemyTurns, lang, isAnimating, playLaserSound, playBebiaVoice]);
 
   // --- AUTO TARGET NEAREST ---
   const fireAtNearest = useCallback(() => {
@@ -675,6 +727,8 @@ export default function VaultRunner() {
 
     if (playerStats.class === 'Bebia') {
       setIsAnimating(true);
+      playLaserSound();
+      playBebiaVoice();
 
       const paths = validEnemies.map(enemy => 
         getBresenhamPath(playerPosition.x, playerPosition.y, enemy.x, enemy.y)
@@ -749,7 +803,7 @@ export default function VaultRunner() {
     });
 
     handleRangedAttack(validEnemies[0]);
-  }, [gameState, enemies, playerPosition, grid, hasLineOfSight, handleRangedAttack, lang, playerStats.class, getBresenhamPath, processEnemyTurns, isAnimating]);
+  }, [gameState, enemies, playerPosition, grid, hasLineOfSight, handleRangedAttack, lang, playerStats.class, getBresenhamPath, processEnemyTurns, isAnimating, playLaserSound, playBebiaVoice]);
 
   // --- CLICK INTERACTION ---
   const handleCellClick = (x: number, y: number) => {
