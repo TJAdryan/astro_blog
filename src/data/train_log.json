@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-08-15T13:12:50.011Z",
+    "status": "Service Change",
+    "details": [
+      "<Q> trains are making local stops between 57 St - 7 Av and Canal St.",
+      "Southbound: Coney Island - Stillwell Av-bound trains are skipping Avenue U, and Neck Rd."
+    ]
+  },
+  {
     "date": "2026-08-14T13:28:28.506Z",
     "status": "Delays",
     "details": [
@@ -200,13 +208,6 @@
     "details": [
       "Northbound: 96 St-bound trains are having longer wait times between 72 St and 96 St (up to 14 mins, normally every 11 mins).",
       "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times at Sheepshead Bay (up to 14 mins, normally every 10 mins)."
-    ]
-  },
-  {
-    "date": "2026-07-14T14:43:32.883Z",
-    "status": "Delays",
-    "details": [
-      "Southbound: Coney Island - Stillwell Av-bound trains are taking 6 mins longer to travel between Canal St and Church Av."
     ]
   }
 ]
