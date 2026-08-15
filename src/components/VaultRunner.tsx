@@ -236,6 +236,7 @@ export default function VaultRunner() {
 
   const playBebiaVoice = useCallback(() => {
     const phrase = voiceToggleRef.current ? 'საქართველოსთვის' : 'ხაჭაპური ცეცხლი';
+    const fallbackPhrase = voiceToggleRef.current ? 'Sakartvelostvis' : 'Khachapuri tsetskhli';
     voiceToggleRef.current = !voiceToggleRef.current;
     
     // Add to game log so it is visual
@@ -245,32 +246,23 @@ export default function VaultRunner() {
     if ('speechSynthesis' in window) {
       try {
         window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(phrase);
-        utterance.lang = 'ka-GE';
         const voices = window.speechSynthesis.getVoices();
         const geoVoice = voices.find(v => v.lang.startsWith('ka') || v.lang.startsWith('ka-GE'));
+        
         if (geoVoice) {
+          const utterance = new SpeechSynthesisUtterance(phrase);
+          utterance.lang = 'ka-GE';
           utterance.voice = geoVoice;
+          window.speechSynthesis.speak(utterance);
+        } else {
+          // Fallback to phonetic English transliteration using default voice if no Georgian voice package is found on OS
+          const utterance = new SpeechSynthesisUtterance(fallbackPhrase);
+          utterance.lang = 'en-US';
+          window.speechSynthesis.speak(utterance);
         }
-        window.speechSynthesis.speak(utterance);
       } catch (e) {
         console.warn("Speech Synthesis failed", e);
       }
-    }
-  }, []);
-
-  // Voice pack availability debugger
-  useEffect(() => {
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      const logVoices = () => {
-        const voices = window.speechSynthesis.getVoices();
-        console.log("Vault Runner TTS - Available voices count:", voices.length);
-        voices.forEach((v, i) => {
-          console.log(`TTS Voice ${i}: ${v.name} (${v.lang})`);
-        });
-      };
-      logVoices();
-      window.speechSynthesis.onvoiceschanged = logVoices;
     }
   }, []);
 
