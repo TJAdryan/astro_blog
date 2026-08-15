@@ -238,6 +238,10 @@ export default function VaultRunner() {
     const phrase = voiceToggleRef.current ? 'საქართველოსთვის' : 'ხაჭაპური ცეცხლი';
     voiceToggleRef.current = !voiceToggleRef.current;
     
+    // Add to game log so it is visual
+    const displayPhrase = phrase === 'საქართველოსთვის' ? 'საქართველოსთვის!' : 'ხაჭაპური, ცეცხლი!';
+    setLog(prev => [`Bebia: "${displayPhrase}"`, ...prev.slice(0, 4)]);
+
     if ('speechSynthesis' in window) {
       try {
         window.speechSynthesis.cancel();
@@ -252,6 +256,21 @@ export default function VaultRunner() {
       } catch (e) {
         console.warn("Speech Synthesis failed", e);
       }
+    }
+  }, []);
+
+  // Voice pack availability debugger
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      const logVoices = () => {
+        const voices = window.speechSynthesis.getVoices();
+        console.log("Vault Runner TTS - Available voices count:", voices.length);
+        voices.forEach((v, i) => {
+          console.log(`TTS Voice ${i}: ${v.name} (${v.lang})`);
+        });
+      };
+      logVoices();
+      window.speechSynthesis.onvoiceschanged = logVoices;
     }
   }, []);
 
@@ -860,6 +879,16 @@ export default function VaultRunner() {
               </span>
             </button>
           ))}
+        </div>
+        <div style={{ marginTop: '20px' }}>
+          <button 
+            onClick={playBebiaVoice} 
+            style={{ ...styles.btn, borderColor: '#ffd700', color: '#ffd700' }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#ffd700'; e.currentTarget.style.color = '#000'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#111'; e.currentTarget.style.color = '#ffd700'; }}
+          >
+            📢 Test Bebia Voice (Georgian)
+          </button>
         </div>
       </div>
     );
