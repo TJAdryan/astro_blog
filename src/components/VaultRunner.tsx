@@ -1051,20 +1051,24 @@ export default function VaultRunner() {
                 }
 
                 if (inPath && !hasEnemy) {
-                  const dx = x - playerPosition.x;
-                  const dy = y - playerPosition.y;
-                  let arrow = '→';
-                  if (dx === 0 && dy < 0) arrow = '↑';
-                  else if (dx === 0 && dy > 0) arrow = '↓';
-                  else if (dx < 0 && dy === 0) arrow = '←';
-                  else if (dx > 0 && dy === 0) arrow = '→';
-                  else if (Math.abs(dx) > 0 && Math.abs(dy) > 0) {
-                    if (dx > 0 && dy < 0) arrow = '↗';
-                    else if (dx < 0 && dy < 0) arrow = '↖';
-                    else if (dx > 0 && dy > 0) arrow = '↘';
-                    else if (dx < 0 && dy > 0) arrow = '↙';
+                  if (playerClass === 'Bebia') {
+                    glyph = '🫓';
+                  } else {
+                    const dx = x - playerPosition.x;
+                    const dy = y - playerPosition.y;
+                    let arrow = '→';
+                    if (dx === 0 && dy < 0) arrow = '↑';
+                    else if (dx === 0 && dy > 0) arrow = '↓';
+                    else if (dx < 0 && dy === 0) arrow = '←';
+                    else if (dx > 0 && dy === 0) arrow = '→';
+                    else if (Math.abs(dx) > 0 && Math.abs(dy) > 0) {
+                      if (dx > 0 && dy < 0) arrow = '↗';
+                      else if (dx < 0 && dy < 0) arrow = '↖';
+                      else if (dx > 0 && dy > 0) arrow = '↘';
+                      else if (dx < 0 && dy > 0) arrow = '↙';
+                    }
+                    glyph = arrow;
                   }
-                  glyph = arrow;
                   color = projectileColor;
                   bg = projectileColor + '22';
                 }
