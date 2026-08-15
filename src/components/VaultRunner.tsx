@@ -208,6 +208,15 @@ export default function VaultRunner() {
   const [explosionPositions, setExplosionPositions] = useState<Position[]>([]);
 
   const voiceToggleRef = React.useRef<boolean>(false);
+  const audioGeorgiaRef = React.useRef<HTMLAudioElement | null>(null);
+  const audioKhachapuriRef = React.useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      audioGeorgiaRef.current = new Audio('/audio/bebia_georgia.mp3');
+      audioKhachapuriRef.current = new Audio('/audio/bebia_khachapuri.mp3');
+    }
+  }, []);
 
   const playLaserSound = useCallback(() => {
     try {
@@ -235,34 +244,21 @@ export default function VaultRunner() {
   }, []);
 
   const playBebiaVoice = useCallback(() => {
-    const phrase = voiceToggleRef.current ? 'საქართველოსთვის' : 'ხაჭაპური ცეცხლი';
-    const fallbackPhrase = voiceToggleRef.current ? 'Sakartvelostvis' : 'Khachapuri tsetskhli';
+    const isGeorgia = voiceToggleRef.current;
     voiceToggleRef.current = !voiceToggleRef.current;
     
     // Add to game log so it is visual
-    const displayPhrase = phrase === 'საქართველოსთვის' ? 'საქართველოსთვის!' : 'ხაჭაპური, ცეცხლი!';
+    const displayPhrase = isGeorgia ? 'საქართველოსთვის!' : 'ხაჭაპური, ცეცხლი!';
     setLog(prev => [`Bebia: "${displayPhrase}"`, ...prev.slice(0, 4)]);
 
-    if ('speechSynthesis' in window) {
-      try {
-        window.speechSynthesis.cancel();
-        const voices = window.speechSynthesis.getVoices();
-        const geoVoice = voices.find(v => v.lang.startsWith('ka') || v.lang.startsWith('ka-GE'));
-        
-        if (geoVoice) {
-          const utterance = new SpeechSynthesisUtterance(phrase);
-          utterance.lang = 'ka-GE';
-          utterance.voice = geoVoice;
-          window.speechSynthesis.speak(utterance);
-        } else {
-          // Fallback to phonetic English transliteration using default voice if no Georgian voice package is found on OS
-          const utterance = new SpeechSynthesisUtterance(fallbackPhrase);
-          utterance.lang = 'en-US';
-          window.speechSynthesis.speak(utterance);
-        }
-      } catch (e) {
-        console.warn("Speech Synthesis failed", e);
+    try {
+      const audio = isGeorgia ? audioGeorgiaRef.current : audioKhachapuriRef.current;
+      if (audio) {
+        audio.currentTime = 0;
+        audio.play().catch(e => console.warn("Failed to play audio file:", e));
       }
+    } catch (e) {
+      console.warn("Audio playback failed", e);
     }
   }, []);
 
