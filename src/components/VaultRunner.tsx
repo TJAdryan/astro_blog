@@ -204,6 +204,8 @@ export default function VaultRunner() {
   // --- PROJECTILE VISUALS STATE ---
   const [projectilePath, setProjectilePath] = useState<Position[]>([]);
   const [projectileColor, setProjectileColor] = useState<string>('');
+  const [isAnimating, setIsAnimating] = useState<boolean>(false);
+  const [explosionPositions, setExplosionPositions] = useState<Position[]>([]);
 
   // --- LINE OF SIGHT CHECK (Bresenham's Line Algorithm) ---
   const hasLineOfSight = useCallback((x1: number, y1: number, x2: number, y2: number, currentGrid: string[][]) => {
@@ -523,8 +525,9 @@ export default function VaultRunner() {
   };
 
   // --- TURN ENGINE & MOVEMENT ---
+  const [isAnimatingStateDummy, setIsAnimatingStateDummy] = useState<boolean>(false); // dummy to help avoid replace mismatches
   const handleMove = (dx: number, dy: number) => {
-    if (gameState !== 'PLAYING') return;
+    if (gameState !== 'PLAYING' || isAnimating) return;
 
     const newX = playerPosition.x + dx;
     const newY = playerPosition.y + dy;
@@ -566,18 +569,8 @@ export default function VaultRunner() {
 
   // --- RANGED COMBAT RESOLUTION ---
   const handleRangedAttack = useCallback((targetEnemy: Enemy) => {
-    if (gameState !== 'PLAYING') return;
+    if (gameState !== 'PLAYING' || isAnimating) return;
 
-    const weaponName = playerStats.class === 'Fighter'
-      ? 'Throwing Axe'
-      : playerStats.class === 'Rogue'
-      ? 'Recurve Bow'
-      : playerStats.class === 'Rene'
-      ? 'Georgian Saber'
-      : playerStats.class === 'Sandro'
-      ? 'Khevsurian Sword'
-      : 'Magic Bolt';
-    
     if (!hasLineOfSight(playerPosition.x, playerPosition.y, targetEnemy.x, targetEnemy.y, grid)) {
       setLog(prev => [t.losBlockedLog, ...prev.slice(0, 4)]);
       return;
@@ -586,39 +579,14 @@ export default function VaultRunner() {
     const enemyIndex = enemies.findIndex(e => e.id === targetEnemy.id);
     if (enemyIndex === -1) return;
 
-    const updatedEnemies = [...enemies];
-    const target = updatedEnemies[enemyIndex];
-
-    const damageModifier = playerStats.class === 'Fighter'
-      ? 0.8
-      : playerStats.class === 'Rogue'
-      ? 0.9
-      : playerStats.class === 'Rene'
-      ? 1.0
-      : playerStats.class === 'Sandro'
-      ? 0.85
-      : 1.0;
-    const baseDamage = playerStats.class === 'Bebia' ? 999 : playerStats.atk;
-    const playerDamage = Math.max(1, Math.floor(baseDamage * damageModifier) - Math.floor(Math.random() * 4));
-    target.hp -= playerDamage;
-    const currentWeaponName = getWeaponName(playerStats.class, lang);
-    let nextLog = [t.fireWeaponLog(currentWeaponName, playerDamage)];
-
-    if (target.hp <= 0) {
-      nextLog.unshift(t.enemyDefeatedLog);
-      updatedEnemies.splice(enemyIndex, 1);
-      setMonstersKilled(prev => prev + 1);
-      setScore(prev => prev + 20);
-
-      // Bebia turns monsters to gold!
-      if (playerStats.class === 'Bebia') {
-        setGrid(prevGrid => prevGrid.map((row, y) =>
-          row.map((cell, x) => (x === target.x && y === target.y ? 'G' : cell))
-        ));
-      }
-    }
-
     const path = getBresenhamPath(playerPosition.x, playerPosition.y, targetEnemy.x, targetEnemy.y);
+    if (path.length === 0) return;
+
+    setIsAnimating(true);
+
+    const isBebia = playerStats.class === 'Bebia';
+    const speed = isBebia ? 150 : 60; // Slower speed for Bebia's kachapuri
+
     const color = playerStats.class === 'Mage'
       ? '#00e5ff'
       : playerStats.class === 'Rogue'
@@ -630,27 +598,71 @@ export default function VaultRunner() {
       : playerStats.class === 'Bebia'
       ? '#ffd700'
       : '#ff1744';
+
     setProjectileColor(color);
     let step = 0;
     const animate = () => {
       if (step < path.length) {
         setProjectilePath([path[step]]);
         step++;
-        setTimeout(animate, 50);
+        setTimeout(animate, speed);
       } else {
         setProjectilePath([]);
-        setProjectileColor('');
+        setExplosionPositions([{ x: targetEnemy.x, y: targetEnemy.y }]);
+
+        setTimeout(() => {
+          setExplosionPositions([]);
+
+          const latestEnemiesList = [...enemies];
+          const currEnemyIndex = latestEnemiesList.findIndex(e => e.id === targetEnemy.id);
+          if (currEnemyIndex !== -1) {
+            const target = latestEnemiesList[currEnemyIndex];
+
+            const damageModifier = playerStats.class === 'Fighter'
+              ? 0.8
+              : playerStats.class === 'Rogue'
+              ? 0.9
+              : playerStats.class === 'Rene'
+              ? 1.0
+              : playerStats.class === 'Sandro'
+              ? 0.85
+              : 1.0;
+            const baseDamage = playerStats.class === 'Bebia' ? 999 : playerStats.atk;
+            const playerDamage = Math.max(1, Math.floor(baseDamage * damageModifier) - Math.floor(Math.random() * 4));
+            target.hp -= playerDamage;
+            const currentWeaponName = getWeaponName(playerStats.class, lang);
+            let nextLog = [t.fireWeaponLog(currentWeaponName, playerDamage)];
+
+            if (target.hp <= 0) {
+              nextLog.unshift(t.enemyDefeatedLog);
+              latestEnemiesList.splice(currEnemyIndex, 1);
+              setMonstersKilled(prev => prev + 1);
+              setScore(prev => prev + 20);
+
+              // Bebia turns monsters to gold!
+              if (playerStats.class === 'Bebia') {
+                setGrid(prevGrid => prevGrid.map((row, y) =>
+                  row.map((cell, x) => (x === target.x && y === target.y ? 'G' : cell))
+                ));
+              }
+            }
+
+            setEnemies(latestEnemiesList);
+            setLog(prev => [...nextLog, ...prev.slice(0, 4)]);
+            processEnemyTurns(playerPosition.x, playerPosition.y, latestEnemiesList);
+          }
+
+          setIsAnimating(false);
+          setProjectileColor('');
+        }, 150);
       }
     };
     animate();
-
-    setLog(prev => [...nextLog, ...prev.slice(0, 4)]);
-    processEnemyTurns(playerPosition.x, playerPosition.y, updatedEnemies);
-  }, [gameState, playerStats.class, playerStats.atk, playerPosition, grid, enemies, hasLineOfSight, getBresenhamPath, processEnemyTurns, lang]);
+  }, [gameState, playerStats.class, playerStats.atk, playerPosition, grid, enemies, hasLineOfSight, getBresenhamPath, processEnemyTurns, lang, isAnimating]);
 
   // --- AUTO TARGET NEAREST ---
   const fireAtNearest = useCallback(() => {
-    if (gameState !== 'PLAYING') return;
+    if (gameState !== 'PLAYING' || isAnimating) return;
 
     const validEnemies = enemies.filter(enemy => {
       return hasLineOfSight(playerPosition.x, playerPosition.y, enemy.x, enemy.y, grid);
@@ -662,58 +674,71 @@ export default function VaultRunner() {
     }
 
     if (playerStats.class === 'Bebia') {
-      // Bebia fires at ALL visible enemies simultaneously!
-      const updatedEnemies = [...enemies];
-      const nextLogEntries: string[] = [];
-      const combinedPaths: Position[][] = [];
-      let currentGrid = grid;
+      setIsAnimating(true);
 
-      validEnemies.forEach(enemy => {
-        const enemyIndex = updatedEnemies.findIndex(e => e.id === enemy.id);
-        if (enemyIndex === -1) return;
+      const paths = validEnemies.map(enemy => 
+        getBresenhamPath(playerPosition.x, playerPosition.y, enemy.x, enemy.y)
+      );
+      
+      const maxSteps = Math.max(...paths.map(p => p.length), 0);
+      setProjectileColor('#ffd700');
 
-        const target = updatedEnemies[enemyIndex];
-        const ex = target.x;
-        const ey = target.y;
-
-        // Turn to gold
-        currentGrid = currentGrid.map((row, y) =>
-          row.map((cell, x) => (x === ex && y === ey ? 'G' : cell))
-        );
-
-        nextLogEntries.push(t.fireWeaponLog(getWeaponName('Bebia', lang), 999));
-        nextLogEntries.push(t.enemyDefeatedLog);
-
-        updatedEnemies.splice(enemyIndex, 1);
-        setMonstersKilled(prev => prev + 1);
-        setScore(prev => prev + 20);
-
-        const path = getBresenhamPath(playerPosition.x, playerPosition.y, ex, ey);
-        combinedPaths.push(path);
-      });
-
-      setGrid(currentGrid);
-      setProjectileColor('#ffd700'); // Gold color
-
-      const maxSteps = Math.max(...combinedPaths.map(p => p.length), 0);
       let step = 0;
+      const speed = 150; // Slower speed for Bebia's kachapuri
+
       const animate = () => {
         if (step < maxSteps) {
-          const activeCells = combinedPaths
+          const activeCells = paths
             .map(p => p[step])
             .filter(cell => cell !== undefined);
           setProjectilePath(activeCells);
           step++;
-          setTimeout(animate, 50);
+          setTimeout(animate, speed);
         } else {
           setProjectilePath([]);
-          setProjectileColor('');
+          
+          const targets = validEnemies.map(enemy => ({ x: enemy.x, y: enemy.y }));
+          setExplosionPositions(targets);
+
+          setTimeout(() => {
+            setExplosionPositions([]);
+
+            const updatedEnemies = [...enemies];
+            const nextLogEntries: string[] = [];
+            let currentGrid = grid;
+
+            validEnemies.forEach(enemy => {
+              const enemyIndex = updatedEnemies.findIndex(e => e.id === enemy.id);
+              if (enemyIndex === -1) return;
+
+              const target = updatedEnemies[enemyIndex];
+              const ex = target.x;
+              const ey = target.y;
+
+              // Turn to gold
+              currentGrid = currentGrid.map((row, y) =>
+                row.map((cell, x) => (x === ex && y === ey ? 'G' : cell))
+              );
+
+              nextLogEntries.push(t.fireWeaponLog(getWeaponName('Bebia', lang), 999));
+              nextLogEntries.push(t.enemyDefeatedLog);
+
+              updatedEnemies.splice(enemyIndex, 1);
+              setMonstersKilled(prev => prev + 1);
+              setScore(prev => prev + 20);
+            });
+
+            setGrid(currentGrid);
+            setEnemies(updatedEnemies);
+            setLog(prev => [...nextLogEntries, ...prev.slice(0, 4)]);
+            processEnemyTurns(playerPosition.x, playerPosition.y, updatedEnemies);
+
+            setIsAnimating(false);
+            setProjectileColor('');
+          }, 150);
         }
       };
       animate();
-
-      setLog(prev => [...nextLogEntries, ...prev.slice(0, 4)]);
-      processEnemyTurns(playerPosition.x, playerPosition.y, updatedEnemies);
       return;
     }
 
@@ -724,11 +749,11 @@ export default function VaultRunner() {
     });
 
     handleRangedAttack(validEnemies[0]);
-  }, [gameState, enemies, playerPosition, grid, hasLineOfSight, handleRangedAttack, lang, playerStats.class, getBresenhamPath, processEnemyTurns]);
+  }, [gameState, enemies, playerPosition, grid, hasLineOfSight, handleRangedAttack, lang, playerStats.class, getBresenhamPath, processEnemyTurns, isAnimating]);
 
   // --- CLICK INTERACTION ---
   const handleCellClick = (x: number, y: number) => {
-    if (gameState !== 'PLAYING') return;
+    if (gameState !== 'PLAYING' || isAnimating) return;
     const clickedEnemy = enemies.find(e => e.x === x && e.y === y);
     if (clickedEnemy) {
       handleRangedAttack(clickedEnemy);
@@ -738,7 +763,7 @@ export default function VaultRunner() {
   // Keyboard navigation mappings
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (gameState !== 'PLAYING') return;
+      if (gameState !== 'PLAYING' || isAnimating) return;
       switch (e.key) {
         case 'ArrowUp':    case 'w': handleMove(0, -1); break;
         case 'ArrowDown':  case 's': handleMove(0, 1);  break;
@@ -749,7 +774,7 @@ export default function VaultRunner() {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [playerPosition, gameState, enemies, grid, playerStats, fireAtNearest]);
+  }, [playerPosition, gameState, enemies, grid, playerStats, fireAtNearest, isAnimating]);
 
   // Weapon meta calculations
   const weaponName = getWeaponName(playerStats.class, lang);
@@ -1072,6 +1097,12 @@ export default function VaultRunner() {
                   color = projectileColor;
                   bg = projectileColor + '22';
                 }
+              }
+
+              const isExplosion = explosionPositions.some(p => p.x === x && p.y === y);
+              if (isExplosion) {
+                glyph = '💥';
+                color = '#ff1744';
               }
 
               return (
