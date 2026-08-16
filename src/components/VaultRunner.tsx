@@ -148,6 +148,18 @@ const getClassName = (cls: CharacterClass, lang: Language) => {
   }
 };
 
+const getClassEmoji = (cls: CharacterClass) => {
+  switch (cls) {
+    case 'Fighter': return '🪓';
+    case 'Mage': return '🔮';
+    case 'Rogue': return '🏹';
+    case 'Rene': return '🦊';
+    case 'Sandro': return '🛡️';
+    case 'Bebia': return '🇬🇪';
+    default: return '';
+  }
+};
+
 interface Position {
   x: number;
   y: number;
@@ -861,7 +873,7 @@ export default function VaultRunner() {
         <div style={styles.selectionZone}>
           {(['Fighter', 'Mage', 'Rogue', 'Rene', 'Sandro', 'Bebia'] as CharacterClass[]).map(cls => (
             <button key={cls} onClick={() => startGame(cls)} style={styles.btn}>
-              {getClassName(cls, lang)} <br />
+              {getClassEmoji(cls)} {getClassName(cls, lang)} <br />
               <span style={{ fontSize: '12px', opacity: 0.8 }}>
                 {t.hp}: {CLASS_PRESETS[cls].hp} | {t.atk}: {CLASS_PRESETS[cls].atk}
               </span>
@@ -1120,9 +1132,9 @@ export default function VaultRunner() {
 
               if (x === playerPosition.x && y === playerPosition.y) {
                 if (playerClass === 'Rene') {
-                  glyph = 'რ';
+                  glyph = isAnimating ? '🗡️' : '🦊';
                 } else if (playerClass === 'Sandro') {
-                  glyph = 'ს';
+                  glyph = isAnimating ? '🪓' : '🛡️';
                 } else if (playerClass === 'Bebia') {
                   glyph = '🇬🇪';
                 } else {
