@@ -40,10 +40,12 @@ const TRANSLATIONS = {
     monstersKilledSidebar: 'Monsters Killed',
     restartGame: 'Restart',
     restartGameSidebar: 'Restart Game',
-    controlsHint: 'Use Arrow keys or WASD to step/melee. Click an enemy or press Space/F to shoot.',
+    controlsHint: 'Use Arrow keys or WASD to step/melee. Click an enemy or press Space/F to shoot. Press B/G for Bebia Ultimate.',
     moveStick: 'MOVE STICK',
     fire: 'FIRE',
     shootNearest: 'SHOOT NEAREST',
+    bebiaUltimate: '🇬🇪 Bebia Ultimate',
+    bebiaActive: '🔥 Georgia Fire!',
     // Logs
     welcomeLog: 'Welcome to the Vault. Find the stairs (S) to descend.',
     enterLog: 'You enter the cold depths of the Vault.',
@@ -96,10 +98,12 @@ const TRANSLATIONS = {
     monstersKilledSidebar: 'მოკლული მონსტრები',
     restartGame: 'გადატვირთვა',
     restartGameSidebar: 'თამაშის გადატვირთვა',
-    controlsHint: 'გამოიყენეთ ისრები ან WASD გადასაადგილებლად. ესროლეთ მონსტრებს Space/F ღილაკით ან დაწკაპუნებით.',
+    controlsHint: 'გამოიყენეთ ისრები ან WASD გადასაადგილებლად. ესროლეთ მონსტრებს Space/F ღილაკით. ბებიას ძალისთვის დააჭირეთ B/G-ს.',
     moveStick: 'მართვის ჯოხი',
     fire: 'სროლა',
     shootNearest: 'უახლოესის სროლა',
+    bebiaUltimate: '🇬🇪 ბებიას ძალა',
+    bebiaActive: '🔥 ქართული ცეცხლი!',
     // Logs
     welcomeLog: 'კეთილი იყოს თქვენი მობრძანება ვაულტში. ჩასასვლელად იპოვეთ კიბე (S).',
     enterLog: 'თქვენ შედიხართ ვაულტის ცივ სიღრმეებში.',
@@ -219,6 +223,9 @@ export default function VaultRunner() {
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
   const [explosionPositions, setExplosionPositions] = useState<Position[]>([]);
 
+  const [isBebiaActive, setIsBebiaActive] = useState<boolean>(false);
+  const audioBebiaUltimateRef = React.useRef<HTMLAudioElement | null>(null);
+
   const voiceToggleRef = React.useRef<boolean>(false);
   const audioGeorgiaRef = React.useRef<HTMLAudioElement | null>(null);
   const audioKhachapuriRef = React.useRef<HTMLAudioElement | null>(null);
@@ -227,6 +234,7 @@ export default function VaultRunner() {
     if (typeof window !== 'undefined') {
       audioGeorgiaRef.current = new Audio('/audio/bebia_georgia.mp3');
       audioKhachapuriRef.current = new Audio('/audio/bebia_khachapuri.mp3');
+      audioBebiaUltimateRef.current = new Audio('/audio/khachapuri_fire.mp3');
     }
   }, []);
 
@@ -273,6 +281,47 @@ export default function VaultRunner() {
       console.warn("Audio playback failed", e);
     }
   }, []);
+
+  const triggerBebiaUltimate = useCallback(() => {
+    if (gameState !== 'PLAYING' || isAnimating || isBebiaActive) return;
+    if (enemies.length === 0) {
+      setLog(prev => [lang === 'en' ? "No enemies to destroy!" : "დასამარცხებელი მტერი არ არის!", ...prev.slice(0, 4)]);
+      return;
+    }
+
+    setIsBebiaActive(true);
+    setLog(prev => [lang === 'en' ? "🔥 Bebia Ultimate Activated! 🇬🇪" : "🔥 ბებიას ძალა გააქტიურებულია! 🇬🇪", ...prev.slice(0, 4)]);
+
+    try {
+      if (audioBebiaUltimateRef.current) {
+        audioBebiaUltimateRef.current.currentTime = 0;
+        audioBebiaUltimateRef.current.play().catch(e => console.warn("Failed to play Bebia ultimate sound:", e));
+      }
+    } catch (e) {
+      console.warn("Audio playback failed", e);
+    }
+
+    const enemyPositions = enemies.map(e => ({ x: e.x, y: e.y }));
+    const count = enemies.length;
+
+    setEnemies([]);
+    setMonstersKilled(prev => prev + count);
+    setScore(prev => prev + count * 20);
+
+    setTimeout(() => {
+      setIsBebiaActive(false);
+      setGrid(prevGrid => {
+        const nextGrid = prevGrid.map(row => [...row]);
+        enemyPositions.forEach(pos => {
+          if (nextGrid[pos.y] && nextGrid[pos.y][pos.x] !== '#') {
+            nextGrid[pos.y][pos.x] = 'G';
+          }
+        });
+        return nextGrid;
+      });
+      setLog(prev => [lang === 'en' ? "✨ Golden dust settles. Gold spawned where enemies fell!" : "✨ ოქრო გაჩნდა იქ, სადაც მტრები დაეცნენ!", ...prev.slice(0, 4)]);
+    }, 6000);
+  }, [gameState, isAnimating, isBebiaActive, enemies, lang]);
 
   // --- LINE OF SIGHT CHECK (Bresenham's Line Algorithm) ---
   const hasLineOfSight = useCallback((x1: number, y1: number, x2: number, y2: number, currentGrid: string[][]) => {
@@ -594,7 +643,7 @@ export default function VaultRunner() {
   // --- TURN ENGINE & MOVEMENT ---
   const [isAnimatingStateDummy, setIsAnimatingStateDummy] = useState<boolean>(false); // dummy to help avoid replace mismatches
   const handleMove = (dx: number, dy: number) => {
-    if (gameState !== 'PLAYING' || isAnimating) return;
+    if (gameState !== 'PLAYING' || isAnimating || isBebiaActive) return;
 
     const newX = playerPosition.x + dx;
     const newY = playerPosition.y + dy;
@@ -636,7 +685,7 @@ export default function VaultRunner() {
 
   // --- RANGED COMBAT RESOLUTION ---
   const handleRangedAttack = useCallback((targetEnemy: Enemy) => {
-    if (gameState !== 'PLAYING' || isAnimating) return;
+    if (gameState !== 'PLAYING' || isAnimating || isBebiaActive) return;
 
     if (!hasLineOfSight(playerPosition.x, playerPosition.y, targetEnemy.x, targetEnemy.y, grid)) {
       setLog(prev => [t.losBlockedLog, ...prev.slice(0, 4)]);
@@ -733,7 +782,7 @@ export default function VaultRunner() {
 
   // --- AUTO TARGET NEAREST ---
   const fireAtNearest = useCallback(() => {
-    if (gameState !== 'PLAYING' || isAnimating) return;
+    if (gameState !== 'PLAYING' || isAnimating || isBebiaActive) return;
 
     const validEnemies = enemies.filter(enemy => {
       return hasLineOfSight(playerPosition.x, playerPosition.y, enemy.x, enemy.y, grid);
@@ -826,7 +875,7 @@ export default function VaultRunner() {
 
   // --- CLICK INTERACTION ---
   const handleCellClick = (x: number, y: number) => {
-    if (gameState !== 'PLAYING' || isAnimating) return;
+    if (gameState !== 'PLAYING' || isAnimating || isBebiaActive) return;
     const clickedEnemy = enemies.find(e => e.x === x && e.y === y);
     if (clickedEnemy) {
       handleRangedAttack(clickedEnemy);
@@ -836,18 +885,19 @@ export default function VaultRunner() {
   // Keyboard navigation mappings
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (gameState !== 'PLAYING' || isAnimating) return;
+      if (gameState !== 'PLAYING' || isAnimating || isBebiaActive) return;
       switch (e.key) {
         case 'ArrowUp':    case 'w': handleMove(0, -1); break;
         case 'ArrowDown':  case 's': handleMove(0, 1);  break;
         case 'ArrowLeft':  case 'a': handleMove(-1, 0); break;
         case 'ArrowRight': case 'd': handleMove(1, 0);  break;
         case 'f':          case ' ': e.preventDefault(); fireAtNearest(); break;
+        case 'b':          case 'g': triggerBebiaUltimate(); break;
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [playerPosition, gameState, enemies, grid, playerStats, fireAtNearest, isAnimating]);
+  }, [playerPosition, gameState, enemies, grid, playerStats, fireAtNearest, isAnimating, isBebiaActive, triggerBebiaUltimate]);
 
   // Weapon meta calculations
   const weaponName = getWeaponName(playerStats.class, lang);
@@ -962,6 +1012,64 @@ export default function VaultRunner() {
           background-color: #222 !important;
           border-color: #00e5ff !important;
           color: #00e5ff !important;
+        }
+        @keyframes bebia-shake {
+          0% { transform: translate(1px, 1px) rotate(0deg); }
+          10% { transform: translate(-1px, -2px) rotate(-1deg); }
+          20% { transform: translate(-3px, 0px) rotate(1deg); }
+          30% { transform: translate(0px, 2px) rotate(0deg); }
+          40% { transform: translate(1px, -1px) rotate(1deg); }
+          50% { transform: translate(-1px, 2px) rotate(-1deg); }
+          60% { transform: translate(-3px, 1px) rotate(0deg); }
+          70% { transform: translate(2px, 1px) rotate(-1deg); }
+          80% { transform: translate(-1px, -1px) rotate(1deg); }
+          90% { transform: translate(2px, 2px) rotate(0deg); }
+          100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+        @keyframes bebia-flash {
+          0% { background-color: rgba(255, 23, 68, 0.4); }
+          50% { background-color: rgba(255, 255, 255, 0.4); }
+          100% { background-color: rgba(255, 23, 68, 0.4); }
+        }
+        @keyframes flag-zoom {
+          0% { transform: scale(0.1); opacity: 0; }
+          10% { transform: scale(1.1); opacity: 0.95; }
+          15% { transform: scale(1); opacity: 0.9; }
+          85% { transform: scale(1); opacity: 0.9; }
+          100% { transform: scale(1.5); opacity: 0; }
+        }
+        @keyframes pulsate {
+          0% { box-shadow: 0 0 8px rgba(0, 229, 255, 0.4); border-color: #00e5ff; }
+          50% { box-shadow: 0 0 16px rgba(0, 229, 255, 0.8), 0 0 20px rgba(255, 23, 68, 0.4); border-color: #ff1744; }
+          100% { box-shadow: 0 0 8px rgba(0, 229, 255, 0.4); border-color: #00e5ff; }
+        }
+        .bebia-crashing-grid {
+          animation: bebia-shake 0.15s infinite !important;
+          position: relative !important;
+        }
+        .bebia-overlay-flash {
+          position: absolute !important;
+          top: 0 !important;
+          left: 0 !important;
+          right: 0 !important;
+          bottom: 0 !important;
+          animation: bebia-flash 0.5s infinite !important;
+          pointer-events: none !important;
+          z-index: 10 !important;
+        }
+        .bebia-flag-container {
+          position: absolute !important;
+          top: 10% !important;
+          left: 10% !important;
+          width: 80% !important;
+          height: 80% !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          z-index: 15 !important;
+          pointer-events: none !important;
+          animation: flag-zoom 6s forwards !important;
+          filter: drop-shadow(0 0 20px rgba(255, 0, 0, 0.6)) !important;
         }
         @media (max-width: 768px) {
           .game-view {
@@ -1109,6 +1217,32 @@ export default function VaultRunner() {
         </div>
         <p className="controls-hint" style={styles.controlsHint}>{t.controlsHint}</p>
         
+        <button
+          onClick={triggerBebiaUltimate}
+          disabled={isBebiaActive || enemies.length === 0}
+          className="bebia-ultimate-btn"
+          style={{
+            padding: '10px 15px',
+            fontSize: '14px',
+            backgroundColor: isBebiaActive ? '#ff1744' : '#111',
+            color: isBebiaActive ? '#fff' : '#00e5ff',
+            border: '2px solid #00e5ff',
+            borderRadius: '6px',
+            cursor: (isBebiaActive || enemies.length === 0) ? 'not-allowed' : 'pointer',
+            fontWeight: 'bold',
+            marginTop: '15px',
+            width: '100%',
+            textAlign: 'center',
+            boxShadow: '0 0 10px rgba(0,229,255,0.3)',
+            animation: (isBebiaActive || enemies.length === 0) ? 'none' : 'pulsate 2s infinite',
+            opacity: enemies.length === 0 ? 0.5 : 1,
+            transition: 'all 0.3s ease',
+            fontFamily: 'monospace',
+          }}
+        >
+          {isBebiaActive ? t.bebiaActive : t.bebiaUltimate}
+        </button>
+
         <button 
           onClick={() => setGameState('START')} 
           style={styles.restartBtn}
@@ -1119,7 +1253,29 @@ export default function VaultRunner() {
         </button>
       </div>
 
-      <div className="grid-container" style={styles.gridContainer}>
+      <div 
+        className={`grid-container ${isBebiaActive ? 'bebia-crashing-grid' : ''}`} 
+        style={{
+          ...styles.gridContainer,
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        {isBebiaActive && (
+          <>
+            <div className="bebia-overlay-flash" />
+            <div className="bebia-flag-container">
+              <svg viewBox="0 0 300 200" style={{ width: '100%', height: '100%', objectFit: 'contain' }}>
+                <rect width="300" height="200" fill="#ffffff" rx="10" />
+                <path d="M135 0h30v200h-30zM0 85h300v30H0z" fill="#ff0000" />
+                <path d="M65 42 c1.5,3.5 1.5,5.5 5,5.5 c3.5,0 3.5,1.5 3.5,3.5 c0,2 0,3.5 -3.5,3.5 c-3.5,0 -3.5,2 -5,5.5 c-1.5,-3.5 -1.5,-5.5 -5,-5.5 c-3.5,0 -3.5,-1.5 -3.5,-3.5 c0,-2 0,-3.5 3.5,-3.5 c3.5,0 3.5,-2 5,-5.5 z" fill="#ff0000" />
+                <path d="M235 42 c1.5,3.5 1.5,5.5 5,5.5 c3.5,0 3.5,1.5 3.5,3.5 c0,2 0,3.5 -3.5,3.5 c-3.5,0 -3.5,2 -5,5.5 c-1.5,-3.5 -1.5,-5.5 -5,-5.5 c-3.5,0 -3.5,-1.5 -3.5,-3.5 c0,-2 0,-3.5 3.5,-3.5 c3.5,0 3.5,-2 5,-5.5 z" fill="#ff0000" />
+                <path d="M65 158 c1.5,3.5 1.5,5.5 5,5.5 c3.5,0 3.5,1.5 3.5,3.5 c0,2 0,3.5 -3.5,3.5 c-3.5,0 -3.5,2 -5,5.5 c-1.5,-3.5 -1.5,-5.5 -5,-5.5 c-3.5,0 -3.5,-1.5 -3.5,-3.5 c0,-2 0,-3.5 3.5,-3.5 c3.5,0 3.5,-2 5,-5.5 z" fill="#ff0000" />
+                <path d="M235 158 c1.5,3.5 1.5,5.5 5,5.5 c3.5,0 3.5,1.5 3.5,3.5 c0,2 0,3.5 -3.5,3.5 c-3.5,0 -3.5,2 -5,5.5 c-1.5,-3.5 -1.5,-5.5 -5,-5.5 c-3.5,0 -3.5,-1.5 -3.5,-3.5 c0,-2 0,-3.5 3.5,-3.5 c3.5,0 3.5,-2 5,-5.5 z" fill="#ff0000" />
+              </svg>
+            </div>
+          </>
+        )}
         {grid.map((row, y) => (
           <div key={y} style={styles.row}>
             {row.map((cell, x) => {
@@ -1225,6 +1381,37 @@ export default function VaultRunner() {
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
           <Joystick onMove={handleMove} />
           <span style={{ fontSize: '10px', color: '#666', fontFamily: 'monospace' }}>{t.moveStick}</span>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+          <button 
+            onTouchStart={(e) => { e.preventDefault(); triggerBebiaUltimate(); }}
+            onClick={(e) => { e.preventDefault(); triggerBebiaUltimate(); }}
+            disabled={isBebiaActive || enemies.length === 0}
+            style={{
+              width: '64px',
+              height: '64px',
+              borderRadius: '50%',
+              backgroundColor: isBebiaActive ? '#ff1744' : '#111',
+              border: '2px solid #00e5ff',
+              color: isBebiaActive ? '#fff' : '#00e5ff',
+              fontSize: '12px',
+              fontWeight: 'bold',
+              boxShadow: isBebiaActive ? '0 0 15px #ff1744' : '0 0 8px rgba(0,229,255,0.4)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              touchAction: 'none',
+              userSelect: 'none',
+              cursor: (isBebiaActive || enemies.length === 0) ? 'not-allowed' : 'pointer',
+              fontFamily: 'monospace',
+              opacity: enemies.length === 0 ? 0.5 : 1,
+              animation: (isBebiaActive || enemies.length === 0) ? 'none' : 'pulsate 2s infinite',
+            }}
+          >
+            🇬🇪 Ultimate
+          </button>
+          <span style={{ fontSize: '10px', color: '#666', fontFamily: 'monospace' }}>Bebia</span>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
