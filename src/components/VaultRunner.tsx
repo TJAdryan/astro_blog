@@ -185,6 +185,23 @@ interface Enemy {
   atk: number;
 }
 
+const getEnemyGlyph = (lvl: number, id: string) => {
+  const levelIcons: Record<number, string> = {
+    1: '🐎',
+    2: '🏛️',
+    3: '🐻',
+    4: '🦁',
+  };
+  if (lvl >= 1 && lvl <= 4) {
+    return levelIcons[lvl] || 'E';
+  }
+  const allIcons = ['🐎', '🏛️', '🐻', '🦁'];
+  const parts = id.split('-');
+  const idx = parts.length > 1 ? parseInt(parts[1], 10) : 0;
+  const finalIndex = isNaN(idx) ? 0 : idx;
+  return allIcons[finalIndex % allIcons.length];
+};
+
 // --- CLASS BALANCING ---
 const CLASS_PRESETS: Record<CharacterClass, Omit<PlayerStats, 'class'>> = {
   Fighter: { hp: 120, maxHp: 120, atk: 15, def: 5 },  // High mitigation, steady damage
@@ -1338,7 +1355,7 @@ export default function VaultRunner() {
               } else {
                 const hasEnemy = enemies.find(e => e.x === x && e.y === y);
                 if (hasEnemy) {
-                  glyph = ultimatePhase === 'FRIGHTENED' ? '😱' : 'E';
+                  glyph = ultimatePhase === 'FRIGHTENED' ? '😱' : getEnemyGlyph(currentLevel, hasEnemy.id);
                   color = ultimatePhase === 'FRIGHTENED' ? '#ffea00' : '#ff1744';
                   cursor = 'pointer';
                 } else if (cell === 'S') {
