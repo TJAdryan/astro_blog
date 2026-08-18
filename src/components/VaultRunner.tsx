@@ -224,6 +224,7 @@ export default function VaultRunner() {
   const [explosionPositions, setExplosionPositions] = useState<Position[]>([]);
 
   const [isBebiaActive, setIsBebiaActive] = useState<boolean>(false);
+  const [ultimatePhase, setUltimatePhase] = useState<'NONE' | 'FRIGHTENED' | 'FLAG'>('NONE');
   const audioBebiaUltimateRef = React.useRef<HTMLAudioElement | null>(null);
 
   const voiceToggleRef = React.useRef<boolean>(false);
@@ -290,7 +291,9 @@ export default function VaultRunner() {
     }
 
     setIsBebiaActive(true);
+    setUltimatePhase('FRIGHTENED');
     setLog(prev => [lang === 'en' ? "🔥 Bebia Ultimate Activated! 🇬🇪" : "🔥 ბებიას ძალა გააქტიურებულია! 🇬🇪", ...prev.slice(0, 4)]);
+    setLog(prev => [lang === 'en' ? "😱 Monsters are terrified! They run frantically!" : "😱 მონსტრები შეშინდნენ! ისინი გიჟივით დარბიან!", ...prev.slice(0, 4)]);
 
     try {
       if (audioBebiaUltimateRef.current) {
@@ -301,27 +304,60 @@ export default function VaultRunner() {
       console.warn("Audio playback failed", e);
     }
 
-    const enemyPositions = enemies.map(e => ({ x: e.x, y: e.y }));
-    const count = enemies.length;
-
-    setEnemies([]);
-    setMonstersKilled(prev => prev + count);
-    setScore(prev => prev + count * 20);
-
-    setTimeout(() => {
-      setIsBebiaActive(false);
-      setGrid(prevGrid => {
-        const nextGrid = prevGrid.map(row => [...row]);
-        enemyPositions.forEach(pos => {
-          if (nextGrid[pos.y] && nextGrid[pos.y][pos.x] !== '#') {
-            nextGrid[pos.y][pos.x] = 'G';
+    // Start frantic random movement interval
+    const intervalId = setInterval(() => {
+      setEnemies(prevEnemies => 
+        prevEnemies.map(e => {
+          const dirs = [
+            { dx: 1, dy: 0 },
+            { dx: -1, dy: 0 },
+            { dx: 0, dy: 1 },
+            { dx: 0, dy: -1 }
+          ];
+          const shuffled = dirs.sort(() => Math.random() - 0.5);
+          for (const d of shuffled) {
+            const nx = e.x + d.dx;
+            const ny = e.y + d.dy;
+            if (grid[ny] && grid[ny][nx] !== '#' && !(nx === playerPosition.x && ny === playerPosition.y)) {
+              return { ...e, x: nx, y: ny };
+            }
           }
-        });
-        return nextGrid;
+          return e;
+        })
+      );
+    }, 150);
+
+    // After 2 seconds of frantic running, proceed to the Georgian flag phase
+    setTimeout(() => {
+      clearInterval(intervalId);
+
+      setEnemies(currentEnemies => {
+        const finalPositions = currentEnemies.map(e => ({ x: e.x, y: e.y }));
+        const count = currentEnemies.length;
+
+        setUltimatePhase('FLAG');
+        setMonstersKilled(prev => prev + count);
+        setScore(prev => prev + count * 20);
+
+        setTimeout(() => {
+          setIsBebiaActive(false);
+          setUltimatePhase('NONE');
+          setGrid(prevGrid => {
+            const nextGrid = prevGrid.map(row => [...row]);
+            finalPositions.forEach(pos => {
+              if (nextGrid[pos.y] && nextGrid[pos.y][pos.x] !== '#') {
+                nextGrid[pos.y][pos.x] = 'G';
+              }
+            });
+            return nextGrid;
+          });
+          setLog(prev => [lang === 'en' ? "✨ Golden dust settles. Gold spawned where enemies fell!" : "✨ ოქრო გაჩნდა იქ, სადაც მტრები დაეცნენ!", ...prev.slice(0, 4)]);
+        }, 4000);
+
+        return [];
       });
-      setLog(prev => [lang === 'en' ? "✨ Golden dust settles. Gold spawned where enemies fell!" : "✨ ოქრო გაჩნდა იქ, სადაც მტრები დაეცნენ!", ...prev.slice(0, 4)]);
-    }, 6000);
-  }, [gameState, isAnimating, isBebiaActive, enemies, lang]);
+    }, 2000);
+  }, [gameState, isAnimating, isBebiaActive, enemies, lang, grid, playerPosition]);
 
   // --- LINE OF SIGHT CHECK (Bresenham's Line Algorithm) ---
   const hasLineOfSight = useCallback((x1: number, y1: number, x2: number, y2: number, currentGrid: string[][]) => {
@@ -1068,7 +1104,7 @@ export default function VaultRunner() {
           justify-content: center !important;
           z-index: 15 !important;
           pointer-events: none !important;
-          animation: flag-zoom 6s forwards !important;
+          animation: flag-zoom 4s forwards !important;
           filter: drop-shadow(0 0 20px rgba(255, 0, 0, 0.6)) !important;
         }
         @media (max-width: 768px) {
@@ -1264,16 +1300,18 @@ export default function VaultRunner() {
         {isBebiaActive && (
           <>
             <div className="bebia-overlay-flash" />
-            <div className="bebia-flag-container">
-              <svg viewBox="0 0 300 200" style={{ width: '100%', height: '100%', objectFit: 'contain' }}>
-                <rect width="300" height="200" fill="#ffffff" rx="10" />
-                <path d="M135 0h30v200h-30zM0 85h300v30H0z" fill="#ff0000" />
-                <path d="M65 42 c1.5,3.5 1.5,5.5 5,5.5 c3.5,0 3.5,1.5 3.5,3.5 c0,2 0,3.5 -3.5,3.5 c-3.5,0 -3.5,2 -5,5.5 c-1.5,-3.5 -1.5,-5.5 -5,-5.5 c-3.5,0 -3.5,-1.5 -3.5,-3.5 c0,-2 0,-3.5 3.5,-3.5 c3.5,0 3.5,-2 5,-5.5 z" fill="#ff0000" />
-                <path d="M235 42 c1.5,3.5 1.5,5.5 5,5.5 c3.5,0 3.5,1.5 3.5,3.5 c0,2 0,3.5 -3.5,3.5 c-3.5,0 -3.5,2 -5,5.5 c-1.5,-3.5 -1.5,-5.5 -5,-5.5 c-3.5,0 -3.5,-1.5 -3.5,-3.5 c0,-2 0,-3.5 3.5,-3.5 c3.5,0 3.5,-2 5,-5.5 z" fill="#ff0000" />
-                <path d="M65 158 c1.5,3.5 1.5,5.5 5,5.5 c3.5,0 3.5,1.5 3.5,3.5 c0,2 0,3.5 -3.5,3.5 c-3.5,0 -3.5,2 -5,5.5 c-1.5,-3.5 -1.5,-5.5 -5,-5.5 c-3.5,0 -3.5,-1.5 -3.5,-3.5 c0,-2 0,-3.5 3.5,-3.5 c3.5,0 3.5,-2 5,-5.5 z" fill="#ff0000" />
-                <path d="M235 158 c1.5,3.5 1.5,5.5 5,5.5 c3.5,0 3.5,1.5 3.5,3.5 c0,2 0,3.5 -3.5,3.5 c-3.5,0 -3.5,2 -5,5.5 c-1.5,-3.5 -1.5,-5.5 -5,-5.5 c-3.5,0 -3.5,-1.5 -3.5,-3.5 c0,-2 0,-3.5 3.5,-3.5 c3.5,0 3.5,-2 5,-5.5 z" fill="#ff0000" />
-              </svg>
-            </div>
+            {ultimatePhase === 'FLAG' && (
+              <div className="bebia-flag-container">
+                <svg viewBox="0 0 300 200" style={{ width: '100%', height: '100%', objectFit: 'contain' }}>
+                  <rect width="300" height="200" fill="#ffffff" rx="10" />
+                  <path d="M135 0h30v200h-30zM0 85h300v30H0z" fill="#ff0000" />
+                  <path d="M65 42 c1.5,3.5 1.5,5.5 5,5.5 c3.5,0 3.5,1.5 3.5,3.5 c0,2 0,3.5 -3.5,3.5 c-3.5,0 -3.5,2 -5,5.5 c-1.5,-3.5 -1.5,-5.5 -5,-5.5 c-3.5,0 -3.5,-1.5 -3.5,-3.5 c0,-2 0,-3.5 3.5,-3.5 c3.5,0 3.5,-2 5,-5.5 z" fill="#ff0000" />
+                  <path d="M235 42 c1.5,3.5 1.5,5.5 5,5.5 c3.5,0 3.5,1.5 3.5,3.5 c0,2 0,3.5 -3.5,3.5 c-3.5,0 -3.5,2 -5,5.5 c-1.5,-3.5 -1.5,-5.5 -5,-5.5 c-3.5,0 -3.5,-1.5 -3.5,-3.5 c0,-2 0,-3.5 3.5,-3.5 c3.5,0 3.5,-2 5,-5.5 z" fill="#ff0000" />
+                  <path d="M65 158 c1.5,3.5 1.5,5.5 5,5.5 c3.5,0 3.5,1.5 3.5,3.5 c0,2 0,3.5 -3.5,3.5 c-3.5,0 -3.5,2 -5,5.5 c-1.5,-3.5 -1.5,-5.5 -5,-5.5 c-3.5,0 -3.5,-1.5 -3.5,-3.5 c0,-2 0,-3.5 3.5,-3.5 c3.5,0 3.5,-2 5,-5.5 z" fill="#ff0000" />
+                  <path d="M235 158 c1.5,3.5 1.5,5.5 5,5.5 c3.5,0 3.5,1.5 3.5,3.5 c0,2 0,3.5 -3.5,3.5 c-3.5,0 -3.5,2 -5,5.5 c-1.5,-3.5 -1.5,-5.5 -5,-5.5 c-3.5,0 -3.5,-1.5 -3.5,-3.5 c0,-2 0,-3.5 3.5,-3.5 c3.5,0 3.5,-2 5,-5.5 z" fill="#ff0000" />
+                </svg>
+              </div>
+            )}
           </>
         )}
         {grid.map((row, y) => (
@@ -1300,8 +1338,8 @@ export default function VaultRunner() {
               } else {
                 const hasEnemy = enemies.find(e => e.x === x && e.y === y);
                 if (hasEnemy) {
-                  glyph = 'E';
-                  color = '#ff1744';
+                  glyph = ultimatePhase === 'FRIGHTENED' ? '😱' : 'E';
+                  color = ultimatePhase === 'FRIGHTENED' ? '#ffea00' : '#ff1744';
                   cursor = 'pointer';
                 } else if (cell === 'S') {
                   color = '#ffea00';
