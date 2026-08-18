@@ -187,7 +187,7 @@ interface Enemy {
 
 const getEnemyGlyph = (lvl: number, id: string) => {
   const levelIcons: Record<number, string> = {
-    1: '🐎',
+    1: '🐴',
     2: '🏛️',
     3: '🐻',
     4: '🦁',
@@ -195,7 +195,7 @@ const getEnemyGlyph = (lvl: number, id: string) => {
   if (lvl >= 1 && lvl <= 4) {
     return levelIcons[lvl] || 'E';
   }
-  const allIcons = ['🐎', '🏛️', '🐻', '🦁'];
+  const allIcons = ['🐴', '🏛️', '🐻', '🦁'];
   const parts = id.split('-');
   const idx = parts.length > 1 ? parseInt(parts[1], 10) : 0;
   const finalIndex = isNaN(idx) ? 0 : idx;
