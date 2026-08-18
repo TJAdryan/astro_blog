@@ -202,6 +202,26 @@ const getEnemyGlyph = (lvl: number, id: string) => {
   return allIcons[finalIndex % allIcons.length];
 };
 
+const getLevelObjective = (lvl: number, lang: Language) => {
+  const objectives = {
+    en: {
+      1: "Defend against the Roman invaders to advance.",
+      2: "Defend against the Persian invaders to advance.",
+      3: "Defend against the Mongolian invaders to advance.",
+      4: "Defend against the Russian invaders to advance.",
+      5: "Defeat all the invaders to escape the dungeon!"
+    },
+    ka: {
+      1: "გაუძელით რომაელ დამპყრობლებს წინსვლისთვის.",
+      2: "გაუძელით სპარსელ დამპყრობლებს წინსვლისთვის.",
+      3: "გაუძელით მონღოლ დამპყრობლებს წინსვლისთვის.",
+      4: "გაუძელით რუს დამპყრობლებს წინსვლისთვის.",
+      5: "დაამარცხეთ ყველა დამპყრობელი დუნჯიდან გასაქცევად!"
+    }
+  };
+  return objectives[lang][lvl as 1|2|3|4|5] || objectives[lang][5];
+};
+
 // --- CLASS BALANCING ---
 const CLASS_PRESETS: Record<CharacterClass, Omit<PlayerStats, 'class'>> = {
   Fighter: { hp: 120, maxHp: 120, atk: 15, def: 5 },  // High mitigation, steady damage
@@ -1314,6 +1334,39 @@ export default function VaultRunner() {
           overflow: 'hidden',
         }}
       >
+        {/* Scroll Objective Banner */}
+        <div 
+          className="scroll-banner"
+          style={{
+            background: 'linear-gradient(to right, #f4e2bb, #fff8e7, #f4e2bb)',
+            color: '#3e2723',
+            border: '2px solid #8d6e63',
+            borderRadius: '4px',
+            padding: '8px 16px',
+            marginBottom: '16px',
+            boxShadow: '0 4px 10px rgba(0,0,0,0.6), inset 0 0 10px rgba(141,110,99,0.3)',
+            textAlign: 'center',
+            fontWeight: 'bold',
+            fontSize: '13px',
+            letterSpacing: '0.5px',
+            fontFamily: 'monospace',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            width: '90%',
+            maxWidth: '460px',
+            textTransform: 'uppercase',
+            borderLeftWidth: '10px',
+            borderRightWidth: '10px',
+            userSelect: 'none',
+          }}
+        >
+          <span style={{ fontSize: '15px' }}>📜</span>
+          <span>{getLevelObjective(currentLevel, lang)}</span>
+          <span style={{ fontSize: '15px' }}>📜</span>
+        </div>
+
         {isBebiaActive && (
           <>
             <div className="bebia-overlay-flash" />
@@ -1648,8 +1701,8 @@ const styles = {
   },
   row: { display: 'flex' },
   cell: {
-    width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center',
-    fontSize: '18px', fontWeight: 'bold' as const, border: '1px solid #111', transition: 'background-color 0.1s ease'
+    width: '42px', height: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+    fontSize: '22px', fontWeight: 'bold' as const, border: '1px solid #111', transition: 'background-color 0.1s ease'
   },
   logBox: { flex: 1, overflowY: 'auto' as const, fontSize: '13px', color: '#ccc' },
   logEntry: { marginBottom: '8px', borderBottom: '1px solid #151515', paddingBottom: '4px' },
