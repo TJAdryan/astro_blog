@@ -271,8 +271,11 @@ export default function VaultRunner() {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       audioGeorgiaRef.current = new Audio('/audio/bebia_georgia.mp3');
+      audioGeorgiaRef.current.load();
       audioKhachapuriRef.current = new Audio('/audio/bebia_khachapuri.mp3');
+      audioKhachapuriRef.current.load();
       audioBebiaUltimateRef.current = new Audio('/audio/khachapuri_fire.mp3');
+      audioBebiaUltimateRef.current.load();
     }
   }, []);
 
@@ -364,7 +367,7 @@ export default function VaultRunner() {
       );
     }, 150);
 
-    // After 2 seconds of frantic running, proceed to the Georgian flag phase
+    // After 3 seconds of frantic running, proceed to the Georgian flag phase
     setTimeout(() => {
       clearInterval(intervalId);
 
@@ -389,11 +392,11 @@ export default function VaultRunner() {
             return nextGrid;
           });
           setLog(prev => [lang === 'en' ? "✨ Golden dust settles. Gold spawned where enemies fell!" : "✨ ოქრო გაჩნდა იქ, სადაც მტრები დაეცნენ!", ...prev.slice(0, 4)]);
-        }, 4000);
+        }, 5000);
 
         return [];
       });
-    }, 2000);
+    }, 3000);
   }, [gameState, isAnimating, isBebiaActive, enemies, lang, grid, playerPosition]);
 
   // --- LINE OF SIGHT CHECK (Bresenham's Line Algorithm) ---
@@ -1141,7 +1144,7 @@ export default function VaultRunner() {
           justify-content: center !important;
           z-index: 15 !important;
           pointer-events: none !important;
-          animation: flag-zoom 4s forwards !important;
+          animation: flag-zoom 5s forwards !important;
           filter: drop-shadow(0 0 20px rgba(255, 0, 0, 0.6)) !important;
         }
         @media (max-width: 768px) {
