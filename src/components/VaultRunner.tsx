@@ -187,15 +187,15 @@ interface Enemy {
 
 const getEnemyGlyph = (lvl: number, id: string) => {
   const levelIcons: Record<number, string> = {
-    1: '🐴',
-    2: '🏛️',
-    3: '🐻',
-    4: '🦁',
+    1: '🏛️', // Roman Column (Antiquity, Pompey's campaign in 65 BC)
+    2: '🦁', // Persian Lion (Late Antiquity / Safavid Empire 3rd-18th c.)
+    3: '🐴', // Horse Face (Medieval nomadic cavalry, Seljuks/Mongols 11th-13th c.)
+    4: '🐻', // Russian Bear (Modern annexation and Soviet era 19th-20th c.)
   };
   if (lvl >= 1 && lvl <= 4) {
     return levelIcons[lvl] || 'E';
   }
-  const allIcons = ['🐴', '🏛️', '🐻', '🦁'];
+  const allIcons = ['🏛️', '🦁', '🐴', '🐻'];
   const parts = id.split('-');
   const idx = parts.length > 1 ? parseInt(parts[1], 10) : 0;
   const finalIndex = isNaN(idx) ? 0 : idx;
