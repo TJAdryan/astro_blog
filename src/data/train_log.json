@@ -1,5 +1,10 @@
 [
   {
+    "date": "2026-08-18T13:18:33.342Z",
+    "status": "Good Service",
+    "details": []
+  },
+  {
     "date": "2026-08-17T13:17:16.861Z",
     "status": "Delays",
     "details": [
@@ -202,13 +207,5 @@
     "date": "2026-07-18T14:17:15.654Z",
     "status": "Good Service",
     "details": []
-  },
-  {
-    "date": "2026-07-17T14:26:31.557Z",
-    "status": "Delays",
-    "details": [
-      "Northbound: 96 St-bound trains are having longer wait times between Canal St and 57 St - 7 Av (up to 28 mins, normally every 12 mins).",
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Times Sq - 42 St and Kings Hwy (up to 14 mins, normally every 10 mins)."
-    ]
   }
 ]
