@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-08-19T13:18:52.983Z",
+    "status": "Delays",
+    "details": [
+      "Southbound: Coney Island - Stillwell Av-bound trains are taking 13 mins longer to travel between Ocean Pkwy and Coney Island - Stillwell Av, and having longer wait times at Coney Island - Stillwell Av (up to 17 mins, normally every 10 mins)."
+    ]
+  },
+  {
     "date": "2026-08-18T13:18:33.342Z",
     "status": "Good Service",
     "details": []
@@ -202,10 +209,5 @@
     "details": [
       "Northbound: 96 St-bound trains are having longer wait times between Canal St and DeKalb Av (up to 13 mins, normally every 11 mins)."
     ]
-  },
-  {
-    "date": "2026-07-18T14:17:15.654Z",
-    "status": "Good Service",
-    "details": []
   }
 ]
