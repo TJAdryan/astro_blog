@@ -392,7 +392,7 @@ export default function VaultRunner() {
             return nextGrid;
           });
           setLog(prev => [lang === 'en' ? "✨ Golden dust settles. Gold spawned where enemies fell!" : "✨ ოქრო გაჩნდა იქ, სადაც მტრები დაეცნენ!", ...prev.slice(0, 4)]);
-        }, 6980);
+        }, 6480);
 
         return [];
       });
@@ -1144,7 +1144,7 @@ export default function VaultRunner() {
           justify-content: center !important;
           z-index: 15 !important;
           pointer-events: none !important;
-          animation: flag-zoom 6.98s forwards !important;
+          animation: flag-zoom 6.48s forwards !important;
           filter: drop-shadow(0 0 20px rgba(255, 0, 0, 0.6)) !important;
         }
         @media (max-width: 768px) {
