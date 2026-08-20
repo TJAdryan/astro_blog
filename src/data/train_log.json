@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-08-20T13:19:41.299Z",
+    "status": "Service Change",
+    "details": [
+      "Southbound: Brighton Beach/Coney Island - Stillwell Av-bound trains are running in 2 sections: between 96 St and Brighton Beach, and between Atlantic Av - Barclays Ctr and Coney Island - Stillwell Av."
+    ]
+  },
+  {
     "date": "2026-08-19T13:18:52.983Z",
     "status": "Delays",
     "details": [
@@ -201,13 +208,6 @@
     "status": "Delays",
     "details": [
       "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Ocean Pkwy and Coney Island - Stillwell Av (up to 12 mins, normally every 10 mins)."
-    ]
-  },
-  {
-    "date": "2026-07-19T14:21:49.204Z",
-    "status": "Delays",
-    "details": [
-      "Northbound: 96 St-bound trains are having longer wait times between Canal St and DeKalb Av (up to 13 mins, normally every 11 mins)."
     ]
   }
 ]
