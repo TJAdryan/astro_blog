@@ -1,5 +1,10 @@
 [
   {
+    "date": "2026-08-21T13:18:42.952Z",
+    "status": "Good Service",
+    "details": []
+  },
+  {
     "date": "2026-08-20T13:19:41.299Z",
     "status": "Service Change",
     "details": [
@@ -201,13 +206,6 @@
     "status": "Service Change",
     "details": [
       "Northbound: Some 96 St-bound trains are making local stops between Times Sq - 42 St and 57 St - 7 Av."
-    ]
-  },
-  {
-    "date": "2026-07-21T14:56:42.665Z",
-    "status": "Delays",
-    "details": [
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Ocean Pkwy and Coney Island - Stillwell Av (up to 12 mins, normally every 10 mins)."
     ]
   }
 ]
