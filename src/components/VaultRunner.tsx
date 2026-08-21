@@ -1182,6 +1182,9 @@ export default function VaultRunner() {
           .mobile-controls-bar {
             display: flex !important;
           }
+          .desktop-only-log-box {
+            display: none !important;
+          }
         }
       `}} />
 
@@ -1287,10 +1290,7 @@ export default function VaultRunner() {
           {t.goldPieces}: <strong style={{ color: '#ffd700' }}>{goldCollected}</strong> (+{goldCollected * 10} pts) <br />
           {t.monstersKilledSidebar}: <strong style={{ color: '#ff1744' }}>{monstersKilled}</strong> (+{monstersKilled * 20} pts)
         </p>
-        <hr style={{ borderColor: '#333' }} />
-        <div className="log-box-custom" style={styles.logBox}>
-          {log.map((entry, idx) => <div key={idx} style={styles.logEntry}>{entry}</div>)}
-        </div>
+
         <p className="controls-hint" style={styles.controlsHint}>{t.controlsHint}</p>
         
         <button
@@ -1468,6 +1468,33 @@ export default function VaultRunner() {
             })}
           </div>
         ))}
+
+        {/* Desktop-only Dungeon Messages under the grid */}
+        <div 
+          className="desktop-only-log-box" 
+          style={{
+            width: '100%',
+            maxWidth: '500px',
+            marginTop: '20px',
+            height: '130px',
+            overflowY: 'auto',
+            fontSize: '13px',
+            color: '#ccc',
+            border: '1px solid #333',
+            padding: '10px',
+            borderRadius: '4px',
+            backgroundColor: '#050505',
+            boxSizing: 'border-box',
+            fontFamily: 'monospace',
+            textAlign: 'left',
+          }}
+        >
+          {log.map((entry, idx) => (
+            <div key={idx} style={styles.logEntry}>
+              {entry}
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Mobile Controls Overlay */}
