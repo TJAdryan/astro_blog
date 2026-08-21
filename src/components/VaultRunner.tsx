@@ -328,6 +328,68 @@ export default function VaultRunner() {
     }
   }, []);
 
+  // --- LINE OF SIGHT CHECK (Bresenham's Line Algorithm) ---
+  const hasLineOfSight = useCallback((x1: number, y1: number, x2: number, y2: number, currentGrid: string[][]) => {
+    const dx = Math.abs(x2 - x1);
+    const dy = Math.abs(y2 - y1);
+    const sx = x1 < x2 ? 1 : -1;
+    const sy = y1 < y2 ? 1 : -1;
+    let err = dx - dy;
+
+    let curX = x1;
+    let curY = y1;
+
+    while (true) {
+      if (curX === x2 && curY === y2) return true;
+      if ((curX !== x1 || curY !== y1) && (curX !== x2 || curY !== y2)) {
+        if (currentGrid[curY] && currentGrid[curY][curX] === '#') {
+          return false;
+        }
+      }
+
+      const e2 = 2 * err;
+      if (e2 > -dy) {
+        err -= dy;
+        curX += sx;
+      }
+      if (e2 < dx) {
+        err += dx;
+        curY += sy;
+      }
+    }
+  }, []);
+
+  // --- GET BRESENHAM LINE PATH ---
+  const getBresenhamPath = useCallback((x1: number, y1: number, x2: number, y2: number) => {
+    const path: Position[] = [];
+    const dx = Math.abs(x2 - x1);
+    const dy = Math.abs(y2 - y1);
+    const sx = x1 < x2 ? 1 : -1;
+    const sy = y1 < y2 ? 1 : -1;
+    let err = dx - dy;
+
+    let curX = x1;
+    let curY = y1;
+
+    while (true) {
+      if (curX === x2 && curY === y2) break;
+      if (curX !== x1 || curY !== y1) {
+        path.push({ x: curX, y: curY });
+      }
+
+      const e2 = 2 * err;
+      if (e2 > -dy) {
+        err -= dy;
+        curX += sx;
+      }
+      if (e2 < dx) {
+        err += dx;
+        curY += sy;
+      }
+    }
+    return path;
+  }, []);
+
   const triggerBebiaUltimate = useCallback(() => {
     if (gameState !== 'PLAYING' || isAnimating || isBebiaActive) return;
     if (enemies.length === 0) {
@@ -472,67 +534,7 @@ export default function VaultRunner() {
     }, 1800);
   }, [gameState, isAnimating, isBebiaActive, enemies, lang, grid, playerPosition, getBresenhamPath, playBebiaVoice]);
 
-  // --- LINE OF SIGHT CHECK (Bresenham's Line Algorithm) ---
-  const hasLineOfSight = useCallback((x1: number, y1: number, x2: number, y2: number, currentGrid: string[][]) => {
-    const dx = Math.abs(x2 - x1);
-    const dy = Math.abs(y2 - y1);
-    const sx = x1 < x2 ? 1 : -1;
-    const sy = y1 < y2 ? 1 : -1;
-    let err = dx - dy;
 
-    let curX = x1;
-    let curY = y1;
-
-    while (true) {
-      if (curX === x2 && curY === y2) return true;
-      if ((curX !== x1 || curY !== y1) && (curX !== x2 || curY !== y2)) {
-        if (currentGrid[curY] && currentGrid[curY][curX] === '#') {
-          return false;
-        }
-      }
-
-      const e2 = 2 * err;
-      if (e2 > -dy) {
-        err -= dy;
-        curX += sx;
-      }
-      if (e2 < dx) {
-        err += dx;
-        curY += sy;
-      }
-    }
-  }, []);
-
-  // --- GET BRESENHAM LINE PATH ---
-  const getBresenhamPath = useCallback((x1: number, y1: number, x2: number, y2: number) => {
-    const path: Position[] = [];
-    const dx = Math.abs(x2 - x1);
-    const dy = Math.abs(y2 - y1);
-    const sx = x1 < x2 ? 1 : -1;
-    const sy = y1 < y2 ? 1 : -1;
-    let err = dx - dy;
-
-    let curX = x1;
-    let curY = y1;
-
-    while (true) {
-      if (curX === x2 && curY === y2) break;
-      if (curX !== x1 || curY !== y1) {
-        path.push({ x: curX, y: curY });
-      }
-
-      const e2 = 2 * err;
-      if (e2 > -dy) {
-        err -= dy;
-        curX += sx;
-      }
-      if (e2 < dx) {
-        err += dx;
-        curY += sy;
-      }
-    }
-    return path;
-  }, []);
 
   // --- BFS PATHFINDING VALIDATION ---
   const hasValidPath = useCallback((testGrid: string[][], startX: number, startY: number, targetX: number, targetY: number) => {
