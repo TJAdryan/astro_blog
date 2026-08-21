@@ -486,12 +486,12 @@ export default function VaultRunner() {
           setBebiaRunnerPos(null);
           setUltimatePhase('FLAG');
 
-          // Flag cover phase runs for 3 seconds, then ultimate ends
+          // Flag cover phase runs for 2 seconds, then ultimate ends
           setTimeout(() => {
             setIsBebiaActive(false);
             setUltimatePhase('NONE');
             setLog(prev => [lang === 'en' ? "✨ Golden dust settles. Gold spawned where enemies fell!" : "✨ ოქრო გაჩნდა იქ, სადაც მტრები დაეცნენ!", ...prev.slice(0, 4)]);
-          }, 3000);
+          }, 2000);
           return;
         }
 
@@ -530,8 +530,8 @@ export default function VaultRunner() {
         }
 
         currentStepIndex++;
-      }, 100);
-    }, 1800);
+      }, 180);
+    }, 2800);
   }, [gameState, isAnimating, isBebiaActive, enemies, lang, grid, playerPosition, getBresenhamPath, playBebiaVoice]);
 
 
@@ -1220,7 +1220,7 @@ export default function VaultRunner() {
           justify-content: center !important;
           z-index: 15 !important;
           pointer-events: none !important;
-          animation: flag-zoom 3s forwards !important;
+          animation: flag-zoom 2s forwards !important;
           filter: drop-shadow(0 0 20px rgba(255, 0, 0, 0.6)) !important;
         }
         @media (max-width: 768px) {
