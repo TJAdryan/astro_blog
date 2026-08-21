@@ -240,6 +240,10 @@ export default function VaultRunner() {
   const [currentLevel, setCurrentLevel] = useState<number>(1);
   const [grid, setGrid] = useState<string[][]>([]);
   const [enemies, setEnemies] = useState<Enemy[]>([]);
+  const enemiesRef = React.useRef<Enemy[]>(enemies);
+  useEffect(() => {
+    enemiesRef.current = enemies;
+  }, [enemies]);
   const [lang, setLang] = useState<Language>('en');
   const [log, setLog] = useState<string[]>([]);
   const [goldCollected, setGoldCollected] = useState<number>(0);
@@ -261,7 +265,8 @@ export default function VaultRunner() {
   const [explosionPositions, setExplosionPositions] = useState<Position[]>([]);
 
   const [isBebiaActive, setIsBebiaActive] = useState<boolean>(false);
-  const [ultimatePhase, setUltimatePhase] = useState<'NONE' | 'FRIGHTENED' | 'FLAG'>('NONE');
+  const [ultimatePhase, setUltimatePhase] = useState<'NONE' | 'FRIGHTENED' | 'CHASING' | 'FLAG'>('NONE');
+  const [bebiaRunnerPos, setBebiaRunnerPos] = useState<Position | null>(null);
   const audioBebiaUltimateRef = React.useRef<HTMLAudioElement | null>(null);
 
   const voiceToggleRef = React.useRef<boolean>(false);
@@ -367,37 +372,105 @@ export default function VaultRunner() {
       );
     }, 150);
 
-    // After 1.8 seconds of frantic running, proceed to the Georgian flag phase
+    // After 1.8 seconds of frantic running, proceed to the Georgian flag chasing/explosion phase
     setTimeout(() => {
       clearInterval(intervalId);
 
-      setEnemies(currentEnemies => {
-        const finalPositions = currentEnemies.map(e => ({ x: e.x, y: e.y }));
-        const count = currentEnemies.length;
+      const currentEnemies = enemiesRef.current;
+      if (currentEnemies.length === 0) {
+        setIsBebiaActive(false);
+        setUltimatePhase('NONE');
+        return;
+      }
 
-        setUltimatePhase('FLAG');
-        setMonstersKilled(prev => prev + count);
-        setScore(prev => prev + count * 20);
+      setUltimatePhase('CHASING');
 
-        setTimeout(() => {
-          setIsBebiaActive(false);
-          setUltimatePhase('NONE');
-          setGrid(prevGrid => {
-            const nextGrid = prevGrid.map(row => [...row]);
-            finalPositions.forEach(pos => {
-              if (nextGrid[pos.y] && nextGrid[pos.y][pos.x] !== '#') {
-                nextGrid[pos.y][pos.x] = 'G';
-              }
-            });
-            return nextGrid;
-          });
-          setLog(prev => [lang === 'en' ? "✨ Golden dust settles. Gold spawned where enemies fell!" : "✨ ოქრო გაჩნდა იქ, სადაც მტრები დაეცნენ!", ...prev.slice(0, 4)]);
-        }, 6480);
+      // Sort targets using nearest neighbor starting from playerPosition
+      let currentLoc = { ...playerPosition };
+      const orderedTargets: Enemy[] = [];
+      const remainingTargets = [...currentEnemies];
+      while (remainingTargets.length > 0) {
+        let closestIdx = 0;
+        let minDistance = Infinity;
+        for (let i = 0; i < remainingTargets.length; i++) {
+          const t = remainingTargets[i];
+          const dist = Math.abs(t.x - currentLoc.x) + Math.abs(t.y - currentLoc.y);
+          if (dist < minDistance) {
+            minDistance = dist;
+            closestIdx = i;
+          }
+        }
+        const closest = remainingTargets.splice(closestIdx, 1)[0];
+        orderedTargets.push(closest);
+        currentLoc = { x: closest.x, y: closest.y };
+      }
 
-        return [];
+      // Build step-by-step path visiting all enemies
+      let pathSteps: Position[] = [];
+      let lastPos = { ...playerPosition };
+      orderedTargets.forEach(target => {
+        const segment = getBresenhamPath(lastPos.x, lastPos.y, target.x, target.y);
+        pathSteps = [...pathSteps, ...segment, { x: target.x, y: target.y }];
+        lastPos = { x: target.x, y: target.y };
       });
+
+      let currentStepIndex = 0;
+      setBebiaRunnerPos(playerPosition);
+      let remainingEnemies = [...currentEnemies];
+
+      const stepInterval = setInterval(() => {
+        if (currentStepIndex >= pathSteps.length) {
+          clearInterval(stepInterval);
+          setBebiaRunnerPos(null);
+          setUltimatePhase('FLAG');
+
+          // Flag cover phase runs for 3 seconds, then ultimate ends
+          setTimeout(() => {
+            setIsBebiaActive(false);
+            setUltimatePhase('NONE');
+            setLog(prev => [lang === 'en' ? "✨ Golden dust settles. Gold spawned where enemies fell!" : "✨ ოქრო გაჩნდა იქ, სადაც მტრები დაეცნენ!", ...prev.slice(0, 4)]);
+          }, 3000);
+          return;
+        }
+
+        const nextPos = pathSteps[currentStepIndex];
+        setBebiaRunnerPos(nextPos);
+
+        const hitEnemyIdx = remainingEnemies.findIndex(e => e.x === nextPos.x && e.y === nextPos.y);
+        if (hitEnemyIdx !== -1) {
+          const enemy = remainingEnemies[hitEnemyIdx];
+          remainingEnemies.splice(hitEnemyIdx, 1);
+
+          // Trigger explosion
+          setExplosionPositions(prev => [...prev, { x: enemy.x, y: enemy.y }]);
+          setTimeout(() => {
+            setExplosionPositions(prev => prev.filter(pos => !(pos.x === enemy.x && pos.y === enemy.y)));
+          }, 250);
+
+          // Change cell to gold
+          setGrid(prevGrid => {
+            const newGrid = prevGrid.map((row, y) =>
+              row.map((cell, x) => (x === enemy.x && y === enemy.y ? 'G' : cell))
+            );
+            return newGrid;
+          });
+
+          // Play audio voice
+          playBebiaVoice();
+
+          // Update game score/kills and logs
+          setMonstersKilled(prev => prev + 1);
+          setScore(prev => prev + 20);
+          setLog(prev => [lang === 'en' ? "💥 Exploded enemy into gold!" : "💥 მტერი ოქროდ იქცა!", ...prev.slice(0, 4)]);
+
+          // Remove enemy from state
+          setEnemies(prev => prev.filter(e => e.id !== enemy.id));
+        }
+
+        currentStepIndex++;
+      }, 100);
     }, 1800);
-  }, [gameState, isAnimating, isBebiaActive, enemies, lang, grid, playerPosition]);
+  }, [gameState, isAnimating, isBebiaActive, enemies, lang, grid, playerPosition, getBresenhamPath, playBebiaVoice]);
 
   // --- LINE OF SIGHT CHECK (Bresenham's Line Algorithm) ---
   const hasLineOfSight = useCallback((x1: number, y1: number, x2: number, y2: number, currentGrid: string[][]) => {
@@ -1109,10 +1182,11 @@ export default function VaultRunner() {
         }
         @keyframes flag-zoom {
           0% { transform: scale(0.1); opacity: 0; }
-          10% { transform: scale(1.1); opacity: 0.95; }
-          15% { transform: scale(1); opacity: 0.9; }
-          85% { transform: scale(1); opacity: 0.9; }
-          100% { transform: scale(1.5); opacity: 0; }
+          15% { transform: scale(1.1); opacity: 1; }
+          20% { transform: scale(1); opacity: 1; }
+          75% { transform: scale(1); opacity: 1; }
+          90% { transform: scale(15); opacity: 1; }
+          100% { transform: scale(25); opacity: 0; }
         }
         @keyframes pulsate {
           0% { box-shadow: 0 0 8px rgba(0, 229, 255, 0.4); border-color: #00e5ff; }
@@ -1144,7 +1218,7 @@ export default function VaultRunner() {
           justify-content: center !important;
           z-index: 15 !important;
           pointer-events: none !important;
-          animation: flag-zoom 6.48s forwards !important;
+          animation: flag-zoom 3s forwards !important;
           filter: drop-shadow(0 0 20px rgba(255, 0, 0, 0.6)) !important;
         }
         @media (max-width: 768px) {
@@ -1397,17 +1471,27 @@ export default function VaultRunner() {
 
               const inPath = projectilePath.some(p => p.x === x && p.y === y);
 
-              if (x === playerPosition.x && y === playerPosition.y) {
-                if (playerClass === 'Rene') {
-                  glyph = isAnimating ? '🗡️' : '🦊';
-                } else if (playerClass === 'Sandro') {
-                  glyph = isAnimating ? '🪓' : '🛡️';
-                } else if (playerClass === 'Bebia') {
-                  glyph = '🇬🇪';
+              const isRunner = bebiaRunnerPos && bebiaRunnerPos.x === x && bebiaRunnerPos.y === y;
+
+              if (isRunner) {
+                glyph = '🇬🇪';
+                color = '#ffd700';
+              } else if (x === playerPosition.x && y === playerPosition.y) {
+                if (playerClass === 'Bebia' && (ultimatePhase === 'CHASING' || ultimatePhase === 'FLAG')) {
+                  glyph = '.';
+                  color = '#222';
                 } else {
-                  glyph = '@';
+                  if (playerClass === 'Rene') {
+                    glyph = isAnimating ? '🗡️' : '🦊';
+                  } else if (playerClass === 'Sandro') {
+                    glyph = isAnimating ? '🪓' : '🛡️';
+                  } else if (playerClass === 'Bebia') {
+                    glyph = '🇬🇪';
+                  } else {
+                    glyph = '@';
+                  }
+                  color = '#00e5ff';
                 }
-                color = '#00e5ff';
               } else {
                 const hasEnemy = enemies.find(e => e.x === x && e.y === y);
                 if (hasEnemy) {
