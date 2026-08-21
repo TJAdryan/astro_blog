@@ -1081,16 +1081,6 @@ export default function VaultRunner() {
             </button>
           ))}
         </div>
-        <div style={{ marginTop: '20px' }}>
-          <button 
-            onClick={playBebiaVoice} 
-            style={{ ...styles.btn, borderColor: '#ffd700', color: '#ffd700' }}
-            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#ffd700'; e.currentTarget.style.color = '#000'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#111'; e.currentTarget.style.color = '#ffd700'; }}
-          >
-            📢 Test Bebia Voice (Georgian)
-          </button>
-        </div>
       </div>
     );
   }
