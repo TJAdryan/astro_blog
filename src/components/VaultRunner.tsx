@@ -5,7 +5,7 @@ const GRID_SIZE = 15;
 const TOTAL_LEVELS = 5;
 
 type CharacterClass = 'Mage' | 'Fighter' | 'Rogue' | 'Rene' | 'Sandro' | 'Bebia';
-type GameState = 'START' | 'PLAYING' | 'VICTORY' | 'DEFEAT';
+type GameState = 'START' | 'SELECT_CHARACTER' | 'PLAYING' | 'VICTORY' | 'DEFEAT';
 type Language = 'en' | 'ka';
 
 const TRANSLATIONS = {
@@ -253,7 +253,7 @@ export default function VaultRunner() {
   const t = TRANSLATIONS[lang];
 
   useEffect(() => {
-    if (gameState === 'START') {
+    if (gameState === 'START' || gameState === 'SELECT_CHARACTER') {
       setLog([TRANSLATIONS[lang].welcomeLog]);
     }
   }, [lang, gameState]);
@@ -1062,13 +1062,53 @@ export default function VaultRunner() {
             {t.backToHome}
           </a>
         </div>
-        <button
-          onClick={() => setLang(prev => prev === 'en' ? 'ka' : 'en')}
-          className="lang-toggle-btn"
-          style={styles.langBtn}
-        >
-          {lang === 'en' ? '🌐 English' : '🌐 ქართული'}
-        </button>
+        <h1 style={{ ...styles.title, marginBottom: '20px', fontSize: '2.5rem', textAlign: 'center' }}>
+          CHOOSE LANGUAGE / აირჩიეთ ენა
+        </h1>
+        <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', width: '100%', maxWidth: '500px', marginTop: '20px' }}>
+          <button 
+            onClick={() => { setLang('en'); setGameState('SELECT_CHARACTER'); }} 
+            style={{ ...styles.btn, fontSize: '1.2rem', padding: '20px 40px', borderColor: '#ffd700', color: '#ffd700' }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#ffd700'; e.currentTarget.style.color = '#000'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#111'; e.currentTarget.style.color = '#ffd700'; }}
+          >
+            🇬🇧 English
+          </button>
+          <button 
+            onClick={() => { setLang('ka'); setGameState('SELECT_CHARACTER'); }} 
+            style={{ ...styles.btn, fontSize: '1.2rem', padding: '20px 40px', borderColor: '#ffd700', color: '#ffd700' }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#ffd700'; e.currentTarget.style.color = '#000'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#111'; e.currentTarget.style.color = '#ffd700'; }}
+          >
+            🇬🇪 ქართული (Georgian)
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (gameState === 'SELECT_CHARACTER') {
+    return (
+      <div style={styles.container}>
+        <div style={styles.backLinkAbsolute}>
+          <button 
+            onClick={() => setGameState('START')} 
+            style={{ 
+              background: 'none', 
+              border: 'none', 
+              color: '#00e5ff', 
+              cursor: 'pointer', 
+              fontFamily: 'monospace', 
+              fontSize: '14px',
+              fontWeight: 'bold',
+              padding: 0,
+              display: 'inline-flex',
+              alignItems: 'center'
+            }}
+          >
+            {lang === 'en' ? '← Back to Languages' : '← უკან ენის არჩევაზე'}
+          </button>
+        </div>
         <h1 style={styles.title}>{t.title}</h1>
         <p style={styles.subtitle}>{t.subtitle}</p>
         <div style={styles.selectionZone}>
