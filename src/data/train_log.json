@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-08-23T13:14:40.845Z",
+    "status": "Service Change",
+    "details": [
+      "<Q> trains are making local stops between 57 St - 7 Av and Canal St."
+    ]
+  },
+  {
     "date": "2026-08-22T13:13:36.263Z",
     "status": "Service Change",
     "details": [
@@ -202,10 +209,5 @@
       "Northbound: 96 St-bound trains are having longer wait times between Beverley Rd and Parkside Av (up to 13 mins, normally every 11 mins).",
       "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between 96 St and Canal St (up to 12 mins, normally every 10 mins)."
     ]
-  },
-  {
-    "date": "2026-07-23T15:03:59.179Z",
-    "status": "Good Service",
-    "details": []
   }
 ]
