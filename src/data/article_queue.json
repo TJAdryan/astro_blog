@@ -322,5 +322,32 @@
     "source": "arXiv",
     "topic": "Python",
     "dateAdded": "2026-08-10T14:14:20.164Z"
+  },
+  {
+    "id": "http://arxiv.org/abs/2603.27775v2",
+    "title": "Enzyme: Incremental View Maintenance for Data Engineering",
+    "summary": "Materialized views are a core construct in database systems, used to accelerate analytical queries and optimize batch pipelines for extract-transform-load (ETL) workflows. Maintaining view consistency as underlying data evolves is a fundamental challenge, especially in high-throughput and real-time settings. Incremental view maintenance (IVM) has been studied for decades and continues to attract significant investment from major database vendors. However, most industrial systems either offer limited SQL-operator coverage or require users to hand-tune refresh strategies.\n  This paper presents Enzyme, an IVM engine developed at Databricks to power Spark Declarative Pipelines. It provides a built-in, end-to-end approach to incremental pipelines, utilizing materialized views as first-class building blocks. By automating refresh planning, Enzyme reduces total cost of ownership and lets users focus on business logic rather than MV mechanics. Validation across thousands of large-scale production pipelines spanning diverse application domains has demonstrated substantial computational efficiency gains, yielding a cumulative daily compute reduction of billions of CPU seconds. Built atop Apache Spark primitives, Enzyme adds a cost-based optimization layer that selects refresh strategies for collections of materialized views organized into pipelines.\n  Enzyme's modular architecture is designed to generalize across data sources and query engines. We present key design decisions for incremental refresh planning and execution, including optimizations that exploit batching opportunities across materialized view sources. Experimental results on standard benchmarks demonstrate significant performance improvements at scale.",
+    "link": "http://arxiv.org/abs/2603.27775v2",
+    "source": "arXiv",
+    "topic": "Data Engineering",
+    "dateAdded": "2026-08-24T13:20:43.619Z"
+  },
+  {
+    "id": "40598996",
+    "title": "Development of a CRISPR/Cas9 RNP-mediated genetic engineering system in Paecilomyces variotii.",
+    "summary": "No abstract available via summary API. Please click link to read.",
+    "link": "https://pubmed.ncbi.nlm.nih.gov/40598996/",
+    "source": "PubMed",
+    "topic": "CRISPR",
+    "dateAdded": "2026-08-24T13:20:44.170Z"
+  },
+  {
+    "id": "http://arxiv.org/abs/2608.15886v1",
+    "title": "SMTpip: Interpreter-Aware SMT-Based Dependency Conflict Resolution for Restoring Python Source-Code Executability",
+    "summary": "Software developers rely on packages to reuse existing functionality instead of implementing everything from scratch. Python developers commonly provide package and interpreter dependencies using configuration files, such as requirements.txt or setup.py. Package managers in Python, such as pip, can install packages according to dependency and interpreter version constraints specified in configuration files. However, Python dependency resolution remains challenging: (1) different packages may require incompatible versions of the same dependency; (2) dependencies may require a Python interpreter version that is incompatible with the interpreter used for the project, making a valid environment impossible; and (3) pip, the most popular Python package manager, resolves conflicts via backtracking, repeatedly trying candidate versions without knowing whether a valid execution environment exists or not. To address these challenges, we present SMTpip, an interpreter-aware environment inference technique for improving the executability of Python source-code artifacts. SMTpip constructs a dependency knowledge graph using metadata stored in the Python Package Index (PyPI) that hosts millions of package releases, encodes both package version constraints and interpreter compatibility constraints specified in configuration files into Satisfiability Modulo Theories (SMT) formulas. Solving these formulas identifies a set of package versions and an interpreter version that jointly satisfy all declared constraints. Empirical evaluation on multiple datasets from open-source Python projects shows that SMTpip achieves substantial speedups -- $6.9\\times$ over pip, $9.6\\times$ over Conda, $3.2\\times$ over smartPip, and $4\\times$ over PyEGo -- while consistently producing constraint-consistent environments.",
+    "link": "http://arxiv.org/abs/2608.15886v1",
+    "source": "arXiv",
+    "topic": "Python",
+    "dateAdded": "2026-08-24T13:20:44.460Z"
   }
 ]
