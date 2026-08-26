@@ -268,6 +268,7 @@ export default function VaultRunner() {
   const [ultimatePhase, setUltimatePhase] = useState<'NONE' | 'FRIGHTENED' | 'CHASING' | 'FLAG'>('NONE');
   const [bebiaRunnerPos, setBebiaRunnerPos] = useState<Position | null>(null);
   const audioBebiaUltimateRef = React.useRef<HTMLAudioElement | null>(null);
+  const audioSopoWinsRef = React.useRef<HTMLAudioElement | null>(null);
 
   const voiceToggleRef = React.useRef<boolean>(false);
   const audioGeorgiaRef = React.useRef<HTMLAudioElement | null>(null);
@@ -281,8 +282,26 @@ export default function VaultRunner() {
       audioKhachapuriRef.current.load();
       audioBebiaUltimateRef.current = new Audio('/audio/khachapuri_fire.mp3');
       audioBebiaUltimateRef.current.load();
+      audioSopoWinsRef.current = new Audio('/audio/Sopo_Wins.mp3');
+      audioSopoWinsRef.current.load();
     }
   }, []);
+
+  useEffect(() => {
+    if (gameState === 'VICTORY' && playerClass === 'Fighter') {
+      if (audioSopoWinsRef.current) {
+        audioSopoWinsRef.current.currentTime = 0;
+        audioSopoWinsRef.current.play().catch(err => {
+          console.error('Failed to play Sopo victory audio:', err);
+        });
+      }
+    } else {
+      if (audioSopoWinsRef.current) {
+        audioSopoWinsRef.current.pause();
+        audioSopoWinsRef.current.currentTime = 0;
+      }
+    }
+  }, [gameState, playerClass]);
 
   const playLaserSound = useCallback(() => {
     try {
