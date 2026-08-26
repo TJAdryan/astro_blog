@@ -269,6 +269,7 @@ export default function VaultRunner() {
   const [bebiaRunnerPos, setBebiaRunnerPos] = useState<Position | null>(null);
   const audioBebiaUltimateRef = React.useRef<HTMLAudioElement | null>(null);
   const audioSopoWinsRef = React.useRef<HTMLAudioElement | null>(null);
+  const [isSopoAudioPlaying, setIsSopoAudioPlaying] = useState<boolean>(false);
 
   const voiceToggleRef = React.useRef<boolean>(false);
   const audioGeorgiaRef = React.useRef<HTMLAudioElement | null>(null);
@@ -291,17 +292,41 @@ export default function VaultRunner() {
     if (gameState === 'VICTORY' && playerClass === 'Fighter') {
       if (audioSopoWinsRef.current) {
         audioSopoWinsRef.current.currentTime = 0;
-        audioSopoWinsRef.current.play().catch(err => {
-          console.error('Failed to play Sopo victory audio:', err);
-        });
+        audioSopoWinsRef.current.play()
+          .then(() => setIsSopoAudioPlaying(true))
+          .catch(err => {
+            console.error('Failed to play Sopo victory audio:', err);
+          });
+        audioSopoWinsRef.current.onended = () => {
+          setIsSopoAudioPlaying(false);
+        };
       }
     } else {
       if (audioSopoWinsRef.current) {
         audioSopoWinsRef.current.pause();
         audioSopoWinsRef.current.currentTime = 0;
+        setIsSopoAudioPlaying(false);
       }
     }
   }, [gameState, playerClass]);
+
+  const toggleSopoWinsAudio = () => {
+    if (audioSopoWinsRef.current) {
+      if (isSopoAudioPlaying) {
+        audioSopoWinsRef.current.pause();
+        setIsSopoAudioPlaying(false);
+      } else {
+        audioSopoWinsRef.current.currentTime = 0;
+        audioSopoWinsRef.current.play()
+          .then(() => setIsSopoAudioPlaying(true))
+          .catch(err => console.error('Failed to play victory audio:', err));
+        
+        audioSopoWinsRef.current.onended = () => {
+          setIsSopoAudioPlaying(false);
+        };
+      }
+    }
+  };
 
   const playLaserSound = useCallback(() => {
     try {
@@ -1418,31 +1443,59 @@ export default function VaultRunner() {
 
         <p className="controls-hint" style={styles.controlsHint}>{t.controlsHint}</p>
         
-        <button
-          onClick={triggerBebiaUltimate}
-          disabled={isBebiaActive || enemies.length === 0}
-          className="bebia-ultimate-btn"
-          style={{
-            padding: '10px 15px',
-            fontSize: '14px',
-            backgroundColor: isBebiaActive ? '#ff1744' : '#111',
-            color: isBebiaActive ? '#fff' : '#00e5ff',
-            border: '2px solid #00e5ff',
-            borderRadius: '6px',
-            cursor: (isBebiaActive || enemies.length === 0) ? 'not-allowed' : 'pointer',
-            fontWeight: 'bold',
-            marginTop: '15px',
-            width: '100%',
-            textAlign: 'center',
-            boxShadow: '0 0 10px rgba(0,229,255,0.3)',
-            animation: (isBebiaActive || enemies.length === 0) ? 'none' : 'pulsate 2s infinite',
-            opacity: enemies.length === 0 ? 0.5 : 1,
-            transition: 'all 0.3s ease',
-            fontFamily: 'monospace',
-          }}
-        >
-          {isBebiaActive ? t.bebiaActive : t.bebiaUltimate}
-        </button>
+        {playerClass === 'Bebia' && (
+          <button
+            onClick={triggerBebiaUltimate}
+            disabled={isBebiaActive || enemies.length === 0}
+            className="bebia-ultimate-btn"
+            style={{
+              padding: '10px 15px',
+              fontSize: '14px',
+              backgroundColor: isBebiaActive ? '#ff1744' : '#111',
+              color: isBebiaActive ? '#fff' : '#00e5ff',
+              border: '2px solid #00e5ff',
+              borderRadius: '6px',
+              cursor: (isBebiaActive || enemies.length === 0) ? 'not-allowed' : 'pointer',
+              fontWeight: 'bold',
+              marginTop: '15px',
+              width: '100%',
+              textAlign: 'center',
+              boxShadow: '0 0 10px rgba(0,229,255,0.3)',
+              animation: (isBebiaActive || enemies.length === 0) ? 'none' : 'pulsate 2s infinite',
+              opacity: enemies.length === 0 ? 0.5 : 1,
+              transition: 'all 0.3s ease',
+              fontFamily: 'monospace',
+            }}
+          >
+            {isBebiaActive ? t.bebiaActive : t.bebiaUltimate}
+          </button>
+        )}
+
+        {playerClass === 'Fighter' && (
+          <button
+            onClick={toggleSopoWinsAudio}
+            style={{
+              padding: '10px 15px',
+              fontSize: '14px',
+              backgroundColor: isSopoAudioPlaying ? '#ffd700' : '#111',
+              color: isSopoAudioPlaying ? '#000' : '#ffd700',
+              border: '2px solid #ffd700',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontWeight: 'bold',
+              marginTop: '15px',
+              width: '100%',
+              textAlign: 'center',
+              boxShadow: isSopoAudioPlaying ? '0 0 15px rgba(255,215,0,0.6)' : '0 0 10px rgba(255,215,0,0.2)',
+              transition: 'all 0.3s ease',
+              fontFamily: 'monospace',
+            }}
+          >
+            {isSopoAudioPlaying 
+              ? (lang === 'en' ? '⏸️ Pause Sopo Song' : '⏸️ შეჩერება') 
+              : (lang === 'en' ? '👑 Play Sopo Wins' : '👑 ჩართე სოფოს სიმღერა')}
+          </button>
+        )}
 
         <button 
           onClick={() => setGameState('START')} 
@@ -1662,36 +1715,68 @@ export default function VaultRunner() {
           <span style={{ fontSize: '10px', color: '#666', fontFamily: 'monospace' }}>{t.moveStick}</span>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
-          <button 
-            onTouchStart={(e) => { e.preventDefault(); triggerBebiaUltimate(); }}
-            onClick={(e) => { e.preventDefault(); triggerBebiaUltimate(); }}
-            disabled={isBebiaActive || enemies.length === 0}
-            style={{
-              width: '64px',
-              height: '64px',
-              borderRadius: '50%',
-              backgroundColor: isBebiaActive ? '#ff1744' : '#111',
-              border: '2px solid #00e5ff',
-              color: isBebiaActive ? '#fff' : '#00e5ff',
-              fontSize: '12px',
-              fontWeight: 'bold',
-              boxShadow: isBebiaActive ? '0 0 15px #ff1744' : '0 0 8px rgba(0,229,255,0.4)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              touchAction: 'none',
-              userSelect: 'none',
-              cursor: (isBebiaActive || enemies.length === 0) ? 'not-allowed' : 'pointer',
-              fontFamily: 'monospace',
-              opacity: enemies.length === 0 ? 0.5 : 1,
-              animation: (isBebiaActive || enemies.length === 0) ? 'none' : 'pulsate 2s infinite',
-            }}
-          >
-            🇬🇪 Ultimate
-          </button>
-          <span style={{ fontSize: '10px', color: '#666', fontFamily: 'monospace' }}>Bebia</span>
-        </div>
+        {playerClass === 'Bebia' && (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+            <button 
+              onTouchStart={(e) => { e.preventDefault(); triggerBebiaUltimate(); }}
+              onClick={(e) => { e.preventDefault(); triggerBebiaUltimate(); }}
+              disabled={isBebiaActive || enemies.length === 0}
+              style={{
+                width: '64px',
+                height: '64px',
+                borderRadius: '50%',
+                backgroundColor: isBebiaActive ? '#ff1744' : '#111',
+                border: '2px solid #00e5ff',
+                color: isBebiaActive ? '#fff' : '#00e5ff',
+                fontSize: '12px',
+                fontWeight: 'bold',
+                boxShadow: isBebiaActive ? '0 0 15px #ff1744' : '0 0 8px rgba(0,229,255,0.4)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                touchAction: 'none',
+                userSelect: 'none',
+                cursor: (isBebiaActive || enemies.length === 0) ? 'not-allowed' : 'pointer',
+                fontFamily: 'monospace',
+                opacity: enemies.length === 0 ? 0.5 : 1,
+                animation: (isBebiaActive || enemies.length === 0) ? 'none' : 'pulsate 2s infinite',
+              }}
+            >
+              🇬🇪 Ultimate
+            </button>
+            <span style={{ fontSize: '10px', color: '#666', fontFamily: 'monospace' }}>Bebia</span>
+          </div>
+        )}
+
+        {playerClass === 'Fighter' && (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+            <button 
+              onTouchStart={(e) => { e.preventDefault(); toggleSopoWinsAudio(); }}
+              onClick={(e) => { e.preventDefault(); toggleSopoWinsAudio(); }}
+              style={{
+                width: '64px',
+                height: '64px',
+                borderRadius: '50%',
+                backgroundColor: isSopoAudioPlaying ? '#ffd700' : '#111',
+                border: '2px solid #ffd700',
+                color: isSopoAudioPlaying ? '#000' : '#ffd700',
+                fontSize: '12px',
+                fontWeight: 'bold',
+                boxShadow: isSopoAudioPlaying ? '0 0 15px #ffd700' : '0 0 8px rgba(255,215,0,0.4)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                touchAction: 'none',
+                userSelect: 'none',
+                cursor: 'pointer',
+                fontFamily: 'monospace',
+              }}
+            >
+              {isSopoAudioPlaying ? '⏸️' : '👑'}
+            </button>
+            <span style={{ fontSize: '10px', color: '#666', fontFamily: 'monospace' }}>{isSopoAudioPlaying ? (lang === 'en' ? 'Pause' : 'შეჩერება') : (lang === 'en' ? 'Play Sopo' : 'სოფო')}</span>
+          </div>
+        )}
 
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
           <button 
