@@ -154,9 +154,9 @@ const getClassName = (cls: CharacterClass, lang: Language) => {
 
 const getClassEmoji = (cls: CharacterClass) => {
   switch (cls) {
-    case 'Fighter': return '🪓';
-    case 'Mage': return '🔮';
-    case 'Rogue': return '🏹';
+    case 'Fighter': return '👑';
+    case 'Mage': return '📖';
+    case 'Rogue': return '📸';
     case 'Rene': return '🦊';
     case 'Sandro': return '🛡️';
     case 'Bebia': return '🇬🇪';
@@ -1519,6 +1519,12 @@ export default function VaultRunner() {
                     glyph = isAnimating ? '🪓' : '🛡️';
                   } else if (playerClass === 'Bebia') {
                     glyph = '🇬🇪';
+                  } else if (playerClass === 'Fighter') {
+                    glyph = '👑';
+                  } else if (playerClass === 'Mage') {
+                    glyph = '📖';
+                  } else if (playerClass === 'Rogue') {
+                    glyph = '📸';
                   } else {
                     glyph = '@';
                   }
