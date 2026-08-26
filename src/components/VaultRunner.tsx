@@ -1443,33 +1443,31 @@ export default function VaultRunner() {
 
         <p className="controls-hint" style={styles.controlsHint}>{t.controlsHint}</p>
         
-        {playerClass === 'Bebia' && (
-          <button
-            onClick={triggerBebiaUltimate}
-            disabled={isBebiaActive || enemies.length === 0}
-            className="bebia-ultimate-btn"
-            style={{
-              padding: '10px 15px',
-              fontSize: '14px',
-              backgroundColor: isBebiaActive ? '#ff1744' : '#111',
-              color: isBebiaActive ? '#fff' : '#00e5ff',
-              border: '2px solid #00e5ff',
-              borderRadius: '6px',
-              cursor: (isBebiaActive || enemies.length === 0) ? 'not-allowed' : 'pointer',
-              fontWeight: 'bold',
-              marginTop: '15px',
-              width: '100%',
-              textAlign: 'center',
-              boxShadow: '0 0 10px rgba(0,229,255,0.3)',
-              animation: (isBebiaActive || enemies.length === 0) ? 'none' : 'pulsate 2s infinite',
-              opacity: enemies.length === 0 ? 0.5 : 1,
-              transition: 'all 0.3s ease',
-              fontFamily: 'monospace',
-            }}
-          >
-            {isBebiaActive ? t.bebiaActive : t.bebiaUltimate}
-          </button>
-        )}
+        <button
+          onClick={triggerBebiaUltimate}
+          disabled={isBebiaActive || enemies.length === 0}
+          className="bebia-ultimate-btn"
+          style={{
+            padding: '10px 15px',
+            fontSize: '14px',
+            backgroundColor: isBebiaActive ? '#ff1744' : '#111',
+            color: isBebiaActive ? '#fff' : '#00e5ff',
+            border: '2px solid #00e5ff',
+            borderRadius: '6px',
+            cursor: (isBebiaActive || enemies.length === 0) ? 'not-allowed' : 'pointer',
+            fontWeight: 'bold',
+            marginTop: '15px',
+            width: '100%',
+            textAlign: 'center',
+            boxShadow: '0 0 10px rgba(0,229,255,0.3)',
+            animation: (isBebiaActive || enemies.length === 0) ? 'none' : 'pulsate 2s infinite',
+            opacity: enemies.length === 0 ? 0.5 : 1,
+            transition: 'all 0.3s ease',
+            fontFamily: 'monospace',
+          }}
+        >
+          {isBebiaActive ? t.bebiaActive : t.bebiaUltimate}
+        </button>
 
         {playerClass === 'Fighter' && (
           <button
@@ -1715,38 +1713,36 @@ export default function VaultRunner() {
           <span style={{ fontSize: '10px', color: '#666', fontFamily: 'monospace' }}>{t.moveStick}</span>
         </div>
 
-        {playerClass === 'Bebia' && (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
-            <button 
-              onTouchStart={(e) => { e.preventDefault(); triggerBebiaUltimate(); }}
-              onClick={(e) => { e.preventDefault(); triggerBebiaUltimate(); }}
-              disabled={isBebiaActive || enemies.length === 0}
-              style={{
-                width: '64px',
-                height: '64px',
-                borderRadius: '50%',
-                backgroundColor: isBebiaActive ? '#ff1744' : '#111',
-                border: '2px solid #00e5ff',
-                color: isBebiaActive ? '#fff' : '#00e5ff',
-                fontSize: '12px',
-                fontWeight: 'bold',
-                boxShadow: isBebiaActive ? '0 0 15px #ff1744' : '0 0 8px rgba(0,229,255,0.4)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                touchAction: 'none',
-                userSelect: 'none',
-                cursor: (isBebiaActive || enemies.length === 0) ? 'not-allowed' : 'pointer',
-                fontFamily: 'monospace',
-                opacity: enemies.length === 0 ? 0.5 : 1,
-                animation: (isBebiaActive || enemies.length === 0) ? 'none' : 'pulsate 2s infinite',
-              }}
-            >
-              🇬🇪 Ultimate
-            </button>
-            <span style={{ fontSize: '10px', color: '#666', fontFamily: 'monospace' }}>Bebia</span>
-          </div>
-        )}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+          <button 
+            onTouchStart={(e) => { e.preventDefault(); triggerBebiaUltimate(); }}
+            onClick={(e) => { e.preventDefault(); triggerBebiaUltimate(); }}
+            disabled={isBebiaActive || enemies.length === 0}
+            style={{
+              width: '64px',
+              height: '64px',
+              borderRadius: '50%',
+              backgroundColor: isBebiaActive ? '#ff1744' : '#111',
+              border: '2px solid #00e5ff',
+              color: isBebiaActive ? '#fff' : '#00e5ff',
+              fontSize: '12px',
+              fontWeight: 'bold',
+              boxShadow: isBebiaActive ? '0 0 15px #ff1744' : '0 0 8px rgba(0,229,255,0.4)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              touchAction: 'none',
+              userSelect: 'none',
+              cursor: (isBebiaActive || enemies.length === 0) ? 'not-allowed' : 'pointer',
+              fontFamily: 'monospace',
+              opacity: enemies.length === 0 ? 0.5 : 1,
+              animation: (isBebiaActive || enemies.length === 0) ? 'none' : 'pulsate 2s infinite',
+            }}
+          >
+            🇬🇪 Ultimate
+          </button>
+          <span style={{ fontSize: '10px', color: '#666', fontFamily: 'monospace' }}>Bebia</span>
+        </div>
 
         {playerClass === 'Fighter' && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
