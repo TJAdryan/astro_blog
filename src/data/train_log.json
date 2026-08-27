@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-08-27T16:44:03.390Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times between Kings Hwy and Church Av (up to 13 mins, normally every 9 mins)."
+    ]
+  },
+  {
     "date": "2026-08-26T13:22:14.669Z",
     "status": "Delays",
     "details": [
@@ -202,13 +209,6 @@
     "details": [
       "Northbound: 96 St-bound trains are taking 6 mins longer to travel between 72 St and 96 St.",
       "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Cortelyou Rd and Coney Island - Stillwell Av (up to 16 mins, normally every 10 mins)."
-    ]
-  },
-  {
-    "date": "2026-07-26T14:25:36.203Z",
-    "status": "Delays",
-    "details": [
-      "Southbound: Coney Island - Stillwell Av-bound trains are taking 9 mins longer to travel between Sheepshead Bay and Coney Island - Stillwell Av, and having longer wait times between Ocean Pkwy and Coney Island - Stillwell Av (up to 25 mins, normally every 13 mins)."
     ]
   }
 ]
