@@ -13,7 +13,7 @@ const TRANSLATIONS = {
     backToHome: '← Back to Home',
     title: 'VAULT RUNNER',
     subtitle: 'Select your operative. Reach Level 5 to escape.',
-    fighter: 'Fighter',
+    fighter: 'Sopo (Fighter)',
     mage: 'Mage',
     rogue: 'Rogue',
     rene: 'რენე (Rene)',
@@ -40,12 +40,14 @@ const TRANSLATIONS = {
     monstersKilledSidebar: 'Monsters Killed',
     restartGame: 'Restart',
     restartGameSidebar: 'Restart Game',
-    controlsHint: 'Use Arrow keys or WASD to step/melee. Click an enemy or press Space/F to shoot. Press B/G for Bebia Ultimate.',
+    controlsHint: 'Use Arrow keys or WASD to step/melee. Click an enemy or press Space/F to shoot. Press B/G/P for Ultimate.',
     moveStick: 'MOVE STICK',
     fire: 'FIRE',
     shootNearest: 'SHOOT NEAREST',
     bebiaUltimate: '🇬🇪 Bebia Ultimate',
     bebiaActive: '🔥 Georgia Fire!',
+    sopoUltimate: '💍 Proposal Ultimate',
+    sopoActive: '❤️ Proposing...',
     // Logs
     welcomeLog: 'Welcome to the Vault. Find the stairs (S) to descend.',
     enterLog: 'You enter the cold depths of the Vault.',
@@ -98,12 +100,14 @@ const TRANSLATIONS = {
     monstersKilledSidebar: 'მოკლული მონსტრები',
     restartGame: 'გადატვირთვა',
     restartGameSidebar: 'თამაშის გადატვირთვა',
-    controlsHint: 'გამოიყენეთ ისრები ან WASD გადასაადგილებლად. ესროლეთ მონსტრებს Space/F ღილაკით. ბებიას ძალისთვის დააჭირეთ B/G-ს.',
+    controlsHint: 'გამოიყენეთ ისრები ან WASD გადასაადგილებლად. ესროლეთ მონსტრებს Space/F ღილაკით. ძალისთვის დააჭირეთ B/G/P-ს.',
     moveStick: 'მართვის ჯოხი',
     fire: 'სროლა',
     shootNearest: 'უახლოესის სროლა',
     bebiaUltimate: '🇬🇪 ბებიას ძალა',
     bebiaActive: '🔥 ქართული ცეცხლი!',
+    sopoUltimate: '💍 სოფოს ძალა (Proposal)',
+    sopoActive: '❤️ ხელის თხოვნა...',
     // Logs
     welcomeLog: 'კეთილი იყოს თქვენი მობრძანება ვაულტში. ჩასასვლელად იპოვეთ კიბე (S).',
     enterLog: 'თქვენ შედიხართ ვაულტის ცივ სიღრმეებში.',
@@ -265,8 +269,10 @@ export default function VaultRunner() {
   const [explosionPositions, setExplosionPositions] = useState<Position[]>([]);
 
   const [isBebiaActive, setIsBebiaActive] = useState<boolean>(false);
+  const [isSopoActive, setIsSopoActive] = useState<boolean>(false);
   const [ultimatePhase, setUltimatePhase] = useState<'NONE' | 'FRIGHTENED' | 'CHASING' | 'FLAG'>('NONE');
   const [bebiaRunnerPos, setBebiaRunnerPos] = useState<Position | null>(null);
+  const [sopoRunnerPos, setSopoRunnerPos] = useState<Position | null>(null);
   const audioBebiaUltimateRef = React.useRef<HTMLAudioElement | null>(null);
   const audioSopoWinsRef = React.useRef<HTMLAudioElement | null>(null);
   const [isSopoAudioPlaying, setIsSopoAudioPlaying] = useState<boolean>(false);
@@ -577,6 +583,173 @@ export default function VaultRunner() {
       }, 180);
     }, 2800);
   }, [gameState, isAnimating, isBebiaActive, enemies, lang, grid, playerPosition, getBresenhamPath, playBebiaVoice]);
+
+  const triggerSopoUltimate = useCallback(() => {
+    if (gameState !== 'PLAYING' || isAnimating || isSopoActive) return;
+    if (enemies.length === 0) {
+      setLog(prev => [lang === 'en' ? "No targets to propose to!" : "მოსახიბლი მტერი არ არის!", ...prev.slice(0, 4)]);
+      return;
+    }
+
+    setIsSopoActive(true);
+    setUltimatePhase('FRIGHTENED');
+    setLog(prev => [
+      lang === 'en' 
+        ? "💍 Sopo Proposal Ultimate Activated! 💖" 
+        : "💍 სოფოს ძალა გააქტიურებულია! 💖", 
+      ...prev.slice(0, 4)
+    ]);
+    setLog(prev => [
+      lang === 'en' 
+        ? "😍 Monsters are charmed by Sopo's beauty and grace! They wander in awe!" 
+        : "😍 მონსტრები მოიხიბლნენ სოფოს სილამაზითა და მადლით! ისინი გაოცებულები დადიან!", 
+      ...prev.slice(0, 4)
+    ]);
+
+    try {
+      if (audioSopoWinsRef.current) {
+        audioSopoWinsRef.current.currentTime = 0;
+        audioSopoWinsRef.current.play()
+          .then(() => setIsSopoAudioPlaying(true))
+          .catch(e => console.warn("Failed to play Sopo ultimate sound:", e));
+      }
+    } catch (e) {
+      console.warn("Audio playback failed", e);
+    }
+
+    // Start charmed sway movement interval
+    const intervalId = setInterval(() => {
+      setEnemies(prevEnemies => 
+        prevEnemies.map(e => {
+          const dirs = [
+            { dx: 1, dy: 0 },
+            { dx: -1, dy: 0 },
+            { dx: 0, dy: 1 },
+            { dx: 0, dy: -1 }
+          ];
+          const shuffled = dirs.sort(() => Math.random() - 0.5);
+          for (const d of shuffled) {
+            const nx = e.x + d.dx;
+            const ny = e.y + d.dy;
+            if (grid[ny] && grid[ny][nx] !== '#' && !(nx === playerPosition.x && ny === playerPosition.y)) {
+              return { ...e, x: nx, y: ny };
+            }
+          }
+          return e;
+        })
+      );
+    }, 200);
+
+    // After 2.8 seconds of charmed walking, proceed to proposal chasing phase
+    setTimeout(() => {
+      clearInterval(intervalId);
+
+      const currentEnemies = enemiesRef.current;
+      if (currentEnemies.length === 0) {
+        setIsSopoActive(false);
+        setUltimatePhase('NONE');
+        return;
+      }
+
+      setUltimatePhase('CHASING');
+
+      // Sort targets using nearest neighbor starting from playerPosition
+      let currentLoc = { ...playerPosition };
+      const orderedTargets: Enemy[] = [];
+      const remainingTargets = [...currentEnemies];
+      while (remainingTargets.length > 0) {
+        let closestIdx = 0;
+        let minDistance = Infinity;
+        for (let i = 0; i < remainingTargets.length; i++) {
+          const t = remainingTargets[i];
+          const dist = Math.abs(t.x - currentLoc.x) + Math.abs(t.y - currentLoc.y);
+          if (dist < minDistance) {
+            minDistance = dist;
+            closestIdx = i;
+          }
+        }
+        const closest = remainingTargets.splice(closestIdx, 1)[0];
+        orderedTargets.push(closest);
+        currentLoc = { x: closest.x, y: closest.y };
+      }
+
+      // Build step-by-step path visiting all enemies
+      let pathSteps: Position[] = [];
+      let lastPos = { ...playerPosition };
+      orderedTargets.forEach(target => {
+        const segment = getBresenhamPath(lastPos.x, lastPos.y, target.x, target.y);
+        pathSteps = [...pathSteps, ...segment, { x: target.x, y: target.y }];
+        lastPos = { x: target.x, y: target.y };
+      });
+
+      let currentStepIndex = 0;
+      setSopoRunnerPos(playerPosition);
+      let remainingEnemies = [...currentEnemies];
+
+      const stepInterval = setInterval(() => {
+        if (currentStepIndex >= pathSteps.length) {
+          clearInterval(stepInterval);
+          setSopoRunnerPos(null);
+          setUltimatePhase('FLAG');
+
+          // Proposal overlay cover phase runs for 2 seconds, then ultimate ends
+          setTimeout(() => {
+            setIsSopoActive(false);
+            setUltimatePhase('NONE');
+            setIsSopoAudioPlaying(false);
+            setLog(prev => [
+              lang === 'en' 
+                ? "✨ Love fills the air. Hearts sprouted where invaders accepted Sopo!" 
+                : "✨ სიყვარულმა აავსო არემარე. გულები გაჩნდა იქ, სადაც მტრებმა სოფო მიიღეს!", 
+              ...prev.slice(0, 4)
+            ]);
+          }, 2000);
+          return;
+        }
+
+        const nextPos = pathSteps[currentStepIndex];
+        setSopoRunnerPos(nextPos);
+
+        const hitEnemyIdx = remainingEnemies.findIndex(e => e.x === nextPos.x && e.y === nextPos.y);
+        if (hitEnemyIdx !== -1) {
+          const enemy = remainingEnemies[hitEnemyIdx];
+          remainingEnemies.splice(hitEnemyIdx, 1);
+
+          // Trigger explosion (heart explosion in render)
+          setExplosionPositions(prev => [...prev, { x: enemy.x, y: enemy.y }]);
+          setTimeout(() => {
+            setExplosionPositions(prev => prev.filter(pos => !(pos.x === enemy.x && pos.y === enemy.y)));
+          }, 250);
+
+          // Change cell to gold (which is rendered as hearts for Sopo)
+          setGrid(prevGrid => {
+            const newGrid = prevGrid.map((row, y) =>
+              row.map((cell, x) => (x === enemy.x && y === enemy.y ? 'G' : cell))
+            );
+            return newGrid;
+          });
+
+          // Play laser sound
+          playLaserSound();
+
+          // Update game score/kills and logs
+          setMonstersKilled(prev => prev + 1);
+          setScore(prev => prev + 20);
+          setLog(prev => [
+            lang === 'en' 
+              ? "💍 Enemy accepted the proposal! ❤️" 
+              : "💍 მტერმა მიიღო ხელის თხოვნა! ❤️", 
+            ...prev.slice(0, 4)
+          ]);
+
+          // Remove enemy from state
+          setEnemies(prev => prev.filter(e => e.id !== enemy.id));
+        }
+
+        currentStepIndex++;
+      }, 180);
+    }, 2800);
+  }, [gameState, isAnimating, isSopoActive, enemies, lang, grid, playerPosition, getBresenhamPath, playLaserSound]);
 
 
 
@@ -1070,7 +1243,7 @@ export default function VaultRunner() {
 
   // --- CLICK INTERACTION ---
   const handleCellClick = (x: number, y: number) => {
-    if (gameState !== 'PLAYING' || isAnimating || isBebiaActive) return;
+    if (gameState !== 'PLAYING' || isAnimating || isBebiaActive || isSopoActive) return;
     const clickedEnemy = enemies.find(e => e.x === x && e.y === y);
     if (clickedEnemy) {
       handleRangedAttack(clickedEnemy);
@@ -1080,19 +1253,22 @@ export default function VaultRunner() {
   // Keyboard navigation mappings
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (gameState !== 'PLAYING' || isAnimating || isBebiaActive) return;
+      if (gameState !== 'PLAYING' || isAnimating || isBebiaActive || isSopoActive) return;
       switch (e.key) {
         case 'ArrowUp':    case 'w': handleMove(0, -1); break;
         case 'ArrowDown':  case 's': handleMove(0, 1);  break;
         case 'ArrowLeft':  case 'a': handleMove(-1, 0); break;
         case 'ArrowRight': case 'd': handleMove(1, 0);  break;
         case 'f':          case ' ': e.preventDefault(); fireAtNearest(); break;
-        case 'b':          case 'g': triggerBebiaUltimate(); break;
+        case 'b':          case 'g':          case 'p':
+          if (playerStats.class === 'Bebia') triggerBebiaUltimate();
+          else if (playerStats.class === 'Fighter') triggerSopoUltimate();
+          break;
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [playerPosition, gameState, enemies, grid, playerStats, fireAtNearest, isAnimating, isBebiaActive, triggerBebiaUltimate]);
+  }, [playerPosition, gameState, enemies, grid, playerStats, fireAtNearest, isAnimating, isBebiaActive, isSopoActive, triggerBebiaUltimate, triggerSopoUltimate]);
 
   // Weapon meta calculations
   const weaponName = getWeaponName(playerStats.class, lang);
@@ -1297,6 +1473,44 @@ export default function VaultRunner() {
           animation: flag-zoom 2s forwards !important;
           filter: drop-shadow(0 0 20px rgba(255, 0, 0, 0.6)) !important;
         }
+        @keyframes sopo-pulse {
+          0% { transform: scale(1); }
+          50% { transform: scale(1.02); }
+          100% { transform: scale(1); }
+        }
+        @keyframes sopo-flash {
+          0% { background-color: rgba(255, 105, 180, 0.35); }
+          50% { background-color: rgba(255, 255, 255, 0.35); }
+          100% { background-color: rgba(255, 105, 180, 0.35); }
+        }
+        .sopo-loving-grid {
+          animation: sopo-pulse 1s infinite ease-in-out !important;
+          position: relative !important;
+        }
+        .sopo-overlay-flash {
+          position: absolute !important;
+          top: 0 !important;
+          left: 0 !important;
+          right: 0 !important;
+          bottom: 0 !important;
+          animation: sopo-flash 0.5s infinite !important;
+          pointer-events: none !important;
+          z-index: 10 !important;
+        }
+        .sopo-proposal-container {
+          position: absolute !important;
+          top: 10% !important;
+          left: 10% !important;
+          width: 80% !important;
+          height: 80% !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          z-index: 15 !important;
+          pointer-events: none !important;
+          animation: flag-zoom 2s forwards !important;
+          filter: drop-shadow(0 0 20px rgba(255, 105, 180, 0.6)) !important;
+        }
         @media (max-width: 768px) {
           .game-view {
             flex-direction: column !important;
@@ -1443,31 +1657,35 @@ export default function VaultRunner() {
 
         <p className="controls-hint" style={styles.controlsHint}>{t.controlsHint}</p>
         
-        <button
-          onClick={triggerBebiaUltimate}
-          disabled={isBebiaActive || enemies.length === 0}
-          className="bebia-ultimate-btn"
-          style={{
-            padding: '10px 15px',
-            fontSize: '14px',
-            backgroundColor: isBebiaActive ? '#ff1744' : '#111',
-            color: isBebiaActive ? '#fff' : '#00e5ff',
-            border: '2px solid #00e5ff',
-            borderRadius: '6px',
-            cursor: (isBebiaActive || enemies.length === 0) ? 'not-allowed' : 'pointer',
-            fontWeight: 'bold',
-            marginTop: '15px',
-            width: '100%',
-            textAlign: 'center',
-            boxShadow: '0 0 10px rgba(0,229,255,0.3)',
-            animation: (isBebiaActive || enemies.length === 0) ? 'none' : 'pulsate 2s infinite',
-            opacity: enemies.length === 0 ? 0.5 : 1,
-            transition: 'all 0.3s ease',
-            fontFamily: 'monospace',
-          }}
-        >
-          {isBebiaActive ? t.bebiaActive : t.bebiaUltimate}
-        </button>
+        {(playerClass === 'Bebia' || playerClass === 'Fighter') && (
+          <button
+            onClick={playerClass === 'Bebia' ? triggerBebiaUltimate : triggerSopoUltimate}
+            disabled={(playerClass === 'Bebia' ? isBebiaActive : isSopoActive) || enemies.length === 0}
+            className="bebia-ultimate-btn"
+            style={{
+              padding: '10px 15px',
+              fontSize: '14px',
+              backgroundColor: (playerClass === 'Bebia' ? isBebiaActive : isSopoActive) ? '#ff1744' : '#111',
+              color: (playerClass === 'Bebia' ? isBebiaActive : isSopoActive) ? '#fff' : (playerClass === 'Fighter' ? '#ff69b4' : '#00e5ff'),
+              border: playerClass === 'Fighter' ? '2px solid #ff69b4' : '2px solid #00e5ff',
+              borderRadius: '6px',
+              cursor: ((playerClass === 'Bebia' ? isBebiaActive : isSopoActive) || enemies.length === 0) ? 'not-allowed' : 'pointer',
+              fontWeight: 'bold',
+              marginTop: '15px',
+              width: '100%',
+              textAlign: 'center',
+              boxShadow: playerClass === 'Fighter' ? '0 0 10px rgba(255,105,180,0.3)' : '0 0 10px rgba(0,229,255,0.3)',
+              animation: ((playerClass === 'Bebia' ? isBebiaActive : isSopoActive) || enemies.length === 0) ? 'none' : 'pulsate 2s infinite',
+              opacity: enemies.length === 0 ? 0.5 : 1,
+              transition: 'all 0.3s ease',
+              fontFamily: 'monospace',
+            }}
+          >
+            {playerClass === 'Bebia' 
+              ? (isBebiaActive ? t.bebiaActive : t.bebiaUltimate) 
+              : (isSopoActive ? t.sopoActive : t.sopoUltimate)}
+          </button>
+        )}
 
         {playerClass === 'Fighter' && (
           <button
@@ -1506,7 +1724,7 @@ export default function VaultRunner() {
       </div>
 
       <div 
-        className={`grid-container ${isBebiaActive ? 'bebia-crashing-grid' : ''}`} 
+        className={`grid-container ${isBebiaActive ? 'bebia-crashing-grid' : isSopoActive ? 'sopo-loving-grid' : ''}`} 
         style={{
           ...styles.gridContainer,
           position: 'relative',
@@ -1546,20 +1764,45 @@ export default function VaultRunner() {
           <span style={{ fontSize: '15px' }}>📜</span>
         </div>
 
-        {isBebiaActive && (
+        {(isBebiaActive || isSopoActive) && (
           <>
-            <div className="bebia-overlay-flash" />
+            <div className={isBebiaActive ? "bebia-overlay-flash" : "sopo-overlay-flash"} />
             {ultimatePhase === 'FLAG' && (
-              <div className="bebia-flag-container">
-                <svg viewBox="0 0 300 200" style={{ width: '100%', height: '100%', objectFit: 'contain' }}>
-                  <rect width="300" height="200" fill="#ffffff" rx="10" />
-                  <path d="M135 0h30v200h-30zM0 85h300v30H0z" fill="#ff0000" />
-                  <path d="M65 42 c1.5,3.5 1.5,5.5 5,5.5 c3.5,0 3.5,1.5 3.5,3.5 c0,2 0,3.5 -3.5,3.5 c-3.5,0 -3.5,2 -5,5.5 c-1.5,-3.5 -1.5,-5.5 -5,-5.5 c-3.5,0 -3.5,-1.5 -3.5,-3.5 c0,-2 0,-3.5 3.5,-3.5 c3.5,0 3.5,-2 5,-5.5 z" fill="#ff0000" />
-                  <path d="M235 42 c1.5,3.5 1.5,5.5 5,5.5 c3.5,0 3.5,1.5 3.5,3.5 c0,2 0,3.5 -3.5,3.5 c-3.5,0 -3.5,2 -5,5.5 c-1.5,-3.5 -1.5,-5.5 -5,-5.5 c-3.5,0 -3.5,-1.5 -3.5,-3.5 c0,-2 0,-3.5 3.5,-3.5 c3.5,0 3.5,-2 5,-5.5 z" fill="#ff0000" />
-                  <path d="M65 158 c1.5,3.5 1.5,5.5 5,5.5 c3.5,0 3.5,1.5 3.5,3.5 c0,2 0,3.5 -3.5,3.5 c-3.5,0 -3.5,2 -5,5.5 c-1.5,-3.5 -1.5,-5.5 -5,-5.5 c-3.5,0 -3.5,-1.5 -3.5,-3.5 c0,-2 0,-3.5 3.5,-3.5 c3.5,0 3.5,-2 5,-5.5 z" fill="#ff0000" />
-                  <path d="M235 158 c1.5,3.5 1.5,5.5 5,5.5 c3.5,0 3.5,1.5 3.5,3.5 c0,2 0,3.5 -3.5,3.5 c-3.5,0 -3.5,2 -5,5.5 c-1.5,-3.5 -1.5,-5.5 -5,-5.5 c-3.5,0 -3.5,-1.5 -3.5,-3.5 c0,-2 0,-3.5 3.5,-3.5 c3.5,0 3.5,-2 5,-5.5 z" fill="#ff0000" />
-                </svg>
-              </div>
+              isBebiaActive ? (
+                <div className="bebia-flag-container">
+                  <svg viewBox="0 0 300 200" style={{ width: '100%', height: '100%', objectFit: 'contain' }}>
+                    <rect width="300" height="200" fill="#ffffff" rx="10" />
+                    <path d="M135 0h30v200h-30zM0 85h300v30H0z" fill="#ff0000" />
+                    <path d="M65 42 c1.5,3.5 1.5,5.5 5,5.5 c3.5,0 3.5,1.5 3.5,3.5 c0,2 0,3.5 -3.5,3.5 c-3.5,0 -3.5,2 -5,5.5 c-1.5,-3.5 -1.5,-5.5 -5,-5.5 c-3.5,0 -3.5,-1.5 -3.5,-3.5 c0,-2 0,-3.5 3.5,-3.5 c3.5,0 3.5,-2 5,-5.5 z" fill="#ff0000" />
+                    <path d="M235 42 c1.5,3.5 1.5,5.5 5,5.5 c3.5,0 3.5,1.5 3.5,3.5 c0,2 0,3.5 -3.5,3.5 c-3.5,0 -3.5,2 -5,5.5 c-1.5,-3.5 -1.5,-5.5 -5,-5.5 c-3.5,0 -3.5,-1.5 -3.5,-3.5 c0,-2 0,-3.5 3.5,-3.5 c3.5,0 3.5,-2 5,-5.5 z" fill="#ff0000" />
+                    <path d="M65 158 c1.5,3.5 1.5,5.5 5,5.5 c3.5,0 3.5,1.5 3.5,3.5 c0,2 0,3.5 -3.5,3.5 c-3.5,0 -3.5,2 -5,5.5 c-1.5,-3.5 -1.5,-5.5 -5,-5.5 c-3.5,0 -3.5,-1.5 -3.5,-3.5 c0,-2 0,-3.5 3.5,-3.5 c3.5,0 3.5,-2 5,-5.5 z" fill="#ff0000" />
+                    <path d="M235 158 c1.5,3.5 1.5,5.5 5,5.5 c3.5,0 3.5,1.5 3.5,3.5 c0,2 0,3.5 -3.5,3.5 c-3.5,0 -3.5,2 -5,5.5 c-1.5,-3.5 -1.5,-5.5 -5,-5.5 c-3.5,0 -3.5,-1.5 -3.5,-3.5 c0,-2 0,-3.5 3.5,-3.5 c3.5,0 3.5,-2 5,-5.5 z" fill="#ff0000" />
+                  </svg>
+                </div>
+              ) : (
+                <div className="sopo-proposal-container">
+                  <svg viewBox="0 0 300 200" style={{ width: '100%', height: '100%', objectFit: 'contain' }}>
+                    <defs>
+                      <radialGradient id="heartGrad" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stopColor="#fff0f5" stopOpacity="0.95" />
+                        <stop offset="100%" stopColor="#ffe4e1" stopOpacity="0.95" />
+                      </radialGradient>
+                    </defs>
+                    <rect width="300" height="200" fill="url(#heartGrad)" rx="15" stroke="#ff69b4" strokeWidth="3" />
+                    <path d="M150 145 C110 100, 80 70, 80 45 C80 25, 95 10, 115 10 C130 10, 142 20, 150 30 C158 20, 170 10, 185 10 C205 10, 220 25, 220 45 C220 70, 190 100, 150 145 Z" fill="#ffb6c1" opacity="0.3" />
+                    <circle cx="130" cy="85" r="28" stroke="#ffd700" strokeWidth="7" fill="none" filter="drop-shadow(0 0 4px rgba(255,215,0,0.8))" />
+                    <rect x="123" y="51" width="14" height="8" rx="2" fill="#00e5ff" filter="drop-shadow(0 0 5px #00e5ff)" />
+                    <circle cx="170" cy="85" r="28" stroke="#ffa500" strokeWidth="7" fill="none" filter="drop-shadow(0 0 4px rgba(255,165,0,0.8))" />
+                    <text x="150" y="92" fontSize="24" textAnchor="middle">💖</text>
+                    <text x="150" y="150" fill="#d6336c" fontSize="14" fontWeight="bold" fontFamily="Georgia, serif" textAnchor="middle">
+                      {lang === 'en' ? 'Will you marry me? 💍' : 'ცოლად გამომყვები? 💍'}
+                    </text>
+                    <text x="150" y="173" fill="#4a4a4a" fontSize="10" fontFamily="monospace" textAnchor="middle">
+                      {lang === 'en' ? '"My home and my greatest adventure"' : '"ჩემი სახლი და უდიდესი თავგადასავალი"'}
+                    </text>
+                  </svg>
+                </div>
+              )
             )}
           </>
         )}
@@ -1574,12 +1817,16 @@ export default function VaultRunner() {
               const inPath = projectilePath.some(p => p.x === x && p.y === y);
 
               const isRunner = bebiaRunnerPos && bebiaRunnerPos.x === x && bebiaRunnerPos.y === y;
+              const isSopoRunner = sopoRunnerPos && sopoRunnerPos.x === x && sopoRunnerPos.y === y;
 
               if (isRunner) {
                 glyph = '🇬🇪';
                 color = '#ffd700';
+              } else if (isSopoRunner) {
+                glyph = '💍';
+                color = '#ff69b4';
               } else if (x === playerPosition.x && y === playerPosition.y) {
-                if (playerClass === 'Bebia' && (ultimatePhase === 'CHASING' || ultimatePhase === 'FLAG')) {
+                if ((playerClass === 'Bebia' || playerClass === 'Fighter') && (ultimatePhase === 'CHASING' || ultimatePhase === 'FLAG')) {
                   glyph = '.';
                   color = '#222';
                 } else {
@@ -1603,14 +1850,14 @@ export default function VaultRunner() {
               } else {
                 const hasEnemy = enemies.find(e => e.x === x && e.y === y);
                 if (hasEnemy) {
-                  glyph = ultimatePhase === 'FRIGHTENED' ? '😱' : getEnemyGlyph(currentLevel, hasEnemy.id);
-                  color = ultimatePhase === 'FRIGHTENED' ? '#ffea00' : '#ff1744';
+                  glyph = ultimatePhase === 'FRIGHTENED' ? (playerClass === 'Fighter' ? '😍' : '😱') : getEnemyGlyph(currentLevel, hasEnemy.id);
+                  color = ultimatePhase === 'FRIGHTENED' ? (playerClass === 'Fighter' ? '#ff69b4' : '#ffea00') : '#ff1744';
                   cursor = 'pointer';
                 } else if (cell === 'S') {
                   color = '#ffea00';
                 } else if (cell === 'G') {
-                  glyph = '*';
-                  color = '#ffd700';
+                  glyph = playerClass === 'Fighter' ? '❤️' : '*';
+                  color = playerClass === 'Fighter' ? '#ff1744' : '#ffd700';
                 } else if (cell === '#') {
                   color = '#888';
                 } else {
@@ -1643,8 +1890,8 @@ export default function VaultRunner() {
 
               const isExplosion = explosionPositions.some(p => p.x === x && p.y === y);
               if (isExplosion) {
-                glyph = '💥';
-                color = '#ff1744';
+                glyph = playerClass === 'Fighter' ? '💖' : '💥';
+                color = playerClass === 'Fighter' ? '#ff69b4' : '#ff1744';
               }
 
               return (
@@ -1715,33 +1962,33 @@ export default function VaultRunner() {
 
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
           <button 
-            onTouchStart={(e) => { e.preventDefault(); triggerBebiaUltimate(); }}
-            onClick={(e) => { e.preventDefault(); triggerBebiaUltimate(); }}
-            disabled={isBebiaActive || enemies.length === 0}
+            onTouchStart={(e) => { e.preventDefault(); if (playerClass === 'Bebia') triggerBebiaUltimate(); else if (playerClass === 'Fighter') triggerSopoUltimate(); }}
+            onClick={(e) => { e.preventDefault(); if (playerClass === 'Bebia') triggerBebiaUltimate(); else if (playerClass === 'Fighter') triggerSopoUltimate(); }}
+            disabled={(playerClass === 'Bebia' ? isBebiaActive : isSopoActive) || enemies.length === 0 || (playerClass !== 'Bebia' && playerClass !== 'Fighter')}
             style={{
               width: '64px',
               height: '64px',
               borderRadius: '50%',
-              backgroundColor: isBebiaActive ? '#ff1744' : '#111',
-              border: '2px solid #00e5ff',
-              color: isBebiaActive ? '#fff' : '#00e5ff',
+              backgroundColor: (playerClass === 'Bebia' ? isBebiaActive : isSopoActive) ? '#ff1744' : '#111',
+              border: playerClass === 'Fighter' ? '2px solid #ff69b4' : '2px solid #00e5ff',
+              color: (playerClass === 'Bebia' ? isBebiaActive : isSopoActive) ? '#fff' : (playerClass === 'Fighter' ? '#ff69b4' : '#00e5ff'),
               fontSize: '12px',
               fontWeight: 'bold',
-              boxShadow: isBebiaActive ? '0 0 15px #ff1744' : '0 0 8px rgba(0,229,255,0.4)',
+              boxShadow: (playerClass === 'Bebia' ? isBebiaActive : isSopoActive) ? '0 0 15px #ff1744' : (playerClass === 'Fighter' ? '0 0 8px rgba(255,105,180,0.4)' : '0 0 8px rgba(0,229,255,0.4)'),
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               touchAction: 'none',
               userSelect: 'none',
-              cursor: (isBebiaActive || enemies.length === 0) ? 'not-allowed' : 'pointer',
+              cursor: ((playerClass === 'Bebia' ? isBebiaActive : isSopoActive) || enemies.length === 0 || (playerClass !== 'Bebia' && playerClass !== 'Fighter')) ? 'not-allowed' : 'pointer',
               fontFamily: 'monospace',
-              opacity: enemies.length === 0 ? 0.5 : 1,
-              animation: (isBebiaActive || enemies.length === 0) ? 'none' : 'pulsate 2s infinite',
+              opacity: (enemies.length === 0 || (playerClass !== 'Bebia' && playerClass !== 'Fighter')) ? 0.5 : 1,
+              animation: ((playerClass === 'Bebia' ? isBebiaActive : isSopoActive) || enemies.length === 0 || (playerClass !== 'Bebia' && playerClass !== 'Fighter')) ? 'none' : 'pulsate 2s infinite',
             }}
           >
-            🇬🇪 Ultimate
+            {playerClass === 'Fighter' ? '💍 Ultimate' : '🇬🇪 Ultimate'}
           </button>
-          <span style={{ fontSize: '10px', color: '#666', fontFamily: 'monospace' }}>Bebia</span>
+          <span style={{ fontSize: '10px', color: '#666', fontFamily: 'monospace' }}>{playerClass === 'Fighter' ? 'Sopo' : 'Bebia'}</span>
         </div>
 
         {playerClass === 'Fighter' && (
