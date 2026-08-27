@@ -789,13 +789,14 @@ export default function VaultRunner() {
                   ]);
                 };
 
-                if (audioSopoWinsRef.current && !audioSopoWinsRef.current.paused && !audioSopoWinsRef.current.ended) {
+                 if (audioSopoWinsRef.current && !audioSopoWinsRef.current.paused && !audioSopoWinsRef.current.ended) {
                   audioSopoWinsRef.current.onended = () => {
-                    endUltimate();
+                    // Wait 2 seconds after the song ends
+                    setTimeout(endUltimate, 2000);
                   };
                 } else {
-                  // Fallback if audio is muted or blocked
-                  setTimeout(endUltimate, 6000);
+                  // Fallback if audio is muted or blocked (8 seconds total)
+                  setTimeout(endUltimate, 8000);
                 }
                 return;
               }
