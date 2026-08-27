@@ -48,6 +48,10 @@ const TRANSLATIONS = {
     bebiaActive: '🔥 Georgia Fire!',
     sopoUltimate: '💍 Proposal Ultimate',
     sopoActive: '❤️ Proposing...',
+    sopoProposesLog: "💍 Sopo drops to one knee and proposes to Dominick!",
+    sopoVanquishLog: "😭 The love-struck enemies fall to their knees in despair as Sopo vanquishes them!",
+    sopoProclamation: "Sopo is unmatched in Beauty or Battle!",
+    sopoProclamationSubtitle: '"My home and my greatest adventure"',
     // Logs
     welcomeLog: 'Welcome to the Vault. Find the stairs (S) to descend.',
     enterLog: 'You enter the cold depths of the Vault.',
@@ -108,6 +112,10 @@ const TRANSLATIONS = {
     bebiaActive: '🔥 ქართული ცეცხლი!',
     sopoUltimate: '💍 სოფოს ძალა (Proposal)',
     sopoActive: '❤️ ხელის თხოვნა...',
+    sopoProposesLog: "💍 სოფო მუხლზე იჩოქებს და დომინიკს ხელს სთხოვს!",
+    sopoVanquishLog: "😭 სიყვარულით დაზაფრული მტრები მუხლებზე ეცემიან სასოწარკვეთილებაში, როცა სოფო მათ ამარცხებს!",
+    sopoProclamation: "სოფო შეუდარებელია სილამაზესა და ბრძოლაში!",
+    sopoProclamationSubtitle: '"ჩემი სახლი და უდიდესი თავგადასავალი"',
     // Logs
     welcomeLog: 'კეთილი იყოს თქვენი მობრძანება ვაულტში. ჩასასვლელად იპოვეთ კიბე (S).',
     enterLog: 'თქვენ შედიხართ ვაულტის ცივ სიღრმეებში.',
@@ -270,9 +278,10 @@ export default function VaultRunner() {
 
   const [isBebiaActive, setIsBebiaActive] = useState<boolean>(false);
   const [isSopoActive, setIsSopoActive] = useState<boolean>(false);
-  const [ultimatePhase, setUltimatePhase] = useState<'NONE' | 'FRIGHTENED' | 'CHASING' | 'FLAG'>('NONE');
+  const [ultimatePhase, setUltimatePhase] = useState<'NONE' | 'FRIGHTENED' | 'PROPOSING' | 'VANQUISHING' | 'CHASING' | 'FLAG'>('NONE');
   const [bebiaRunnerPos, setBebiaRunnerPos] = useState<Position | null>(null);
   const [sopoRunnerPos, setSopoRunnerPos] = useState<Position | null>(null);
+  const [dominickPosition, setDominickPosition] = useState<Position | null>(null);
   const audioBebiaUltimateRef = React.useRef<HTMLAudioElement | null>(null);
   const audioSopoWinsRef = React.useRef<HTMLAudioElement | null>(null);
   const [isSopoAudioPlaying, setIsSopoAudioPlaying] = useState<boolean>(false);
@@ -617,6 +626,41 @@ export default function VaultRunner() {
       console.warn("Audio playback failed", e);
     }
 
+    // Spawn Dominick 🤵 at closest open cell to center (7,7)
+    let domX = 7, domY = 7;
+    let foundCell = false;
+    const queue: Position[] = [{ x: 7, y: 7 }];
+    const visited = Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(false));
+    visited[7][7] = true;
+    while (queue.length > 0) {
+      const curr = queue.shift()!;
+      if (
+        grid[curr.y] &&
+        grid[curr.y][curr.x] === '.' &&
+        !(curr.x === playerPosition.x && curr.y === playerPosition.y) &&
+        !enemies.some(e => e.x === curr.x && e.y === curr.y)
+      ) {
+        domX = curr.x;
+        domY = curr.y;
+        foundCell = true;
+        break;
+      }
+      const neighbors = [
+        { x: curr.x + 1, y: curr.y },
+        { x: curr.x - 1, y: curr.y },
+        { x: curr.x, y: curr.y + 1 },
+        { x: curr.x, y: curr.y - 1 }
+      ];
+      for (const n of neighbors) {
+        if (n.x >= 0 && n.x < GRID_SIZE && n.y >= 0 && n.y < GRID_SIZE && !visited[n.y][n.x]) {
+          visited[n.y][n.x] = true;
+          queue.push(n);
+        }
+      }
+    }
+    const domPos = foundCell ? { x: domX, y: domY } : { x: 7, y: 7 };
+    setDominickPosition(domPos);
+
     // Start charmed sway movement interval
     const intervalId = setInterval(() => {
       setEnemies(prevEnemies => 
@@ -631,7 +675,7 @@ export default function VaultRunner() {
           for (const d of shuffled) {
             const nx = e.x + d.dx;
             const ny = e.y + d.dy;
-            if (grid[ny] && grid[ny][nx] !== '#' && !(nx === playerPosition.x && ny === playerPosition.y)) {
+            if (grid[ny] && grid[ny][nx] !== '#' && !(nx === playerPosition.x && ny === playerPosition.y) && !(nx === domPos.x && ny === domPos.y)) {
               return { ...e, x: nx, y: ny };
             }
           }
@@ -640,116 +684,161 @@ export default function VaultRunner() {
       );
     }, 200);
 
-    // After 2.8 seconds of charmed walking, proceed to proposal chasing phase
+    // After 2.8 seconds of charmed walking, proceed to proposing phase
     setTimeout(() => {
       clearInterval(intervalId);
+      setUltimatePhase('PROPOSING');
 
-      const currentEnemies = enemiesRef.current;
-      if (currentEnemies.length === 0) {
-        setIsSopoActive(false);
-        setUltimatePhase('NONE');
-        return;
+      // Calculate path from Sopo's current position to Dominick's position
+      const segmentToDom = getBresenhamPath(playerPosition.x, playerPosition.y, domPos.x, domPos.y);
+      const pathToDom = [...segmentToDom];
+      // Pop last step if it exactly lands on Dominick so Sopo stops adjacent to him
+      if (pathToDom.length > 0 && pathToDom[pathToDom.length - 1].x === domPos.x && pathToDom[pathToDom.length - 1].y === domPos.y) {
+        pathToDom.pop();
       }
 
-      setUltimatePhase('CHASING');
-
-      // Sort targets using nearest neighbor starting from playerPosition
-      let currentLoc = { ...playerPosition };
-      const orderedTargets: Enemy[] = [];
-      const remainingTargets = [...currentEnemies];
-      while (remainingTargets.length > 0) {
-        let closestIdx = 0;
-        let minDistance = Infinity;
-        for (let i = 0; i < remainingTargets.length; i++) {
-          const t = remainingTargets[i];
-          const dist = Math.abs(t.x - currentLoc.x) + Math.abs(t.y - currentLoc.y);
-          if (dist < minDistance) {
-            minDistance = dist;
-            closestIdx = i;
-          }
-        }
-        const closest = remainingTargets.splice(closestIdx, 1)[0];
-        orderedTargets.push(closest);
-        currentLoc = { x: closest.x, y: closest.y };
-      }
-
-      // Build step-by-step path visiting all enemies
-      let pathSteps: Position[] = [];
-      let lastPos = { ...playerPosition };
-      orderedTargets.forEach(target => {
-        const segment = getBresenhamPath(lastPos.x, lastPos.y, target.x, target.y);
-        pathSteps = [...pathSteps, ...segment, { x: target.x, y: target.y }];
-        lastPos = { x: target.x, y: target.y };
-      });
-
-      let currentStepIndex = 0;
+      let stepIdx = 0;
       setSopoRunnerPos(playerPosition);
-      let remainingEnemies = [...currentEnemies];
 
-      const stepInterval = setInterval(() => {
-        if (currentStepIndex >= pathSteps.length) {
-          clearInterval(stepInterval);
-          setSopoRunnerPos(null);
-          setUltimatePhase('FLAG');
+      const runToDomInterval = setInterval(() => {
+        if (stepIdx >= pathToDom.length) {
+          clearInterval(runToDomInterval);
+          
+          // Reach proposal spot: kneel and propose!
+          setLog(prev => [
+            lang === 'en' 
+              ? "💍 Sopo drops to one knee and proposes to Dominick!" 
+              : "💍 სოფო მუხლზე იჩოქებს და დომინიკს ხელს სთხოვს!", 
+            ...prev.slice(0, 4)
+          ]);
+          playLaserSound(); // chime sound
 
-          // Proposal overlay cover phase runs for 2 seconds, then ultimate ends
+          // Wait 1.5 seconds in proposal stance, then transition to vanquishing!
           setTimeout(() => {
-            setIsSopoActive(false);
-            setUltimatePhase('NONE');
-            setIsSopoAudioPlaying(false);
+            // Transition to Phase 3: Vanquishing!
+            setUltimatePhase('VANQUISHING');
             setLog(prev => [
               lang === 'en' 
-                ? "✨ Love fills the air. Hearts sprouted where invaders accepted Sopo!" 
-                : "✨ სიყვარულმა აავსო არემარე. გულები გაჩნდა იქ, სადაც მტრებმა სოფო მიიღეს!", 
+                ? "😭 The love-struck enemies fall to their knees in despair as Sopo vanquishes them!" 
+                : "😭 სიყვარულით დაზაფრული მტრები მუხლებზე ეცემიან სასოწარკვეთილებაში, როცა სოფო მათ ამარცხებს!", 
               ...prev.slice(0, 4)
             ]);
-          }, 2000);
+
+            const currentEnemies = enemiesRef.current;
+            if (currentEnemies.length === 0) {
+              setIsSopoActive(false);
+              setUltimatePhase('NONE');
+              setDominickPosition(null);
+              return;
+            }
+
+            // Path starting from current proposal position (end of pathToDom or playerPosition)
+            const finalProposalPos = pathToDom.length > 0 ? pathToDom[pathToDom.length - 1] : playerPosition;
+            let currentLoc = { ...finalProposalPos };
+            const orderedTargets: Enemy[] = [];
+            const remainingTargets = [...currentEnemies];
+            while (remainingTargets.length > 0) {
+              let closestIdx = 0;
+              let minDistance = Infinity;
+              for (let i = 0; i < remainingTargets.length; i++) {
+                const t = remainingTargets[i];
+                const dist = Math.abs(t.x - currentLoc.x) + Math.abs(t.y - currentLoc.y);
+                if (dist < minDistance) {
+                  minDistance = dist;
+                  closestIdx = i;
+                }
+              }
+              const closest = remainingTargets.splice(closestIdx, 1)[0];
+              orderedTargets.push(closest);
+              currentLoc = { x: closest.x, y: closest.y };
+            }
+
+            // Build path visiting all enemies
+            let pathSteps: Position[] = [];
+            let lastPos = { ...finalProposalPos };
+            orderedTargets.forEach(target => {
+              const segment = getBresenhamPath(lastPos.x, lastPos.y, target.x, target.y);
+              pathSteps = [...pathSteps, ...segment, { x: target.x, y: target.y }];
+              lastPos = { x: target.x, y: target.y };
+            });
+
+            let currentStepIndex = 0;
+            let remainingEnemies = [...currentEnemies];
+
+            const stepInterval = setInterval(() => {
+              if (currentStepIndex >= pathSteps.length) {
+                clearInterval(stepInterval);
+                setSopoRunnerPos(null);
+                setDominickPosition(null);
+                setUltimatePhase('FLAG');
+
+                // Proclamation card overlay runs for 2.5 seconds, then ultimate ends
+                setTimeout(() => {
+                  setIsSopoActive(false);
+                  setUltimatePhase('NONE');
+                  setIsSopoAudioPlaying(false);
+                  setLog(prev => [
+                    lang === 'en' 
+                      ? "✨ Sopo is unmatched in Beauty or Battle! The board is clear." 
+                      : "✨ სოფო შეუდარებელია სილამაზესა და ბრძოლაში! დაფა გასუფთავდა.", 
+                    ...prev.slice(0, 4)
+                  ]);
+                }, 2500);
+                return;
+              }
+
+              const nextPos = pathSteps[currentStepIndex];
+              setSopoRunnerPos(nextPos);
+
+              const hitEnemyIdx = remainingEnemies.findIndex(e => e.x === nextPos.x && e.y === nextPos.y);
+              if (hitEnemyIdx !== -1) {
+                const enemy = remainingEnemies[hitEnemyIdx];
+                remainingEnemies.splice(hitEnemyIdx, 1);
+
+                // Trigger heart explosion
+                setExplosionPositions(prev => [...prev, { x: enemy.x, y: enemy.y }]);
+                setTimeout(() => {
+                  setExplosionPositions(prev => prev.filter(pos => !(pos.x === enemy.x && pos.y === enemy.y)));
+                }, 250);
+
+                // Turn enemy spot to heart G
+                setGrid(prevGrid => {
+                  const newGrid = prevGrid.map((row, y) =>
+                    row.map((cell, x) => (x === enemy.x && y === enemy.y ? 'G' : cell))
+                  );
+                  return newGrid;
+                });
+
+                // Play sound
+                playLaserSound();
+
+                // Update score & log
+                setMonstersKilled(prev => prev + 1);
+                setScore(prev => prev + 20);
+                setLog(prev => [
+                  lang === 'en' 
+                    ? "💥 Invader vanquished by Sopo's unmatched grace! (+20 pts)" 
+                    : "💥 დამპყრობელი განადგურდა სოფოს შეუდარებელი მადლით! (+20 ქულა)", 
+                  ...prev.slice(0, 4)
+                ]);
+
+                // Remove enemy
+                setEnemies(prev => prev.filter(e => e.id !== enemy.id));
+              }
+
+              currentStepIndex++;
+            }, 180);
+
+          }, 1500);
           return;
         }
 
-        const nextPos = pathSteps[currentStepIndex];
-        setSopoRunnerPos(nextPos);
-
-        const hitEnemyIdx = remainingEnemies.findIndex(e => e.x === nextPos.x && e.y === nextPos.y);
-        if (hitEnemyIdx !== -1) {
-          const enemy = remainingEnemies[hitEnemyIdx];
-          remainingEnemies.splice(hitEnemyIdx, 1);
-
-          // Trigger explosion (heart explosion in render)
-          setExplosionPositions(prev => [...prev, { x: enemy.x, y: enemy.y }]);
-          setTimeout(() => {
-            setExplosionPositions(prev => prev.filter(pos => !(pos.x === enemy.x && pos.y === enemy.y)));
-          }, 250);
-
-          // Change cell to gold (which is rendered as hearts for Sopo)
-          setGrid(prevGrid => {
-            const newGrid = prevGrid.map((row, y) =>
-              row.map((cell, x) => (x === enemy.x && y === enemy.y ? 'G' : cell))
-            );
-            return newGrid;
-          });
-
-          // Play laser sound
-          playLaserSound();
-
-          // Update game score/kills and logs
-          setMonstersKilled(prev => prev + 1);
-          setScore(prev => prev + 20);
-          setLog(prev => [
-            lang === 'en' 
-              ? "💍 Enemy accepted the proposal! ❤️" 
-              : "💍 მტერმა მიიღო ხელის თხოვნა! ❤️", 
-            ...prev.slice(0, 4)
-          ]);
-
-          // Remove enemy from state
-          setEnemies(prev => prev.filter(e => e.id !== enemy.id));
-        }
-
-        currentStepIndex++;
+        setSopoRunnerPos(pathToDom[stepIdx]);
+        stepIdx++;
       }, 180);
+
     }, 2800);
-  }, [gameState, isAnimating, isSopoActive, enemies, lang, grid, playerPosition, getBresenhamPath, playLaserSound]);
+  }, [gameState, isAnimating, isSopoActive, enemies, lang, grid, playerPosition, getBresenhamPath, playLaserSound, audioSopoWinsRef, setIsSopoAudioPlaying]);
 
 
 
@@ -1789,16 +1878,18 @@ export default function VaultRunner() {
                       </radialGradient>
                     </defs>
                     <rect width="300" height="200" fill="url(#heartGrad)" rx="15" stroke="#ff69b4" strokeWidth="3" />
-                    <path d="M150 145 C110 100, 80 70, 80 45 C80 25, 95 10, 115 10 C130 10, 142 20, 150 30 C158 20, 170 10, 185 10 C205 10, 220 25, 220 45 C220 70, 190 100, 150 145 Z" fill="#ffb6c1" opacity="0.3" />
-                    <circle cx="130" cy="85" r="28" stroke="#ffd700" strokeWidth="7" fill="none" filter="drop-shadow(0 0 4px rgba(255,215,0,0.8))" />
-                    <rect x="123" y="51" width="14" height="8" rx="2" fill="#00e5ff" filter="drop-shadow(0 0 5px #00e5ff)" />
-                    <circle cx="170" cy="85" r="28" stroke="#ffa500" strokeWidth="7" fill="none" filter="drop-shadow(0 0 4px rgba(255,165,0,0.8))" />
-                    <text x="150" y="92" fontSize="24" textAnchor="middle">💖</text>
-                    <text x="150" y="150" fill="#d6336c" fontSize="14" fontWeight="bold" fontFamily="Georgia, serif" textAnchor="middle">
-                      {lang === 'en' ? 'Will you marry me? 💍' : 'ცოლად გამომყვები? 💍'}
+                    <path d="M150 140 C110 95, 80 65, 80 40 C80 20, 95 5, 115 5 C130 5, 142 15, 150 25 C158 15, 170 5, 185 5 C205 5, 220 20, 220 40 C220 65, 190 95, 150 140 Z" fill="#ffb6c1" opacity="0.3" />
+                    <circle cx="130" cy="75" r="24" stroke="#ffd700" strokeWidth="6" fill="none" filter="drop-shadow(0 0 3px rgba(255,215,0,0.8))" />
+                    <rect x="124" y="46" width="12" height="7" rx="2" fill="#00e5ff" filter="drop-shadow(0 0 4px #00e5ff)" />
+                    <circle cx="170" cy="75" r="24" stroke="#ffa500" strokeWidth="6" fill="none" filter="drop-shadow(0 0 3px rgba(255,165,0,0.8))" />
+                    <text x="110" y="82" fontSize="22" textAnchor="middle">👑</text>
+                    <text x="190" y="82" fontSize="22" textAnchor="middle">🤵</text>
+                    <text x="150" y="82" fontSize="20" textAnchor="middle">💖</text>
+                    <text x="150" y="142" fill="#d6336c" fontSize="13" fontWeight="bold" fontFamily="Georgia, serif" textAnchor="middle">
+                      {t.sopoProclamation}
                     </text>
-                    <text x="150" y="173" fill="#4a4a4a" fontSize="10" fontFamily="monospace" textAnchor="middle">
-                      {lang === 'en' ? '"My home and my greatest adventure"' : '"ჩემი სახლი და უდიდესი თავგადასავალი"'}
+                    <text x="150" y="168" fill="#4a4a4a" fontSize="10" fontFamily="monospace" textAnchor="middle">
+                      {t.sopoProclamationSubtitle}
                     </text>
                   </svg>
                 </div>
@@ -1818,15 +1909,19 @@ export default function VaultRunner() {
 
               const isRunner = bebiaRunnerPos && bebiaRunnerPos.x === x && bebiaRunnerPos.y === y;
               const isSopoRunner = sopoRunnerPos && sopoRunnerPos.x === x && sopoRunnerPos.y === y;
+              const isDominick = dominickPosition && dominickPosition.x === x && dominickPosition.y === y;
 
               if (isRunner) {
                 glyph = '🇬🇪';
                 color = '#ffd700';
               } else if (isSopoRunner) {
-                glyph = '💍';
+                glyph = ultimatePhase === 'PROPOSING' ? '🧎‍♀️' : '💍';
                 color = '#ff69b4';
+              } else if (isDominick) {
+                glyph = '🤵';
+                color = '#00e5ff';
               } else if (x === playerPosition.x && y === playerPosition.y) {
-                if ((playerClass === 'Bebia' || playerClass === 'Fighter') && (ultimatePhase === 'CHASING' || ultimatePhase === 'FLAG')) {
+                if ((playerClass === 'Bebia' || playerClass === 'Fighter') && (ultimatePhase === 'CHASING' || ultimatePhase === 'PROPOSING' || ultimatePhase === 'VANQUISHING' || ultimatePhase === 'FLAG')) {
                   glyph = '.';
                   color = '#222';
                 } else {
@@ -1850,8 +1945,21 @@ export default function VaultRunner() {
               } else {
                 const hasEnemy = enemies.find(e => e.x === x && e.y === y);
                 if (hasEnemy) {
-                  glyph = ultimatePhase === 'FRIGHTENED' ? (playerClass === 'Fighter' ? '😍' : '😱') : getEnemyGlyph(currentLevel, hasEnemy.id);
-                  color = ultimatePhase === 'FRIGHTENED' ? (playerClass === 'Fighter' ? '#ff69b4' : '#ffea00') : '#ff1744';
+                  if (playerClass === 'Fighter') {
+                    if (ultimatePhase === 'FRIGHTENED' || ultimatePhase === 'PROPOSING') {
+                      glyph = '😍';
+                      color = '#ff69b4';
+                    } else if (ultimatePhase === 'VANQUISHING') {
+                      glyph = '🧎';
+                      color = '#ff69b4';
+                    } else {
+                      glyph = getEnemyGlyph(currentLevel, hasEnemy.id);
+                      color = '#ff1744';
+                    }
+                  } else {
+                    glyph = ultimatePhase === 'FRIGHTENED' ? '😱' : getEnemyGlyph(currentLevel, hasEnemy.id);
+                    color = ultimatePhase === 'FRIGHTENED' ? '#ffea00' : '#ff1744';
+                  }
                   cursor = 'pointer';
                 } else if (cell === 'S') {
                   color = '#ffea00';
