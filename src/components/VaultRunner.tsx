@@ -774,7 +774,10 @@ export default function VaultRunner() {
                 setDominickPosition(null);
                 setUltimatePhase('FLAG');
 
+                let hasEnded = false;
                 const endUltimate = () => {
+                  if (hasEnded) return;
+                  hasEnded = true;
                   if (audioSopoWinsRef.current) {
                     audioSopoWinsRef.current.onended = null;
                   }
@@ -789,15 +792,20 @@ export default function VaultRunner() {
                   ]);
                 };
 
-                // Stay up for at least 12 seconds, or until the song ends + 2 seconds (whichever is longer)
-                let audioRemaining = 0;
+                // Fallback timer: if audio doesn't play or is blocked, close card after 15 seconds
+                const fallbackTimer = setTimeout(endUltimate, 15000);
+
                 if (audioSopoWinsRef.current && !audioSopoWinsRef.current.paused && !audioSopoWinsRef.current.ended) {
-                  const duration = audioSopoWinsRef.current.duration || 19.12;
-                  const currentTime = audioSopoWinsRef.current.currentTime || 0;
-                  audioRemaining = (duration - currentTime) * 1000 + 2000;
+                  audioSopoWinsRef.current.onended = () => {
+                    // Wait 2 seconds after the song ends to let the celebration settle
+                    setTimeout(() => {
+                      clearTimeout(fallbackTimer);
+                      endUltimate();
+                    }, 2000);
+                  };
+                } else {
+                  // If audio is muted/paused/blocked, fallback handles it in 15 seconds
                 }
-                const finalTimeout = Math.max(12000, audioRemaining);
-                setTimeout(endUltimate, finalTimeout);
                 return;
               }
 
