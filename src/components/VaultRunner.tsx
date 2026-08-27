@@ -774,8 +774,10 @@ export default function VaultRunner() {
                 setDominickPosition(null);
                 setUltimatePhase('FLAG');
 
-                // Proclamation card overlay runs for 6 seconds, then ultimate ends
-                setTimeout(() => {
+                const endUltimate = () => {
+                  if (audioSopoWinsRef.current) {
+                    audioSopoWinsRef.current.onended = null;
+                  }
                   setIsSopoActive(false);
                   setUltimatePhase('NONE');
                   setIsSopoAudioPlaying(false);
@@ -785,7 +787,16 @@ export default function VaultRunner() {
                       : "✨ სოფო შეუდარებელია სილამაზესა და ბრძოლაში! დაფა გასუფთავდა.", 
                     ...prev.slice(0, 4)
                   ]);
-                }, 6000);
+                };
+
+                if (audioSopoWinsRef.current && !audioSopoWinsRef.current.paused && !audioSopoWinsRef.current.ended) {
+                  audioSopoWinsRef.current.onended = () => {
+                    endUltimate();
+                  };
+                } else {
+                  // Fallback if audio is muted or blocked
+                  setTimeout(endUltimate, 6000);
+                }
                 return;
               }
 
