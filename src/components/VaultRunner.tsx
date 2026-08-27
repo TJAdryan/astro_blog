@@ -51,7 +51,8 @@ const TRANSLATIONS = {
     sopoProposesLog: "💍 Sopo drops to one knee and proposes to Dominick!",
     sopoVanquishLog: "😭 The love-struck enemies fall to their knees in despair as Sopo vanquishes them!",
     sopoProclamation: "Sopo is unmatched in Beauty or Battle!",
-    sopoProclamationSubtitle: '"My home and my greatest adventure"',
+    sopoProclamationSubtitle1: "Dominick, you are my home and my greatest adventure,",
+    sopoProclamationSubtitle2: "asking you to marry me was my greatest victory.",
     // Logs
     welcomeLog: 'Welcome to the Vault. Find the stairs (S) to descend.',
     enterLog: 'You enter the cold depths of the Vault.',
@@ -115,7 +116,8 @@ const TRANSLATIONS = {
     sopoProposesLog: "💍 სოფო მუხლზე იჩოქებს და დომინიკს ხელს სთხოვს!",
     sopoVanquishLog: "😭 სიყვარულით დაზაფრული მტრები მუხლებზე ეცემიან სასოწარკვეთილებაში, როცა სოფო მათ ამარცხებს!",
     sopoProclamation: "სოფო შეუდარებელია სილამაზესა და ბრძოლაში!",
-    sopoProclamationSubtitle: '"ჩემი სახლი და უდიდესი თავგადასავალი"',
+    sopoProclamationSubtitle1: "დომინიკ, შენ ხარ ჩემი სახლი და ჩემი უდიდესი თავგადასავალი,",
+    sopoProclamationSubtitle2: "შენთვის ხელის თხოვნა ჩემი უდიდესი გამარჯვება იყო.",
     // Logs
     welcomeLog: 'კეთილი იყოს თქვენი მობრძანება ვაულტში. ჩასასვლელად იპოვეთ კიბე (S).',
     enterLog: 'თქვენ შედიხართ ვაულტის ცივ სიღრმეებში.',
@@ -772,7 +774,7 @@ export default function VaultRunner() {
                 setDominickPosition(null);
                 setUltimatePhase('FLAG');
 
-                // Proclamation card overlay runs for 2.5 seconds, then ultimate ends
+                // Proclamation card overlay runs for 6 seconds, then ultimate ends
                 setTimeout(() => {
                   setIsSopoActive(false);
                   setUltimatePhase('NONE');
@@ -783,7 +785,7 @@ export default function VaultRunner() {
                       : "✨ სოფო შეუდარებელია სილამაზესა და ბრძოლაში! დაფა გასუფთავდა.", 
                     ...prev.slice(0, 4)
                   ]);
-                }, 2500);
+                }, 6000);
                 return;
               }
 
@@ -1885,11 +1887,14 @@ export default function VaultRunner() {
                     <text x="110" y="82" fontSize="22" textAnchor="middle">👑</text>
                     <text x="190" y="82" fontSize="22" textAnchor="middle">🤵</text>
                     <text x="150" y="82" fontSize="20" textAnchor="middle">💖</text>
-                    <text x="150" y="142" fill="#d6336c" fontSize="13" fontWeight="bold" fontFamily="Georgia, serif" textAnchor="middle">
+                    <text x="150" y="138" fill="#d6336c" fontSize="12" fontWeight="bold" fontFamily="Georgia, serif" textAnchor="middle">
                       {t.sopoProclamation}
                     </text>
-                    <text x="150" y="168" fill="#4a4a4a" fontSize="10" fontFamily="monospace" textAnchor="middle">
-                      {t.sopoProclamationSubtitle}
+                    <text x="150" y="160" fill="#4a4a4a" fontSize="8" fontFamily="monospace" textAnchor="middle">
+                      {t.sopoProclamationSubtitle1}
+                    </text>
+                    <text x="150" y="176" fill="#4a4a4a" fontSize="8" fontFamily="monospace" textAnchor="middle">
+                      {t.sopoProclamationSubtitle2}
                     </text>
                   </svg>
                 </div>
