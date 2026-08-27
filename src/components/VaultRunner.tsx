@@ -789,15 +789,15 @@ export default function VaultRunner() {
                   ]);
                 };
 
-                 if (audioSopoWinsRef.current && !audioSopoWinsRef.current.paused && !audioSopoWinsRef.current.ended) {
-                  audioSopoWinsRef.current.onended = () => {
-                    // Wait 2 seconds after the song ends
-                    setTimeout(endUltimate, 2000);
-                  };
-                } else {
-                  // Fallback if audio is muted or blocked (8 seconds total)
-                  setTimeout(endUltimate, 8000);
+                // Stay up for at least 12 seconds, or until the song ends + 2 seconds (whichever is longer)
+                let audioRemaining = 0;
+                if (audioSopoWinsRef.current && !audioSopoWinsRef.current.paused && !audioSopoWinsRef.current.ended) {
+                  const duration = audioSopoWinsRef.current.duration || 19.12;
+                  const currentTime = audioSopoWinsRef.current.currentTime || 0;
+                  audioRemaining = (duration - currentTime) * 1000 + 2000;
                 }
+                const finalTimeout = Math.max(12000, audioRemaining);
+                setTimeout(endUltimate, finalTimeout);
                 return;
               }
 
