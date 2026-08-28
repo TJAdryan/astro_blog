@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-08-28T17:02:44.940Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times between Kings Hwy and Newkirk Plaza (up to 18 mins, normally every 9 mins).",
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between 96 St and Avenue M (up to 12 mins, normally every 9 mins)."
+    ]
+  },
+  {
     "date": "2026-08-27T16:44:03.390Z",
     "status": "Delays",
     "details": [
@@ -201,14 +209,6 @@
     "details": [
       "Northbound: 96 St-bound trains are having longer wait times between 34 St - Herald Sq and 57 St - 7 Av (up to 17 mins, normally every 11 mins).",
       "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Avenue U and Neck Rd (up to 14 mins, normally every 10 mins)."
-    ]
-  },
-  {
-    "date": "2026-07-27T15:38:49.101Z",
-    "status": "Delays",
-    "details": [
-      "Northbound: 96 St-bound trains are taking 6 mins longer to travel between 72 St and 96 St.",
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Cortelyou Rd and Coney Island - Stillwell Av (up to 16 mins, normally every 10 mins)."
     ]
   }
 ]
