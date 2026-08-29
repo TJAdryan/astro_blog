@@ -376,7 +376,7 @@ export default function VaultRunner() {
     
     // Add to game log so it is visual
     const displayPhrase = isGeorgia ? 'საქართველოსთვის!' : 'ხაჭაპური, ცეცხლი!';
-    setLog(prev => [`Bebia: "${displayPhrase}"`, ...prev.slice(0, 4)]);
+    setLog(prev => [`Bebia: "${displayPhrase}"`, ...prev]);
 
     try {
       const audio = isGeorgia ? audioGeorgiaRef.current : audioKhachapuriRef.current;
@@ -454,14 +454,14 @@ export default function VaultRunner() {
   const triggerBebiaUltimate = useCallback(() => {
     if (gameState !== 'PLAYING' || isAnimating || isBebiaActive) return;
     if (enemies.length === 0) {
-      setLog(prev => [lang === 'en' ? "No enemies to destroy!" : "დასამარცხებელი მტერი არ არის!", ...prev.slice(0, 4)]);
+      setLog(prev => [lang === 'en' ? "No enemies to destroy!" : "დასამარცხებელი მტერი არ არის!", ...prev]);
       return;
     }
 
     setIsBebiaActive(true);
     setUltimatePhase('FRIGHTENED');
-    setLog(prev => [lang === 'en' ? "🔥 Bebia Ultimate Activated! 🇬🇪" : "🔥 ბებიას ძალა გააქტიურებულია! 🇬🇪", ...prev.slice(0, 4)]);
-    setLog(prev => [lang === 'en' ? "😱 Monsters are terrified! They run frantically!" : "😱 მონსტრები შეშინდნენ! ისინი გიჟივით დარბიან!", ...prev.slice(0, 4)]);
+    setLog(prev => [lang === 'en' ? "🔥 Bebia Ultimate Activated! 🇬🇪" : "🔥 ბებიას ძალა გააქტიურებულია! 🇬🇪", ...prev]);
+    setLog(prev => [lang === 'en' ? "😱 Monsters are terrified! They run frantically!" : "😱 მონსტრები შეშინდნენ! ისინი გიჟივით დარბიან!", ...prev]);
 
     try {
       if (audioBebiaUltimateRef.current) {
@@ -551,7 +551,7 @@ export default function VaultRunner() {
           setTimeout(() => {
             setIsBebiaActive(false);
             setUltimatePhase('NONE');
-            setLog(prev => [lang === 'en' ? "✨ Golden dust settles. Gold spawned where enemies fell!" : "✨ ოქრო გაჩნდა იქ, სადაც მტრები დაეცნენ!", ...prev.slice(0, 4)]);
+            setLog(prev => [lang === 'en' ? "✨ Golden dust settles. Gold spawned where enemies fell!" : "✨ ოქრო გაჩნდა იქ, სადაც მტრები დაეცნენ!", ...prev]);
           }, 2000);
           return;
         }
@@ -584,7 +584,7 @@ export default function VaultRunner() {
           // Update game score/kills and logs
           setMonstersKilled(prev => prev + 1);
           setScore(prev => prev + 20);
-          setLog(prev => [lang === 'en' ? "💥 Exploded enemy into gold!" : "💥 მტერი ოქროდ იქცა!", ...prev.slice(0, 4)]);
+          setLog(prev => [lang === 'en' ? "💥 Exploded enemy into gold!" : "💥 მტერი ოქროდ იქცა!", ...prev]);
 
           // Remove enemy from state
           setEnemies(prev => prev.filter(e => e.id !== enemy.id));
@@ -598,7 +598,7 @@ export default function VaultRunner() {
   const triggerSopoUltimate = useCallback(() => {
     if (gameState !== 'PLAYING' || isAnimating || isSopoActive) return;
     if (enemies.length === 0) {
-      setLog(prev => [lang === 'en' ? "No targets to propose to!" : "მოსახიბლი მტერი არ არის!", ...prev.slice(0, 4)]);
+      setLog(prev => [lang === 'en' ? "No targets to propose to!" : "მოსახიბლი მტერი არ არის!", ...prev]);
       return;
     }
 
@@ -608,13 +608,13 @@ export default function VaultRunner() {
       lang === 'en' 
         ? "💍 Sopo Proposal Ultimate Activated! 💖" 
         : "💍 სოფოს ძალა გააქტიურებულია! 💖", 
-      ...prev.slice(0, 4)
+      ...prev
     ]);
     setLog(prev => [
       lang === 'en' 
         ? "😍 Monsters are charmed by Sopo's beauty and grace! They wander in awe!" 
         : "😍 მონსტრები მოიხიბლნენ სოფოს სილამაზითა და მადლით! ისინი გაოცებულები დადიან!", 
-      ...prev.slice(0, 4)
+      ...prev
     ]);
 
     try {
@@ -711,7 +711,7 @@ export default function VaultRunner() {
             lang === 'en' 
               ? "💍 Sopo drops to one knee and proposes to Dominick!" 
               : "💍 სოფო მუხლზე იჩოქებს და დომინიკს ხელს სთხოვს!", 
-            ...prev.slice(0, 4)
+            ...prev
           ]);
           playLaserSound(); // chime sound
 
@@ -723,7 +723,7 @@ export default function VaultRunner() {
               lang === 'en' 
                 ? "😭 The love-struck enemies fall to their knees in despair as Sopo vanquishes them!" 
                 : "😭 სიყვარულით დაზაფრული მტრები მუხლებზე ეცემიან სასოწარკვეთილებაში, როცა სოფო მათ ამარცხებს!", 
-              ...prev.slice(0, 4)
+              ...prev
             ]);
 
             const currentEnemies = enemiesRef.current;
@@ -788,7 +788,7 @@ export default function VaultRunner() {
                     lang === 'en' 
                       ? "✨ Sopo is unmatched in Beauty or Battle! The board is clear." 
                       : "✨ სოფო შეუდარებელია სილამაზესა და ბრძოლაში! დაფა გასუფთავდა.", 
-                    ...prev.slice(0, 4)
+                    ...prev
                   ]);
                 };
 
@@ -841,7 +841,7 @@ export default function VaultRunner() {
                   lang === 'en' 
                     ? "💥 Invader vanquished by Sopo's unmatched grace! (+20 pts)" 
                     : "💥 დამპყრობელი განადგურდა სოფოს შეუდარებელი მადლით! (+20 ქულა)", 
-                  ...prev.slice(0, 4)
+                  ...prev
                 ]);
 
                 // Remove enemy
@@ -1078,7 +1078,7 @@ export default function VaultRunner() {
     setEnemies(updatedEnemies);
     setPlayerStats(prev => ({ ...prev, hp: currentHp }));
     if (nextLogs.length > 0) {
-      setLog(prev => [...nextLogs, ...prev.slice(0, 4)]);
+      setLog(prev => [...nextLogs, ...prev]);
     }
   }, [playerStats.hp, playerStats.def, grid, lang]);
 
@@ -1116,7 +1116,7 @@ export default function VaultRunner() {
 
     setEnemies(updatedEnemies);
     setPlayerStats({ ...playerStats });
-    setLog(prev => [...nextLog, ...prev.slice(0, 4)]);
+    setLog(prev => [...nextLog, ...prev]);
   };
 
   // --- TURN ENGINE & MOVEMENT ---
@@ -1139,7 +1139,7 @@ export default function VaultRunner() {
     if (grid[newY] && grid[newY][newX] === 'G') {
       setGoldCollected(prev => prev + 1);
       setScore(prev => prev + 10);
-      setLog(prev => [t.goldCollectedLog, ...prev.slice(0, 4)]);
+      setLog(prev => [t.goldCollectedLog, ...prev]);
       nextGrid = grid.map((row, y) =>
         row.map((cell, x) => (x === newX && y === newY ? '.' : cell))
       );
@@ -1167,7 +1167,7 @@ export default function VaultRunner() {
     if (gameState !== 'PLAYING' || isAnimating || isBebiaActive) return;
 
     if (!hasLineOfSight(playerPosition.x, playerPosition.y, targetEnemy.x, targetEnemy.y, grid)) {
-      setLog(prev => [t.losBlockedLog, ...prev.slice(0, 4)]);
+      setLog(prev => [t.losBlockedLog, ...prev]);
       return;
     }
 
@@ -1247,7 +1247,7 @@ export default function VaultRunner() {
             }
 
             setEnemies(latestEnemiesList);
-            setLog(prev => [...nextLog, ...prev.slice(0, 4)]);
+            setLog(prev => [...nextLog, ...prev]);
             processEnemyTurns(playerPosition.x, playerPosition.y, latestEnemiesList);
           }
 
@@ -1268,7 +1268,7 @@ export default function VaultRunner() {
     });
 
     if (validEnemies.length === 0) {
-      setLog(prev => [t.noTargetsLog, ...prev.slice(0, 4)]);
+      setLog(prev => [t.noTargetsLog, ...prev]);
       return;
     }
 
@@ -1331,7 +1331,7 @@ export default function VaultRunner() {
 
             setGrid(currentGrid);
             setEnemies(updatedEnemies);
-            setLog(prev => [...nextLogEntries, ...prev.slice(0, 4)]);
+            setLog(prev => [...nextLogEntries, ...prev]);
             processEnemyTurns(playerPosition.x, playerPosition.y, updatedEnemies);
 
             setIsAnimating(false);
