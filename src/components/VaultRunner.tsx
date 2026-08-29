@@ -52,7 +52,7 @@ const TRANSLATIONS = {
     sopoVanquishLog: "😭 The love-struck enemies fall to their knees in despair as Sopo vanquishes them!",
     sopoProclamation: "Sopo is unmatched in Beauty or Battle!",
     sopoProclamationSubtitle1: "Dominick, you are my greatest adventure",
-    sopoProclamationSubtitle2: "and proposing to you my greatest victory",
+    sopoProclamationSubtitle2: "and proposing to you my most glorious victory",
     // Logs
     welcomeLog: 'Welcome to the Vault. Find the stairs (S) to descend.',
     enterLog: 'You enter the cold depths of the Vault.',
@@ -117,7 +117,7 @@ const TRANSLATIONS = {
     sopoVanquishLog: "😭 სიყვარულით დაზაფრული მტრები მუხლებზე ეცემიან სასოწარკვეთილებაში, როცა სოფო მათ ამარცხებს!",
     sopoProclamation: "სოფო შეუდარებელია სილამაზესა და ბრძოლაში!",
     sopoProclamationSubtitle1: "დომინიკ, შენ ხარ ჩემი უდიდესი თავგადასავალი",
-    sopoProclamationSubtitle2: "და შენთვის ხელის თხოვნა – ჩემი უდიდესი გამარჯვება.",
+    sopoProclamationSubtitle2: "და შენთვის ხელის თხოვნა – ჩემი ყველაზე დიდებული გამარჯვება.",
     // Logs
     welcomeLog: 'კეთილი იყოს თქვენი მობრძანება ვაულტში. ჩასასვლელად იპოვეთ კიბე (S).',
     enterLog: 'თქვენ შედიხართ ვაულტის ცივ სიღრმეებში.',
