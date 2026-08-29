@@ -790,16 +790,27 @@ export default function VaultRunner() {
                   ]);
                 };
 
-                // Fallback timer: if audio doesn't play or is blocked, close card after 15 seconds
-                const fallbackTimer = setTimeout(endUltimate, 15000);
+                const minCardDisplayMs = 10000;
+                const cardShowTime = Date.now();
+
+                const tryDismiss = () => {
+                  const elapsed = Date.now() - cardShowTime;
+                  if (elapsed >= minCardDisplayMs) {
+                    endUltimate();
+                  } else {
+                    setTimeout(endUltimate, minCardDisplayMs - elapsed);
+                  }
+                };
 
                 if (audioSopoWinsRef.current && !audioSopoWinsRef.current.paused && !audioSopoWinsRef.current.ended) {
                   audioSopoWinsRef.current.onended = () => {
-                    clearTimeout(fallbackTimer);
-                    endUltimate();
+                    tryDismiss();
                   };
+                  // Safety timer to prevent ultimate getting stuck in case of event loss
+                  setTimeout(tryDismiss, 30000);
                 } else {
-                  // If audio is muted/paused/blocked, fallback handles it in 15 seconds
+                  // Fallback if audio is muted or blocked: show card for exactly 10 seconds
+                  setTimeout(endUltimate, minCardDisplayMs);
                 }
                 return;
               }
