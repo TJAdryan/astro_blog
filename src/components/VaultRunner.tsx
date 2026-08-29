@@ -51,7 +51,8 @@ const TRANSLATIONS = {
     sopoProposesLog: "💍 Sopo drops to one knee and proposes to Dominick!",
     sopoVanquishLog: "😭 The love-struck enemies fall to their knees in despair as Sopo vanquishes them!",
     sopoProclamation: "Sopo is unmatched in Beauty or Battle!",
-    sopoProclamationSubtitle: "Dominick, you are my greatest adventure and ultimate victory.",
+    sopoProclamationSubtitle1: "Dominick, you are my greatest adventure",
+    sopoProclamationSubtitle2: "and proposing to you my greatest victory",
     // Logs
     welcomeLog: 'Welcome to the Vault. Find the stairs (S) to descend.',
     enterLog: 'You enter the cold depths of the Vault.',
@@ -115,7 +116,8 @@ const TRANSLATIONS = {
     sopoProposesLog: "💍 სოფო მუხლზე იჩოქებს და დომინიკს ხელს სთხოვს!",
     sopoVanquishLog: "😭 სიყვარულით დაზაფრული მტრები მუხლებზე ეცემიან სასოწარკვეთილებაში, როცა სოფო მათ ამარცხებს!",
     sopoProclamation: "სოფო შეუდარებელია სილამაზესა და ბრძოლაში!",
-    sopoProclamationSubtitle: "დომინიკ, შენ ხარ ჩემი უდიდესი თავგადასავალი და საბოლოო გამარჯვება.",
+    sopoProclamationSubtitle1: "დომინიკ, შენ ხარ ჩემი უდიდესი თავგადასავალი",
+    sopoProclamationSubtitle2: "და შენთვის ხელის თხოვნა – ჩემი უდიდესი გამარჯვება.",
     // Logs
     welcomeLog: 'კეთილი იყოს თქვენი მობრძანება ვაულტში. ჩასასვლელად იპოვეთ კიბე (S).',
     enterLog: 'თქვენ შედიხართ ვაულტის ცივ სიღრმეებში.',
@@ -1922,8 +1924,11 @@ export default function VaultRunner() {
                     <text x="150" y="140" fill="#d6336c" fontSize="12" fontWeight="bold" fontFamily="Georgia, serif" textAnchor="middle">
                       {t.sopoProclamation}
                     </text>
-                    <text x="150" y="166" fill="#4a4a4a" fontSize="8" fontFamily="monospace" textAnchor="middle">
-                      {t.sopoProclamationSubtitle}
+                    <text x="150" y="160" fill="#4a4a4a" fontSize="8" fontFamily="monospace" textAnchor="middle">
+                      {t.sopoProclamationSubtitle1}
+                    </text>
+                    <text x="150" y="176" fill="#4a4a4a" fontSize="8" fontFamily="monospace" textAnchor="middle">
+                      {t.sopoProclamationSubtitle2}
                     </text>
                   </svg>
                 </div>
