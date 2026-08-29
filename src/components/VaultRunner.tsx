@@ -1558,6 +1558,11 @@ export default function VaultRunner() {
           90% { transform: scale(15); opacity: 1; }
           100% { transform: scale(25); opacity: 0; }
         }
+        @keyframes card-zoom-in {
+          0% { transform: scale(0.1); opacity: 0; }
+          70% { transform: scale(1.05); opacity: 1; }
+          100% { transform: scale(1); opacity: 1; }
+        }
         @keyframes pulsate {
           0% { box-shadow: 0 0 8px rgba(0, 229, 255, 0.4); border-color: #00e5ff; }
           50% { box-shadow: 0 0 16px rgba(0, 229, 255, 0.8), 0 0 20px rgba(255, 23, 68, 0.4); border-color: #ff1744; }
@@ -1626,7 +1631,7 @@ export default function VaultRunner() {
           justify-content: center !important;
           z-index: 15 !important;
           pointer-events: none !important;
-          animation: flag-zoom 2s forwards !important;
+          animation: card-zoom-in 0.5s ease-out forwards !important;
           filter: drop-shadow(0 0 20px rgba(255, 105, 180, 0.6)) !important;
         }
         @media (max-width: 768px) {
