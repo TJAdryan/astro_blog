@@ -772,6 +772,8 @@ export default function VaultRunner() {
                 setDominickPosition(null);
                 setUltimatePhase('FLAG');
 
+                const minCardDisplayMs = 10000;
+                const cardShowTime = Date.now();
                 let hasEnded = false;
                 const endUltimate = () => {
                   if (hasEnded) return;
@@ -782,16 +784,15 @@ export default function VaultRunner() {
                   setIsSopoActive(false);
                   setUltimatePhase('NONE');
                   setIsSopoAudioPlaying(false);
+                  
+                  const elapsed = Date.now() - cardShowTime;
                   setLog(prev => [
                     lang === 'en' 
-                      ? "✨ Sopo is unmatched in Beauty or Battle! The board is clear." 
-                      : "✨ სოფო შეუდარებელია სილამაზესა და ბრძოლაში! დაფა გასუფთავდა.", 
+                      ? `✨ Sopo is unmatched in Beauty or Battle! (Card shown for ${(elapsed / 1000).toFixed(1)}s)` 
+                      : `✨ სოფო შეუდარებელია სილამაზესა და ბრძოლაში! (ბარათი გამოჩნდა ${(elapsed / 1000).toFixed(1)}წმ)`, 
                     ...prev
                   ]);
                 };
-
-                const minCardDisplayMs = 10000;
-                const cardShowTime = Date.now();
 
                 const tryDismiss = () => {
                   const elapsed = Date.now() - cardShowTime;
