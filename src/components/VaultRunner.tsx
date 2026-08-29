@@ -51,8 +51,7 @@ const TRANSLATIONS = {
     sopoProposesLog: "💍 Sopo drops to one knee and proposes to Dominick!",
     sopoVanquishLog: "😭 The love-struck enemies fall to their knees in despair as Sopo vanquishes them!",
     sopoProclamation: "Sopo is unmatched in Beauty or Battle!",
-    sopoProclamationSubtitle1: "Dominick, you are my home and my greatest adventure,",
-    sopoProclamationSubtitle2: "asking you to marry me was my greatest victory.",
+    sopoProclamationSubtitle: "Dominick, you are my greatest adventure and ultimate victory.",
     // Logs
     welcomeLog: 'Welcome to the Vault. Find the stairs (S) to descend.',
     enterLog: 'You enter the cold depths of the Vault.',
@@ -116,8 +115,7 @@ const TRANSLATIONS = {
     sopoProposesLog: "💍 სოფო მუხლზე იჩოქებს და დომინიკს ხელს სთხოვს!",
     sopoVanquishLog: "😭 სიყვარულით დაზაფრული მტრები მუხლებზე ეცემიან სასოწარკვეთილებაში, როცა სოფო მათ ამარცხებს!",
     sopoProclamation: "სოფო შეუდარებელია სილამაზესა და ბრძოლაში!",
-    sopoProclamationSubtitle1: "დომინიკ, შენ ხარ ჩემი სახლი და ჩემი უდიდესი თავგადასავალი,",
-    sopoProclamationSubtitle2: "შენთვის ხელის თხოვნა ჩემი უდიდესი გამარჯვება იყო.",
+    sopoProclamationSubtitle: "დომინიკ, შენ ხარ ჩემი უდიდესი თავგადასავალი და საბოლოო გამარჯვება.",
     // Logs
     welcomeLog: 'კეთილი იყოს თქვენი მობრძანება ვაულტში. ჩასასვლელად იპოვეთ კიბე (S).',
     enterLog: 'თქვენ შედიხართ ვაულტის ცივ სიღრმეებში.',
@@ -797,11 +795,8 @@ export default function VaultRunner() {
 
                 if (audioSopoWinsRef.current && !audioSopoWinsRef.current.paused && !audioSopoWinsRef.current.ended) {
                   audioSopoWinsRef.current.onended = () => {
-                    // Wait 2 seconds after the song ends to let the celebration settle
-                    setTimeout(() => {
-                      clearTimeout(fallbackTimer);
-                      endUltimate();
-                    }, 2000);
+                    clearTimeout(fallbackTimer);
+                    endUltimate();
                   };
                 } else {
                   // If audio is muted/paused/blocked, fallback handles it in 15 seconds
@@ -1907,14 +1902,11 @@ export default function VaultRunner() {
                     <text x="110" y="82" fontSize="22" textAnchor="middle">👑</text>
                     <text x="190" y="82" fontSize="22" textAnchor="middle">🤵</text>
                     <text x="150" y="82" fontSize="20" textAnchor="middle">💖</text>
-                    <text x="150" y="138" fill="#d6336c" fontSize="12" fontWeight="bold" fontFamily="Georgia, serif" textAnchor="middle">
+                    <text x="150" y="140" fill="#d6336c" fontSize="12" fontWeight="bold" fontFamily="Georgia, serif" textAnchor="middle">
                       {t.sopoProclamation}
                     </text>
-                    <text x="150" y="160" fill="#4a4a4a" fontSize="8" fontFamily="monospace" textAnchor="middle">
-                      {t.sopoProclamationSubtitle1}
-                    </text>
-                    <text x="150" y="176" fill="#4a4a4a" fontSize="8" fontFamily="monospace" textAnchor="middle">
-                      {t.sopoProclamationSubtitle2}
+                    <text x="150" y="166" fill="#4a4a4a" fontSize="8" fontFamily="monospace" textAnchor="middle">
+                      {t.sopoProclamationSubtitle}
                     </text>
                   </svg>
                 </div>
