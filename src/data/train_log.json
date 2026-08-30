@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-08-30T13:05:19.520Z",
+    "status": "Service Change",
+    "details": [
+      "<Q> trains are making local stops between 57 St - 7 Av and Canal St.",
+      "Northbound: Some 96 St-bound trains are skipping Avenue M, Avenue J, Avenue H, Cortelyou Rd, Beverley Rd, and Parkside Av."
+    ]
+  },
+  {
     "date": "2026-08-29T13:05:10.700Z",
     "status": "Service Change",
     "details": [
@@ -201,14 +209,6 @@
     "status": "Service Change",
     "details": [
       "Southbound: Some Coney Island - Stillwell Av-bound trains are making local stops between 57 St - 7 Av and Times Sq - 42 St."
-    ]
-  },
-  {
-    "date": "2026-07-29T15:30:35.924Z",
-    "status": "Delays",
-    "details": [
-      "Northbound: 96 St-bound trains are having longer wait times at 7 Av (up to 14 mins, normally every 11 mins).",
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between 57 St - 7 Av and Canal St (up to 12 mins, normally every 10 mins)."
     ]
   }
 ]
