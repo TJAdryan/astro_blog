@@ -1023,28 +1023,45 @@ export default function VaultRunner() {
     const updatedEnemies = currentEnemiesList.map(enemy => {
       const dx = pX - enemy.x;
       const dy = pY - enemy.y;
-      const distance = Math.abs(dx) + Math.abs(dy);
+      const isAdjacent = Math.abs(dx) <= 1 && Math.abs(dy) <= 1 && (dx !== 0 || dy !== 0);
 
-      // 1. Melee attack if adjacent
-      if (distance === 1) {
+      // 1. Melee attack if adjacent (either cardinally or diagonally)
+      if (isAdjacent) {
         const dmg = Math.max(1, enemy.atk - playerStats.def);
         currentHp = Math.max(0, currentHp - dmg);
         nextLogs.push(currentT.ambushLog(dmg));
         return enemy;
       }
 
-      // 2. Chase player if within range
-      if (distance <= 5) {
+      // 2. Chase player if within range (Chebyshev distance <= 5)
+      const chebyshevDist = Math.max(Math.abs(dx), Math.abs(dy));
+      if (chebyshevDist <= 5) {
         const moveX = dx !== 0 ? Math.sign(dx) : 0;
         const moveY = dy !== 0 ? Math.sign(dy) : 0;
         
+        // Try the direct diagonal step first
         const nextX = enemy.x + moveX;
-        const nextY = enemy.y + (moveX === 0 ? moveY : 0);
+        const nextY = enemy.y + moveY;
 
         const occupied = currentEnemiesList.some(e => e.id !== enemy.id && e.x === nextX && e.y === nextY);
 
         if (grid[nextY] && (grid[nextY][nextX] === '.' || grid[nextY][nextX] === 'S' || grid[nextY][nextX] === 'G') && !(nextX === pX && nextY === pY) && !occupied) {
           return { ...enemy, x: nextX, y: nextY };
+        } else {
+          // If the diagonal move is blocked, try cardinal movements as alternative steps (X first, then Y)
+          const altX = enemy.x + moveX;
+          const altY = enemy.y;
+          const altOccupied1 = currentEnemiesList.some(e => e.id !== enemy.id && e.x === altX && e.y === altY);
+          if (grid[altY] && (grid[altY][altX] === '.' || grid[altY][altX] === 'S' || grid[altY][altX] === 'G') && !(altX === pX && altY === pY) && !altOccupied1) {
+            return { ...enemy, x: altX, y: altY };
+          }
+
+          const altX2 = enemy.x;
+          const altY2 = enemy.y + moveY;
+          const altOccupied2 = currentEnemiesList.some(e => e.id !== enemy.id && e.x === altX2 && e.y === altY2);
+          if (grid[altY2] && (grid[altY2][altX2] === '.' || grid[altY2][altX2] === 'S' || grid[altY2][altX2] === 'G') && !(altX2 === pX && altY2 === pY) && !altOccupied2) {
+            return { ...enemy, x: altX2, y: altY2 };
+          }
         }
       }
 
@@ -1375,10 +1392,14 @@ export default function VaultRunner() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (gameState !== 'PLAYING' || isAnimating || isBebiaActive || isSopoActive) return;
       switch (e.key) {
-        case 'ArrowUp':    case 'w': handleMove(0, -1); break;
-        case 'ArrowDown':  case 's': handleMove(0, 1);  break;
-        case 'ArrowLeft':  case 'a': handleMove(-1, 0); break;
-        case 'ArrowRight': case 'd': handleMove(1, 0);  break;
+        case 'ArrowUp':    case 'w': case '8': handleMove(0, -1); break;
+        case 'ArrowDown':  case 's': case '2': handleMove(0, 1);  break;
+        case 'ArrowLeft':  case 'a': case '4': handleMove(-1, 0); break;
+        case 'ArrowRight': case 'd': case '6': handleMove(1, 0);  break;
+        case 'q':          case '7': handleMove(-1, -1); break;
+        case 'e':          case '9': handleMove(1, -1);  break;
+        case 'z':          case '1': handleMove(-1, 1);  break;
+        case 'c':          case '3': handleMove(1, 1);   break;
         case 'f':          case ' ': e.preventDefault(); fireAtNearest(); break;
         case 'b':          case 'g':          case 'p':
           if (playerStats.class === 'Bebia') triggerBebiaUltimate();
@@ -2241,11 +2262,23 @@ function Joystick({ onMove }: JoystickProps) {
       let dirX = 0;
       let dirY = 0;
 
-      if (angle >= -45 && angle < 45) {
+      if (angle >= -22.5 && angle < 22.5) {
         dirX = 1;
-      } else if (angle >= 45 && angle < 135) {
+      } else if (angle >= 22.5 && angle < 67.5) {
+        dirX = 1;
         dirY = 1;
-      } else if (angle >= -135 && angle < -45) {
+      } else if (angle >= 67.5 && angle < 112.5) {
+        dirY = 1;
+      } else if (angle >= 112.5 && angle < 157.5) {
+        dirX = -1;
+        dirY = 1;
+      } else if (angle >= -67.5 && angle < -22.5) {
+        dirX = 1;
+        dirY = -1;
+      } else if (angle >= -112.5 && angle < -67.5) {
+        dirY = -1;
+      } else if (angle >= -157.5 && angle < -112.5) {
+        dirX = -1;
         dirY = -1;
       } else {
         dirX = -1;
