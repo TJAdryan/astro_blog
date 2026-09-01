@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-09-01T13:05:37.685Z",
+    "status": "Service Change",
+    "details": [
+      "Southbound: Some Coney Island - Stillwell Av-bound trains are making local stops between 57 St - 7 Av and Times Sq - 42 St."
+    ]
+  },
+  {
     "date": "2026-08-30T13:05:19.520Z",
     "status": "Service Change",
     "details": [
@@ -203,12 +210,5 @@
     "date": "2026-07-31T15:14:13.145Z",
     "status": "Good Service",
     "details": []
-  },
-  {
-    "date": "2026-07-30T15:04:00.742Z",
-    "status": "Service Change",
-    "details": [
-      "Southbound: Some Coney Island - Stillwell Av-bound trains are making local stops between 57 St - 7 Av and Times Sq - 42 St."
-    ]
   }
 ]
