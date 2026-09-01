@@ -60,7 +60,7 @@ const TRANSLATIONS = {
     hitLog: (dmg: number) => `You hit enemy for ${dmg} DMG.`,
     enemyDefeatedLog: 'Enemy defeated! (+20 pts)',
     enemyStrikeLog: (dmg: number) => `Enemy strikes you for ${dmg} DMG.`,
-    goldCollectedLog: 'You collected a gold piece! (+10 pts)',
+    goldCollectedLog: (val: number) => `You collected a gold piece! (+${val} pts)`,
     descendLog: (lvl: number) => `Descended to level ${lvl}. Danger grows.`,
     losBlockedLog: 'Line of sight to enemy is blocked by a wall!',
     fireWeaponLog: (weapon: string, dmg: number) => `You fire ${weapon} at enemy for ${dmg} DMG.`,
@@ -125,7 +125,7 @@ const TRANSLATIONS = {
     hitLog: (dmg: number) => `თქვენ დაარტყით მტერს ${dmg} ზიანით.`,
     enemyDefeatedLog: 'მტერი დამარცხებულია! (+20 ქულა)',
     enemyStrikeLog: (dmg: number) => `მტერმა დაგარტყათ და მოგაყენათ ${dmg} ზიანი.`,
-    goldCollectedLog: 'თქვენ შეაგროვეთ ოქრო! (+10 ქულა)',
+    goldCollectedLog: (val: number) => `თქვენ შეაგროვეთ ოქრო! (+${val} ქულა)`,
     descendLog: (lvl: number) => `ჩახვედით მე-${lvl} დონეზე. საფრთხე იზრდება.`,
     losBlockedLog: 'ხედვის არე მტერთან დაბლოკილია კედლით!',
     fireWeaponLog: (weapon: string, dmg: number) => `თქვენ ესროლეთ ${weapon} მტერს ${dmg} ზიანით.`,
@@ -196,6 +196,7 @@ interface Enemy {
   x: number;
   y: number;
   hp: number;
+  maxHp: number;
   atk: number;
 }
 
@@ -214,6 +215,26 @@ const getEnemyGlyph = (lvl: number, id: string) => {
   const idx = parts.length > 1 ? parseInt(parts[1], 10) : 0;
   const finalIndex = isNaN(idx) ? 0 : idx;
   return allIcons[finalIndex % allIcons.length];
+};
+
+const getEnemyName = (lvl: number, lang: Language) => {
+  const names = {
+    en: {
+      1: "Roman Legionnaire",
+      2: "Persian Immortal",
+      3: "Mongol Raider",
+      4: "Soviet / Russian Invader",
+      5: "Elite Vault Invader"
+    },
+    ka: {
+      1: "რომაელი ლეგიონერი",
+      2: "სპარსელი მეომარი",
+      3: "მონღოლი მხედარი",
+      4: "რუსი დამპყრობელი",
+      5: "ელიტური დამპყრობელი"
+    }
+  };
+  return names[lang][lvl as 1|2|3|4|5] || names[lang][5];
 };
 
 const getLevelObjective = (lvl: number, lang: Language) => {
@@ -263,6 +284,8 @@ export default function VaultRunner() {
   const [goldCollected, setGoldCollected] = useState<number>(0);
   const [monstersKilled, setMonstersKilled] = useState<number>(0);
   const [score, setScore] = useState<number>(0);
+  const [goldValues, setGoldValues] = useState<Record<string, number>>({});
+  const [hoveredCell, setHoveredCell] = useState<{ x: number; y: number } | null>(null);
 
   const t = TRANSLATIONS[lang];
 
@@ -577,6 +600,10 @@ export default function VaultRunner() {
             );
             return newGrid;
           });
+          setGoldValues(prev => ({
+            ...prev,
+            [`${enemy.x},${enemy.y}`]: Math.floor(Math.random() * 16) + (10 + currentLevel * 2)
+          }));
 
           // Play audio voice
           playBebiaVoice();
@@ -839,6 +866,10 @@ export default function VaultRunner() {
                   );
                   return newGrid;
                 });
+                setGoldValues(prev => ({
+                  ...prev,
+                  [`${enemy.x},${enemy.y}`]: Math.floor(Math.random() * 16) + (10 + currentLevel * 2)
+                }));
 
                 // Play sound
                 playLaserSound();
@@ -966,17 +997,27 @@ export default function VaultRunner() {
         eAttempts < 100
       );
 
+      const baseHp = 20 + level * 8;
+      const hpVariance = Math.floor(Math.random() * (level * 4 + 7)) - Math.floor(level * 2);
+      const randomizedHp = Math.max(12, baseHp + hpVariance);
+
+      const baseAtk = 6 + level * 2;
+      const atkVariance = Math.floor(Math.random() * 5) - 2;
+      const randomizedAtk = Math.max(3, baseAtk + atkVariance);
+
       newEnemies.push({
         id: `${level}-${i}`,
         x: ex,
         y: ey,
-        hp: 20 + level * 8,
-        atk: 6 + level * 2,
+        hp: randomizedHp,
+        maxHp: randomizedHp,
+        atk: randomizedAtk,
       });
     }
 
     // Spawn gold pieces
     const goldCount = 4 + level;
+    const newGoldValues: Record<string, number> = {};
     for (let i = 0; i < goldCount; i++) {
       let gx, gy;
       let gAttempts = 0;
@@ -993,11 +1034,13 @@ export default function VaultRunner() {
       );
       if (newGrid[gy][gx] === '.') {
         newGrid[gy][gx] = 'G';
+        newGoldValues[`${gx},${gy}`] = Math.floor(Math.random() * 16) + (8 + level * 2);
       }
     }
 
     setGrid(newGrid);
     setEnemies(newEnemies);
+    setGoldValues(newGoldValues);
     setPlayerPosition({ x: 1, y: 1 });
   }, [hasValidPath]);
 
@@ -1128,6 +1171,10 @@ export default function VaultRunner() {
         setGrid(prevGrid => prevGrid.map((row, y) =>
           row.map((cell, x) => (x === target.x && y === target.y ? 'G' : cell))
         ));
+        setGoldValues(prev => ({
+          ...prev,
+          [`${target.x},${target.y}`]: Math.floor(Math.random() * 16) + (10 + currentLevel * 2)
+        }));
       }
     } else {
       const enemyDamage = Math.max(1, target.atk - playerStats.def);
@@ -1163,9 +1210,16 @@ export default function VaultRunner() {
 
     let nextGrid = grid;
     if (grid[newY] && grid[newY][newX] === 'G') {
+      const gKey = `${newX},${newY}`;
+      const gVal = goldValues[gKey] || (10 + currentLevel * 2);
       setGoldCollected(prev => prev + 1);
-      setScore(prev => prev + 10);
-      setLog(prev => [t.goldCollectedLog, ...prev]);
+      setScore(prev => prev + gVal);
+      setLog(prev => [t.goldCollectedLog(gVal), ...prev]);
+      setGoldValues(prev => {
+        const copy = { ...prev };
+        delete copy[gKey];
+        return copy;
+      });
       nextGrid = grid.map((row, y) =>
         row.map((cell, x) => (x === newX && y === newY ? '.' : cell))
       );
@@ -1269,6 +1323,10 @@ export default function VaultRunner() {
                 setGrid(prevGrid => prevGrid.map((row, y) =>
                   row.map((cell, x) => (x === target.x && y === target.y ? 'G' : cell))
                 ));
+                setGoldValues(prev => ({
+                  ...prev,
+                  [`${target.x},${target.y}`]: Math.floor(Math.random() * 16) + (10 + currentLevel * 2)
+                }));
               }
             }
 
@@ -1283,7 +1341,7 @@ export default function VaultRunner() {
       }
     };
     animate();
-  }, [gameState, playerStats.class, playerStats.atk, playerPosition, grid, enemies, hasLineOfSight, getBresenhamPath, processEnemyTurns, lang, isAnimating, playLaserSound, playBebiaVoice]);
+  }, [gameState, playerStats.class, playerStats.atk, playerPosition, grid, enemies, hasLineOfSight, getBresenhamPath, processEnemyTurns, lang, isAnimating, playLaserSound, playBebiaVoice, currentLevel]);
 
   // --- AUTO TARGET NEAREST ---
   const fireAtNearest = useCallback(() => {
@@ -1357,6 +1415,13 @@ export default function VaultRunner() {
 
             setGrid(currentGrid);
             setEnemies(updatedEnemies);
+            setGoldValues(prev => {
+              const updated = { ...prev };
+              for (const enemy of validEnemies) {
+                updated[`${enemy.x},${enemy.y}`] = Math.floor(Math.random() * 16) + (10 + currentLevel * 2);
+              }
+              return updated;
+            });
             setLog(prev => [...nextLogEntries, ...prev]);
             processEnemyTurns(playerPosition.x, playerPosition.y, updatedEnemies);
 
@@ -1385,6 +1450,126 @@ export default function VaultRunner() {
     if (clickedEnemy) {
       handleRangedAttack(clickedEnemy);
     }
+  };
+
+  // --- CELL HOVER TOOLTIP HELPER ---
+  const getCellTooltip = (x: number, y: number) => {
+    // 1. Player check
+    if (x === playerPosition.x && y === playerPosition.y) {
+      const pName = getClassName(playerStats.class, lang);
+      const wName = getWeaponName(playerStats.class, lang);
+      if (lang === 'en') {
+        return {
+          title: `${getClassEmoji(playerStats.class)} ${pName}`,
+          subtitle: `Player Character`,
+          stats: `HP: ${playerStats.hp}/${playerStats.maxHp} | ATK: ${playerStats.atk} | DEF: ${playerStats.def}`,
+          extra: `Weapon: ${wName}`,
+          accent: '#00e5ff'
+        };
+      } else {
+        return {
+          title: `${getClassEmoji(playerStats.class)} ${pName}`,
+          subtitle: `მოთამაშე`,
+          stats: `სიცოცხლე: ${playerStats.hp}/${playerStats.maxHp} | შეტევა: ${playerStats.atk} | დაცვა: ${playerStats.def}`,
+          extra: `იარაღი: ${wName}`,
+          accent: '#00e5ff'
+        };
+      }
+    }
+
+    // 2. Enemy check
+    const enemy = enemies.find(e => e.x === x && e.y === y);
+    if (enemy) {
+      const glyph = getEnemyGlyph(currentLevel, enemy.id);
+      const enemyName = getEnemyName(currentLevel, lang);
+      if (lang === 'en') {
+        return {
+          title: `${glyph} ${enemyName}`,
+          subtitle: `Invader`,
+          stats: `HP: ${enemy.hp}/${enemy.maxHp || enemy.hp} | ATK: ${enemy.atk}`,
+          extra: `Click or press Space/F to attack`,
+          accent: '#ff1744'
+        };
+      } else {
+        return {
+          title: `${glyph} ${enemyName}`,
+          subtitle: `დამპყრობელი`,
+          stats: `სიცოცხლე: ${enemy.hp}/${enemy.maxHp || enemy.hp} | შეტევა: ${enemy.atk}`,
+          extra: `დააჭირეთ ან გამოიყენეთ Space/F შეტევისთვის`,
+          accent: '#ff1744'
+        };
+      }
+    }
+
+    // 3. Dominick (during Sopo proposal sequence)
+    if (dominickPosition && dominickPosition.x === x && dominickPosition.y === y) {
+      return {
+        title: `🤵 Dominick`,
+        subtitle: lang === 'en' ? `Sopo's Groom` : `სოფოს რჩეული`,
+        stats: lang === 'en' ? `The greatest adventure` : `უდიდესი თავგადასავალი`,
+        extra: lang === 'en' ? `Destined for ultimate victory` : `საბოლოო გამარჯვება`,
+        accent: '#ff69b4'
+      };
+    }
+
+    // 4. Gold / Heart drop check
+    const cell = grid[y] ? grid[y][x] : '';
+    if (cell === 'G') {
+      const gVal = goldValues[`${x},${y}`] || (10 + currentLevel * 2);
+      const isHeart = playerStats.class === 'Fighter';
+      if (lang === 'en') {
+        return {
+          title: isHeart ? `❤️ Heart Token` : `💰 Gold Treasure`,
+          subtitle: isHeart ? `Love Token` : `Dungeon Loot`,
+          stats: `Value: +${gVal} pts`,
+          extra: isHeart ? `Step to collect love & points` : `Step here to collect gold`,
+          accent: isHeart ? '#ff69b4' : '#ffd700'
+        };
+      } else {
+        return {
+          title: isHeart ? `❤️ სიყვარულის სიმბოლო` : `💰 ოქროს განძი`,
+          subtitle: isHeart ? `სიყვარულის ძალა` : `დუნჯის ნადავლი`,
+          stats: `ღირებულება: +${gVal} ქულა`,
+          extra: `დაადექით შესაგროვებლად`,
+          accent: isHeart ? '#ff69b4' : '#ffd700'
+        };
+      }
+    }
+
+    // 5. Stairs check
+    if (cell === 'S') {
+      const isVictory = currentLevel === TOTAL_LEVELS;
+      if (lang === 'en') {
+        return {
+          title: isVictory ? `🏆 Vault Exit` : `🚪 Dungeon Stairs`,
+          subtitle: isVictory ? `Escape the dungeon!` : `Descend deeper`,
+          stats: isVictory ? `Goal: Victory!` : `Target: Level ${currentLevel + 1}`,
+          extra: `Step here to proceed`,
+          accent: '#ffea00'
+        };
+      } else {
+        return {
+          title: isVictory ? `🏆 გასასვლელი` : `🚪 ვაულტის კიბე`,
+          subtitle: isVictory ? `გაქცევა ვაულტიდან!` : `ჩასვლა სიღრმეში`,
+          stats: isVictory ? `მიზანი: გამარჯვება!` : `მიზანი: დონე ${currentLevel + 1}`,
+          extra: `დაადექით გასაგრძელებლად`,
+          accent: '#ffea00'
+        };
+      }
+    }
+
+    // 6. Wall check
+    if (cell === '#') {
+      return {
+        title: lang === 'en' ? `🧱 Stone Wall` : `🧱 ქვის კედელი`,
+        subtitle: lang === 'en' ? `Obstacle` : `დაბრკოლება`,
+        stats: lang === 'en' ? `Impassable` : `გაუვალი`,
+        extra: lang === 'en' ? `Blocks movement & line of sight` : `ბლოკავს მოძრაობას და ხედვას`,
+        accent: '#888888'
+      };
+    }
+
+    return null;
   };
 
   // Keyboard navigation mappings
@@ -1504,7 +1689,7 @@ export default function VaultRunner() {
         <h1 style={{ ...styles.title, color: '#4caf50' }}>{t.congrats} {getClassName(playerClass, lang).toUpperCase()}</h1>
         <p style={styles.subtitle}>{t.victoryDesc}</p>
         <div style={{ fontSize: '1.2rem', marginBottom: '30px', textAlign: 'center', lineHeight: '1.6' }}>
-          <div style={{ color: '#ffd700' }}>{t.goldCollected}: <strong>{goldCollected}</strong> (+{goldCollected * 10} pts)</div>
+          <div style={{ color: '#ffd700' }}>{t.goldCollected}: <strong>{goldCollected}</strong></div>
           <div style={{ color: '#ff1744' }}>{t.monstersKilled}: <strong>{monstersKilled}</strong> (+{monstersKilled * 20} pts)</div>
           <div style={{ fontSize: '1.8rem', fontWeight: 'bold', marginTop: '15px', borderTop: '1px solid #333', paddingTop: '10px' }}>
             {t.finalScore}: <span style={{ color: '#ffd700' }}>{score}</span>
@@ -1536,7 +1721,7 @@ export default function VaultRunner() {
         </p>
         <div style={{ fontSize: '1.2rem', marginBottom: '30px', textAlign: 'center', lineHeight: '1.6' }}>
           <div>{t.levelReached}: <strong>{currentLevel}</strong></div>
-          <div style={{ color: '#ffd700' }}>{t.goldCollected}: <strong>{goldCollected}</strong> (+{goldCollected * 10} pts)</div>
+          <div style={{ color: '#ffd700' }}>{t.goldCollected}: <strong>{goldCollected}</strong></div>
           <div style={{ color: '#ff1744' }}>{t.monstersKilled}: <strong>{monstersKilled}</strong> (+{monstersKilled * 20} pts)</div>
           <div style={{ fontSize: '1.8rem', fontWeight: 'bold', marginTop: '15px', borderTop: '1px solid #333', paddingTop: '10px' }}>
             {t.finalScore}: <span style={{ color: '#ffd700' }}>{score}</span>
@@ -2062,14 +2247,70 @@ export default function VaultRunner() {
                 color = playerClass === 'Fighter' ? '#ff69b4' : '#ff1744';
               }
 
+              const isHovered = hoveredCell?.x === x && hoveredCell?.y === y;
+
               return (
                 <div 
                   key={x} 
                   onClick={() => handleCellClick(x, y)}
+                  onMouseEnter={() => setHoveredCell({ x, y })}
+                  onMouseLeave={() => setHoveredCell(null)}
                   className="game-cell"
-                  style={{ ...styles.cell, color, cursor, backgroundColor: bg }}
+                  style={{ ...styles.cell, color, cursor, backgroundColor: bg, position: 'relative' }}
                 >
                   {glyph}
+                  {isHovered && !isAnimating && !isBebiaActive && !isSopoActive && (() => {
+                    const info = getCellTooltip(x, y);
+                    if (!info) return null;
+                    const isTopRow = y <= 2;
+                    const isLeftEdge = x <= 2;
+                    const isRightEdge = x >= GRID_SIZE - 3;
+                    let transform = 'translateX(-50%)';
+                    let leftVal = '50%';
+                    if (isLeftEdge) {
+                      transform = 'translateX(0)';
+                      leftVal = '0%';
+                    } else if (isRightEdge) {
+                      transform = 'translateX(-100%)';
+                      leftVal = '100%';
+                    }
+
+                    return (
+                      <div
+                        className="cell-tooltip"
+                        style={{
+                          position: 'absolute',
+                          [isTopRow ? 'top' : 'bottom']: '115%',
+                          left: leftVal,
+                          transform,
+                          backgroundColor: 'rgba(10, 10, 10, 0.95)',
+                          border: `1px solid ${info.accent}`,
+                          backdropFilter: 'blur(6px)',
+                          borderRadius: '6px',
+                          padding: '6px 10px',
+                          boxShadow: `0 6px 20px rgba(0,0,0,0.9), 0 0 12px ${info.accent}44`,
+                          zIndex: 300,
+                          pointerEvents: 'none',
+                          whiteSpace: 'nowrap',
+                          textAlign: 'left',
+                          fontFamily: 'monospace',
+                          minWidth: '130px'
+                        }}
+                      >
+                        <div style={{ color: info.accent, fontWeight: 'bold', fontSize: '12px', borderBottom: '1px solid #222', paddingBottom: '2px', marginBottom: '3px' }}>
+                          {info.title}
+                        </div>
+                        <div style={{ color: '#fff', fontSize: '11px', fontWeight: 'bold' }}>
+                          {info.stats}
+                        </div>
+                        {info.extra && (
+                          <div style={{ color: '#888', fontSize: '10px', marginTop: '2px' }}>
+                            {info.extra}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
                 </div>
               );
             })}
@@ -2381,7 +2622,8 @@ const styles = {
   row: { display: 'flex' },
   cell: {
     width: '42px', height: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center',
-    fontSize: '22px', fontWeight: 'bold' as const, border: '1px solid #111', transition: 'background-color 0.1s ease'
+    fontSize: '22px', fontWeight: 'bold' as const, border: '1px solid #111', transition: 'background-color 0.1s ease',
+    position: 'relative' as const
   },
   logBox: { flex: 1, overflowY: 'auto' as const, fontSize: '13px', color: '#ccc' },
   logEntry: { marginBottom: '8px', borderBottom: '1px solid #151515', paddingBottom: '4px' },
