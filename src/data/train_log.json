@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-09-03T13:06:05.258Z",
+    "status": "Service Change",
+    "details": [
+      "Southbound: Some Coney Island - Stillwell Av-bound trains are making local stops between 57 St - 7 Av and Times Sq - 42 St."
+    ]
+  },
+  {
     "date": "2026-09-02T13:05:52.346Z",
     "status": "Service Change",
     "details": [
@@ -201,13 +208,6 @@
   },
   {
     "date": "2026-08-02T14:25:21.923Z",
-    "status": "Service Change",
-    "details": [
-      "<Q> trains are running via <R> between Canal St and DeKalb Av."
-    ]
-  },
-  {
-    "date": "2026-08-01T14:24:01.907Z",
     "status": "Service Change",
     "details": [
       "<Q> trains are running via <R> between Canal St and DeKalb Av."
