@@ -1,5 +1,5 @@
 ---
-title: "The Log Airlock: When Local AI Can Help and What to Consider"
+title: "Air Gap your AI for Fun and Safety: When Local Models Make the Most Sense"
 description: "Why local open-weight AI models provide a critical privacy boundary when parsing sensitive infrastructure logs during high-stress production outages."
 pubDate: 2026-09-01
 tags: ["ai", "local-ai", "security", "devops", "observability"]
