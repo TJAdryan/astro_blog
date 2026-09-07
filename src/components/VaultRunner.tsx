@@ -60,6 +60,11 @@ const TRANSLATIONS = {
     hitLog: (dmg: number) => `You hit enemy for ${dmg} DMG.`,
     enemyDefeatedLog: 'Enemy defeated! (+20 pts)',
     enemyStrikeLog: (dmg: number) => `Enemy strikes you for ${dmg} DMG.`,
+    bossSpawnLog: "⚠️ WARNING: The Vault Warlord has appeared!",
+    bossHitLog: (dmg: number) => `You strike the Vault Warlord for ${dmg} DMG!`,
+    bossStrikeLog: (dmg: number) => `👹 The Vault Warlord strikes you with crushing force for ${dmg} DMG!`,
+    bossDefeatedLog: "🏆 The Vault Warlord has fallen! (+100 pts) The exit portal is now open!",
+    bossExitSealedLog: "🚪 The exit portal is sealed! Defeat the Vault Warlord to escape!",
     goldCollectedLog: (val: number) => `You collected a gold piece! (+${val} pts)`,
     descendLog: (lvl: number) => `Descended to level ${lvl}. Danger grows.`,
     losBlockedLog: 'Line of sight to enemy is blocked by a wall!',
@@ -125,6 +130,11 @@ const TRANSLATIONS = {
     hitLog: (dmg: number) => `თქვენ დაარტყით მტერს ${dmg} ზიანით.`,
     enemyDefeatedLog: 'მტერი დამარცხებულია! (+20 ქულა)',
     enemyStrikeLog: (dmg: number) => `მტერმა დაგარტყათ და მოგაყენათ ${dmg} ზიანი.`,
+    bossSpawnLog: "⚠️ ყურადღება: ვაულტის მბრძანებელი გამოჩნდა!",
+    bossHitLog: (dmg: number) => `თქვენ დაარტყით ვაულტის მბრძანებელს ${dmg} ზიანით!`,
+    bossStrikeLog: (dmg: number) => `👹 ვაულტის მბრძანებელმა დაგარტყათ გამანადგურებელი ${dmg} ზიანით!`,
+    bossDefeatedLog: "🏆 ვაულტის მბრძანებელი დამარცხებულია! (+100 ქულა) გასასვლელი პორტალი გაიხსნა!",
+    bossExitSealedLog: "🚪 გასასვლელი პორტალი დაბლოკილია! დაამარცხეთ ბოსი გასაქცევად!",
     goldCollectedLog: (val: number) => `თქვენ შეაგროვეთ ოქრო! (+${val} ქულა)`,
     descendLog: (lvl: number) => `ჩახვედით მე-${lvl} დონეზე. საფრთხე იზრდება.`,
     losBlockedLog: 'ხედვის არე მტერთან დაბლოკილია კედლით!',
@@ -198,9 +208,11 @@ interface Enemy {
   hp: number;
   maxHp: number;
   atk: number;
+  isBoss?: boolean;
 }
 
-const getEnemyGlyph = (lvl: number, id: string) => {
+const getEnemyGlyph = (lvl: number, id: string, isBoss?: boolean) => {
+  if (isBoss) return '👹';
   const levelIcons: Record<number, string> = {
     1: '🏛️', // Roman Column (Antiquity, Pompey's campaign in 65 BC)
     2: '🦁', // Persian Lion (Late Antiquity / Safavid Empire 3rd-18th c.)
@@ -217,21 +229,24 @@ const getEnemyGlyph = (lvl: number, id: string) => {
   return allIcons[finalIndex % allIcons.length];
 };
 
-const getEnemyName = (lvl: number, lang: Language) => {
+const getEnemyName = (lvl: number, lang: Language, isBoss?: boolean) => {
+  if (isBoss) {
+    return lang === 'en' ? "Vault Warlord (BOSS)" : "ვაულტის მბრძანებელი (ბოსი)";
+  }
   const names = {
     en: {
       1: "Roman Legionnaire",
       2: "Persian Immortal",
       3: "Mongol Raider",
       4: "Soviet / Russian Invader",
-      5: "Elite Vault Invader"
+      5: "Elite Vault Guard"
     },
     ka: {
       1: "რომაელი ლეგიონერი",
       2: "სპარსელი მეომარი",
       3: "მონღოლი მხედარი",
       4: "რუსი დამპყრობელი",
-      5: "ელიტური დამპყრობელი"
+      5: "ელიტური მცველი"
     }
   };
   return names[lang][lvl as 1|2|3|4|5] || names[lang][5];
@@ -244,14 +259,14 @@ const getLevelObjective = (lvl: number, lang: Language) => {
       2: "Defend against the Persian invaders to advance.",
       3: "Defend against the Mongolian invaders to advance.",
       4: "Defend against the Russian invaders to advance.",
-      5: "Defeat all the invaders to escape the dungeon!"
+      5: "Defeat the Vault Warlord to escape the dungeon!"
     },
     ka: {
       1: "გაუძელით რომაელ დამპყრობლებს წინსვლისთვის.",
       2: "გაუძელით სპარსელ დამპყრობლებს წინსვლისთვის.",
       3: "გაუძელით მონღოლ დამპყრობლებს წინსვლისთვის.",
       4: "გაუძელით რუს დამპყრობლებს წინსვლისთვის.",
-      5: "დაამარცხეთ ყველა დამპყრობელი დუნჯიდან გასაქცევად!"
+      5: "დაამარცხეთ ვაულტის მბრძანებელი დუნჯიდან გასაქცევად!"
     }
   };
   return objectives[lang][lvl as 1|2|3|4|5] || objectives[lang][5];
@@ -980,39 +995,98 @@ export default function VaultRunner() {
       }
     }
 
-    const enemyCount = 3 + level;
     const newEnemies: Enemy[] = [];
-    for (let i = 0; i < enemyCount; i++) {
-      let ex, ey;
-      let eAttempts = 0;
+    if (level === TOTAL_LEVELS) {
+      // Spawn Level 5 Boss (Vault Warlord)
+      let bx = GRID_SIZE - 2;
+      let by = GRID_SIZE - 2;
+      let bAttempts = 0;
       do {
-        ex = Math.floor(Math.random() * (GRID_SIZE - 2)) + 1;
-        ey = Math.floor(Math.random() * (GRID_SIZE - 2)) + 1;
-        eAttempts++;
+        bx = Math.floor(Math.random() * (GRID_SIZE - 2)) + 1;
+        by = Math.floor(Math.random() * (GRID_SIZE - 2)) + 1;
+        bAttempts++;
       } while (
-        (newGrid[ey][ex] !== '.' ||
-          (ex === 1 && ey === 1) ||
-          (ex === exitX && ey === exitY) ||
-          !hasValidPath(newGrid, 1, 1, ex, ey)) &&
-        eAttempts < 100
+        (newGrid[by][bx] !== '.' ||
+          (bx === 1 && by === 1) ||
+          (bx === exitX && by === exitY) ||
+          Math.abs(bx - 1) + Math.abs(by - 1) < 6 ||
+          !hasValidPath(newGrid, 1, 1, bx, by)) &&
+        bAttempts < 100
       );
 
-      const baseHp = 20 + level * 8;
-      const hpVariance = Math.floor(Math.random() * (level * 4 + 7)) - Math.floor(level * 2);
-      const randomizedHp = Math.max(12, baseHp + hpVariance);
-
-      const baseAtk = 6 + level * 2;
-      const atkVariance = Math.floor(Math.random() * 5) - 2;
-      const randomizedAtk = Math.max(3, baseAtk + atkVariance);
-
       newEnemies.push({
-        id: `${level}-${i}`,
-        x: ex,
-        y: ey,
-        hp: randomizedHp,
-        maxHp: randomizedHp,
-        atk: randomizedAtk,
+        id: 'boss-5',
+        x: bx,
+        y: by,
+        hp: 180,
+        maxHp: 180,
+        atk: 18,
+        isBoss: true,
       });
+
+      // Spawn 2 Elite Guards
+      for (let i = 0; i < 2; i++) {
+        let ex, ey;
+        let eAttempts = 0;
+        do {
+          ex = Math.floor(Math.random() * (GRID_SIZE - 2)) + 1;
+          ey = Math.floor(Math.random() * (GRID_SIZE - 2)) + 1;
+          eAttempts++;
+        } while (
+          (newGrid[ey][ex] !== '.' ||
+            (ex === 1 && ey === 1) ||
+            (ex === exitX && ey === exitY) ||
+            (ex === bx && ey === by) ||
+            !hasValidPath(newGrid, 1, 1, ex, ey)) &&
+          eAttempts < 100
+        );
+
+        newEnemies.push({
+          id: `${level}-guard-${i}`,
+          x: ex,
+          y: ey,
+          hp: 35,
+          maxHp: 35,
+          atk: 10,
+          isBoss: false,
+        });
+      }
+    } else {
+      // Standard enemies for levels 1-4
+      const enemyCount = 3 + level;
+      for (let i = 0; i < enemyCount; i++) {
+        let ex, ey;
+        let eAttempts = 0;
+        do {
+          ex = Math.floor(Math.random() * (GRID_SIZE - 2)) + 1;
+          ey = Math.floor(Math.random() * (GRID_SIZE - 2)) + 1;
+          eAttempts++;
+        } while (
+          (newGrid[ey][ex] !== '.' ||
+            (ex === 1 && ey === 1) ||
+            (ex === exitX && ey === exitY) ||
+            !hasValidPath(newGrid, 1, 1, ex, ey)) &&
+          eAttempts < 100
+        );
+
+        const baseHp = 20 + level * 8;
+        const hpVariance = Math.floor(Math.random() * (level * 4 + 7)) - Math.floor(level * 2);
+        const randomizedHp = Math.max(12, baseHp + hpVariance);
+
+        const baseAtk = 6 + level * 2;
+        const atkVariance = Math.floor(Math.random() * 5) - 2;
+        const randomizedAtk = Math.max(3, baseAtk + atkVariance);
+
+        newEnemies.push({
+          id: `${level}-${i}`,
+          x: ex,
+          y: ey,
+          hp: randomizedHp,
+          maxHp: randomizedHp,
+          atk: randomizedAtk,
+          isBoss: false,
+        });
+      }
     }
 
     // Spawn gold pieces
@@ -1072,13 +1146,14 @@ export default function VaultRunner() {
       if (isAdjacent) {
         const dmg = Math.max(1, enemy.atk - playerStats.def);
         currentHp = Math.max(0, currentHp - dmg);
-        nextLogs.push(currentT.ambushLog(dmg));
+        nextLogs.push(enemy.isBoss ? currentT.bossStrikeLog(dmg) : currentT.ambushLog(dmg));
         return enemy;
       }
 
-      // 2. Chase player if within range (Chebyshev distance <= 5)
+      // 2. Chase player if within range (Chebyshev distance <= 5, or 8 for Boss)
       const chebyshevDist = Math.max(Math.abs(dx), Math.abs(dy));
-      if (chebyshevDist <= 5) {
+      const maxDetectRange = enemy.isBoss ? 8 : 5;
+      if (chebyshevDist <= maxDetectRange) {
         const moveX = dx !== 0 ? Math.sign(dx) : 0;
         const moveY = dy !== 0 ? Math.sign(dy) : 0;
         
@@ -1158,16 +1233,48 @@ export default function VaultRunner() {
 
     const playerDamage = Math.max(1, playerStats.atk - Math.floor(Math.random() * 4));
     target.hp -= playerDamage;
-    let nextLog = [t.hitLog(playerDamage)];
+    let nextLog = [target.isBoss ? t.bossHitLog(playerDamage) : t.hitLog(playerDamage)];
 
     if (target.hp <= 0) {
-      nextLog.unshift(t.enemyDefeatedLog);
+      if (target.isBoss) {
+        nextLog.unshift(t.bossDefeatedLog);
+        setScore(prev => prev + 100);
+
+        // Spawn 4 high-value gold drops in surrounding adjacent floor tiles
+        const adjacentDeltas = [
+          [-1, 0], [1, 0], [0, -1], [0, 1], [-1, -1], [1, 1], [-1, 1], [1, -1]
+        ];
+        const lootTiles: [number, number][] = [];
+        for (const [dx, dy] of adjacentDeltas) {
+          const lx = target.x + dx;
+          const ly = target.y + dy;
+          if (grid[ly] && grid[ly][lx] === '.') {
+            lootTiles.push([lx, ly]);
+            if (lootTiles.length >= 4) break;
+          }
+        }
+        if (lootTiles.length > 0) {
+          setGrid(prevGrid => prevGrid.map((row, y) =>
+            row.map((cell, x) => (lootTiles.some(([lx, ly]) => lx === x && ly === y) ? 'G' : cell))
+          ));
+          setGoldValues(prev => {
+            const added: Record<string, number> = {};
+            lootTiles.forEach(([lx, ly]) => {
+              added[`${lx},${ly}`] = Math.floor(Math.random() * 20) + 25;
+            });
+            return { ...prev, ...added };
+          });
+        }
+      } else {
+        nextLog.unshift(t.enemyDefeatedLog);
+        setScore(prev => prev + 20);
+      }
+
       updatedEnemies.splice(index, 1);
       setMonstersKilled(prev => prev + 1);
-      setScore(prev => prev + 20);
 
       // Bebia turns monsters to gold!
-      if (playerStats.class === 'Bebia') {
+      if (playerStats.class === 'Bebia' && !target.isBoss) {
         setGrid(prevGrid => prevGrid.map((row, y) =>
           row.map((cell, x) => (x === target.x && y === target.y ? 'G' : cell))
         ));
@@ -1180,7 +1287,7 @@ export default function VaultRunner() {
       const enemyDamage = Math.max(1, target.atk - playerStats.def);
       const newHp = Math.max(0, playerStats.hp - enemyDamage);
       playerStats.hp = newHp;
-      nextLog.unshift(t.enemyStrikeLog(enemyDamage));
+      nextLog.unshift(target.isBoss ? t.bossStrikeLog(enemyDamage) : t.enemyStrikeLog(enemyDamage));
 
       if (newHp <= 0) {
         setGameState('DEFEAT');
@@ -1227,6 +1334,11 @@ export default function VaultRunner() {
     }
 
     if (nextGrid[newY] && nextGrid[newY][newX] === 'S') {
+      const isBossAlive = enemies.some(e => e.isBoss);
+      if (currentLevel === TOTAL_LEVELS && isBossAlive) {
+        setLog(prev => [t.bossExitSealedLog, ...prev]);
+        return;
+      }
       if (currentLevel === TOTAL_LEVELS) {
         setGameState('VICTORY');
       } else {
@@ -1313,13 +1425,44 @@ export default function VaultRunner() {
             let nextLog = [t.fireWeaponLog(currentWeaponName, playerDamage)];
 
             if (target.hp <= 0) {
-              nextLog.unshift(t.enemyDefeatedLog);
+              if (target.isBoss) {
+                nextLog.unshift(t.bossDefeatedLog);
+                setScore(prev => prev + 100);
+
+                const adjacentDeltas = [
+                  [-1, 0], [1, 0], [0, -1], [0, 1], [-1, -1], [1, 1], [-1, 1], [1, -1]
+                ];
+                const lootTiles: [number, number][] = [];
+                for (const [dx, dy] of adjacentDeltas) {
+                  const lx = target.x + dx;
+                  const ly = target.y + dy;
+                  if (grid[ly] && grid[ly][lx] === '.') {
+                    lootTiles.push([lx, ly]);
+                    if (lootTiles.length >= 4) break;
+                  }
+                }
+                if (lootTiles.length > 0) {
+                  setGrid(prevGrid => prevGrid.map((row, y) =>
+                    row.map((cell, x) => (lootTiles.some(([lx, ly]) => lx === x && ly === y) ? 'G' : cell))
+                  ));
+                  setGoldValues(prev => {
+                    const added: Record<string, number> = {};
+                    lootTiles.forEach(([lx, ly]) => {
+                      added[`${lx},${ly}`] = Math.floor(Math.random() * 20) + 25;
+                    });
+                    return { ...prev, ...added };
+                  });
+                }
+              } else {
+                nextLog.unshift(t.enemyDefeatedLog);
+                setScore(prev => prev + 20);
+              }
+
               latestEnemiesList.splice(currEnemyIndex, 1);
               setMonstersKilled(prev => prev + 1);
-              setScore(prev => prev + 20);
 
               // Bebia turns monsters to gold!
-              if (playerStats.class === 'Bebia') {
+              if (playerStats.class === 'Bebia' && !target.isBoss) {
                 setGrid(prevGrid => prevGrid.map((row, y) =>
                   row.map((cell, x) => (x === target.x && y === target.y ? 'G' : cell))
                 ));
@@ -1480,23 +1623,23 @@ export default function VaultRunner() {
     // 2. Enemy check
     const enemy = enemies.find(e => e.x === x && e.y === y);
     if (enemy) {
-      const glyph = getEnemyGlyph(currentLevel, enemy.id);
-      const enemyName = getEnemyName(currentLevel, lang);
+      const glyph = getEnemyGlyph(currentLevel, enemy.id, enemy.isBoss);
+      const enemyName = getEnemyName(currentLevel, lang, enemy.isBoss);
       if (lang === 'en') {
         return {
           title: `${glyph} ${enemyName}`,
-          subtitle: `Invader`,
+          subtitle: enemy.isBoss ? `Final Dungeon Master` : (currentLevel === TOTAL_LEVELS ? `Elite Minion` : `Invader`),
           stats: `HP: ${enemy.hp}/${enemy.maxHp || enemy.hp} | ATK: ${enemy.atk}`,
-          extra: `Click or press Space/F to attack`,
-          accent: '#ff1744'
+          extra: enemy.isBoss ? `Defeat to unlock the exit portal!` : `Click or press Space/F to attack`,
+          accent: enemy.isBoss ? '#ff0055' : '#ff1744'
         };
       } else {
         return {
           title: `${glyph} ${enemyName}`,
-          subtitle: `დამპყრობელი`,
+          subtitle: enemy.isBoss ? `მთავარი ბოსი` : (currentLevel === TOTAL_LEVELS ? `ელიტური მცველი` : `დამპყრობელი`),
           stats: `სიცოცხლე: ${enemy.hp}/${enemy.maxHp || enemy.hp} | შეტევა: ${enemy.atk}`,
-          extra: `დააჭირეთ ან გამოიყენეთ Space/F შეტევისთვის`,
-          accent: '#ff1744'
+          extra: enemy.isBoss ? `დაამარცხეთ გასასვლელის გასახსნელად!` : `დააჭირეთ ან გამოიყენეთ Space/F შეტევისთვის`,
+          accent: enemy.isBoss ? '#ff0055' : '#ff1744'
         };
       }
     }
@@ -1539,6 +1682,26 @@ export default function VaultRunner() {
     // 5. Stairs check
     if (cell === 'S') {
       const isVictory = currentLevel === TOTAL_LEVELS;
+      const isBossAlive = enemies.some(e => e.isBoss);
+      if (isVictory && isBossAlive) {
+        if (lang === 'en') {
+          return {
+            title: `🔒 Sealed Portal`,
+            subtitle: `Blocked by dark magic`,
+            stats: `Requirement: Slay Vault Warlord`,
+            extra: `Defeat the Boss to break the seal!`,
+            accent: '#ff1744'
+          };
+        } else {
+          return {
+            title: `🔒 დაბლოკილი პორტალი`,
+            subtitle: `შებოჭილია ბნელი მაგიით`,
+            stats: `მოთხოვნა: ბოსის განადგურება`,
+            extra: `დაამარცხეთ ბოსი ბეჭდის გასატეხად!`,
+            accent: '#ff1744'
+          };
+        }
+      }
       if (lang === 'en') {
         return {
           title: isVictory ? `🏆 Vault Exit` : `🚪 Dungeon Stairs`,
@@ -2095,6 +2258,76 @@ export default function VaultRunner() {
           <span style={{ fontSize: '15px' }}>📜</span>
         </div>
 
+        {/* Boss Health Bar Banner (Level 5) */}
+        {currentLevel === TOTAL_LEVELS && (() => {
+          const boss = enemies.find(e => e.isBoss);
+          if (!boss) {
+            return (
+              <div
+                style={{
+                  background: 'rgba(76, 175, 80, 0.15)',
+                  border: '1px solid #4caf50',
+                  borderRadius: '6px',
+                  padding: '6px 14px',
+                  marginBottom: '14px',
+                  color: '#4caf50',
+                  fontSize: '12px',
+                  fontWeight: 'bold',
+                  fontFamily: 'monospace',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  boxShadow: '0 0 15px rgba(76, 175, 80, 0.3)'
+                }}
+              >
+                <span>✨</span>
+                <span>{lang === 'en' ? '🏆 BOSS DEFEATED — EXIT PORTAL UNLOCKED!' : '🏆 ბოსი დამარცხებულია — პორტალი ღიაა!'}</span>
+                <span>✨</span>
+              </div>
+            );
+          }
+
+          const hpPct = Math.max(0, Math.min(100, (boss.hp / boss.maxHp) * 100));
+
+          return (
+            <div
+              style={{
+                width: '90%',
+                maxWidth: '460px',
+                background: 'rgba(20, 0, 0, 0.85)',
+                border: '2px solid #ff1744',
+                borderRadius: '8px',
+                padding: '8px 12px',
+                marginBottom: '14px',
+                boxShadow: '0 0 20px rgba(255, 23, 68, 0.4), inset 0 0 10px rgba(255, 23, 68, 0.2)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '4px',
+                fontFamily: 'monospace',
+                userSelect: 'none'
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', fontWeight: 'bold', color: '#ff5252' }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <span style={{ fontSize: '15px' }}>👹</span>
+                  <span>{lang === 'en' ? 'VAULT WARLORD' : 'ვაულტის მბრძანებელი'}</span>
+                </span>
+                <span style={{ color: '#fff' }}>{boss.hp} / {boss.maxHp} HP</span>
+              </div>
+              <div style={{ width: '100%', height: '10px', backgroundColor: '#330000', borderRadius: '5px', overflow: 'hidden', border: '1px solid #ff1744' }}>
+                <div
+                  style={{
+                    width: `${hpPct}%`,
+                    height: '100%',
+                    background: 'linear-gradient(90deg, #ff1744, #ff5252, #ffd700)',
+                    transition: 'width 0.25s ease-out'
+                  }}
+                />
+              </div>
+            </div>
+          );
+        })()}
+
         {(isBebiaActive || isSopoActive) && (
           <>
             <div className={isBebiaActive ? "bebia-overlay-flash" : "sopo-overlay-flash"} />
@@ -2198,16 +2431,29 @@ export default function VaultRunner() {
                       glyph = '🧎';
                       color = '#ff69b4';
                     } else {
-                      glyph = getEnemyGlyph(currentLevel, hasEnemy.id);
-                      color = '#ff1744';
+                      glyph = getEnemyGlyph(currentLevel, hasEnemy.id, hasEnemy.isBoss);
+                      color = hasEnemy.isBoss ? '#ff0055' : '#ff1744';
                     }
                   } else {
-                    glyph = ultimatePhase === 'FRIGHTENED' ? '😱' : getEnemyGlyph(currentLevel, hasEnemy.id);
-                    color = ultimatePhase === 'FRIGHTENED' ? '#ffea00' : '#ff1744';
+                    glyph = ultimatePhase === 'FRIGHTENED' ? '😱' : getEnemyGlyph(currentLevel, hasEnemy.id, hasEnemy.isBoss);
+                    color = ultimatePhase === 'FRIGHTENED' ? '#ffea00' : (hasEnemy.isBoss ? '#ff0055' : '#ff1744');
                   }
                   cursor = 'pointer';
+                  if (hasEnemy.isBoss) {
+                    bg = 'rgba(255, 0, 85, 0.18)';
+                  }
                 } else if (cell === 'S') {
-                  color = '#ffea00';
+                  const isBossAlive = enemies.some(e => e.isBoss);
+                  if (currentLevel === TOTAL_LEVELS && isBossAlive) {
+                    glyph = '🔒';
+                    color = '#ff1744';
+                  } else if (currentLevel === TOTAL_LEVELS) {
+                    glyph = '🏆';
+                    color = '#ffd700';
+                  } else {
+                    glyph = 'S';
+                    color = '#ffea00';
+                  }
                 } else if (cell === 'G') {
                   glyph = playerClass === 'Fighter' ? '❤️' : '*';
                   color = playerClass === 'Fighter' ? '#ff1744' : '#ffd700';
