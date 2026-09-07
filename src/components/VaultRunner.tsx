@@ -615,9 +615,10 @@ export default function VaultRunner() {
             );
             return newGrid;
           });
+          const isBoss = enemy.isBoss;
           setGoldValues(prev => ({
             ...prev,
-            [`${enemy.x},${enemy.y}`]: Math.floor(Math.random() * 16) + (10 + currentLevel * 2)
+            [`${enemy.x},${enemy.y}`]: isBoss ? 50 : Math.floor(Math.random() * 16) + (10 + currentLevel * 2)
           }));
 
           // Play audio voice
@@ -625,8 +626,17 @@ export default function VaultRunner() {
 
           // Update game score/kills and logs
           setMonstersKilled(prev => prev + 1);
-          setScore(prev => prev + 20);
-          setLog(prev => [lang === 'en' ? "💥 Exploded enemy into gold!" : "💥 მტერი ოქროდ იქცა!", ...prev]);
+          setScore(prev => prev + (isBoss ? 100 : 20));
+          if (isBoss) {
+            setLog(prev => [
+              lang === 'en'
+                ? "🏆 The Vault Warlord was pulverized by Bebia's supreme power! (+100 pts) Exit unlocked!"
+                : "🏆 ვაულტის მბრძანებელი განადგურდა ბებიას უზენაესი ძალით! (+100 ქულა) გასასვლელი ღიაა!",
+              ...prev
+            ]);
+          } else {
+            setLog(prev => [lang === 'en' ? "💥 Exploded enemy into gold!" : "💥 მტერი ოქროდ იქცა!", ...prev]);
+          }
 
           // Remove enemy from state
           setEnemies(prev => prev.filter(e => e.id !== enemy.id));
@@ -881,9 +891,10 @@ export default function VaultRunner() {
                   );
                   return newGrid;
                 });
+                const isBoss = enemy.isBoss;
                 setGoldValues(prev => ({
                   ...prev,
-                  [`${enemy.x},${enemy.y}`]: Math.floor(Math.random() * 16) + (10 + currentLevel * 2)
+                  [`${enemy.x},${enemy.y}`]: isBoss ? 50 : Math.floor(Math.random() * 16) + (10 + currentLevel * 2)
                 }));
 
                 // Play sound
@@ -891,13 +902,22 @@ export default function VaultRunner() {
 
                 // Update score & log
                 setMonstersKilled(prev => prev + 1);
-                setScore(prev => prev + 20);
-                setLog(prev => [
-                  lang === 'en' 
-                    ? "💥 Invader vanquished by Sopo's unmatched grace! (+20 pts)" 
-                    : "💥 დამპყრობელი განადგურდა სოფოს შეუდარებელი მადლით! (+20 ქულა)", 
-                  ...prev
-                ]);
+                setScore(prev => prev + (isBoss ? 100 : 20));
+                if (isBoss) {
+                  setLog(prev => [
+                    lang === 'en'
+                      ? "🏆 The Vault Warlord was overwhelmed by Sopo's love & grace! (+100 pts) Exit unlocked!"
+                      : "🏆 ვაულტის მბრძანებელი მოიხიბლა სოფოს სიყვარულით და დაეცა! (+100 ქულა) გასასვლელი ღიაა!",
+                    ...prev
+                  ]);
+                } else {
+                  setLog(prev => [
+                    lang === 'en' 
+                      ? "💥 Invader vanquished by Sopo's unmatched grace! (+20 pts)" 
+                      : "💥 დამპყრობელი განადგურდა სოფოს შეუდარებელი მადლით! (+20 ქულა)", 
+                    ...prev
+                  ]);
+                }
 
                 // Remove enemy
                 setEnemies(prev => prev.filter(e => e.id !== enemy.id));
@@ -1549,11 +1569,16 @@ export default function VaultRunner() {
               );
 
               nextLogEntries.push(t.fireWeaponLog(getWeaponName('Bebia', lang), 999));
-              nextLogEntries.push(t.enemyDefeatedLog);
+              if (target.isBoss) {
+                nextLogEntries.push(t.bossDefeatedLog);
+                setScore(prev => prev + 100);
+              } else {
+                nextLogEntries.push(t.enemyDefeatedLog);
+                setScore(prev => prev + 20);
+              }
 
               updatedEnemies.splice(enemyIndex, 1);
               setMonstersKilled(prev => prev + 1);
-              setScore(prev => prev + 20);
             });
 
             setGrid(currentGrid);
@@ -1561,7 +1586,7 @@ export default function VaultRunner() {
             setGoldValues(prev => {
               const updated = { ...prev };
               for (const enemy of validEnemies) {
-                updated[`${enemy.x},${enemy.y}`] = Math.floor(Math.random() * 16) + (10 + currentLevel * 2);
+                updated[`${enemy.x},${enemy.y}`] = enemy.isBoss ? 50 : Math.floor(Math.random() * 16) + (10 + currentLevel * 2);
               }
               return updated;
             });
