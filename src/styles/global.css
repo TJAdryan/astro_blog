@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&family=Noto+Sans+Georgian:wght@400;500;600;700;800;900&display=swap');
+
 /*
   The CSS in this style tag is based off of Bear Blog's default CSS.
   https://github.com/HermanMartinus/bearblog/blob/297026a877bc2ab2b3bdfbd6b9f7961c350917dd/templates/styles/blog/default.css
@@ -92,7 +94,6 @@ header nav {
 
 /* ... your other global styles can go below ... */
 
-
 :root {
 	/* Data Analytics Theme - Jupyter Orange with Data-Friendly Grays */
 	--accent: #ff6b35;
@@ -108,7 +109,7 @@ header nav {
 	--gray-gradient: rgba(var(--gray-light), 50%), #fff;
 	--box-shadow:
 		0 2px 6px rgba(var(--gray), 25%), 0 8px 24px rgba(var(--gray), 33%), 0 16px 32px rgba(var(--gray), 33%);
-	font-family: 'Atkinson', system-ui, sans-serif;
+	font-family: 'Atkinson', 'Noto Sans Georgian', 'BPG Nino Mtavruli', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 /* Mermaid diagram styling */
@@ -152,7 +153,7 @@ header nav {
 }
 
 body {
-	font-family: "Atkinson", sans-serif;
+	font-family: "Atkinson", "Noto Sans Georgian", "BPG Nino Mtavruli", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 	margin: 0;
 	padding: 0;
 	text-align: left;

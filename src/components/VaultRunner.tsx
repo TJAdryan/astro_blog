@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 // --- GAME CONFIG & CONSTANTS ---
 const GRID_SIZE = 15;
 const TOTAL_LEVELS = 5;
+const GEORGIAN_MONO_FONT = `'JetBrains Mono', 'Noto Sans Georgian', 'BPG Nino Mtavruli', 'Segoe UI Mono', 'DejaVu Sans Mono', 'Menlo', 'Consolas', 'Courier New', monospace, sans-serif`;
 
 type CharacterClass = 'Mage' | 'Fighter' | 'Rogue' | 'Rene' | 'Sandro' | 'Bebia';
 type GameState = 'START' | 'SELECT_CHARACTER' | 'PLAYING' | 'VICTORY' | 'DEFEAT';
@@ -622,7 +623,7 @@ const GeorgianHillVictoryScene: React.FC<GeorgianHillVictorySceneProps> = ({ cha
           fontWeight: 'bold',
           fontSize: '13px',
           letterSpacing: '0.5px',
-          fontFamily: 'monospace',
+          fontFamily: GEORGIAN_MONO_FONT,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -882,7 +883,7 @@ const GeorgianHillVictoryScene: React.FC<GeorgianHillVictorySceneProps> = ({ cha
             color: '#fff',
             borderRadius: '6px',
             cursor: 'pointer',
-            fontFamily: 'monospace',
+            fontFamily: GEORGIAN_MONO_FONT,
             display: 'inline-flex',
             alignItems: 'center',
             gap: '8px',
@@ -2448,7 +2449,7 @@ export default function VaultRunner() {
               border: 'none', 
               color: '#00e5ff', 
               cursor: 'pointer', 
-              fontFamily: 'monospace', 
+              fontFamily: GEORGIAN_MONO_FONT, 
               fontSize: '14px',
               fontWeight: 'bold',
               padding: 0,
@@ -2817,7 +2818,7 @@ export default function VaultRunner() {
             animation: ((playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0) ? 'none' : 'pulsate 2s infinite',
             opacity: enemies.length === 0 ? 0.5 : 1,
             transition: 'all 0.3s ease',
-            fontFamily: 'monospace',
+            fontFamily: GEORGIAN_MONO_FONT,
           }}
         >
           {playerClass === 'Fighter' 
@@ -2842,7 +2843,7 @@ export default function VaultRunner() {
               textAlign: 'center',
               boxShadow: isSopoAudioPlaying ? '0 0 15px rgba(255,215,0,0.6)' : '0 0 10px rgba(255,215,0,0.2)',
               transition: 'all 0.3s ease',
-              fontFamily: 'monospace',
+              fontFamily: GEORGIAN_MONO_FONT,
             }}
           >
             {isSopoAudioPlaying 
@@ -2884,7 +2885,7 @@ export default function VaultRunner() {
             fontWeight: 'bold',
             fontSize: '13px',
             letterSpacing: '0.5px',
-            fontFamily: 'monospace',
+            fontFamily: GEORGIAN_MONO_FONT,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -2917,7 +2918,7 @@ export default function VaultRunner() {
                   color: '#4caf50',
                   fontSize: '12px',
                   fontWeight: 'bold',
-                  fontFamily: 'monospace',
+                  fontFamily: GEORGIAN_MONO_FONT,
                   display: 'flex',
                   alignItems: 'center',
                   gap: '8px',
@@ -2947,7 +2948,7 @@ export default function VaultRunner() {
                 display: 'flex',
                 flexDirection: 'column',
                 gap: '4px',
-                fontFamily: 'monospace',
+                fontFamily: GEORGIAN_MONO_FONT,
                 userSelect: 'none'
               }}
             >
@@ -3004,13 +3005,13 @@ export default function VaultRunner() {
                     <text x="110" y="82" fontSize="22" textAnchor="middle">👑</text>
                     <text x="190" y="82" fontSize="22" textAnchor="middle">🤵</text>
                     <text x="150" y="82" fontSize="20" textAnchor="middle">💖</text>
-                    <text x="150" y="140" fill="#d6336c" fontSize="12" fontWeight="bold" fontFamily="Georgia, serif" textAnchor="middle">
+                    <text x="150" y="140" fill="#d6336c" fontSize="12" fontWeight="bold" fontFamily={GEORGIAN_MONO_FONT} textAnchor="middle">
                       {t.sopoProclamation}
                     </text>
-                    <text x="150" y="160" fill="#4a4a4a" fontSize="8" fontFamily="monospace" textAnchor="middle">
+                    <text x="150" y="160" fill="#4a4a4a" fontSize="8" fontFamily={GEORGIAN_MONO_FONT} textAnchor="middle">
                       {t.sopoProclamationSubtitle1}
                     </text>
-                    <text x="150" y="176" fill="#4a4a4a" fontSize="8" fontFamily="monospace" textAnchor="middle">
+                    <text x="150" y="176" fill="#4a4a4a" fontSize="8" fontFamily={GEORGIAN_MONO_FONT} textAnchor="middle">
                       {t.sopoProclamationSubtitle2}
                     </text>
                   </svg>
@@ -3183,7 +3184,7 @@ export default function VaultRunner() {
                           pointerEvents: 'none',
                           whiteSpace: 'nowrap',
                           textAlign: 'left',
-                          fontFamily: 'monospace',
+                          fontFamily: GEORGIAN_MONO_FONT,
                           minWidth: '130px'
                         }}
                       >
@@ -3223,7 +3224,7 @@ export default function VaultRunner() {
             borderRadius: '4px',
             backgroundColor: '#050505',
             boxSizing: 'border-box',
-            fontFamily: 'monospace',
+            fontFamily: GEORGIAN_MONO_FONT,
             textAlign: 'left',
           }}
         >
@@ -3256,7 +3257,7 @@ export default function VaultRunner() {
       >
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
           <Joystick onMove={handleMove} />
-          <span style={{ fontSize: '10px', color: '#666', fontFamily: 'monospace' }}>{t.moveStick}</span>
+          <span style={{ fontSize: '10px', color: '#666', fontFamily: GEORGIAN_MONO_FONT }}>{t.moveStick}</span>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
@@ -3280,14 +3281,14 @@ export default function VaultRunner() {
               touchAction: 'none',
               userSelect: 'none',
               cursor: ((playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0) ? 'not-allowed' : 'pointer',
-              fontFamily: 'monospace',
+              fontFamily: GEORGIAN_MONO_FONT,
               opacity: enemies.length === 0 ? 0.5 : 1,
               animation: ((playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0) ? 'none' : 'pulsate 2s infinite',
             }}
           >
             {playerClass === 'Fighter' ? '💍 Ultimate' : '🇬🇪 Ultimate'}
           </button>
-          <span style={{ fontSize: '10px', color: '#666', fontFamily: 'monospace' }}>{playerClass === 'Fighter' ? 'Sopo' : getClassName(playerClass, lang)}</span>
+          <span style={{ fontSize: '10px', color: '#666', fontFamily: GEORGIAN_MONO_FONT }}>{playerClass === 'Fighter' ? 'Sopo' : getClassName(playerClass, lang)}</span>
         </div>
 
         {playerClass === 'Fighter' && (
@@ -3311,12 +3312,12 @@ export default function VaultRunner() {
                 touchAction: 'none',
                 userSelect: 'none',
                 cursor: 'pointer',
-                fontFamily: 'monospace',
+                fontFamily: GEORGIAN_MONO_FONT,
               }}
             >
               {isSopoAudioPlaying ? '⏸️' : '👑'}
             </button>
-            <span style={{ fontSize: '10px', color: '#666', fontFamily: 'monospace' }}>{isSopoAudioPlaying ? (lang === 'en' ? 'Pause' : 'შეჩერება') : (lang === 'en' ? 'Play Sopo' : 'სოფო')}</span>
+            <span style={{ fontSize: '10px', color: '#666', fontFamily: GEORGIAN_MONO_FONT }}>{isSopoAudioPlaying ? (lang === 'en' ? 'Pause' : 'შეჩერება') : (lang === 'en' ? 'Play Sopo' : 'სოფო')}</span>
           </div>
         )}
 
@@ -3340,12 +3341,12 @@ export default function VaultRunner() {
               touchAction: 'none',
               userSelect: 'none',
               cursor: 'pointer',
-              fontFamily: 'monospace',
+              fontFamily: GEORGIAN_MONO_FONT,
             }}
           >
             {t.fire}
           </button>
-          <span style={{ fontSize: '10px', color: '#666', fontFamily: 'monospace' }}>{t.shootNearest}</span>
+          <span style={{ fontSize: '10px', color: '#666', fontFamily: GEORGIAN_MONO_FONT }}>{t.shootNearest}</span>
         </div>
       </div>
     </div>
@@ -3491,20 +3492,20 @@ function Joystick({ onMove }: JoystickProps) {
 const styles = {
   container: {
     display: 'flex', flexDirection: 'column' as const, alignItems: 'center', justifyContent: 'center',
-    height: '100vh', backgroundColor: '#050505', color: '#fff', fontFamily: 'monospace'
+    height: '100vh', backgroundColor: '#050505', color: '#fff', fontFamily: GEORGIAN_MONO_FONT
   },
-  title: { fontSize: '3rem', letterSpacing: '4px', margin: '0 0 10px 0' },
-  subtitle: { fontSize: '1.2rem', color: '#aaa', marginBottom: '30px', textAlign: 'center' as const },
+  title: { fontSize: '3rem', letterSpacing: '4px', margin: '0 0 10px 0', fontFamily: GEORGIAN_MONO_FONT },
+  subtitle: { fontSize: '1.2rem', color: '#aaa', marginBottom: '30px', textAlign: 'center' as const, fontFamily: GEORGIAN_MONO_FONT },
   selectionZone: { display: 'flex', gap: '20px', flexWrap: 'wrap' as const, justifyContent: 'center' as const },
   btn: {
     padding: '15px 25px', fontSize: '1rem', backgroundColor: '#111', color: '#fff',
-    border: '1px solid #444', cursor: 'pointer', fontFamily: 'monospace', borderRadius: '4px'
+    border: '1px solid #444', cursor: 'pointer', fontFamily: GEORGIAN_MONO_FONT, borderRadius: '4px'
   },
   gameView: {
-    display: 'flex', height: '100vh', backgroundColor: '#0a0a0a', color: '#fff', fontFamily: 'monospace'
+    display: 'flex', height: '100vh', backgroundColor: '#0a0a0a', color: '#fff', fontFamily: GEORGIAN_MONO_FONT
   },
   sidebar: {
-    width: '300px', padding: '20px', borderRight: '1px solid #333', display: 'flex', flexDirection: 'column' as const
+    width: '300px', padding: '20px', borderRight: '1px solid #333', display: 'flex', flexDirection: 'column' as const, fontFamily: GEORGIAN_MONO_FONT
   },
   gridContainer: {
     flex: 1, display: 'flex', flexDirection: 'column' as const, alignItems: 'center', justifyContent: 'center', backgroundColor: '#020202'
@@ -3513,13 +3514,13 @@ const styles = {
   cell: {
     width: '42px', height: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center',
     fontSize: '22px', fontWeight: 'bold' as const, border: '1px solid #111', transition: 'background-color 0.1s ease',
-    position: 'relative' as const
+    position: 'relative' as const, fontFamily: GEORGIAN_MONO_FONT
   },
-  logBox: { flex: 1, overflowY: 'auto' as const, fontSize: '13px', color: '#ccc' },
+  logBox: { flex: 1, overflowY: 'auto' as const, fontSize: '13px', color: '#ccc', fontFamily: GEORGIAN_MONO_FONT },
   logEntry: { marginBottom: '8px', borderBottom: '1px solid #151515', paddingBottom: '4px' },
-  controlsHint: { fontSize: '11px', color: '#666', marginTop: 'auto' },
+  controlsHint: { fontSize: '11px', color: '#666', marginTop: 'auto', fontFamily: GEORGIAN_MONO_FONT },
   backLinkAbsolute: { position: 'absolute' as const, top: '20px', left: '20px' },
-  navLink: { color: '#00e5ff', textDecoration: 'none', fontSize: '14px', fontWeight: 'bold' as const },
+  navLink: { color: '#00e5ff', textDecoration: 'none', fontSize: '14px', fontWeight: 'bold' as const, fontFamily: GEORGIAN_MONO_FONT },
   restartBtn: {
     padding: '8px 12px',
     fontSize: '12px',
@@ -3527,7 +3528,7 @@ const styles = {
     color: '#fff',
     border: '1px solid #ff1744',
     cursor: 'pointer',
-    fontFamily: 'monospace',
+    fontFamily: GEORGIAN_MONO_FONT,
     borderRadius: '4px',
     marginTop: '15px',
     width: '100%',
@@ -3545,7 +3546,7 @@ const styles = {
     color: '#fff',
     border: '1px solid #444',
     cursor: 'pointer',
-    fontFamily: 'monospace',
+    fontFamily: GEORGIAN_MONO_FONT,
     borderRadius: '4px',
     zIndex: 1000,
     fontWeight: 'bold' as const,
