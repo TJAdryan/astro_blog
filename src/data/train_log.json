@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-09-09T13:05:38.052Z",
+    "status": "Service Change",
+    "details": [
+      "Southbound: Some Coney Island - Stillwell Av-bound trains are making local stops between 57 St - 7 Av and Times Sq - 42 St."
+    ]
+  },
+  {
     "date": "2026-09-08T13:05:57.803Z",
     "status": "Delays",
     "details": [
@@ -198,13 +205,6 @@
     "status": "Service Change",
     "details": [
       "<Q> trains are making local stops between 57 St - 7 Av and Canal St."
-    ]
-  },
-  {
-    "date": "2026-08-07T13:27:41.629Z",
-    "status": "Delays",
-    "details": [
-      "Northbound: 96 St-bound trains are having longer wait times between Canal St and DeKalb Av (up to 14 mins, normally every 12 mins)."
     ]
   }
 ]
