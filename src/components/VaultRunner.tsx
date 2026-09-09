@@ -449,7 +449,7 @@ function play8BitGeorgianAnthem(): () => void {
 }
 
 interface GeorgianHillVictorySceneProps {
-  charClass: 'Sandro' | 'Rene' | CharacterClass;
+  charClass: CharacterClass;
   lang: Language;
 }
 
@@ -486,8 +486,6 @@ const GeorgianHillVictoryScene: React.FC<GeorgianHillVictorySceneProps> = ({ cha
       setIsPlayingAnthem(true);
     }
   };
-
-  const isSandro = charClass === 'Sandro';
 
   return (
     <div className="georgian-victory-wrapper" style={{ width: '100%', maxWidth: '520px', margin: '0 auto 24px auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -678,7 +676,8 @@ const GeorgianHillVictoryScene: React.FC<GeorgianHillVictorySceneProps> = ({ cha
           {/* 8-Bit Climbing Character Sprite */}
           <g style={{ animation: 'hero-climb 3.8s ease-in-out forwards' }}>
             <g style={{ animation: 'hero-bob 0.28s infinite ease-in-out' }}>
-              {isSandro ? (
+              {/* Sandro */}
+              {charClass === 'Sandro' && (
                 <g>
                   <rect x="0" y="0" width="16" height="12" fill="#cfd8dc" />
                   <rect x="3" y="4" width="10" height="3" fill="#263238" />
@@ -691,7 +690,10 @@ const GeorgianHillVictoryScene: React.FC<GeorgianHillVictorySceneProps> = ({ cha
                   <rect x="3" y="26" width="4" height="8" fill="#37474f" />
                   <rect x="9" y="26" width="4" height="8" fill="#37474f" />
                 </g>
-              ) : (
+              )}
+
+              {/* Rene */}
+              {charClass === 'Rene' && (
                 <g>
                   <rect x="2" y="0" width="14" height="12" fill="#e65100" />
                   <polygon points="2,0 5,-4 7,0" fill="#e65100" />
@@ -703,6 +705,85 @@ const GeorgianHillVictoryScene: React.FC<GeorgianHillVictorySceneProps> = ({ cha
                   <rect x="14" y="22" width="7" height="3" fill="#ffd700" />
                   <rect x="3" y="26" width="4" height="8" fill="#b71c1c" />
                   <rect x="9" y="26" width="4" height="8" fill="#b71c1c" />
+                </g>
+              )}
+
+              {/* Bebia */}
+              {charClass === 'Bebia' && (
+                <g>
+                  <rect x="1" y="-2" width="16" height="14" fill="#f5f5f5" rx="2" />
+                  <rect x="4" y="3" width="10" height="8" fill="#ffcc80" />
+                  <rect x="5" y="5" width="2" height="2" fill="#212121" />
+                  <rect x="11" y="5" width="2" height="2" fill="#212121" />
+                  <rect x="7" y="8" width="4" height="2" fill="#e57373" />
+                  <rect x="2" y="12" width="14" height="16" fill="#880e4f" />
+                  <rect x="5" y="14" width="8" height="14" fill="#ffffff" />
+                  <ellipse cx="18" cy="18" rx="7" ry="4" fill="#ffd54f" stroke="#ff9800" strokeWidth="1" />
+                  <ellipse cx="18" cy="18" rx="3" ry="2" fill="#fff9c4" />
+                  <circle cx="18" cy="18" r="1.5" fill="#ff6f00" />
+                  <rect x="4" y="28" width="4" height="6" fill="#424242" />
+                  <rect x="10" y="28" width="4" height="6" fill="#424242" />
+                </g>
+              )}
+
+              {/* Fighter / Sopo */}
+              {charClass === 'Fighter' && (
+                <g>
+                  <polygon points="2,0 4,-5 6,0 9,-6 12,0 14,-5 16,0" fill="#ffd700" />
+                  <circle cx="9" cy="-3" r="1.5" fill="#ff1744" />
+                  <rect x="2" y="0" width="14" height="12" fill="#3e2723" />
+                  <rect x="4" y="2" width="10" height="9" fill="#ffcc80" />
+                  <rect x="5" y="4" width="2" height="2" fill="#ff4081" />
+                  <rect x="11" y="4" width="2" height="2" fill="#ff4081" />
+                  <rect x="7" y="8" width="4" height="1" fill="#e91e63" />
+                  <rect x="2" y="12" width="14" height="16" fill="#e91e63" />
+                  <polygon points="0,28 18,28 14,14 4,14" fill="#ad1457" />
+                  <rect x="5" y="14" width="8" height="3" fill="#ffd700" />
+                  <polygon points="19,10 23,10 25,14 21,18 17,14" fill="#00e5ff" filter="url(#pixelGlow)" />
+                  <circle cx="21" cy="13" r="2" fill="#ffffff" />
+                  <rect x="4" y="28" width="4" height="6" fill="#880e4f" />
+                  <rect x="10" y="28" width="4" height="6" fill="#880e4f" />
+                </g>
+              )}
+
+              {/* Mage */}
+              {charClass === 'Mage' && (
+                <g>
+                  <polygon points="0,2 9,-8 18,2" fill="#4a148c" />
+                  <rect x="0" y="0" width="18" height="3" fill="#7b1fa2" />
+                  <rect x="7" y="0" width="4" height="3" fill="#ffd700" />
+                  <rect x="4" y="3" width="10" height="8" fill="#ffcc80" />
+                  <rect x="6" y="5" width="2" height="2" fill="#00e5ff" />
+                  <rect x="10" y="5" width="2" height="2" fill="#00e5ff" />
+                  <polygon points="4,9 9,16 14,9" fill="#e0e0e0" />
+                  <rect x="2" y="12" width="14" height="16" fill="#311b92" />
+                  <rect x="6" y="15" width="6" height="13" fill="#512da8" />
+                  <rect x="17" y="6" width="3" height="22" fill="#795548" />
+                  <circle cx="18.5" cy="5" r="4" fill="#00e5ff" filter="url(#pixelGlow)" />
+                  <rect x="17" y="14" width="6" height="8" fill="#ffd700" />
+                  <rect x="18" y="15" width="4" height="6" fill="#1a237e" />
+                  <rect x="3" y="28" width="4" height="6" fill="#1a237e" />
+                  <rect x="11" y="28" width="4" height="6" fill="#1a237e" />
+                </g>
+              )}
+
+              {/* Rogue */}
+              {charClass === 'Rogue' && (
+                <g>
+                  <rect x="1" y="-1" width="16" height="13" fill="#263238" rx="2" />
+                  <rect x="4" y="4" width="10" height="4" fill="#ffcc80" />
+                  <rect x="5" y="4" width="3" height="2" fill="#00e5ff" />
+                  <rect x="10" y="4" width="3" height="2" fill="#00e5ff" />
+                  <rect x="4" y="7" width="10" height="4" fill="#37474f" />
+                  <rect x="2" y="12" width="14" height="14" fill="#37474f" />
+                  <rect x="3" y="15" width="12" height="3" fill="#8d6e63" />
+                  <rect x="7" y="15" width="4" height="3" fill="#ffd700" />
+                  <rect x="15" y="14" width="8" height="6" fill="#424242" stroke="#212121" strokeWidth="0.5" />
+                  <circle cx="19" cy="17" r="2" fill="#ffd700" />
+                  <circle cx="19" cy="17" r="1" fill="#00e5ff" />
+                  <rect x="16" y="12" width="3" height="2" fill="#9e9e9e" />
+                  <rect x="3" y="26" width="4" height="8" fill="#212121" />
+                  <rect x="9" y="26" width="4" height="8" fill="#212121" />
                 </g>
               )}
             </g>
@@ -2316,8 +2397,6 @@ export default function VaultRunner() {
   }
 
   if (gameState === 'VICTORY') {
-    const isSandroOrRene = playerClass === 'Sandro' || playerClass === 'Rene';
-
     return (
       <div style={styles.container}>
         <div style={styles.backLinkAbsolute}>
@@ -2333,14 +2412,11 @@ export default function VaultRunner() {
           {lang === 'en' ? '🌐 English' : '🌐 ქართული'}
         </button>
 
-        {isSandroOrRene ? (
-          <GeorgianHillVictoryScene charClass={playerClass} lang={lang} />
-        ) : (
-          <>
-            <h1 style={{ ...styles.title, color: '#4caf50' }}>{t.congrats} {getClassName(playerClass, lang).toUpperCase()}</h1>
-            <p style={styles.subtitle}>{t.victoryDesc}</p>
-          </>
-        )}
+        <h1 style={{ ...styles.title, color: '#4caf50', marginBottom: '8px' }}>
+          {t.congrats} {getClassName(playerClass, lang).toUpperCase()}
+        </h1>
+
+        <GeorgianHillVictoryScene charClass={playerClass} lang={lang} />
 
         <div style={{ fontSize: '1.2rem', marginBottom: '30px', textAlign: 'center', lineHeight: '1.6' }}>
           <div style={{ color: '#ffd700' }}>{t.goldCollected}: <strong>{goldCollected}</strong></div>
