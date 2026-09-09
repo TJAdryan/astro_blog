@@ -290,90 +290,134 @@ const CLASS_PRESETS: Record<CharacterClass, Omit<PlayerStats, 'class'>> = {
 
 // --- 8-BIT GEORGIAN ANTHEM ("TAVISUPLEBA") CHIPTUNE SYNTHESIZER ---
 const NOTE_FREQS: Record<string, number> = {
-  'G3': 196.00, 'A3': 220.00, 'B3': 246.94,
-  'C4': 261.63, 'D4': 293.66, 'E4': 329.63, 'F4': 349.23, 'F#4': 369.99, 'G4': 392.00, 'A4': 440.00, 'B4': 493.88,
-  'C5': 523.25, 'D5': 587.33, 'E5': 659.25, 'F5': 698.46, 'F#5': 739.99, 'G5': 783.99, 'A5': 880.00, 'B5': 987.77,
+  'F2': 87.31, 'F#2': 92.50, 'G2': 98.00, 'G#2': 103.83, 'A2': 110.00, 'Bb2': 116.54, 'B2': 123.47,
+  'C3': 130.81, 'C#3': 138.59, 'D3': 146.83, 'Eb3': 155.56, 'E3': 164.81, 'F3': 174.61, 'F#3': 185.00, 'G3': 196.00, 'G#3': 207.65, 'A3': 220.00, 'Bb3': 233.08, 'B3': 246.94,
+  'C4': 261.63, 'C#4': 277.18, 'D4': 293.66, 'Eb4': 311.13, 'E4': 329.63, 'F4': 349.23, 'F#4': 369.99, 'G4': 392.00, 'G#4': 415.30, 'A4': 440.00, 'Bb4': 466.16, 'B4': 493.88,
+  'C5': 523.25, 'C#5': 554.37, 'D5': 587.33, 'Eb5': 622.25, 'E5': 659.25, 'F5': 698.46, 'F#5': 739.99, 'G5': 783.99, 'G#5': 830.61, 'A5': 880.00, 'Bb5': 932.33, 'B5': 987.77,
   'C6': 1046.50
 };
 
-const ANTHEM_SCORE: [string, number, string?][] = [
-  // "ჩემი ხატია სამშობლო..."
-  ['G4', 0.8, 'C3'],
-  ['C5', 1.2, 'E3'],
-  ['B4', 0.6, 'G3'],
-  ['C5', 0.6, 'C3'],
-  ['D5', 0.8, 'G3'],
-  ['E5', 1.4, 'C4'],
-  ['D5', 1.2, 'B3'],
-  ['C5', 0.6, 'A3'],
-  ['D5', 1.6, 'G3'],
-  ['G4', 1.0, 'G3'],
+// [leadNote, beats, harmonyNote?, bassNote?]
+const ANTHEM_SCORE: [string, number, string?, string?][] = [
+  // --- VERSE 1: "ჩემი ხატია სამშობლო" ---
+  // Pickup: "ჩე-"
+  ['F4', 0.8, 'D4', 'Bb2'],
+  // "-მი ხა-ტი-ა"
+  ['Bb4', 1.2, 'F4', 'Bb2'],
+  ['C5', 0.6, 'G4', 'C3'],
+  ['D5', 1.6, 'Bb4', 'D3'],
+  // "სამ-შობ-"
+  ['C5', 0.8, 'A4', 'F3'],
+  ['Bb4', 0.8, 'G4', 'G2'],
+  // "-ლო"
+  ['A4', 1.8, 'F4', 'F2'],
 
-  // "სახატე მთელი ქვეყანა..."
-  ['E5', 0.8, 'C4'],
-  ['F5', 0.8, 'D4'],
-  ['G5', 1.4, 'E4'],
-  ['E5', 0.8, 'C4'],
-  ['C5', 0.8, 'A3'],
-  ['D5', 1.4, 'G3'],
-  ['C5', 2.0, 'C3'],
+  // "სახატე მთელი ქვეყანა"
+  // "სა-ხა-"
+  ['Bb4', 0.8, 'F4', 'Bb2'],
+  ['C5', 0.8, 'G4', 'C3'],
+  // "-ტე მთე-ლი"
+  ['D5', 1.2, 'Bb4', 'D3'],
+  ['Eb5', 0.6, 'C5', 'Eb3'],
+  // "ქვე-ყა-"
+  ['D5', 0.9, 'Bb4', 'Bb2'],
+  ['C5', 0.9, 'A4', 'F3'],
+  // "-ნა"
+  ['Bb4', 2.0, 'F4', 'Bb2'],
 
-  // "განათებული მთა-ბარი..."
-  ['G4', 0.8, 'C3'],
-  ['C5', 1.2, 'E3'],
-  ['B4', 0.6, 'G3'],
-  ['C5', 0.6, 'C3'],
-  ['D5', 0.8, 'G3'],
-  ['E5', 1.4, 'C4'],
-  ['D5', 1.2, 'B3'],
-  ['C5', 0.6, 'A3'],
-  ['D5', 1.6, 'G3'],
-  ['G4', 1.0, 'G3'],
+  // --- VERSE 2: "განათებული მთა-ბარი" ---
+  // "გა-ნა-თე-"
+  ['F5', 1.0, 'D5', 'Bb3'],
+  ['D5', 1.2, 'Bb4', 'Bb2'],
+  ['Eb5', 0.6, 'C5', 'C3'],
+  ['F5', 1.6, 'D5', 'D3'],
+  // "-ბუ-ლი მთა-"
+  ['G5', 0.8, 'Eb5', 'Eb3'],
+  ['F5', 0.8, 'D5', 'Bb2'],
+  // "-ბა-რი"
+  ['Eb5', 1.8, 'C5', 'F3'],
 
-  // "წილნაყარია ღმერთთანა..."
-  ['E5', 0.8, 'C4'],
-  ['F5', 0.8, 'D4'],
-  ['G5', 1.4, 'E4'],
-  ['E5', 0.8, 'C4'],
-  ['C5', 0.8, 'A3'],
-  ['D5', 1.4, 'G3'],
-  ['C5', 2.0, 'C3'],
+  // "წილნაყარია ღმერთთანა"
+  // "წილ-ნა-ყა-"
+  ['F5', 0.8, 'D5', 'Bb2'],
+  ['Eb5', 0.8, 'C5', 'A2'],
+  ['D5', 0.8, 'Bb4', 'G2'],
+  ['C5', 0.8, 'A4', 'F2'],
+  // "-რი-ა ღმერთ-თა-"
+  ['D5', 1.4, 'Bb4', 'Bb2'],
+  ['C5', 1.2, 'A4', 'F3'],
+  // "-ნა"
+  ['Bb4', 2.2, 'F4', 'Bb2'],
 
-  // Triumphant climax: "თავისუფლება დღეს ჩვენი..."
-  ['E5', 0.9, 'C4'],
-  ['E5', 0.9, 'E4'],
-  ['F5', 0.8, 'F4'],
-  ['G5', 1.4, 'G4'],
-  ['A5', 0.9, 'F4'],
-  ['G5', 1.3, 'E4'],
-  ['F5', 0.8, 'D4'],
-  ['E5', 1.4, 'C4'],
+  // --- CHORUS (CLIMAX FROM DAISI): "თავისუფლება დღეს ჩვენი" ---
+  // "თა-ვი-სუფ-ლე-ბა"
+  ['F5', 1.2, 'D5', 'Bb3'],
+  ['D5', 0.6, 'Bb4', 'Bb2'],
+  ['F5', 0.8, 'D5', 'D3'],
+  ['Bb5', 1.6, 'F5', 'Bb3'],
+  // "დღეს ჩვე-ნი"
+  ['A5', 0.8, 'F5', 'F3'],
+  ['G5', 0.8, 'Eb5', 'Eb3'],
+  ['F5', 1.8, 'D5', 'Bb2'],
 
-  // "მომავალს უმღერს დიდებას..."
-  ['D5', 0.8, 'B3'],
-  ['E5', 0.8, 'C4'],
-  ['F5', 1.3, 'D4'],
-  ['D5', 0.8, 'B3'],
-  ['B4', 0.9, 'G3'],
-  ['C5', 1.4, 'A3'],
-  ['D5', 1.6, 'G3'],
+  // "მომავალს უმღერს დიდებას"
+  // "მო-მა-ვალს"
+  ['Eb5', 1.2, 'C5', 'C3'],
+  ['C5', 0.6, 'A4', 'F2'],
+  ['Eb5', 0.8, 'C5', 'Eb3'],
+  ['G5', 1.6, 'Eb5', 'Eb3'],
+  // "უმ-ღერს დი-დე-"
+  ['F5', 0.8, 'D5', 'Bb2'],
+  ['Eb5', 0.8, 'C5', 'F3'],
+  // "-ბას"
+  ['D5', 1.8, 'Bb4', 'Bb2'],
 
-  // "ცისკრის ვარსკვლავი ამოსულა..."
-  ['G4', 0.8, 'C3'],
-  ['C5', 1.2, 'E3'],
-  ['E5', 0.9, 'G3'],
-  ['G5', 1.6, 'C4'],
-  ['F5', 0.8, 'D4'],
-  ['E5', 0.9, 'C4'],
-  ['D5', 1.4, 'B3'],
+  // "ცისკრის ვარსკვლავი ამოდის"
+  // "ცის-კრის ვარს-კვლა-ვი"
+  ['D5', 0.8, 'Bb4', 'G2'],
+  ['D5', 0.8, 'Bb4', 'F#2'],
+  ['D5', 1.2, 'Bb4', 'G2'],
+  ['Eb5', 0.6, 'C5', 'A2'],
+  // "ა-მო-დის"
+  ['F5', 1.4, 'D5', 'Bb2'],
+  ['G5', 1.4, 'Eb5', 'Eb3'],
 
-  // Final resolve: "დიდება თავისუფლებას!"
-  ['E5', 0.8, 'C4'],
-  ['F5', 0.8, 'D4'],
-  ['G5', 1.5, 'E4'],
-  ['E5', 0.9, 'C4'],
-  ['D5', 1.1, 'G3'],
-  ['C5', 2.6, 'C3']
+  // "ამოდის და ორ ზღვას შუა ბრწყინდება"
+  // "ა-მო-დის და"
+  ['F5', 0.8, 'D5', 'Bb2'],
+  ['Eb5', 0.8, 'C5', 'C3'],
+  ['D5', 0.8, 'Bb4', 'D3'],
+  ['C5', 0.8, 'A4', 'F2'],
+  // "ორ ზღვას შუ-ა ბრწყინ-დე-ბა"
+  ['Bb4', 0.9, 'F4', 'G2'],
+  ['C5', 0.9, 'G4', 'A2'],
+  ['D5', 1.8, 'Bb4', 'Bb2'],
+
+  // "და დიდება თავისუფლებას"
+  // "და დი-დე-ბა"
+  ['Eb5', 0.8, 'C5', 'Eb3'],
+  ['F5', 0.8, 'D5', 'F3'],
+  ['G5', 1.2, 'Eb5', 'Eb3'],
+  ['F5', 0.6, 'D5', 'D3'],
+  // "თა-ვი-სუფ-ლე-"
+  ['Eb5', 1.2, 'C5', 'C3'],
+  ['D5', 1.2, 'Bb4', 'Bb2'],
+
+  // --- FINAL TRIUMPH: "თავისუფლებას დიდება!" ---
+  // "თა-ვი-სუფ-ლე-ბას"
+  ['C5', 1.2, 'A4', 'F2'],
+  ['D5', 0.6, 'Bb4', 'G2'],
+  ['Eb5', 0.9, 'C5', 'A2'],
+  ['C5', 0.9, 'A4', 'F3'],
+  // "დი-დე-ბა!"
+  ['Bb4', 3.2, 'F4', 'Bb2'],
+
+  // Grand Orchestral Resolution Flourish
+  ['F5', 0.8, 'D5', 'Bb3'],
+  ['G5', 0.6, 'Eb5', 'Eb3'],
+  ['F5', 0.8, 'D5', 'F3'],
+  ['D5', 0.8, 'Bb4', 'D3'],
+  ['Bb4', 3.6, 'F4', 'Bb2']
 ];
 
 function play8BitGeorgianAnthem(): () => void {
@@ -381,36 +425,71 @@ function play8BitGeorgianAnthem(): () => void {
     const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
     if (!AudioContext) return () => {};
     const ctx = new AudioContext();
-    const now = ctx.currentTime + 0.05;
-    const tempo = 0.42;
+    const now = ctx.currentTime + 0.06;
+    const tempo = 0.46; // Solemn & majestic anthem pace
 
     let noteTime = now;
 
     const masterGain = ctx.createGain();
-    masterGain.gain.setValueAtTime(0.2, ctx.currentTime);
+    masterGain.gain.setValueAtTime(0.24, ctx.currentTime);
     masterGain.connect(ctx.destination);
 
-    ANTHEM_SCORE.forEach(([leadNote, beats, bassNote]) => {
+    ANTHEM_SCORE.forEach(([leadNote, beats, harmonyNote, bassNote]) => {
       const dur = beats * tempo;
       const leadFreq = NOTE_FREQS[leadNote];
+
+      // 1. Lead Melody (NES Square Pulse 1)
       if (leadFreq) {
         const leadOsc = ctx.createOscillator();
         const leadGain = ctx.createGain();
         leadOsc.type = 'square';
         leadOsc.frequency.setValueAtTime(leadFreq, noteTime);
 
+        // Expressive retro envelope with slight vibrato on long notes
+        if (beats >= 1.5) {
+          leadOsc.frequency.setValueAtTime(leadFreq, noteTime);
+          leadOsc.frequency.setValueAtTime(leadFreq, noteTime + dur * 0.35);
+          // subtle vibrato
+          leadOsc.frequency.linearRampToValueAtTime(leadFreq * 1.008, noteTime + dur * 0.55);
+          leadOsc.frequency.linearRampToValueAtTime(leadFreq * 0.993, noteTime + dur * 0.75);
+          leadOsc.frequency.linearRampToValueAtTime(leadFreq, noteTime + dur * 0.95);
+        }
+
         leadGain.gain.setValueAtTime(0.001, noteTime);
         leadGain.gain.linearRampToValueAtTime(0.22, noteTime + 0.02);
-        leadGain.gain.exponentialRampToValueAtTime(0.14, noteTime + dur * 0.7);
-        leadGain.gain.linearRampToValueAtTime(0.001, noteTime + dur * 0.94);
+        leadGain.gain.exponentialRampToValueAtTime(0.15, noteTime + dur * 0.75);
+        leadGain.gain.linearRampToValueAtTime(0.001, noteTime + dur * 0.96);
 
         leadOsc.connect(leadGain);
         leadGain.connect(masterGain);
 
         leadOsc.start(noteTime);
-        leadOsc.stop(noteTime + dur * 0.95);
+        leadOsc.stop(noteTime + dur * 0.97);
       }
 
+      // 2. Choral Harmony (NES Square Pulse 2)
+      if (harmonyNote) {
+        const harmFreq = NOTE_FREQS[harmonyNote];
+        if (harmFreq) {
+          const harmOsc = ctx.createOscillator();
+          const harmGain = ctx.createGain();
+          harmOsc.type = 'square';
+          harmOsc.frequency.setValueAtTime(harmFreq, noteTime);
+
+          harmGain.gain.setValueAtTime(0.001, noteTime);
+          harmGain.gain.linearRampToValueAtTime(0.12, noteTime + 0.02);
+          harmGain.gain.exponentialRampToValueAtTime(0.08, noteTime + dur * 0.75);
+          harmGain.gain.linearRampToValueAtTime(0.001, noteTime + dur * 0.96);
+
+          harmOsc.connect(harmGain);
+          harmGain.connect(masterGain);
+
+          harmOsc.start(noteTime);
+          harmOsc.stop(noteTime + dur * 0.97);
+        }
+      }
+
+      // 3. Bass Counterpoint (NES Triangle Bass)
       if (bassNote) {
         const bassFreq = NOTE_FREQS[bassNote];
         if (bassFreq) {
@@ -420,15 +499,15 @@ function play8BitGeorgianAnthem(): () => void {
           bassOsc.frequency.setValueAtTime(bassFreq, noteTime);
 
           bassGain.gain.setValueAtTime(0.001, noteTime);
-          bassGain.gain.linearRampToValueAtTime(0.26, noteTime + 0.03);
-          bassGain.gain.exponentialRampToValueAtTime(0.12, noteTime + dur * 0.8);
-          bassGain.gain.linearRampToValueAtTime(0.001, noteTime + dur * 0.95);
+          bassGain.gain.linearRampToValueAtTime(0.28, noteTime + 0.03);
+          bassGain.gain.exponentialRampToValueAtTime(0.16, noteTime + dur * 0.85);
+          bassGain.gain.linearRampToValueAtTime(0.001, noteTime + dur * 0.98);
 
           bassOsc.connect(bassGain);
           bassGain.connect(masterGain);
 
           bassOsc.start(noteTime);
-          bassOsc.stop(noteTime + dur * 0.96);
+          bassOsc.stop(noteTime + dur * 0.99);
         }
       }
 
