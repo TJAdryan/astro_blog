@@ -2231,7 +2231,7 @@ export default function VaultRunner() {
         case 'c':          case '3': handleMove(1, 1);   break;
         case 'f':          case ' ': e.preventDefault(); fireAtNearest(); break;
         case 'b':          case 'g':          case 'p':
-          if (playerStats.class === 'Bebia') triggerBebiaUltimate();
+          if (playerStats.class === 'Bebia' || playerStats.class === 'Rene' || playerStats.class === 'Sandro') triggerBebiaUltimate();
           else if (playerStats.class === 'Fighter') triggerSopoUltimate();
           break;
       }
@@ -2642,33 +2642,33 @@ export default function VaultRunner() {
 
         <p className="controls-hint" style={styles.controlsHint}>{t.controlsHint}</p>
         
-        {(playerClass === 'Bebia' || playerClass === 'Fighter') && (
+        {(playerClass === 'Bebia' || playerClass === 'Rene' || playerClass === 'Sandro' || playerClass === 'Fighter') && (
           <button
-            onClick={playerClass === 'Bebia' ? triggerBebiaUltimate : triggerSopoUltimate}
-            disabled={(playerClass === 'Bebia' ? isBebiaActive : isSopoActive) || enemies.length === 0}
+            onClick={playerClass === 'Fighter' ? triggerSopoUltimate : triggerBebiaUltimate}
+            disabled={(playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0}
             className="bebia-ultimate-btn"
             style={{
               padding: '10px 15px',
               fontSize: '14px',
-              backgroundColor: (playerClass === 'Bebia' ? isBebiaActive : isSopoActive) ? '#ff1744' : '#111',
-              color: (playerClass === 'Bebia' ? isBebiaActive : isSopoActive) ? '#fff' : (playerClass === 'Fighter' ? '#ff69b4' : '#00e5ff'),
+              backgroundColor: (playerClass === 'Fighter' ? isSopoActive : isBebiaActive) ? '#ff1744' : '#111',
+              color: (playerClass === 'Fighter' ? isSopoActive : isBebiaActive) ? '#fff' : (playerClass === 'Fighter' ? '#ff69b4' : '#00e5ff'),
               border: playerClass === 'Fighter' ? '2px solid #ff69b4' : '2px solid #00e5ff',
               borderRadius: '6px',
-              cursor: ((playerClass === 'Bebia' ? isBebiaActive : isSopoActive) || enemies.length === 0) ? 'not-allowed' : 'pointer',
+              cursor: ((playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0) ? 'not-allowed' : 'pointer',
               fontWeight: 'bold',
               marginTop: '15px',
               width: '100%',
               textAlign: 'center',
               boxShadow: playerClass === 'Fighter' ? '0 0 10px rgba(255,105,180,0.3)' : '0 0 10px rgba(0,229,255,0.3)',
-              animation: ((playerClass === 'Bebia' ? isBebiaActive : isSopoActive) || enemies.length === 0) ? 'none' : 'pulsate 2s infinite',
+              animation: ((playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0) ? 'none' : 'pulsate 2s infinite',
               opacity: enemies.length === 0 ? 0.5 : 1,
               transition: 'all 0.3s ease',
               fontFamily: 'monospace',
             }}
           >
-            {playerClass === 'Bebia' 
-              ? (isBebiaActive ? t.bebiaActive : t.bebiaUltimate) 
-              : (isSopoActive ? t.sopoActive : t.sopoUltimate)}
+            {playerClass === 'Fighter' 
+              ? (isSopoActive ? t.sopoActive : t.sopoUltimate) 
+              : (isBebiaActive ? t.bebiaActive : t.bebiaUltimate)}
           </button>
         )}
 
@@ -2890,7 +2890,7 @@ export default function VaultRunner() {
                 glyph = '🤵';
                 color = '#00e5ff';
               } else if (x === playerPosition.x && y === playerPosition.y) {
-                if ((playerClass === 'Bebia' || playerClass === 'Fighter') && (ultimatePhase === 'CHASING' || ultimatePhase === 'PROPOSING' || ultimatePhase === 'VANQUISHING' || ultimatePhase === 'FLAG')) {
+                if ((playerClass === 'Bebia' || playerClass === 'Rene' || playerClass === 'Sandro' || playerClass === 'Fighter') && (ultimatePhase === 'CHASING' || ultimatePhase === 'PROPOSING' || ultimatePhase === 'VANQUISHING' || ultimatePhase === 'FLAG')) {
                   glyph = '.';
                   color = '#222';
                 } else {
@@ -3108,33 +3108,33 @@ export default function VaultRunner() {
 
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
           <button 
-            onTouchStart={(e) => { e.preventDefault(); if (playerClass === 'Bebia') triggerBebiaUltimate(); else if (playerClass === 'Fighter') triggerSopoUltimate(); }}
-            onClick={(e) => { e.preventDefault(); if (playerClass === 'Bebia') triggerBebiaUltimate(); else if (playerClass === 'Fighter') triggerSopoUltimate(); }}
-            disabled={(playerClass === 'Bebia' ? isBebiaActive : isSopoActive) || enemies.length === 0 || (playerClass !== 'Bebia' && playerClass !== 'Fighter')}
+            onTouchStart={(e) => { e.preventDefault(); if (playerClass === 'Fighter') triggerSopoUltimate(); else if (playerClass === 'Bebia' || playerClass === 'Rene' || playerClass === 'Sandro') triggerBebiaUltimate(); }}
+            onClick={(e) => { e.preventDefault(); if (playerClass === 'Fighter') triggerSopoUltimate(); else if (playerClass === 'Bebia' || playerClass === 'Rene' || playerClass === 'Sandro') triggerBebiaUltimate(); }}
+            disabled={(playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0 || (playerClass !== 'Bebia' && playerClass !== 'Fighter' && playerClass !== 'Rene' && playerClass !== 'Sandro')}
             style={{
               width: '64px',
               height: '64px',
               borderRadius: '50%',
-              backgroundColor: (playerClass === 'Bebia' ? isBebiaActive : isSopoActive) ? '#ff1744' : '#111',
+              backgroundColor: (playerClass === 'Fighter' ? isSopoActive : isBebiaActive) ? '#ff1744' : '#111',
               border: playerClass === 'Fighter' ? '2px solid #ff69b4' : '2px solid #00e5ff',
-              color: (playerClass === 'Bebia' ? isBebiaActive : isSopoActive) ? '#fff' : (playerClass === 'Fighter' ? '#ff69b4' : '#00e5ff'),
+              color: (playerClass === 'Fighter' ? isSopoActive : isBebiaActive) ? '#fff' : (playerClass === 'Fighter' ? '#ff69b4' : '#00e5ff'),
               fontSize: '12px',
               fontWeight: 'bold',
-              boxShadow: (playerClass === 'Bebia' ? isBebiaActive : isSopoActive) ? '0 0 15px #ff1744' : (playerClass === 'Fighter' ? '0 0 8px rgba(255,105,180,0.4)' : '0 0 8px rgba(0,229,255,0.4)'),
+              boxShadow: (playerClass === 'Fighter' ? isSopoActive : isBebiaActive) ? '0 0 15px #ff1744' : (playerClass === 'Fighter' ? '0 0 8px rgba(255,105,180,0.4)' : '0 0 8px rgba(0,229,255,0.4)'),
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               touchAction: 'none',
               userSelect: 'none',
-              cursor: ((playerClass === 'Bebia' ? isBebiaActive : isSopoActive) || enemies.length === 0 || (playerClass !== 'Bebia' && playerClass !== 'Fighter')) ? 'not-allowed' : 'pointer',
+              cursor: ((playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0 || (playerClass !== 'Bebia' && playerClass !== 'Fighter' && playerClass !== 'Rene' && playerClass !== 'Sandro')) ? 'not-allowed' : 'pointer',
               fontFamily: 'monospace',
-              opacity: (enemies.length === 0 || (playerClass !== 'Bebia' && playerClass !== 'Fighter')) ? 0.5 : 1,
-              animation: ((playerClass === 'Bebia' ? isBebiaActive : isSopoActive) || enemies.length === 0 || (playerClass !== 'Bebia' && playerClass !== 'Fighter')) ? 'none' : 'pulsate 2s infinite',
+              opacity: (enemies.length === 0 || (playerClass !== 'Bebia' && playerClass !== 'Fighter' && playerClass !== 'Rene' && playerClass !== 'Sandro')) ? 0.5 : 1,
+              animation: ((playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0 || (playerClass !== 'Bebia' && playerClass !== 'Fighter' && playerClass !== 'Rene' && playerClass !== 'Sandro')) ? 'none' : 'pulsate 2s infinite',
             }}
           >
             {playerClass === 'Fighter' ? '💍 Ultimate' : '🇬🇪 Ultimate'}
           </button>
-          <span style={{ fontSize: '10px', color: '#666', fontFamily: 'monospace' }}>{playerClass === 'Fighter' ? 'Sopo' : 'Bebia'}</span>
+          <span style={{ fontSize: '10px', color: '#666', fontFamily: 'monospace' }}>{playerClass === 'Fighter' ? 'Sopo' : (playerClass === 'Rene' ? 'Rene' : playerClass === 'Sandro' ? 'Sandro' : 'Bebia')}</span>
         </div>
 
         {playerClass === 'Fighter' && (
