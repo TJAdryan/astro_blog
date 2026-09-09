@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 
 // --- GAME CONFIG & CONSTANTS ---
 const GRID_SIZE = 15;
@@ -53,6 +53,9 @@ const TRANSLATIONS = {
     sopoProclamation: "Sopo is unmatched in Beauty or Battle!",
     sopoProclamationSubtitle1: "Dominick, you are my greatest adventure",
     sopoProclamationSubtitle2: "and proposing to you my most glorious victory",
+    georgiaDefendedScroll: "Thank you for defending Georgia against the Invaders.",
+    replayAnthemBtn: "🎵 Replay 8-Bit Anthem",
+    pauseAnthemBtn: "⏸️ Pause Anthem",
     // Logs
     welcomeLog: 'Welcome to the Vault. Find the stairs (S) to descend.',
     enterLog: 'You enter the cold depths of the Vault.',
@@ -123,6 +126,9 @@ const TRANSLATIONS = {
     sopoProclamation: "სოფო შეუდარებელია სილამაზესა და ბრძოლაში!",
     sopoProclamationSubtitle1: "დომინიკ, შენ ხარ ჩემი უდიდესი თავგადასავალი",
     sopoProclamationSubtitle2: "და შენთვის ხელის თხოვნა – ჩემი ყველაზე დიდებული გამარჯვება.",
+    georgiaDefendedScroll: "მადლობა საქართველოს დამპყრობლებისგან დაცვისთვის.",
+    replayAnthemBtn: "🎵 ჰიმნის ხელახლა ჩართვა",
+    pauseAnthemBtn: "⏸️ ჰიმნის შეჩერება",
     // Logs
     welcomeLog: 'კეთილი იყოს თქვენი მობრძანება ვაულტში. ჩასასვლელად იპოვეთ კიბე (S).',
     enterLog: 'თქვენ შედიხართ ვაულტის ცივ სიღრმეებში.',
@@ -280,6 +286,456 @@ const CLASS_PRESETS: Record<CharacterClass, Omit<PlayerStats, 'class'>> = {
   Rene:    { hp: 90,  maxHp: 90,  atk: 22, def: 4 },  // Custom preset for Rene (Girl)
   Sandro:  { hp: 110, maxHp: 110, atk: 16, def: 4 },  // Custom preset for Sandro (Boy)
   Bebia:   { hp: 100, maxHp: 100, atk: 999, def: 5 }, // Turns monsters to gold in one shot!
+};
+
+// --- 8-BIT GEORGIAN ANTHEM ("TAVISUPLEBA") CHIPTUNE SYNTHESIZER ---
+const NOTE_FREQS: Record<string, number> = {
+  'G3': 196.00, 'A3': 220.00, 'B3': 246.94,
+  'C4': 261.63, 'D4': 293.66, 'E4': 329.63, 'F4': 349.23, 'F#4': 369.99, 'G4': 392.00, 'A4': 440.00, 'B4': 493.88,
+  'C5': 523.25, 'D5': 587.33, 'E5': 659.25, 'F5': 698.46, 'F#5': 739.99, 'G5': 783.99, 'A5': 880.00, 'B5': 987.77,
+  'C6': 1046.50
+};
+
+const ANTHEM_SCORE: [string, number, string?][] = [
+  // "ჩემი ხატია სამშობლო..."
+  ['G4', 0.8, 'C3'],
+  ['C5', 1.2, 'E3'],
+  ['B4', 0.6, 'G3'],
+  ['C5', 0.6, 'C3'],
+  ['D5', 0.8, 'G3'],
+  ['E5', 1.4, 'C4'],
+  ['D5', 1.2, 'B3'],
+  ['C5', 0.6, 'A3'],
+  ['D5', 1.6, 'G3'],
+  ['G4', 1.0, 'G3'],
+
+  // "სახატე მთელი ქვეყანა..."
+  ['E5', 0.8, 'C4'],
+  ['F5', 0.8, 'D4'],
+  ['G5', 1.4, 'E4'],
+  ['E5', 0.8, 'C4'],
+  ['C5', 0.8, 'A3'],
+  ['D5', 1.4, 'G3'],
+  ['C5', 2.0, 'C3'],
+
+  // "განათებული მთა-ბარი..."
+  ['G4', 0.8, 'C3'],
+  ['C5', 1.2, 'E3'],
+  ['B4', 0.6, 'G3'],
+  ['C5', 0.6, 'C3'],
+  ['D5', 0.8, 'G3'],
+  ['E5', 1.4, 'C4'],
+  ['D5', 1.2, 'B3'],
+  ['C5', 0.6, 'A3'],
+  ['D5', 1.6, 'G3'],
+  ['G4', 1.0, 'G3'],
+
+  // "წილნაყარია ღმერთთანა..."
+  ['E5', 0.8, 'C4'],
+  ['F5', 0.8, 'D4'],
+  ['G5', 1.4, 'E4'],
+  ['E5', 0.8, 'C4'],
+  ['C5', 0.8, 'A3'],
+  ['D5', 1.4, 'G3'],
+  ['C5', 2.0, 'C3'],
+
+  // Triumphant climax: "თავისუფლება დღეს ჩვენი..."
+  ['E5', 0.9, 'C4'],
+  ['E5', 0.9, 'E4'],
+  ['F5', 0.8, 'F4'],
+  ['G5', 1.4, 'G4'],
+  ['A5', 0.9, 'F4'],
+  ['G5', 1.3, 'E4'],
+  ['F5', 0.8, 'D4'],
+  ['E5', 1.4, 'C4'],
+
+  // "მომავალს უმღერს დიდებას..."
+  ['D5', 0.8, 'B3'],
+  ['E5', 0.8, 'C4'],
+  ['F5', 1.3, 'D4'],
+  ['D5', 0.8, 'B3'],
+  ['B4', 0.9, 'G3'],
+  ['C5', 1.4, 'A3'],
+  ['D5', 1.6, 'G3'],
+
+  // "ცისკრის ვარსკვლავი ამოსულა..."
+  ['G4', 0.8, 'C3'],
+  ['C5', 1.2, 'E3'],
+  ['E5', 0.9, 'G3'],
+  ['G5', 1.6, 'C4'],
+  ['F5', 0.8, 'D4'],
+  ['E5', 0.9, 'C4'],
+  ['D5', 1.4, 'B3'],
+
+  // Final resolve: "დიდება თავისუფლებას!"
+  ['E5', 0.8, 'C4'],
+  ['F5', 0.8, 'D4'],
+  ['G5', 1.5, 'E4'],
+  ['E5', 0.9, 'C4'],
+  ['D5', 1.1, 'G3'],
+  ['C5', 2.6, 'C3']
+];
+
+function play8BitGeorgianAnthem(): () => void {
+  try {
+    const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioContext) return () => {};
+    const ctx = new AudioContext();
+    const now = ctx.currentTime + 0.05;
+    const tempo = 0.42;
+
+    let noteTime = now;
+
+    const masterGain = ctx.createGain();
+    masterGain.gain.setValueAtTime(0.2, ctx.currentTime);
+    masterGain.connect(ctx.destination);
+
+    ANTHEM_SCORE.forEach(([leadNote, beats, bassNote]) => {
+      const dur = beats * tempo;
+      const leadFreq = NOTE_FREQS[leadNote];
+      if (leadFreq) {
+        const leadOsc = ctx.createOscillator();
+        const leadGain = ctx.createGain();
+        leadOsc.type = 'square';
+        leadOsc.frequency.setValueAtTime(leadFreq, noteTime);
+
+        leadGain.gain.setValueAtTime(0.001, noteTime);
+        leadGain.gain.linearRampToValueAtTime(0.22, noteTime + 0.02);
+        leadGain.gain.exponentialRampToValueAtTime(0.14, noteTime + dur * 0.7);
+        leadGain.gain.linearRampToValueAtTime(0.001, noteTime + dur * 0.94);
+
+        leadOsc.connect(leadGain);
+        leadGain.connect(masterGain);
+
+        leadOsc.start(noteTime);
+        leadOsc.stop(noteTime + dur * 0.95);
+      }
+
+      if (bassNote) {
+        const bassFreq = NOTE_FREQS[bassNote];
+        if (bassFreq) {
+          const bassOsc = ctx.createOscillator();
+          const bassGain = ctx.createGain();
+          bassOsc.type = 'triangle';
+          bassOsc.frequency.setValueAtTime(bassFreq, noteTime);
+
+          bassGain.gain.setValueAtTime(0.001, noteTime);
+          bassGain.gain.linearRampToValueAtTime(0.26, noteTime + 0.03);
+          bassGain.gain.exponentialRampToValueAtTime(0.12, noteTime + dur * 0.8);
+          bassGain.gain.linearRampToValueAtTime(0.001, noteTime + dur * 0.95);
+
+          bassOsc.connect(bassGain);
+          bassGain.connect(masterGain);
+
+          bassOsc.start(noteTime);
+          bassOsc.stop(noteTime + dur * 0.96);
+        }
+      }
+
+      noteTime += dur;
+    });
+
+    return () => {
+      try {
+        ctx.close();
+      } catch (e) {
+        // already closed
+      }
+    };
+  } catch (err) {
+    console.warn("Could not initialize 8-bit audio anthem:", err);
+    return () => {};
+  }
+}
+
+interface GeorgianHillVictorySceneProps {
+  charClass: 'Sandro' | 'Rene' | CharacterClass;
+  lang: Language;
+}
+
+const GeorgianHillVictoryScene: React.FC<GeorgianHillVictorySceneProps> = ({ charClass, lang }) => {
+  const [isPlayingAnthem, setIsPlayingAnthem] = useState<boolean>(true);
+  const stopAnthemRef = useRef<(() => void) | null>(null);
+  const t = TRANSLATIONS[lang];
+
+  useEffect(() => {
+    const stopFn = play8BitGeorgianAnthem();
+    stopAnthemRef.current = stopFn;
+    setIsPlayingAnthem(true);
+
+    return () => {
+      if (stopAnthemRef.current) {
+        stopAnthemRef.current();
+        stopAnthemRef.current = null;
+      }
+    };
+  }, []);
+
+  const handleToggleAnthem = () => {
+    if (isPlayingAnthem) {
+      if (stopAnthemRef.current) {
+        stopAnthemRef.current();
+        stopAnthemRef.current = null;
+      }
+      setIsPlayingAnthem(false);
+    } else {
+      if (stopAnthemRef.current) {
+        stopAnthemRef.current();
+      }
+      stopAnthemRef.current = play8BitGeorgianAnthem();
+      setIsPlayingAnthem(true);
+    }
+  };
+
+  const isSandro = charClass === 'Sandro';
+
+  return (
+    <div className="georgian-victory-wrapper" style={{ width: '100%', maxWidth: '520px', margin: '0 auto 24px auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes pixel-twinkle {
+          0%, 100% { opacity: 0.3; transform: scale(0.8); }
+          50% { opacity: 1; transform: scale(1.2); }
+        }
+        @keyframes hero-climb {
+          0% { transform: translate(20px, 160px); }
+          25% { transform: translate(110px, 125px); }
+          50% { transform: translate(190px, 95px); }
+          75% { transform: translate(270px, 65px); }
+          100% { transform: translate(320px, 45px); }
+        }
+        @keyframes hero-bob {
+          0%, 100% { margin-top: 0px; }
+          50% { margin-top: -3px; }
+        }
+        @keyframes flag-raise {
+          0%, 75% { transform: scale(0); opacity: 0; }
+          85% { transform: scale(1.1); opacity: 1; }
+          100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes flag-wave-8bit {
+          0% { transform: skewY(0deg) scaleX(1); }
+          25% { transform: skewY(2deg) scaleX(0.97); }
+          50% { transform: skewY(0deg) scaleX(1.02); }
+          75% { transform: skewY(-2deg) scaleX(0.97); }
+          100% { transform: skewY(0deg) scaleX(1); }
+        }
+        @keyframes scroll-unfurl {
+          0% { opacity: 0; transform: translateY(-15px) scaleY(0.6); }
+          100% { opacity: 1; transform: translateY(0) scaleY(1); }
+        }
+        @keyframes spark-float {
+          0% { transform: translateY(0px) rotate(0deg); opacity: 1; }
+          100% { transform: translateY(-20px) rotate(90deg); opacity: 0; }
+        }
+      `}} />
+
+      {/* Decorative 8-bit Scroll Banner */}
+      <div
+        className="scroll-proclamation"
+        style={{
+          animation: 'scroll-unfurl 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
+          background: 'linear-gradient(to right, #f4e2bb, #fffdf2, #f4e2bb)',
+          color: '#3e2723',
+          border: '3px solid #8d6e63',
+          borderRadius: '4px',
+          padding: '10px 18px',
+          marginBottom: '14px',
+          boxShadow: '0 6px 20px rgba(0,0,0,0.8), inset 0 0 10px rgba(141,110,99,0.35)',
+          textAlign: 'center',
+          fontWeight: 'bold',
+          fontSize: '13px',
+          letterSpacing: '0.5px',
+          fontFamily: 'monospace',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '10px',
+          width: '100%',
+          boxSizing: 'border-box',
+          borderLeftWidth: '12px',
+          borderRightWidth: '12px',
+          lineHeight: '1.4'
+        }}
+      >
+        <span style={{ fontSize: '18px' }}>📜</span>
+        <span>{t.georgiaDefendedScroll}</span>
+        <span style={{ fontSize: '18px' }}>📜</span>
+      </div>
+
+      {/* 8-Bit Pixel Art Scene Frame */}
+      <div
+        style={{
+          width: '100%',
+          height: '240px',
+          backgroundColor: '#0a1128',
+          border: '4px solid #333',
+          borderRadius: '8px',
+          position: 'relative',
+          overflow: 'hidden',
+          boxShadow: '0 8px 30px rgba(0,0,0,0.9), 0 0 15px rgba(0,229,255,0.2)'
+        }}
+      >
+        <svg
+          viewBox="0 0 460 240"
+          style={{ width: '100%', height: '100%', display: 'block', shapeRendering: 'crispEdges' }}
+        >
+          <defs>
+            <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#050a18" />
+              <stop offset="60%" stopColor="#1c2541" />
+              <stop offset="100%" stopColor="#3a506b" />
+            </linearGradient>
+            <filter id="pixelGlow">
+              <feDropShadow dx="0" dy="0" stdDeviation="2" floodColor="#ffd700" floodOpacity="0.8" />
+            </filter>
+          </defs>
+          <rect width="460" height="240" fill="url(#skyGrad)" />
+
+          {/* Twinkling Pixel Stars */}
+          <rect x="30" y="20" width="3" height="3" fill="#ffffff" style={{ animation: 'pixel-twinkle 2s infinite ease-in-out' }} />
+          <rect x="80" y="45" width="2" height="2" fill="#ffe066" style={{ animation: 'pixel-twinkle 2.5s infinite ease-in-out 0.5s' }} />
+          <rect x="140" y="15" width="3" height="3" fill="#ffffff" style={{ animation: 'pixel-twinkle 1.8s infinite ease-in-out 0.2s' }} />
+          <rect x="200" y="35" width="2" height="2" fill="#ffe066" style={{ animation: 'pixel-twinkle 2.2s infinite ease-in-out 0.8s' }} />
+          <rect x="260" y="22" width="3" height="3" fill="#ffffff" style={{ animation: 'pixel-twinkle 3s infinite ease-in-out 1.2s' }} />
+          <rect x="330" y="40" width="2" height="2" fill="#ffe066" style={{ animation: 'pixel-twinkle 2.1s infinite ease-in-out 0.3s' }} />
+          <rect x="410" y="18" width="3" height="3" fill="#ffffff" style={{ animation: 'pixel-twinkle 1.9s infinite ease-in-out 0.7s' }} />
+          <rect x="390" y="55" width="2" height="2" fill="#ffffff" style={{ animation: 'pixel-twinkle 2.4s infinite ease-in-out 1.5s' }} />
+
+          {/* Distant Caucasus Mountain Peaks */}
+          <polygon points="40,180 110,90 180,180" fill="#202c39" />
+          <polygon points="100,105 110,90 120,105" fill="#e0e1dd" />
+
+          <polygon points="140,180 230,70 320,180" fill="#1b263b" />
+          <polygon points="215,92 230,70 245,92" fill="#ffffff" />
+
+          <polygon points="280,180 370,85 460,180" fill="#202c39" />
+          <polygon points="355,102 370,85 385,102" fill="#e0e1dd" />
+
+          {/* Stepped 8-Bit Rolling Green Hill */}
+          <path
+            d="
+              M 0 240 
+              L 0 195 
+              L 40 195 L 40 180 
+              L 80 180 L 80 165 
+              L 125 165 L 125 150 
+              L 170 150 L 170 135 
+              L 215 135 L 215 120 
+              L 260 120 L 260 105 
+              L 305 105 L 305 95 
+              L 360 95 L 360 110 
+              L 405 110 L 405 130 
+              L 460 130 L 460 240 Z
+            "
+            fill="#2d6a4f"
+          />
+          <path
+            d="
+              M 0 195 L 40 195 
+              M 40 180 L 80 180 
+              M 80 165 L 125 165 
+              M 125 150 L 170 150 
+              M 170 135 L 215 135 
+              M 215 120 L 260 120 
+              M 260 105 L 305 105 
+              M 305 95 L 360 95 
+              M 360 110 L 405 110 
+              M 405 130 L 460 130
+            "
+            stroke="#52b788"
+            strokeWidth="4"
+          />
+          <rect x="0" y="210" width="460" height="30" fill="#1b4332" />
+
+          {/* Flagpole on Summit */}
+          <g style={{ animation: 'flag-raise 4.2s ease-out forwards', transformOrigin: '355px 95px' }}>
+            <rect x="355" y="32" width="4" height="65" fill="#ffd700" />
+            <circle cx="357" cy="32" r="4" fill="#ffeb3b" filter="url(#pixelGlow)" />
+
+            {/* Georgian 5-Cross Flag */}
+            <g style={{ animation: 'flag-wave-8bit 2.4s infinite ease-in-out', transformOrigin: '359px 34px' }}>
+              <rect x="359" y="34" width="54" height="36" fill="#ffffff" rx="1" stroke="#ccc" strokeWidth="0.5" />
+              <rect x="359" y="49" width="54" height="6" fill="#ff0000" />
+              <rect x="382" y="34" width="8" height="36" fill="#ff0000" />
+              
+              <rect x="367" y="39" width="6" height="2" fill="#ff0000" />
+              <rect x="369" y="37" width="2" height="6" fill="#ff0000" />
+              <rect x="397" y="39" width="6" height="2" fill="#ff0000" />
+              <rect x="399" y="37" width="2" height="6" fill="#ff0000" />
+              <rect x="367" y="61" width="6" height="2" fill="#ff0000" />
+              <rect x="369" y="59" width="2" height="6" fill="#ff0000" />
+              <rect x="397" y="61" width="6" height="2" fill="#ff0000" />
+              <rect x="399" y="59" width="2" height="6" fill="#ff0000" />
+            </g>
+
+            {/* Sparkles / Confetti */}
+            <rect x="345" y="24" width="4" height="4" fill="#ffd700" style={{ animation: 'spark-float 1.8s infinite linear 0.1s' }} />
+            <rect x="385" y="18" width="3" height="3" fill="#ffffff" style={{ animation: 'spark-float 2.1s infinite linear 0.4s' }} />
+            <rect x="420" y="28" width="4" height="4" fill="#ff1744" style={{ animation: 'spark-float 1.6s infinite linear 0.8s' }} />
+            <rect x="330" y="40" width="3" height="3" fill="#ffd700" style={{ animation: 'spark-float 2.3s infinite linear 1.2s' }} />
+          </g>
+
+          {/* 8-Bit Climbing Character Sprite */}
+          <g style={{ animation: 'hero-climb 3.8s ease-in-out forwards' }}>
+            <g style={{ animation: 'hero-bob 0.28s infinite ease-in-out' }}>
+              {isSandro ? (
+                <g>
+                  <rect x="0" y="0" width="16" height="12" fill="#cfd8dc" />
+                  <rect x="3" y="4" width="10" height="3" fill="#263238" />
+                  <rect x="6" y="-3" width="4" height="4" fill="#ff1744" />
+                  <rect x="2" y="12" width="12" height="14" fill="#1976d2" />
+                  <rect x="5" y="14" width="6" height="6" fill="#ffd700" />
+                  <circle cx="18" cy="18" r="8" fill="#78909c" stroke="#cfd8dc" strokeWidth="2" />
+                  <rect x="16" y="13" width="4" height="10" fill="#d32f2f" />
+                  <rect x="13" y="16" width="10" height="4" fill="#d32f2f" />
+                  <rect x="3" y="26" width="4" height="8" fill="#37474f" />
+                  <rect x="9" y="26" width="4" height="8" fill="#37474f" />
+                </g>
+              ) : (
+                <g>
+                  <rect x="2" y="0" width="14" height="12" fill="#e65100" />
+                  <polygon points="2,0 5,-4 7,0" fill="#e65100" />
+                  <polygon points="11,0 13,-4 16,0" fill="#e65100" />
+                  <rect x="5" y="4" width="8" height="4" fill="#212121" />
+                  <rect x="6" y="5" width="2" height="2" fill="#00e5ff" />
+                  <rect x="2" y="12" width="12" height="14" fill="#2e7d32" />
+                  <rect x="16" y="8" width="3" height="18" fill="#eceff1" />
+                  <rect x="14" y="22" width="7" height="3" fill="#ffd700" />
+                  <rect x="3" y="26" width="4" height="8" fill="#b71c1c" />
+                  <rect x="9" y="26" width="4" height="8" fill="#b71c1c" />
+                </g>
+              )}
+            </g>
+          </g>
+        </svg>
+      </div>
+
+      {/* 8-Bit Anthem Control Button */}
+      <div style={{ marginTop: '12px', display: 'flex', gap: '10px' }}>
+        <button
+          onClick={handleToggleAnthem}
+          style={{
+            padding: '8px 16px',
+            fontSize: '13px',
+            backgroundColor: isPlayingAnthem ? '#1b4332' : '#222',
+            border: '1px solid #52b788',
+            color: '#fff',
+            borderRadius: '6px',
+            cursor: 'pointer',
+            fontFamily: 'monospace',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.5)'
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#52b788'; e.currentTarget.style.color = '#000'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = isPlayingAnthem ? '#1b4332' : '#222'; e.currentTarget.style.color = '#fff'; }}
+        >
+          {isPlayingAnthem ? t.pauseAnthemBtn : t.replayAnthemBtn}
+        </button>
+      </div>
+    </div>
+  );
 };
 
 export default function VaultRunner() {
@@ -1860,6 +2316,8 @@ export default function VaultRunner() {
   }
 
   if (gameState === 'VICTORY') {
+    const isSandroOrRene = playerClass === 'Sandro' || playerClass === 'Rene';
+
     return (
       <div style={styles.container}>
         <div style={styles.backLinkAbsolute}>
@@ -1874,8 +2332,16 @@ export default function VaultRunner() {
         >
           {lang === 'en' ? '🌐 English' : '🌐 ქართული'}
         </button>
-        <h1 style={{ ...styles.title, color: '#4caf50' }}>{t.congrats} {getClassName(playerClass, lang).toUpperCase()}</h1>
-        <p style={styles.subtitle}>{t.victoryDesc}</p>
+
+        {isSandroOrRene ? (
+          <GeorgianHillVictoryScene charClass={playerClass} lang={lang} />
+        ) : (
+          <>
+            <h1 style={{ ...styles.title, color: '#4caf50' }}>{t.congrats} {getClassName(playerClass, lang).toUpperCase()}</h1>
+            <p style={styles.subtitle}>{t.victoryDesc}</p>
+          </>
+        )}
+
         <div style={{ fontSize: '1.2rem', marginBottom: '30px', textAlign: 'center', lineHeight: '1.6' }}>
           <div style={{ color: '#ffd700' }}>{t.goldCollected}: <strong>{goldCollected}</strong></div>
           <div style={{ color: '#ff1744' }}>{t.monstersKilled}: <strong>{monstersKilled}</strong> (+{monstersKilled * 20} pts)</div>
