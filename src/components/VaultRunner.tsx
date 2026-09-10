@@ -41,7 +41,7 @@ const TRANSLATIONS = {
     monstersKilledSidebar: 'Monsters Killed',
     restartGame: 'Restart',
     restartGameSidebar: 'Restart Game',
-    controlsHint: 'Use Arrow keys or WASD to step/melee. Click an enemy or press Space/F to shoot. Press B/G/P for Ultimate.',
+    controlsHint: 'Use Arrow keys or WASD to step/melee. Click an enemy or press Space/F to shoot. Press B/G/P for Ultimate. Press C to Auto-Collect Gold.',
     moveStick: 'MOVE STICK',
     fire: 'FIRE',
     shootNearest: 'SHOOT NEAREST',
@@ -49,6 +49,12 @@ const TRANSLATIONS = {
     bebiaActive: '🔥 Georgia Fire!',
     sopoUltimate: '💍 Proposal Ultimate',
     sopoActive: '❤️ Proposing...',
+    autoCollectGold: '💰 Auto-Collect Gold',
+    autoCollecting: '🏃 Collecting Gold...',
+    noGoldToCollect: 'No gold on the floor to collect.',
+    noGoldReachable: 'Remaining gold is blocked or unreachable.',
+    autoCollectDone: (count: number, pts: number) => count > 0 ? `✨ Auto-collected ${count} gold pieces! (+${pts} pts)` : 'No gold collected.',
+    autoCollectInterrupted: '⚠️ Auto-collect stopped: Enemy blocking path.',
     sopoProposesLog: "💍 Sopo drops to one knee and proposes to Dominick!",
     sopoVanquishLog: "😭 The love-struck enemies fall to their knees in despair as Sopo vanquishes them!",
     sopoProclamation: "Sopo is unmatched in Beauty or Battle!",
@@ -114,7 +120,7 @@ const TRANSLATIONS = {
     monstersKilledSidebar: 'მოკლული მონსტრები',
     restartGame: 'გადატვირთვა',
     restartGameSidebar: 'თამაშის გადატვირთვა',
-    controlsHint: 'გამოიყენეთ ისრები ან WASD გადასაადგილებლად. ესროლეთ მონსტრებს Space/F ღილაკით. ძალისთვის დააჭირეთ B/G/P-ს.',
+    controlsHint: 'გამოიყენეთ ისრები ან WASD გადასაადგილებლად. ესროლეთ Space/F-ით. Ultimate: B/G/P. ოქროს შეგროვება: C.',
     moveStick: 'მართვის ჯოხი',
     fire: 'სროლა',
     shootNearest: 'უახლოესის სროლა',
@@ -122,6 +128,12 @@ const TRANSLATIONS = {
     bebiaActive: '🔥 ქართული ცეცხლი!',
     sopoUltimate: '💍 სოფოს ძალა (Proposal)',
     sopoActive: '❤️ ხელის თხოვნა...',
+    autoCollectGold: '💰 ოქროს შეგროვება',
+    autoCollecting: '🏃 შეგროვება...',
+    noGoldToCollect: 'იატაკზე ოქრო არ არის.',
+    noGoldReachable: 'დარჩენილი ოქრო მიუწვდომელია.',
+    autoCollectDone: (count: number, pts: number) => count > 0 ? `✨ შეგროვდა ${count} ოქროს მონეტა! (+${pts} ქულა)` : 'ოქრო არ შეგროვდა.',
+    autoCollectInterrupted: '⚠️ შეგროვება შეწყდა: მტერი ახლოსაა!',
     sopoProposesLog: "💍 სოფო მუხლზე იჩოქებს და დომინიკს ხელს სთხოვს!",
     sopoVanquishLog: "😭 სიყვარულით დაზაფრული მტრები მუხლებზე ეცემიან სასოწარკვეთილებაში, როცა სოფო მათ ამარცხებს!",
     sopoProclamation: "სოფო შეუდარებელია სილამაზესა და ბრძოლაში!",
@@ -935,6 +947,8 @@ export default function VaultRunner() {
 
   const [isBebiaActive, setIsBebiaActive] = useState<boolean>(false);
   const [isSopoActive, setIsSopoActive] = useState<boolean>(false);
+  const [isAutoCollecting, setIsAutoCollecting] = useState<boolean>(false);
+  const autoCollectIntervalRef = React.useRef<any>(null);
   const [ultimatePhase, setUltimatePhase] = useState<'NONE' | 'FRIGHTENED' | 'PROPOSING' | 'VANQUISHING' | 'CHASING' | 'FLAG'>('NONE');
   const [bebiaRunnerPos, setBebiaRunnerPos] = useState<Position | null>(null);
   const [sopoRunnerPos, setSopoRunnerPos] = useState<Position | null>(null);
@@ -958,6 +972,13 @@ export default function VaultRunner() {
       audioSopoWinsRef.current = new Audio('/audio/Sopo_Wins.mp3');
       audioSopoWinsRef.current.load();
     }
+
+    return () => {
+      if (autoCollectIntervalRef.current) {
+        clearInterval(autoCollectIntervalRef.current);
+        autoCollectIntervalRef.current = null;
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -1554,7 +1575,216 @@ export default function VaultRunner() {
     }, 2800);
   }, [gameState, isAnimating, isSopoActive, enemies, lang, grid, playerPosition, getBresenhamPath, playLaserSound, audioSopoWinsRef, setIsSopoAudioPlaying]);
 
+  // --- RETRO COIN PICKUP SOUND ---
+  const playCoinSound = useCallback(() => {
+    try {
+      const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContext) return;
+      const ctx = new AudioContext();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
 
+      osc.type = 'sine';
+      // Retro 8-bit coin chime: B5 (987.77Hz) then E6 (1318.51Hz)
+      osc.frequency.setValueAtTime(987.77, ctx.currentTime);
+      osc.frequency.setValueAtTime(1318.51, ctx.currentTime + 0.05);
+
+      gain.gain.setValueAtTime(0.12, ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.15, ctx.currentTime + 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.22);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start();
+      osc.stop(ctx.currentTime + 0.22);
+    } catch (e) {
+      console.warn("Web Audio coin sound failed", e);
+    }
+  }, []);
+
+  // --- AUTO COLLECT ALL GOLD ON BOARD ---
+  const stopAutoCollect = useCallback(() => {
+    if (autoCollectIntervalRef.current) {
+      clearInterval(autoCollectIntervalRef.current);
+      autoCollectIntervalRef.current = null;
+    }
+    setIsAutoCollecting(false);
+    setIsAnimating(false);
+  }, []);
+
+  const triggerAutoCollectGold = useCallback(() => {
+    if (gameState !== 'PLAYING' || isAnimating || isBebiaActive || isSopoActive || isAutoCollecting) return;
+
+    // Scan for all gold tiles
+    const goldTiles: Position[] = [];
+    for (let y = 0; y < GRID_SIZE; y++) {
+      for (let x = 0; x < GRID_SIZE; x++) {
+        if (grid[y] && grid[y][x] === 'G') {
+          goldTiles.push({ x, y });
+        }
+      }
+    }
+
+    if (goldTiles.length === 0) {
+      setLog(prev => [t.noGoldToCollect, ...prev]);
+      return;
+    }
+
+    // Helper: BFS shortest path from start to target on grid avoiding walls and enemies
+    const findShortestPathToGold = (
+      currentGrid: string[][],
+      start: Position,
+      target: Position,
+      currentEnemies: Enemy[]
+    ): Position[] | null => {
+      if (start.x === target.x && start.y === target.y) return [];
+      
+      const visited = Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(false));
+      const parent = Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(null as Position | null));
+      const queue: Position[] = [start];
+      visited[start.y][start.x] = true;
+
+      const dirs = [
+        { x: 0, y: -1 },
+        { x: 0, y: 1 },
+        { x: -1, y: 0 },
+        { x: 1, y: 0 },
+        { x: -1, y: -1 },
+        { x: 1, y: -1 },
+        { x: -1, y: 1 },
+        { x: 1, y: 1 }
+      ];
+
+      let found = false;
+      while (queue.length > 0) {
+        const curr = queue.shift()!;
+        if (curr.x === target.x && curr.y === target.y) {
+          found = true;
+          break;
+        }
+
+        for (const d of dirs) {
+          const nx = curr.x + d.x;
+          const ny = curr.y + d.y;
+
+          if (nx >= 0 && nx < GRID_SIZE && ny >= 0 && ny < GRID_SIZE && !visited[ny][nx]) {
+            if (currentGrid[ny][nx] === '#') continue;
+            // Prevent cutting through diagonal wall corners
+            if (d.x !== 0 && d.y !== 0) {
+              if (currentGrid[curr.y][nx] === '#' && currentGrid[ny][curr.x] === '#') continue;
+            }
+            // Avoid tiles with enemies unless it's the target tile
+            if (currentEnemies.some(e => e.x === nx && e.y === ny && (nx !== target.x || ny !== target.y))) {
+              continue;
+            }
+
+            visited[ny][nx] = true;
+            parent[ny][nx] = curr;
+            queue.push({ x: nx, y: ny });
+          }
+        }
+      }
+
+      if (!found) return null;
+
+      const path: Position[] = [];
+      let curr: Position | null = target;
+      while (curr && !(curr.x === start.x && curr.y === start.y)) {
+        path.unshift(curr);
+        curr = parent[curr.y][curr.x];
+      }
+      return path;
+    };
+
+    // Build the greedy TSP route to visit all reachable gold
+    let currPos = { x: playerPosition.x, y: playerPosition.y };
+    let remainingGold = [...goldTiles];
+    const fullStepPath: Position[] = [];
+
+    while (remainingGold.length > 0) {
+      let bestPath: Position[] | null = null;
+      let bestIndex = -1;
+
+      for (let i = 0; i < remainingGold.length; i++) {
+        const path = findShortestPathToGold(grid, currPos, remainingGold[i], enemies);
+        if (path !== null) {
+          if (bestPath === null || path.length < bestPath.length) {
+            bestPath = path;
+            bestIndex = i;
+          }
+        }
+      }
+
+      if (bestPath === null || bestIndex === -1) {
+        break; // No safe path to remaining gold
+      }
+
+      fullStepPath.push(...bestPath);
+      currPos = remainingGold[bestIndex];
+      remainingGold.splice(bestIndex, 1);
+    }
+
+    if (fullStepPath.length === 0) {
+      setLog(prev => [t.noGoldReachable, ...prev]);
+      return;
+    }
+
+    setIsAutoCollecting(true);
+    setIsAnimating(true);
+    setLog(prev => [lang === 'en' ? '🏃 Auto-collecting gold...' : '🏃 ოქროს ავტომატური შეგროვება...', ...prev]);
+
+    let stepIdx = 0;
+    const workingGrid = grid.map(row => [...row]);
+    const workingGoldValues = { ...goldValues };
+    let collectedCount = 0;
+    let scoreGained = 0;
+
+    autoCollectIntervalRef.current = setInterval(() => {
+      if (stepIdx >= fullStepPath.length) {
+        clearInterval(autoCollectIntervalRef.current);
+        autoCollectIntervalRef.current = null;
+        setIsAutoCollecting(false);
+        setIsAnimating(false);
+        setLog(prev => [t.autoCollectDone(collectedCount, scoreGained), ...prev]);
+        return;
+      }
+
+      const nextPos = fullStepPath[stepIdx];
+
+      // Check if an enemy has moved onto this tile
+      if (enemies.some(e => e.x === nextPos.x && e.y === nextPos.y)) {
+        clearInterval(autoCollectIntervalRef.current);
+        autoCollectIntervalRef.current = null;
+        setIsAutoCollecting(false);
+        setIsAnimating(false);
+        setLog(prev => [t.autoCollectInterrupted, ...prev]);
+        return;
+      }
+
+      setPlayerPosition(nextPos);
+
+      // Check if tile has gold
+      if (workingGrid[nextPos.y] && workingGrid[nextPos.y][nextPos.x] === 'G') {
+        const gKey = `${nextPos.x},${nextPos.y}`;
+        const gVal = workingGoldValues[gKey] || (10 + currentLevel * 2);
+        delete workingGoldValues[gKey];
+        workingGrid[nextPos.y][nextPos.x] = '.';
+
+        collectedCount++;
+        scoreGained += gVal;
+
+        setGoldCollected(prev => prev + 1);
+        setScore(prev => prev + gVal);
+        setGoldValues({ ...workingGoldValues });
+        setGrid(workingGrid.map(row => [...row]));
+
+        playCoinSound();
+      }
+
+      stepIdx++;
+    }, 70);
+  }, [gameState, isAnimating, isBebiaActive, isSopoActive, isAutoCollecting, grid, playerPosition, enemies, goldValues, currentLevel, t, lang, playCoinSound]);
 
   // --- BFS PATHFINDING VALIDATION ---
   const hasValidPath = useCallback((testGrid: string[][], startX: number, startY: number, targetX: number, targetY: number) => {
@@ -1939,6 +2169,9 @@ export default function VaultRunner() {
   // --- TURN ENGINE & MOVEMENT ---
   const [isAnimatingStateDummy, setIsAnimatingStateDummy] = useState<boolean>(false); // dummy to help avoid replace mismatches
   const handleMove = (dx: number, dy: number) => {
+    if (isAutoCollecting) {
+      stopAutoCollect();
+    }
     if (gameState !== 'PLAYING' || isAnimating || isBebiaActive) return;
 
     const newX = playerPosition.x + dx;
@@ -1959,6 +2192,7 @@ export default function VaultRunner() {
       setGoldCollected(prev => prev + 1);
       setScore(prev => prev + gVal);
       setLog(prev => [t.goldCollectedLog(gVal), ...prev]);
+      playCoinSound();
       setGoldValues(prev => {
         const copy = { ...prev };
         delete copy[gKey];
@@ -2380,7 +2614,15 @@ export default function VaultRunner() {
   // Keyboard navigation mappings
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (gameState !== 'PLAYING' || isAnimating || isBebiaActive || isSopoActive) return;
+      if (gameState !== 'PLAYING') return;
+
+      if (isAutoCollecting) {
+        stopAutoCollect();
+        return;
+      }
+
+      if (isAnimating || isBebiaActive || isSopoActive) return;
+
       switch (e.key) {
         case 'ArrowUp':    case 'w': case '8': handleMove(0, -1); break;
         case 'ArrowDown':  case 's': case '2': handleMove(0, 1);  break;
@@ -2389,7 +2631,11 @@ export default function VaultRunner() {
         case 'q':          case '7': handleMove(-1, -1); break;
         case 'e':          case '9': handleMove(1, -1);  break;
         case 'z':          case '1': handleMove(-1, 1);  break;
-        case 'c':          case '3': handleMove(1, 1);   break;
+        case '3':                    handleMove(1, 1);   break;
+        case 'c':          case 'C': case 'l': case 'L':
+          e.preventDefault();
+          triggerAutoCollectGold();
+          break;
         case 'f':          case ' ': e.preventDefault(); fireAtNearest(); break;
         case 'b':          case 'g':          case 'p':
           if (playerStats.class === 'Fighter') triggerSopoUltimate();
@@ -2399,7 +2645,7 @@ export default function VaultRunner() {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [playerPosition, gameState, enemies, grid, playerStats, fireAtNearest, isAnimating, isBebiaActive, isSopoActive, triggerBebiaUltimate, triggerSopoUltimate]);
+  }, [playerPosition, gameState, enemies, grid, playerStats, fireAtNearest, isAnimating, isBebiaActive, isSopoActive, isAutoCollecting, triggerBebiaUltimate, triggerSopoUltimate, triggerAutoCollectGold, stopAutoCollect]);
 
   // Weapon meta calculations
   const weaponName = getWeaponName(playerStats.class, lang);
@@ -2852,6 +3098,31 @@ export default function VaultRunner() {
           </button>
         )}
 
+        <button
+          onClick={triggerAutoCollectGold}
+          disabled={isAutoCollecting || isAnimating || isBebiaActive || isSopoActive || !grid.some(row => row.includes('G'))}
+          className="auto-collect-btn"
+          style={{
+            padding: '10px 15px',
+            fontSize: '14px',
+            backgroundColor: isAutoCollecting ? '#ffd700' : '#111',
+            color: isAutoCollecting ? '#000' : '#ffd700',
+            border: '2px solid #ffd700',
+            borderRadius: '6px',
+            cursor: (isAutoCollecting || isAnimating || isBebiaActive || isSopoActive || !grid.some(row => row.includes('G'))) ? 'not-allowed' : 'pointer',
+            fontWeight: 'bold',
+            marginTop: '15px',
+            width: '100%',
+            textAlign: 'center',
+            boxShadow: isAutoCollecting ? '0 0 15px rgba(255,215,0,0.8)' : (grid.some(row => row.includes('G')) ? '0 0 10px rgba(255,215,0,0.3)' : 'none'),
+            opacity: !grid.some(row => row.includes('G')) ? 0.5 : 1,
+            transition: 'all 0.3s ease',
+            fontFamily: GEORGIAN_MONO_FONT,
+          }}
+        >
+          {isAutoCollecting ? t.autoCollecting : t.autoCollectGold}
+        </button>
+
         <button 
           onClick={() => setGameState('START')} 
           style={styles.restartBtn}
@@ -3289,6 +3560,36 @@ export default function VaultRunner() {
             {playerClass === 'Fighter' ? '💍 Ultimate' : '🇬🇪 Ultimate'}
           </button>
           <span style={{ fontSize: '10px', color: '#666', fontFamily: GEORGIAN_MONO_FONT }}>{playerClass === 'Fighter' ? 'Sopo' : getClassName(playerClass, lang)}</span>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+          <button 
+            onTouchStart={(e) => { e.preventDefault(); triggerAutoCollectGold(); }}
+            onClick={(e) => { e.preventDefault(); triggerAutoCollectGold(); }}
+            disabled={isAutoCollecting || isAnimating || isBebiaActive || isSopoActive || !grid.some(row => row.includes('G'))}
+            style={{
+              width: '64px',
+              height: '64px',
+              borderRadius: '50%',
+              backgroundColor: isAutoCollecting ? '#ffd700' : '#111',
+              border: '2px solid #ffd700',
+              color: isAutoCollecting ? '#000' : '#ffd700',
+              fontSize: '12px',
+              fontWeight: 'bold',
+              boxShadow: isAutoCollecting ? '0 0 15px #ffd700' : (grid.some(row => row.includes('G')) ? '0 0 8px rgba(255,215,0,0.4)' : 'none'),
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              touchAction: 'none',
+              userSelect: 'none',
+              cursor: (isAutoCollecting || isAnimating || isBebiaActive || isSopoActive || !grid.some(row => row.includes('G'))) ? 'not-allowed' : 'pointer',
+              fontFamily: GEORGIAN_MONO_FONT,
+              opacity: !grid.some(row => row.includes('G')) ? 0.5 : 1,
+            }}
+          >
+            {isAutoCollecting ? '🏃' : '💰 Auto'}
+          </button>
+          <span style={{ fontSize: '10px', color: '#666', fontFamily: GEORGIAN_MONO_FONT }}>{lang === 'en' ? 'Loot' : 'ნადავლი'}</span>
         </div>
 
         {playerClass === 'Fighter' && (
