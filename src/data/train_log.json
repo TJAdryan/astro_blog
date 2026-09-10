@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-09-10T13:05:00.775Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times at Canal St (up to 16 mins, normally every 10 mins).",
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Newkirk Plaza and Avenue M (up to 16 mins, normally every 10 mins)."
+    ]
+  },
+  {
     "date": "2026-09-09T13:05:38.052Z",
     "status": "Service Change",
     "details": [
@@ -195,13 +203,6 @@
   },
   {
     "date": "2026-08-09T13:21:32.706Z",
-    "status": "Service Change",
-    "details": [
-      "<Q> trains are making local stops between 57 St - 7 Av and Canal St."
-    ]
-  },
-  {
-    "date": "2026-08-08T13:19:44.655Z",
     "status": "Service Change",
     "details": [
       "<Q> trains are making local stops between 57 St - 7 Av and Canal St."
