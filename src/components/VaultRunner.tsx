@@ -1616,6 +1616,16 @@ export default function VaultRunner() {
   const triggerAutoCollectGold = useCallback(() => {
     if (gameState !== 'PLAYING' || isAnimating || isBebiaActive || isSopoActive || isAutoCollecting) return;
 
+    if (enemies.length > 0) {
+      setLog(prev => [
+        lang === 'en' 
+          ? "⚠️ Clear all monsters in the room first before auto-collecting!" 
+          : "⚠️ ჯერ გაანადგურეთ ყველა მონსტრი ოქროს შესაგროვებლად!", 
+        ...prev
+      ]);
+      return;
+    }
+
     // Scan for all gold tiles
     const goldTiles: Position[] = [];
     for (let y = 0; y < GRID_SIZE; y++) {
@@ -3098,31 +3108,6 @@ export default function VaultRunner() {
           </button>
         )}
 
-        <button
-          onClick={triggerAutoCollectGold}
-          disabled={isAutoCollecting || isAnimating || isBebiaActive || isSopoActive || !grid.some(row => row.includes('G'))}
-          className="auto-collect-btn"
-          style={{
-            padding: '10px 15px',
-            fontSize: '14px',
-            backgroundColor: isAutoCollecting ? '#ffd700' : '#111',
-            color: isAutoCollecting ? '#000' : '#ffd700',
-            border: '2px solid #ffd700',
-            borderRadius: '6px',
-            cursor: (isAutoCollecting || isAnimating || isBebiaActive || isSopoActive || !grid.some(row => row.includes('G'))) ? 'not-allowed' : 'pointer',
-            fontWeight: 'bold',
-            marginTop: '15px',
-            width: '100%',
-            textAlign: 'center',
-            boxShadow: isAutoCollecting ? '0 0 15px rgba(255,215,0,0.8)' : (grid.some(row => row.includes('G')) ? '0 0 10px rgba(255,215,0,0.3)' : 'none'),
-            opacity: !grid.some(row => row.includes('G')) ? 0.5 : 1,
-            transition: 'all 0.3s ease',
-            fontFamily: GEORGIAN_MONO_FONT,
-          }}
-        >
-          {isAutoCollecting ? t.autoCollecting : t.autoCollectGold}
-        </button>
-
         <button 
           onClick={() => setGameState('START')} 
           style={styles.restartBtn}
@@ -3291,6 +3276,61 @@ export default function VaultRunner() {
             )}
           </>
         )}
+
+        {/* Board Auto-Collect Button (Only visible when ALL monsters are dead & gold remains on floor) */}
+        {enemies.length === 0 && grid.some(row => row.includes('G')) && (
+          <button
+            onClick={triggerAutoCollectGold}
+            disabled={isAutoCollecting || isAnimating || isBebiaActive || isSopoActive}
+            className="board-auto-collect-btn"
+            style={{
+              background: isAutoCollecting 
+                ? 'linear-gradient(135deg, #ffd700, #ffb300)' 
+                : 'linear-gradient(135deg, rgba(255, 215, 0, 0.25), rgba(255, 179, 0, 0.4))',
+              color: isAutoCollecting ? '#000' : '#ffd700',
+              border: '2px solid #ffd700',
+              borderRadius: '8px',
+              padding: '8px 18px',
+              marginBottom: '14px',
+              boxShadow: '0 0 20px rgba(255, 215, 0, 0.6), inset 0 0 10px rgba(255, 215, 0, 0.25)',
+              fontSize: '13px',
+              fontWeight: 'bold',
+              letterSpacing: '0.5px',
+              fontFamily: GEORGIAN_MONO_FONT,
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              cursor: (isAutoCollecting || isAnimating || isBebiaActive || isSopoActive) ? 'not-allowed' : 'pointer',
+              animation: isAutoCollecting ? 'none' : 'pulsate 1.8s infinite ease-in-out',
+              transition: 'all 0.2s ease',
+              zIndex: 20,
+              userSelect: 'none',
+              width: '90%',
+              maxWidth: '460px',
+              boxSizing: 'border-box',
+            }}
+            onMouseEnter={(e) => {
+              if (!isAutoCollecting) {
+                e.currentTarget.style.background = 'linear-gradient(135deg, #ffd700, #ffc107)';
+                e.currentTarget.style.color = '#000';
+                e.currentTarget.style.boxShadow = '0 0 25px rgba(255, 215, 0, 0.9)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!isAutoCollecting) {
+                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(255, 215, 0, 0.25), rgba(255, 179, 0, 0.4))';
+                e.currentTarget.style.color = '#ffd700';
+                e.currentTarget.style.boxShadow = '0 0 20px rgba(255, 215, 0, 0.6), inset 0 0 10px rgba(255, 215, 0, 0.25)';
+              }
+            }}
+          >
+            <span style={{ fontSize: '16px' }}>💰</span>
+            <span>{isAutoCollecting ? t.autoCollecting : (lang === 'en' ? 'ROOM CLEARED — COLLECT ALL GOLD (C)' : 'ოთახი გაწმენდილია — შეაგროვე ოქრო (C)')}</span>
+            <span style={{ fontSize: '16px' }}>✨</span>
+          </button>
+        )}
+
         {grid.map((row, y) => (
           <div key={y} style={styles.row}>
             {row.map((cell, x) => {
@@ -3560,36 +3600,6 @@ export default function VaultRunner() {
             {playerClass === 'Fighter' ? '💍 Ultimate' : '🇬🇪 Ultimate'}
           </button>
           <span style={{ fontSize: '10px', color: '#666', fontFamily: GEORGIAN_MONO_FONT }}>{playerClass === 'Fighter' ? 'Sopo' : getClassName(playerClass, lang)}</span>
-        </div>
-
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
-          <button 
-            onTouchStart={(e) => { e.preventDefault(); triggerAutoCollectGold(); }}
-            onClick={(e) => { e.preventDefault(); triggerAutoCollectGold(); }}
-            disabled={isAutoCollecting || isAnimating || isBebiaActive || isSopoActive || !grid.some(row => row.includes('G'))}
-            style={{
-              width: '64px',
-              height: '64px',
-              borderRadius: '50%',
-              backgroundColor: isAutoCollecting ? '#ffd700' : '#111',
-              border: '2px solid #ffd700',
-              color: isAutoCollecting ? '#000' : '#ffd700',
-              fontSize: '12px',
-              fontWeight: 'bold',
-              boxShadow: isAutoCollecting ? '0 0 15px #ffd700' : (grid.some(row => row.includes('G')) ? '0 0 8px rgba(255,215,0,0.4)' : 'none'),
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              touchAction: 'none',
-              userSelect: 'none',
-              cursor: (isAutoCollecting || isAnimating || isBebiaActive || isSopoActive || !grid.some(row => row.includes('G'))) ? 'not-allowed' : 'pointer',
-              fontFamily: GEORGIAN_MONO_FONT,
-              opacity: !grid.some(row => row.includes('G')) ? 0.5 : 1,
-            }}
-          >
-            {isAutoCollecting ? '🏃' : '💰 Auto'}
-          </button>
-          <span style={{ fontSize: '10px', color: '#666', fontFamily: GEORGIAN_MONO_FONT }}>{lang === 'en' ? 'Loot' : 'ნადავლი'}</span>
         </div>
 
         {playerClass === 'Fighter' && (
