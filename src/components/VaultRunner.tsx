@@ -982,26 +982,14 @@ export default function VaultRunner() {
   }, []);
 
   useEffect(() => {
-    if (gameState === 'VICTORY' && playerClass === 'Fighter') {
-      if (audioSopoWinsRef.current) {
-        audioSopoWinsRef.current.currentTime = 0;
-        audioSopoWinsRef.current.play()
-          .then(() => setIsSopoAudioPlaying(true))
-          .catch(err => {
-            console.error('Failed to play Sopo victory audio:', err);
-          });
-        audioSopoWinsRef.current.onended = () => {
-          setIsSopoAudioPlaying(false);
-        };
-      }
-    } else {
+    if (gameState !== 'PLAYING') {
       if (audioSopoWinsRef.current) {
         audioSopoWinsRef.current.pause();
         audioSopoWinsRef.current.currentTime = 0;
         setIsSopoAudioPlaying(false);
       }
     }
-  }, [gameState, playerClass]);
+  }, [gameState]);
 
   const toggleSopoWinsAudio = () => {
     if (audioSopoWinsRef.current) {
