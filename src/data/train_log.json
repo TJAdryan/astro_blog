@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-09-12T13:05:18.582Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times at DeKalb Av (up to 17 mins, normally every 12 mins).",
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times at Neck Rd (up to 14 mins, normally every 11 mins)."
+    ]
+  },
+  {
     "date": "2026-09-11T13:05:36.896Z",
     "status": "Service Change",
     "details": [
@@ -199,13 +207,6 @@
     "details": [
       "Northbound: 96 St-bound trains are having longer wait times at Church Av (up to 15 mins, normally every 12 mins).",
       "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times at 96 St (up to 13 mins, normally every 10 mins)."
-    ]
-  },
-  {
-    "date": "2026-08-10T13:30:03.175Z",
-    "status": "Delays",
-    "details": [
-      "Northbound: 96 St-bound trains are taking 9 mins longer to travel between Times Sq - 42 St and 96 St."
     ]
   }
 ]
