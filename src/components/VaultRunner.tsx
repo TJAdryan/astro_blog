@@ -49,11 +49,11 @@ const TRANSLATIONS = {
     bebiaActive: '🔥 Georgia Fire!',
     sopoUltimate: '💍 Proposal Ultimate',
     sopoActive: '❤️ Proposing...',
-    autoCollectGold: '💰 Auto-Collect Gold',
-    autoCollecting: '🏃 Collecting Gold...',
-    noGoldToCollect: 'No gold on the floor to collect.',
-    noGoldReachable: 'Remaining gold is blocked or unreachable.',
-    autoCollectDone: (count: number, pts: number) => count > 0 ? `✨ Auto-collected ${count} gold pieces! (+${pts} pts)` : 'No gold collected.',
+    autoCollectGold: '💰 Auto-Collect All Items (C)',
+    autoCollecting: '🏃 Collecting All Items & Moving to Exit...',
+    noGoldToCollect: 'No items left to collect and already next to exit.',
+    noGoldReachable: 'Remaining items or exit are blocked or unreachable.',
+    autoCollectDone: (count: number, pts: number) => count > 0 ? `✨ Auto-collected ${count} items (+${pts} pts) and moved next to exit stairs (S)!` : '✨ Positioned next to exit stairs (S).',
     autoCollectInterrupted: '⚠️ Auto-collect stopped: Enemy blocking path.',
     borjomiTitle: 'Borjomi Mineral Water',
     borjomiDesc: 'Legendary Georgian Mineral Water',
@@ -132,7 +132,7 @@ const TRANSLATIONS = {
     monstersKilledSidebar: 'მოკლული მონსტრები',
     restartGame: 'გადატვირთვა',
     restartGameSidebar: 'თამაშის გადატვირთვა',
-    controlsHint: 'გამოიყენეთ ისრები ან WASD გადასაადგილებლად. ესროლეთ Space/F-ით. Ultimate: B/G/P. ოქროს შეგროვება: C.',
+    controlsHint: 'გამოიყენეთ ისრები ან WASD გადასაადგილებლად. ესროლეთ Space/F-ით. Ultimate: B/G/P. ნივთების შეგროვება: C.',
     moveStick: 'მართვის ჯოხი',
     fire: 'სროლა',
     shootNearest: 'უახლოესის სროლა',
@@ -140,11 +140,11 @@ const TRANSLATIONS = {
     bebiaActive: '🔥 ქართული ცეცხლი!',
     sopoUltimate: '💍 სოფოს ძალა (Proposal)',
     sopoActive: '❤️ ხელის თხოვნა...',
-    autoCollectGold: '💰 ოქროს შეგროვება',
-    autoCollecting: '🏃 შეგროვება...',
-    noGoldToCollect: 'იატაკზე ოქრო არ არის.',
-    noGoldReachable: 'დარჩენილი ოქრო მიუწვდომელია.',
-    autoCollectDone: (count: number, pts: number) => count > 0 ? `✨ შეგროვდა ${count} ოქროს მონეტა! (+${pts} ქულა)` : 'ოქრო არ შეგროვდა.',
+    autoCollectGold: '💰 ყველაფრის შეგროვება (C)',
+    autoCollecting: '🏃 ნივთების შეგროვება და გასასვლელთან მისვლა...',
+    noGoldToCollect: 'შესაგროვებელი ნივთები აღარ არის და უკვე გასასვლელთან ხართ.',
+    noGoldReachable: 'დარჩენილი ნივთები ან გასასვლელი მიუწვდომელია.',
+    autoCollectDone: (count: number, pts: number) => count > 0 ? `✨ შეგროვდა ${count} ნივთი (+${pts} ქულა) და მიხვედით გასასვლელ კიბესთან (S)!` : '✨ მიხვედით გასასვლელ კიბესთან (S).',
     autoCollectInterrupted: '⚠️ შეგროვება შეწყდა: მტერი ახლოსაა!',
     borjomiTitle: 'ბორჯომი',
     borjomiDesc: 'ლეგენდარული ქართული მინერალური წყალი',
@@ -1701,23 +1701,22 @@ export default function VaultRunner() {
       return;
     }
 
-    // Scan for all gold tiles
-    const goldTiles: Position[] = [];
+    // Scan for all collectible item tiles (Gold, Borjomi, Churchkhela) and exit portal
+    const itemTiles: Position[] = [];
+    let exitTile: Position | null = null;
     for (let y = 0; y < GRID_SIZE; y++) {
       for (let x = 0; x < GRID_SIZE; x++) {
-        if (grid[y] && grid[y][x] === 'G') {
-          goldTiles.push({ x, y });
+        const cell = grid[y] ? grid[y][x] : '';
+        if (cell === 'G' || cell === 'B' || cell === 'C') {
+          itemTiles.push({ x, y });
+        } else if (cell === 'S') {
+          exitTile = { x, y };
         }
       }
     }
 
-    if (goldTiles.length === 0) {
-      setLog(prev => [t.noGoldToCollect, ...prev]);
-      return;
-    }
-
     // Helper: BFS shortest path from start to target on grid avoiding walls and enemies
-    const findShortestPathToGold = (
+    const findShortestPathToTile = (
       currentGrid: string[][],
       start: Position,
       target: Position,
@@ -1782,17 +1781,17 @@ export default function VaultRunner() {
       return path;
     };
 
-    // Build the greedy TSP route to visit all reachable gold
+    // Build the greedy TSP route to visit all reachable items
     let currPos = { x: playerPosition.x, y: playerPosition.y };
-    let remainingGold = [...goldTiles];
+    let remainingItems = [...itemTiles];
     const fullStepPath: Position[] = [];
 
-    while (remainingGold.length > 0) {
+    while (remainingItems.length > 0) {
       let bestPath: Position[] | null = null;
       let bestIndex = -1;
 
-      for (let i = 0; i < remainingGold.length; i++) {
-        const path = findShortestPathToGold(grid, currPos, remainingGold[i], enemies);
+      for (let i = 0; i < remainingItems.length; i++) {
+        const path = findShortestPathToTile(grid, currPos, remainingItems[i], enemies);
         if (path !== null) {
           if (bestPath === null || path.length < bestPath.length) {
             bestPath = path;
@@ -1802,22 +1801,61 @@ export default function VaultRunner() {
       }
 
       if (bestPath === null || bestIndex === -1) {
-        break; // No safe path to remaining gold
+        break; // No safe path to remaining items
       }
 
       fullStepPath.push(...bestPath);
-      currPos = remainingGold[bestIndex];
-      remainingGold.splice(bestIndex, 1);
+      currPos = remainingItems[bestIndex];
+      remainingItems.splice(bestIndex, 1);
+    }
+
+    // Now navigate from currPos to an adjacent tile next to exit stairs ('S')
+    if (exitTile) {
+      const isAlreadyAdjacent = Math.abs(currPos.x - exitTile.x) <= 1 && Math.abs(currPos.y - exitTile.y) <= 1 && !(currPos.x === exitTile.x && currPos.y === exitTile.y);
+      if (!isAlreadyAdjacent) {
+        const adjacentDeltas = [
+          { x: 0, y: -1 },
+          { x: 0, y: 1 },
+          { x: -1, y: 0 },
+          { x: 1, y: 0 },
+          { x: -1, y: -1 },
+          { x: 1, y: -1 },
+          { x: -1, y: 1 },
+          { x: 1, y: 1 }
+        ];
+        const candidateTiles: Position[] = [];
+        for (const d of adjacentDeltas) {
+          const ax = exitTile.x + d.x;
+          const ay = exitTile.y + d.y;
+          if (ax >= 0 && ax < GRID_SIZE && ay >= 0 && ay < GRID_SIZE && grid[ay][ax] !== '#') {
+            candidateTiles.push({ x: ax, y: ay });
+          }
+        }
+
+        let bestExitPath: Position[] | null = null;
+        for (const cand of candidateTiles) {
+          const path = findShortestPathToTile(grid, currPos, cand, enemies);
+          if (path !== null) {
+            if (bestExitPath === null || path.length < bestExitPath.length) {
+              bestExitPath = path;
+            }
+          }
+        }
+
+        if (bestExitPath && bestExitPath.length > 0) {
+          fullStepPath.push(...bestExitPath);
+        }
+      }
     }
 
     if (fullStepPath.length === 0) {
-      setLog(prev => [t.noGoldReachable, ...prev]);
+      setLog(prev => [t.noGoldToCollect, ...prev]);
       return;
     }
 
     setIsAutoCollecting(true);
     setIsAnimating(true);
-    setLog(prev => [lang === 'en' ? '🏃 Auto-collecting gold...' : '🏃 ოქროს ავტომატური შეგროვება...', ...prev]);
+    setLog(prev => [lang === 'en' ? '🏃 Auto-collecting items & moving to exit...' : '🏃 ნივთების შეგროვება და გასასვლელთან გადაადგილება...', ...prev]);
 
     let stepIdx = 0;
     const workingGrid = grid.map(row => [...row]);
@@ -1867,6 +1905,8 @@ export default function VaultRunner() {
         playCoinSound();
       } else if (workingGrid[nextPos.y] && workingGrid[nextPos.y][nextPos.x] === 'B') {
         workingGrid[nextPos.y][nextPos.x] = '.';
+        collectedCount++;
+        scoreGained += 15;
         setPlayerStats(prev => ({ ...prev, hp: prev.maxHp }));
         setScore(prev => prev + 15);
         setGrid(workingGrid.map(row => [...row]));
@@ -1874,6 +1914,8 @@ export default function VaultRunner() {
         setLog(prev => [t.borjomiDrankLog(playerStats.maxHp), ...prev]);
       } else if (workingGrid[nextPos.y] && workingGrid[nextPos.y][nextPos.x] === 'C') {
         workingGrid[nextPos.y][nextPos.x] = '.';
+        collectedCount++;
+        scoreGained += 15;
         setShieldTurns(prev => prev + 15);
         setScore(prev => prev + 15);
         setGrid(workingGrid.map(row => [...row]));
@@ -3518,59 +3560,83 @@ export default function VaultRunner() {
           </>
         )}
 
-        {/* Board Auto-Collect Button (Only visible when ALL monsters are dead & gold remains on floor) */}
-        {enemies.length === 0 && grid.some(row => row.includes('G')) && (
-          <button
-            onClick={triggerAutoCollectGold}
-            disabled={isAutoCollecting || isAnimating || isBebiaActive || isSopoActive}
-            className="board-auto-collect-btn"
-            style={{
-              background: isAutoCollecting 
-                ? 'linear-gradient(135deg, #ffd700, #ffb300)' 
-                : 'linear-gradient(135deg, rgba(255, 215, 0, 0.25), rgba(255, 179, 0, 0.4))',
-              color: isAutoCollecting ? '#000' : '#ffd700',
-              border: '2px solid #ffd700',
-              borderRadius: '8px',
-              padding: '8px 18px',
-              marginBottom: '14px',
-              boxShadow: '0 0 20px rgba(255, 215, 0, 0.6), inset 0 0 10px rgba(255, 215, 0, 0.25)',
-              fontSize: '13px',
-              fontWeight: 'bold',
-              letterSpacing: '0.5px',
-              fontFamily: GEORGIAN_MONO_FONT,
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              cursor: (isAutoCollecting || isAnimating || isBebiaActive || isSopoActive) ? 'not-allowed' : 'pointer',
-              animation: isAutoCollecting ? 'none' : 'pulsate 1.8s infinite ease-in-out',
-              transition: 'all 0.2s ease',
-              zIndex: 20,
-              userSelect: 'none',
-              width: '90%',
-              maxWidth: '460px',
-              boxSizing: 'border-box',
-            }}
-            onMouseEnter={(e) => {
-              if (!isAutoCollecting) {
-                e.currentTarget.style.background = 'linear-gradient(135deg, #ffd700, #ffc107)';
-                e.currentTarget.style.color = '#000';
-                e.currentTarget.style.boxShadow = '0 0 25px rgba(255, 215, 0, 0.9)';
+        {/* Board Auto-Collect Button (Only visible when ALL monsters are dead & (items remain on floor OR player is not next to exit)) */}
+        {(() => {
+          if (enemies.length > 0) return null;
+          const hasItems = grid.some(row => row.some(cell => cell === 'G' || cell === 'B' || cell === 'C'));
+          let exitPos: Position | null = null;
+          for (let y = 0; y < GRID_SIZE; y++) {
+            for (let x = 0; x < GRID_SIZE; x++) {
+              if (grid[y] && grid[y][x] === 'S') {
+                exitPos = { x, y };
+                break;
               }
-            }}
-            onMouseLeave={(e) => {
-              if (!isAutoCollecting) {
-                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(255, 215, 0, 0.25), rgba(255, 179, 0, 0.4))';
-                e.currentTarget.style.color = '#ffd700';
-                e.currentTarget.style.boxShadow = '0 0 20px rgba(255, 215, 0, 0.6), inset 0 0 10px rgba(255, 215, 0, 0.25)';
-              }
-            }}
-          >
-            <span style={{ fontSize: '16px' }}>💰</span>
-            <span>{isAutoCollecting ? t.autoCollecting : (lang === 'en' ? 'ROOM CLEARED — COLLECT ALL GOLD (C)' : 'ოთახი გაწმენდილია — შეაგროვე ოქრო (C)')}</span>
-            <span style={{ fontSize: '16px' }}>✨</span>
-          </button>
-        )}
+            }
+            if (exitPos) break;
+          }
+          const isNextToExit = exitPos ? (Math.abs(playerPosition.x - exitPos.x) <= 1 && Math.abs(playerPosition.y - exitPos.y) <= 1 && !(playerPosition.x === exitPos.x && playerPosition.y === exitPos.y)) : false;
+
+          if (!hasItems && isNextToExit) return null;
+
+          const buttonLabel = isAutoCollecting 
+            ? t.autoCollecting 
+            : (hasItems 
+                ? (lang === 'en' ? 'ROOM CLEARED — COLLECT ALL ITEMS & GO TO EXIT (C)' : 'ოთახი გაწმენდილია — შეაგროვე ყველაფერი და წადი გასასვლელთან (C)')
+                : (lang === 'en' ? 'ROOM CLEARED — GO TO EXIT (C)' : 'ოთახი გაწმენდილია — წადი გასასვლელთან (C)'));
+
+          return (
+            <button
+              onClick={triggerAutoCollectGold}
+              disabled={isAutoCollecting || isAnimating || isBebiaActive || isSopoActive}
+              className="board-auto-collect-btn"
+              style={{
+                background: isAutoCollecting 
+                  ? 'linear-gradient(135deg, #ffd700, #ffb300)' 
+                  : 'linear-gradient(135deg, rgba(255, 215, 0, 0.25), rgba(255, 179, 0, 0.4))',
+                color: isAutoCollecting ? '#000' : '#ffd700',
+                border: '2px solid #ffd700',
+                borderRadius: '8px',
+                padding: '8px 18px',
+                marginBottom: '14px',
+                boxShadow: '0 0 20px rgba(255, 215, 0, 0.6), inset 0 0 10px rgba(255, 215, 0, 0.25)',
+                fontSize: '13px',
+                fontWeight: 'bold',
+                letterSpacing: '0.5px',
+                fontFamily: GEORGIAN_MONO_FONT,
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                cursor: (isAutoCollecting || isAnimating || isBebiaActive || isSopoActive) ? 'not-allowed' : 'pointer',
+                animation: isAutoCollecting ? 'none' : 'pulsate 1.8s infinite ease-in-out',
+                transition: 'all 0.2s ease',
+                zIndex: 20,
+                userSelect: 'none',
+                width: '90%',
+                maxWidth: '460px',
+                boxSizing: 'border-box',
+              }}
+              onMouseEnter={(e) => {
+                if (!isAutoCollecting) {
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #ffd700, #ffc107)';
+                  e.currentTarget.style.color = '#000';
+                  e.currentTarget.style.boxShadow = '0 0 25px rgba(255, 215, 0, 0.9)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isAutoCollecting) {
+                  e.currentTarget.style.background = 'linear-gradient(135deg, rgba(255, 215, 0, 0.25), rgba(255, 179, 0, 0.4))';
+                  e.currentTarget.style.color = '#ffd700';
+                  e.currentTarget.style.boxShadow = '0 0 20px rgba(255, 215, 0, 0.6), inset 0 0 10px rgba(255, 215, 0, 0.25)';
+                }
+              }}
+            >
+              <span style={{ fontSize: '16px' }}>💰</span>
+              <span>{buttonLabel}</span>
+              <span style={{ fontSize: '16px' }}>✨</span>
+            </button>
+          );
+        })()}
 
         {grid.map((row, y) => (
           <div key={y} style={styles.row}>
