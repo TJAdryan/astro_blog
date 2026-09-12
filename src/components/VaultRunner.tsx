@@ -55,6 +55,18 @@ const TRANSLATIONS = {
     noGoldReachable: 'Remaining gold is blocked or unreachable.',
     autoCollectDone: (count: number, pts: number) => count > 0 ? `✨ Auto-collected ${count} gold pieces! (+${pts} pts)` : 'No gold collected.',
     autoCollectInterrupted: '⚠️ Auto-collect stopped: Enemy blocking path.',
+    borjomiTitle: 'Borjomi Mineral Water',
+    borjomiDesc: 'Legendary Georgian Mineral Water',
+    borjomiStats: 'Restores HP: 100% Full Health',
+    borjomiExtra: 'Step here to drink and restore full vitality (+15 pts)',
+    borjomiDrankLog: (hp: number) => `🍾 Refreshing Borjomi Mineral Water! HP fully restored to ${hp}! (+15 pts)`,
+    churchkhelaTitle: 'Churchkhela Power Shield',
+    churchkhelaDesc: "Warrior's Sweet Energy Shield",
+    churchkhelaStats: 'Armor Boost: +8 DEF (15 Turns)',
+    churchkhelaExtra: 'Step here to fortify defenses against monster attacks (+15 pts)',
+    churchkhelaEatenLog: (turns: number) => `🍇 Sweet Churchkhela powerup! Gained +8 DEF Shield Armor for ${turns} turns! (+15 pts)`,
+    shieldExpiredLog: '🍇 Churchkhela shield energy has worn off.',
+    shield: 'Shield',
     sopoProposesLog: "💍 Sopo drops to one knee and proposes to Dominick!",
     sopoVanquishLog: "😭 The love-struck enemies fall to their knees in despair as Sopo vanquishes them!",
     sopoProclamation: "Sopo is unmatched in Beauty or Battle!",
@@ -134,6 +146,18 @@ const TRANSLATIONS = {
     noGoldReachable: 'დარჩენილი ოქრო მიუწვდომელია.',
     autoCollectDone: (count: number, pts: number) => count > 0 ? `✨ შეგროვდა ${count} ოქროს მონეტა! (+${pts} ქულა)` : 'ოქრო არ შეგროვდა.',
     autoCollectInterrupted: '⚠️ შეგროვება შეწყდა: მტერი ახლოსაა!',
+    borjomiTitle: 'ბორჯომი',
+    borjomiDesc: 'ლეგენდარული ქართული მინერალური წყალი',
+    borjomiStats: 'სიცოცხლის 100%-ით აღდგენა',
+    borjomiExtra: 'დაადექით სიცოცხლის სრულად აღსადგენად (+15 ქულა)',
+    borjomiDrankLog: (hp: number) => `🍾 გამაგრილებელი ბორჯომი! სიცოცხლე სრულად აღდგა (${hp})! (+15 ქულა)`,
+    churchkhelaTitle: 'ჩურჩხელის ფარი',
+    churchkhelaDesc: 'მეომრის ტკბილი ენერგია და დამცავი ფარი',
+    churchkhelaStats: 'დაცვის გაძლიერება: +8 DEF (15 სვლა)',
+    churchkhelaExtra: 'დაადექით დაცვისა და ჯავშნის გასაძლიერებლად (+15 ქულა)',
+    churchkhelaEatenLog: (turns: number) => `🍇 ჩურჩხელის ძალა! მიიღეთ +8 DEF დამცავი ჯავშანი ${turns} სვლით! (+15 ქულა)`,
+    shieldExpiredLog: '🍇 ჩურჩხელის ფარის მოქმედება დასრულდა.',
+    shield: 'ფარი',
     sopoProposesLog: "💍 სოფო მუხლზე იჩოქებს და დომინიკს ხელს სთხოვს!",
     sopoVanquishLog: "😭 სიყვარულით დაზაფრული მტრები მუხლებზე ეცემიან სასოწარკვეთილებაში, როცა სოფო მათ ამარცხებს!",
     sopoProclamation: "სოფო შეუდარებელია სილამაზესა და ბრძოლაში!",
@@ -930,6 +954,7 @@ export default function VaultRunner() {
   const [score, setScore] = useState<number>(0);
   const [goldValues, setGoldValues] = useState<Record<string, number>>({});
   const [hoveredCell, setHoveredCell] = useState<{ x: number; y: number } | null>(null);
+  const [shieldTurns, setShieldTurns] = useState<number>(0);
 
   const t = TRANSLATIONS[lang];
 
@@ -1591,6 +1616,68 @@ export default function VaultRunner() {
     }
   }, []);
 
+  // --- RETRO BORJOMI HEALING SOUND ---
+  const playBorjomiSound = useCallback(() => {
+    try {
+      const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContext) return;
+      const ctx = new AudioContext();
+      
+      const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6 sparkling arpeggio
+      notes.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.06);
+        gain.gain.setValueAtTime(0.12, ctx.currentTime + idx * 0.06);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.06 + 0.2);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + idx * 0.06);
+        osc.stop(ctx.currentTime + idx * 0.06 + 0.2);
+      });
+    } catch (e) {
+      console.warn("Web Audio borjomi sound failed", e);
+    }
+  }, []);
+
+  // --- RETRO CHURCHKHELA SHIELD SOUND ---
+  const playShieldSound = useCallback(() => {
+    try {
+      const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContext) return;
+      const ctx = new AudioContext();
+      
+      const osc = ctx.createOscillator();
+      const osc2 = ctx.createOscillator();
+      const gain = ctx.createGain();
+      
+      osc.type = 'sine';
+      osc2.type = 'triangle';
+      
+      osc.frequency.setValueAtTime(330, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.25);
+      
+      osc2.frequency.setValueAtTime(440, ctx.currentTime);
+      osc2.frequency.exponentialRampToValueAtTime(1320, ctx.currentTime + 0.25);
+
+      gain.gain.setValueAtTime(0.14, ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.18, ctx.currentTime + 0.1);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+
+      osc.connect(gain);
+      osc2.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start(ctx.currentTime);
+      osc2.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.35);
+      osc2.stop(ctx.currentTime + 0.35);
+    } catch (e) {
+      console.warn("Web Audio shield sound failed", e);
+    }
+  }, []);
+
   // --- AUTO COLLECT ALL GOLD ON BOARD ---
   const stopAutoCollect = useCallback(() => {
     if (autoCollectIntervalRef.current) {
@@ -1778,11 +1865,25 @@ export default function VaultRunner() {
         setGrid(workingGrid.map(row => [...row]));
 
         playCoinSound();
+      } else if (workingGrid[nextPos.y] && workingGrid[nextPos.y][nextPos.x] === 'B') {
+        workingGrid[nextPos.y][nextPos.x] = '.';
+        setPlayerStats(prev => ({ ...prev, hp: prev.maxHp }));
+        setScore(prev => prev + 15);
+        setGrid(workingGrid.map(row => [...row]));
+        playBorjomiSound();
+        setLog(prev => [t.borjomiDrankLog(playerStats.maxHp), ...prev]);
+      } else if (workingGrid[nextPos.y] && workingGrid[nextPos.y][nextPos.x] === 'C') {
+        workingGrid[nextPos.y][nextPos.x] = '.';
+        setShieldTurns(prev => prev + 15);
+        setScore(prev => prev + 15);
+        setGrid(workingGrid.map(row => [...row]));
+        playShieldSound();
+        setLog(prev => [t.churchkhelaEatenLog(15), ...prev]);
       }
 
       stepIdx++;
     }, 70);
-  }, [gameState, isAnimating, isBebiaActive, isSopoActive, isAutoCollecting, grid, playerPosition, enemies, goldValues, currentLevel, t, lang, playCoinSound]);
+  }, [gameState, isAnimating, isBebiaActive, isSopoActive, isAutoCollecting, grid, playerPosition, enemies, goldValues, currentLevel, t, lang, playCoinSound, playBorjomiSound, playShieldSound, playerStats.maxHp]);
 
   // --- BFS PATHFINDING VALIDATION ---
   const hasValidPath = useCallback((testGrid: string[][], startX: number, startY: number, targetX: number, targetY: number) => {
@@ -1977,6 +2078,48 @@ export default function VaultRunner() {
       }
     }
 
+    // Spawn Borjomi Mineral Water (🍾)
+    const borjomiCount = level >= 4 ? 2 : 1;
+    for (let i = 0; i < borjomiCount; i++) {
+      let bx, by;
+      let bAttempts = 0;
+      do {
+        bx = Math.floor(Math.random() * (GRID_SIZE - 2)) + 1;
+        by = Math.floor(Math.random() * (GRID_SIZE - 2)) + 1;
+        bAttempts++;
+      } while (
+        (newGrid[by][bx] !== '.' ||
+          (bx === 1 && by === 1) ||
+          (bx === exitX && by === exitY) ||
+          !hasValidPath(newGrid, 1, 1, bx, by)) &&
+        bAttempts < 100
+      );
+      if (newGrid[by][bx] === '.') {
+        newGrid[by][bx] = 'B';
+      }
+    }
+
+    // Spawn Churchkhela (🍇)
+    const churchkhelaCount = level >= 3 ? 2 : 1;
+    for (let i = 0; i < churchkhelaCount; i++) {
+      let cx, cy;
+      let cAttempts = 0;
+      do {
+        cx = Math.floor(Math.random() * (GRID_SIZE - 2)) + 1;
+        cy = Math.floor(Math.random() * (GRID_SIZE - 2)) + 1;
+        cAttempts++;
+      } while (
+        (newGrid[cy][cx] !== '.' ||
+          (cx === 1 && cy === 1) ||
+          (cx === exitX && cy === exitY) ||
+          !hasValidPath(newGrid, 1, 1, cx, cy)) &&
+        cAttempts < 100
+      );
+      if (newGrid[cy][cx] === '.') {
+        newGrid[cy][cx] = 'C';
+      }
+    }
+
     setGrid(newGrid);
     setEnemies(newEnemies);
     setGoldValues(newGoldValues);
@@ -1987,6 +2130,7 @@ export default function VaultRunner() {
   const startGame = (selectedClass: CharacterClass) => {
     setPlayerClass(selectedClass);
     setPlayerStats({ class: selectedClass, ...CLASS_PRESETS[selectedClass] });
+    setShieldTurns(0);
     setCurrentLevel(1);
     setGoldCollected(0);
     setMonstersKilled(0);
@@ -2001,6 +2145,7 @@ export default function VaultRunner() {
     let currentHp = playerStats.hp;
     const nextLogs: string[] = [];
     const currentT = TRANSLATIONS[lang];
+    const effectiveDef = playerStats.def + (shieldTurns > 0 ? 8 : 0);
 
     const updatedEnemies = currentEnemiesList.map(enemy => {
       const dx = pX - enemy.x;
@@ -2009,7 +2154,7 @@ export default function VaultRunner() {
 
       // 1. Melee attack if adjacent (either cardinally or diagonally)
       if (isAdjacent) {
-        const dmg = Math.max(1, enemy.atk - playerStats.def);
+        const dmg = Math.max(1, enemy.atk - effectiveDef);
         currentHp = Math.max(0, currentHp - dmg);
         nextLogs.push(enemy.isBoss ? currentT.bossStrikeLog(dmg) : currentT.ambushLog(dmg));
         return enemy;
@@ -2028,21 +2173,21 @@ export default function VaultRunner() {
 
         const occupied = currentEnemiesList.some(e => e.id !== enemy.id && e.x === nextX && e.y === nextY);
 
-        if (grid[nextY] && (grid[nextY][nextX] === '.' || grid[nextY][nextX] === 'S' || grid[nextY][nextX] === 'G') && !(nextX === pX && nextY === pY) && !occupied) {
+        if (grid[nextY] && grid[nextY][nextX] !== '#' && !(nextX === pX && nextY === pY) && !occupied) {
           return { ...enemy, x: nextX, y: nextY };
         } else {
           // If the diagonal move is blocked, try cardinal movements as alternative steps (X first, then Y)
           const altX = enemy.x + moveX;
           const altY = enemy.y;
           const altOccupied1 = currentEnemiesList.some(e => e.id !== enemy.id && e.x === altX && e.y === altY);
-          if (grid[altY] && (grid[altY][altX] === '.' || grid[altY][altX] === 'S' || grid[altY][altX] === 'G') && !(altX === pX && altY === pY) && !altOccupied1) {
+          if (grid[altY] && grid[altY][altX] !== '#' && !(altX === pX && altY === pY) && !altOccupied1) {
             return { ...enemy, x: altX, y: altY };
           }
 
           const altX2 = enemy.x;
           const altY2 = enemy.y + moveY;
           const altOccupied2 = currentEnemiesList.some(e => e.id !== enemy.id && e.x === altX2 && e.y === altY2);
-          if (grid[altY2] && (grid[altY2][altX2] === '.' || grid[altY2][altX2] === 'S' || grid[altY2][altX2] === 'G') && !(altX2 === pX && altY2 === pY) && !altOccupied2) {
+          if (grid[altY2] && grid[altY2][altX2] !== '#' && !(altX2 === pX && altY2 === pY) && !altOccupied2) {
             return { ...enemy, x: altX2, y: altY2 };
           }
         }
@@ -2069,7 +2214,7 @@ export default function VaultRunner() {
 
         if (
           grid[roamY] &&
-          (grid[roamY][roamX] === '.' || grid[roamY][roamX] === 'S' || grid[roamY][roamX] === 'G') &&
+          grid[roamY][roamX] !== '#' &&
           !(roamX === pX && roamY === pY) &&
           !occupied
         ) {
@@ -2089,7 +2234,7 @@ export default function VaultRunner() {
     if (nextLogs.length > 0) {
       setLog(prev => [...nextLogs, ...prev]);
     }
-  }, [playerStats.hp, playerStats.def, grid, lang]);
+  }, [playerStats.hp, playerStats.def, shieldTurns, grid, lang]);
 
   // --- COMBAT RESOLUTION (Melee Collision) ---
   const resolveCombat = (index: number) => {
@@ -2149,7 +2294,8 @@ export default function VaultRunner() {
         }));
       }
     } else {
-      const enemyDamage = Math.max(1, target.atk - playerStats.def);
+      const effectiveDef = playerStats.def + (shieldTurns > 0 ? 8 : 0);
+      const enemyDamage = Math.max(1, target.atk - effectiveDef);
       const newHp = Math.max(0, playerStats.hp - enemyDamage);
       playerStats.hp = newHp;
       nextLog.unshift(target.isBoss ? t.bossStrikeLog(enemyDamage) : t.enemyStrikeLog(enemyDamage));
@@ -2200,6 +2346,34 @@ export default function VaultRunner() {
         row.map((cell, x) => (x === newX && y === newY ? '.' : cell))
       );
       setGrid(nextGrid);
+    } else if (grid[newY] && grid[newY][newX] === 'B') {
+      setPlayerStats(prev => ({ ...prev, hp: prev.maxHp }));
+      setScore(prev => prev + 15);
+      setLog(prev => [t.borjomiDrankLog(playerStats.maxHp), ...prev]);
+      playBorjomiSound();
+      nextGrid = grid.map((row, y) =>
+        row.map((cell, x) => (x === newX && y === newY ? '.' : cell))
+      );
+      setGrid(nextGrid);
+    } else if (grid[newY] && grid[newY][newX] === 'C') {
+      setShieldTurns(prev => prev + 15);
+      setScore(prev => prev + 15);
+      setLog(prev => [t.churchkhelaEatenLog(15), ...prev]);
+      playShieldSound();
+      nextGrid = grid.map((row, y) =>
+        row.map((cell, x) => (x === newX && y === newY ? '.' : cell))
+      );
+      setGrid(nextGrid);
+    }
+
+    if (shieldTurns > 0) {
+      setShieldTurns(prev => {
+        if (prev === 1) {
+          setLog(l => [t.shieldExpiredLog, ...l]);
+          return 0;
+        }
+        return Math.max(0, prev - 1);
+      });
     }
 
     if (nextGrid[newY] && nextGrid[newY][newX] === 'S') {
@@ -2237,6 +2411,16 @@ export default function VaultRunner() {
 
     const path = getBresenhamPath(playerPosition.x, playerPosition.y, targetEnemy.x, targetEnemy.y);
     if (path.length === 0) return;
+
+    if (shieldTurns > 0) {
+      setShieldTurns(prev => {
+        if (prev === 1) {
+          setLog(l => [t.shieldExpiredLog, ...l]);
+          return 0;
+        }
+        return Math.max(0, prev - 1);
+      });
+    }
 
     setIsAnimating(true);
     playLaserSound();
@@ -2353,7 +2537,7 @@ export default function VaultRunner() {
       }
     };
     animate();
-  }, [gameState, playerStats.class, playerStats.atk, playerPosition, grid, enemies, hasLineOfSight, getBresenhamPath, processEnemyTurns, lang, isAnimating, playLaserSound, playBebiaVoice, currentLevel]);
+  }, [gameState, playerStats.class, playerStats.atk, playerPosition, grid, enemies, hasLineOfSight, getBresenhamPath, processEnemyTurns, lang, isAnimating, playLaserSound, playBebiaVoice, currentLevel, shieldTurns, t]);
 
   // --- AUTO TARGET NEAREST ---
   const fireAtNearest = useCallback(() => {
@@ -2475,21 +2659,23 @@ export default function VaultRunner() {
     if (x === playerPosition.x && y === playerPosition.y) {
       const pName = getClassName(playerStats.class, lang);
       const wName = getWeaponName(playerStats.class, lang);
+      const shieldStrEn = shieldTurns > 0 ? ` (+8 Shield [${shieldTurns} turns])` : '';
+      const shieldStrKa = shieldTurns > 0 ? ` (+8 ფარი [${shieldTurns} სვლა])` : '';
       if (lang === 'en') {
         return {
           title: `${getClassEmoji(playerStats.class)} ${pName}`,
           subtitle: `Player Character`,
-          stats: `HP: ${playerStats.hp}/${playerStats.maxHp} | ATK: ${playerStats.atk} | DEF: ${playerStats.def}`,
+          stats: `HP: ${playerStats.hp}/${playerStats.maxHp} | ATK: ${playerStats.atk} | DEF: ${playerStats.def}${shieldStrEn}`,
           extra: `Weapon: ${wName}`,
-          accent: '#00e5ff'
+          accent: shieldTurns > 0 ? '#e040fb' : '#00e5ff'
         };
       } else {
         return {
           title: `${getClassEmoji(playerStats.class)} ${pName}`,
           subtitle: `მოთამაშე`,
-          stats: `სიცოცხლე: ${playerStats.hp}/${playerStats.maxHp} | შეტევა: ${playerStats.atk} | დაცვა: ${playerStats.def}`,
+          stats: `სიცოცხლე: ${playerStats.hp}/${playerStats.maxHp} | შეტევა: ${playerStats.atk} | დაცვა: ${playerStats.def}${shieldStrKa}`,
           extra: `იარაღი: ${wName}`,
-          accent: '#00e5ff'
+          accent: shieldTurns > 0 ? '#e040fb' : '#00e5ff'
         };
       }
     }
@@ -2529,8 +2715,49 @@ export default function VaultRunner() {
       };
     }
 
-    // 4. Gold / Heart drop check
+    // 4. Powerups check
     const cell = grid[y] ? grid[y][x] : '';
+    if (cell === 'B') {
+      if (lang === 'en') {
+        return {
+          title: `🍾 ${t.borjomiTitle}`,
+          subtitle: t.borjomiDesc,
+          stats: t.borjomiStats,
+          extra: t.borjomiExtra,
+          accent: '#00e5ff'
+        };
+      } else {
+        return {
+          title: `🍾 ${t.borjomiTitle}`,
+          subtitle: t.borjomiDesc,
+          stats: t.borjomiStats,
+          extra: t.borjomiExtra,
+          accent: '#00e5ff'
+        };
+      }
+    }
+
+    if (cell === 'C') {
+      if (lang === 'en') {
+        return {
+          title: `🍇 ${t.churchkhelaTitle}`,
+          subtitle: t.churchkhelaDesc,
+          stats: t.churchkhelaStats,
+          extra: t.churchkhelaExtra,
+          accent: '#e040fb'
+        };
+      } else {
+        return {
+          title: `🍇 ${t.churchkhelaTitle}`,
+          subtitle: t.churchkhelaDesc,
+          stats: t.churchkhelaStats,
+          extra: t.churchkhelaExtra,
+          accent: '#e040fb'
+        };
+      }
+    }
+
+    // 5. Gold / Heart drop check
     if (cell === 'G') {
       const gVal = goldValues[`${x},${y}`] || (10 + currentLevel * 2);
       const isHeart = playerStats.class === 'Fighter';
@@ -2553,7 +2780,7 @@ export default function VaultRunner() {
       }
     }
 
-    // 5. Stairs check
+    // 6. Stairs check
     if (cell === 'S') {
       const isVictory = currentLevel === TOTAL_LEVELS;
       const isBossAlive = enemies.some(e => e.isBoss);
@@ -2991,8 +3218,13 @@ export default function VaultRunner() {
           </div>
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#ccc', backgroundColor: '#111', padding: '4px 8px', borderRadius: '4px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '11px', color: '#ccc', backgroundColor: '#111', padding: '4px 8px', borderRadius: '4px', flexWrap: 'wrap', gap: '4px' }}>
           <span>{t.hp}: <strong style={{ color: '#4caf50' }}>{playerStats.hp}/{playerStats.maxHp}</strong></span>
+          {shieldTurns > 0 && (
+            <span style={{ backgroundColor: 'rgba(224, 64, 251, 0.2)', border: '1px solid #e040fb', borderRadius: '4px', padding: '1px 5px', color: '#e040fb', fontWeight: 'bold' }}>
+              🍇 {lang === 'en' ? 'Shield' : 'ფარი'}: {shieldTurns} (+8 {t.def})
+            </span>
+          )}
           <span>{t.score}: <strong style={{ color: '#ffd700' }}>{score}</strong> ({t.goldPieces}: {goldCollected})</span>
           <span>{t.level}: <strong>{currentLevel}</strong></span>
         </div>
@@ -3030,7 +3262,28 @@ export default function VaultRunner() {
         <h2>{getClassName(playerStats.class, lang)}</h2>
         <p>{t.level}: <strong>{currentLevel} / {TOTAL_LEVELS}</strong></p>
         <p>{t.hp}: <strong>{playerStats.hp} / {playerStats.maxHp}</strong></p>
-        <p>{t.atk}: <strong>{playerStats.atk}</strong> | {t.def}: <strong>{playerStats.def}</strong></p>
+        <p>
+          {t.atk}: <strong>{playerStats.atk}</strong> | {t.def}: <strong>{playerStats.def}</strong>
+          {shieldTurns > 0 && (
+            <span style={{ marginLeft: '6px', color: '#e040fb', fontWeight: 'bold' }}>
+              (+8 🍇)
+            </span>
+          )}
+        </p>
+        {shieldTurns > 0 && (
+          <div style={{
+            backgroundColor: 'rgba(224, 64, 251, 0.15)',
+            border: '1px solid #e040fb',
+            borderRadius: '4px',
+            padding: '4px 8px',
+            margin: '6px 0',
+            color: '#e040fb',
+            fontSize: '12px',
+            fontWeight: 'bold'
+          }}>
+            🍇 {lang === 'en' ? `Churchkhela Shield: ${shieldTurns} turns (+8 DEF)` : `ჩურჩხელის ფარი: ${shieldTurns} სვლა (+8 DEF)`}
+          </div>
+        )}
         <p>{t.weapon}: <strong>{weaponName}</strong> ({t.range}: {t.infinity})</p>
         <p style={{ marginTop: '15px', paddingTop: '15px', borderTop: '1px solid #333' }}>
           {t.score}: <strong style={{ color: '#ffd700', fontSize: '1.25rem' }}>{score}</strong>
@@ -3401,6 +3654,16 @@ export default function VaultRunner() {
                 } else if (cell === 'G') {
                   glyph = playerClass === 'Fighter' ? '❤️' : '*';
                   color = playerClass === 'Fighter' ? '#ff1744' : '#ffd700';
+                } else if (cell === 'B') {
+                  glyph = '🍾';
+                  color = '#00e5ff';
+                  cursor = 'pointer';
+                  bg = 'rgba(0, 229, 255, 0.12)';
+                } else if (cell === 'C') {
+                  glyph = '🍇';
+                  color = '#e040fb';
+                  cursor = 'pointer';
+                  bg = 'rgba(224, 64, 251, 0.12)';
                 } else if (cell === '#') {
                   color = '#888';
                 } else {
@@ -3437,6 +3700,13 @@ export default function VaultRunner() {
                 color = playerClass === 'Fighter' ? '#ff69b4' : '#ff1744';
               }
 
+              const isPlayerCell = x === playerPosition.x && y === playerPosition.y;
+              const playerShieldStyle = (isPlayerCell && shieldTurns > 0) ? {
+                boxShadow: '0 0 10px 3px rgba(224, 64, 251, 0.85)',
+                border: '1px solid #e040fb',
+                borderRadius: '3px',
+              } : {};
+
               const isHovered = hoveredCell?.x === x && hoveredCell?.y === y;
 
               return (
@@ -3446,7 +3716,7 @@ export default function VaultRunner() {
                   onMouseEnter={() => setHoveredCell({ x, y })}
                   onMouseLeave={() => setHoveredCell(null)}
                   className="game-cell"
-                  style={{ ...styles.cell, color, cursor, backgroundColor: bg, position: 'relative' }}
+                  style={{ ...styles.cell, color, cursor, backgroundColor: bg, position: 'relative', ...playerShieldStyle }}
                 >
                   {glyph}
                   {isHovered && !isAnimating && !isBebiaActive && !isSopoActive && (() => {
