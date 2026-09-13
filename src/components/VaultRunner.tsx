@@ -982,6 +982,9 @@ export default function VaultRunner() {
   const audioSopoWinsRef = React.useRef<HTMLAudioElement | null>(null);
   const [isSopoAudioPlaying, setIsSopoAudioPlaying] = useState<boolean>(false);
 
+  const [isBossIntro, setIsBossIntro] = useState<boolean>(false);
+  const bossIntroTimerRef = React.useRef<any>(null);
+
   const voiceToggleRef = React.useRef<boolean>(false);
   const audioGeorgiaRef = React.useRef<HTMLAudioElement | null>(null);
   const audioKhachapuriRef = React.useRef<HTMLAudioElement | null>(null);
@@ -1002,6 +1005,10 @@ export default function VaultRunner() {
       if (autoCollectIntervalRef.current) {
         clearInterval(autoCollectIntervalRef.current);
         autoCollectIntervalRef.current = null;
+      }
+      if (bossIntroTimerRef.current) {
+        clearTimeout(bossIntroTimerRef.current);
+        bossIntroTimerRef.current = null;
       }
     };
   }, []);
@@ -1141,7 +1148,7 @@ export default function VaultRunner() {
   }, []);
 
   const triggerBebiaUltimate = useCallback(() => {
-    if (gameState !== 'PLAYING' || isAnimating || isBebiaActive) return;
+    if (gameState !== 'PLAYING' || isAnimating || isBebiaActive || isBossIntro) return;
     if (enemies.length === 0) {
       setLog(prev => [lang === 'en' ? "No enemies to destroy!" : "დასამარცხებელი მტერი არ არის!", ...prev]);
       return;
@@ -1296,10 +1303,10 @@ export default function VaultRunner() {
         currentStepIndex++;
       }, 180);
     }, 2800);
-  }, [gameState, isAnimating, isBebiaActive, enemies, lang, grid, playerPosition, getBresenhamPath, playBebiaVoice]);
+  }, [gameState, isAnimating, isBebiaActive, isBossIntro, enemies, lang, grid, playerPosition, getBresenhamPath, playBebiaVoice]);
 
   const triggerSopoUltimate = useCallback(() => {
-    if (gameState !== 'PLAYING' || isAnimating || isSopoActive) return;
+    if (gameState !== 'PLAYING' || isAnimating || isSopoActive || isBossIntro) return;
     if (enemies.length === 0) {
       setLog(prev => [lang === 'en' ? "No targets to propose to!" : "მოსახიბლი მტერი არ არის!", ...prev]);
       return;
@@ -1586,7 +1593,7 @@ export default function VaultRunner() {
       }, 180);
 
     }, 2800);
-  }, [gameState, isAnimating, isSopoActive, enemies, lang, grid, playerPosition, getBresenhamPath, playLaserSound, audioSopoWinsRef, setIsSopoAudioPlaying]);
+  }, [gameState, isAnimating, isSopoActive, isBossIntro, enemies, lang, grid, playerPosition, getBresenhamPath, playLaserSound, audioSopoWinsRef, setIsSopoAudioPlaying]);
 
   // --- RETRO COIN PICKUP SOUND ---
   const playCoinSound = useCallback(() => {
@@ -1678,6 +1685,102 @@ export default function VaultRunner() {
     }
   }, []);
 
+  // --- RETRO BOSS ENTRANCE SOUND (>2s dramatic intro) ---
+  const playBossIntroSound = useCallback(() => {
+    try {
+      const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContext) return;
+      const ctx = new AudioContext();
+
+      // 1. Deep Sub-Bass Rumble (Ground tremors)
+      const rumbleOsc = ctx.createOscillator();
+      const rumbleGain = ctx.createGain();
+      rumbleOsc.type = 'sawtooth';
+      rumbleOsc.frequency.setValueAtTime(55, ctx.currentTime);
+      rumbleOsc.frequency.exponentialRampToValueAtTime(32, ctx.currentTime + 2.5);
+
+      rumbleGain.gain.setValueAtTime(0.22, ctx.currentTime);
+      rumbleGain.gain.linearRampToValueAtTime(0.32, ctx.currentTime + 0.8);
+      rumbleGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 2.8);
+
+      rumbleOsc.connect(rumbleGain);
+      rumbleGain.connect(ctx.destination);
+      rumbleOsc.start(ctx.currentTime);
+      rumbleOsc.stop(ctx.currentTime + 2.8);
+
+      // 2. Dark Minor Fanfare Stabs (D minor low triad)
+      const minorNotes = [
+        { freq: 73.42, delay: 0.1, dur: 0.8 },  // D2
+        { freq: 87.31, delay: 0.45, dur: 0.8 }, // F2
+        { freq: 110.00, delay: 0.8, dur: 1.0 }, // A2
+        { freq: 138.59, delay: 1.2, dur: 1.4 }, // C#3 (sinister diminished tension)
+        { freq: 146.83, delay: 1.6, dur: 1.2 }  // D3
+      ];
+
+      minorNotes.forEach(({ freq, delay, dur }) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
+
+        gain.gain.setValueAtTime(0.16, ctx.currentTime + delay);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + dur);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + delay);
+        osc.stop(ctx.currentTime + delay + dur);
+      });
+
+      // 3. Gong / Thunder Impact Burst at t=0.35s
+      const bufferSize = ctx.sampleRate * 1.5;
+      const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const output = noiseBuffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        output[i] = Math.random() * 2 - 1;
+      }
+      const noise = ctx.createBufferSource();
+      noise.buffer = noiseBuffer;
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(320, ctx.currentTime + 0.35);
+      filter.frequency.exponentialRampToValueAtTime(60, ctx.currentTime + 2.2);
+
+      const noiseGain = ctx.createGain();
+      noiseGain.gain.setValueAtTime(0.28, ctx.currentTime + 0.35);
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 2.4);
+
+      noise.connect(filter);
+      filter.connect(noiseGain);
+      noiseGain.connect(ctx.destination);
+      noise.start(ctx.currentTime + 0.35);
+      noise.stop(ctx.currentTime + 2.4);
+
+    } catch (e) {
+      console.warn("Web Audio boss intro sound failed", e);
+    }
+  }, []);
+
+  const triggerBossIntro = useCallback(() => {
+    setIsBossIntro(true);
+    playBossIntroSound();
+    setLog(prev => [
+      lang === 'en'
+        ? "⚠️ WARNING: The Vault Warlord has awakened! Ground tremors shake the dungeon!"
+        : "⚠️ ყურადღება: ვაულტის მბრძანებელი გამოფხიზლდა! მიწისძვრა აზანზარებს დუნჯს!",
+      ...prev
+    ]);
+
+    if (bossIntroTimerRef.current) {
+      clearTimeout(bossIntroTimerRef.current);
+    }
+
+    bossIntroTimerRef.current = setTimeout(() => {
+      setIsBossIntro(false);
+      bossIntroTimerRef.current = null;
+    }, 2800);
+  }, [lang, playBossIntroSound]);
+
   // --- AUTO COLLECT ALL GOLD ON BOARD ---
   const stopAutoCollect = useCallback(() => {
     if (autoCollectIntervalRef.current) {
@@ -1689,7 +1792,7 @@ export default function VaultRunner() {
   }, []);
 
   const triggerAutoCollectGold = useCallback(() => {
-    if (gameState !== 'PLAYING' || isAnimating || isBebiaActive || isSopoActive || isAutoCollecting) return;
+    if (gameState !== 'PLAYING' || isAnimating || isBebiaActive || isSopoActive || isAutoCollecting || isBossIntro) return;
 
     if (enemies.length > 0) {
       setLog(prev => [
@@ -1925,7 +2028,7 @@ export default function VaultRunner() {
 
       stepIdx++;
     }, 70);
-  }, [gameState, isAnimating, isBebiaActive, isSopoActive, isAutoCollecting, grid, playerPosition, enemies, goldValues, currentLevel, t, lang, playCoinSound, playBorjomiSound, playShieldSound, playerStats.maxHp]);
+  }, [gameState, isAnimating, isBebiaActive, isSopoActive, isAutoCollecting, isBossIntro, grid, playerPosition, enemies, goldValues, currentLevel, t, lang, playCoinSound, playBorjomiSound, playShieldSound, playerStats.maxHp]);
 
   // --- BFS PATHFINDING VALIDATION ---
   const hasValidPath = useCallback((testGrid: string[][], startX: number, startY: number, targetX: number, targetY: number) => {
@@ -2166,10 +2269,19 @@ export default function VaultRunner() {
     setEnemies(newEnemies);
     setGoldValues(newGoldValues);
     setPlayerPosition({ x: 1, y: 1 });
-  }, [hasValidPath]);
+
+    if (level === TOTAL_LEVELS) {
+      triggerBossIntro();
+    }
+  }, [hasValidPath, triggerBossIntro]);
 
   // --- START GAME ---
   const startGame = (selectedClass: CharacterClass) => {
+    if (bossIntroTimerRef.current) {
+      clearTimeout(bossIntroTimerRef.current);
+      bossIntroTimerRef.current = null;
+    }
+    setIsBossIntro(false);
     setPlayerClass(selectedClass);
     setPlayerStats({ class: selectedClass, ...CLASS_PRESETS[selectedClass] });
     setShieldTurns(0);
@@ -2358,7 +2470,7 @@ export default function VaultRunner() {
     if (isAutoCollecting) {
       stopAutoCollect();
     }
-    if (gameState !== 'PLAYING' || isAnimating || isBebiaActive) return;
+    if (gameState !== 'PLAYING' || isAnimating || isBebiaActive || isBossIntro) return;
 
     const newX = playerPosition.x + dx;
     const newY = playerPosition.y + dy;
@@ -2441,7 +2553,7 @@ export default function VaultRunner() {
 
   // --- RANGED COMBAT RESOLUTION ---
   const handleRangedAttack = useCallback((targetEnemy: Enemy) => {
-    if (gameState !== 'PLAYING' || isAnimating || isBebiaActive) return;
+    if (gameState !== 'PLAYING' || isAnimating || isBebiaActive || isBossIntro) return;
 
     if (!hasLineOfSight(playerPosition.x, playerPosition.y, targetEnemy.x, targetEnemy.y, grid)) {
       setLog(prev => [t.losBlockedLog, ...prev]);
@@ -2579,11 +2691,11 @@ export default function VaultRunner() {
       }
     };
     animate();
-  }, [gameState, playerStats.class, playerStats.atk, playerPosition, grid, enemies, hasLineOfSight, getBresenhamPath, processEnemyTurns, lang, isAnimating, playLaserSound, playBebiaVoice, currentLevel, shieldTurns, t]);
+  }, [gameState, playerStats.class, playerStats.atk, playerPosition, grid, enemies, hasLineOfSight, getBresenhamPath, processEnemyTurns, lang, isAnimating, isBossIntro, playLaserSound, playBebiaVoice, currentLevel, shieldTurns, t]);
 
   // --- AUTO TARGET NEAREST ---
   const fireAtNearest = useCallback(() => {
-    if (gameState !== 'PLAYING' || isAnimating || isBebiaActive) return;
+    if (gameState !== 'PLAYING' || isAnimating || isBebiaActive || isBossIntro) return;
 
     const validEnemies = enemies.filter(enemy => {
       return hasLineOfSight(playerPosition.x, playerPosition.y, enemy.x, enemy.y, grid);
@@ -2684,11 +2796,11 @@ export default function VaultRunner() {
     });
 
     handleRangedAttack(validEnemies[0]);
-  }, [gameState, enemies, playerPosition, grid, hasLineOfSight, handleRangedAttack, lang, playerStats.class, getBresenhamPath, processEnemyTurns, isAnimating, playLaserSound, playBebiaVoice]);
+  }, [gameState, enemies, playerPosition, grid, hasLineOfSight, handleRangedAttack, lang, playerStats.class, getBresenhamPath, processEnemyTurns, isAnimating, isBossIntro, playLaserSound, playBebiaVoice]);
 
   // --- CLICK INTERACTION ---
   const handleCellClick = (x: number, y: number) => {
-    if (gameState !== 'PLAYING' || isAnimating || isBebiaActive || isSopoActive) return;
+    if (gameState !== 'PLAYING' || isAnimating || isBebiaActive || isSopoActive || isBossIntro) return;
     const clickedEnemy = enemies.find(e => e.x === x && e.y === y);
     if (clickedEnemy) {
       handleRangedAttack(clickedEnemy);
@@ -2888,7 +3000,7 @@ export default function VaultRunner() {
         return;
       }
 
-      if (isAnimating || isBebiaActive || isSopoActive) return;
+      if (isAnimating || isBebiaActive || isSopoActive || isBossIntro) return;
 
       switch (e.key) {
         case 'ArrowUp':    case 'w': case '8': handleMove(0, -1); break;
@@ -2912,7 +3024,7 @@ export default function VaultRunner() {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [playerPosition, gameState, enemies, grid, playerStats, fireAtNearest, isAnimating, isBebiaActive, isSopoActive, isAutoCollecting, triggerBebiaUltimate, triggerSopoUltimate, triggerAutoCollectGold, stopAutoCollect]);
+  }, [playerPosition, gameState, enemies, grid, playerStats, fireAtNearest, isAnimating, isBebiaActive, isSopoActive, isBossIntro, isAutoCollecting, triggerBebiaUltimate, triggerSopoUltimate, triggerAutoCollectGold, stopAutoCollect]);
 
   // Weapon meta calculations
   const weaponName = getWeaponName(playerStats.class, lang);
@@ -3165,6 +3277,61 @@ export default function VaultRunner() {
           animation: card-zoom-in 0.5s ease-out forwards !important;
           filter: drop-shadow(0 0 20px rgba(255, 105, 180, 0.6)) !important;
         }
+        @keyframes boss-shake {
+          0% { transform: translate(2px, 1px) rotate(0deg); }
+          10% { transform: translate(-2px, -2px) rotate(-1deg); }
+          20% { transform: translate(-3px, 1px) rotate(1deg); }
+          30% { transform: translate(3px, 2px) rotate(0deg); }
+          40% { transform: translate(1px, -1px) rotate(1deg); }
+          50% { transform: translate(-2px, 3px) rotate(-1deg); }
+          60% { transform: translate(-3px, 1px) rotate(0deg); }
+          70% { transform: translate(3px, 1px) rotate(-1deg); }
+          80% { transform: translate(-1px, -2px) rotate(1deg); }
+          90% { transform: translate(2px, 2px) rotate(0deg); }
+          100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+        @keyframes boss-flash {
+          0% { background-color: rgba(255, 0, 0, 0.45); }
+          25% { background-color: rgba(0, 0, 0, 0.7); }
+          50% { background-color: rgba(255, 23, 68, 0.5); }
+          75% { background-color: rgba(20, 0, 0, 0.6); }
+          100% { background-color: rgba(255, 0, 0, 0.3); }
+        }
+        @keyframes boss-card-zoom-in {
+          0% { transform: scale(0.2) translateY(50px); opacity: 0; filter: blur(10px); }
+          15% { transform: scale(1.08) translateY(0); opacity: 1; filter: blur(0px); }
+          25% { transform: scale(1); opacity: 1; }
+          85% { transform: scale(1); opacity: 1; }
+          100% { transform: scale(1.05) translateY(-20px); opacity: 0; filter: blur(4px); }
+        }
+        .boss-intro-grid {
+          animation: boss-shake 0.12s infinite !important;
+          position: relative !important;
+        }
+        .boss-overlay-flash {
+          position: absolute !important;
+          top: 0 !important;
+          left: 0 !important;
+          right: 0 !important;
+          bottom: 0 !important;
+          animation: boss-flash 0.7s infinite !important;
+          pointer-events: none !important;
+          z-index: 25 !important;
+        }
+        .boss-entrance-container {
+          position: absolute !important;
+          top: 5% !important;
+          left: 5% !important;
+          width: 90% !important;
+          height: 90% !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          z-index: 30 !important;
+          pointer-events: none !important;
+          animation: boss-card-zoom-in 2.8s ease-in-out forwards !important;
+          filter: drop-shadow(0 0 35px rgba(255, 0, 0, 0.85)) !important;
+        }
         @media (max-width: 768px) {
           .game-view {
             flex-direction: column !important;
@@ -3339,7 +3506,7 @@ export default function VaultRunner() {
         
         <button
           onClick={playerClass === 'Fighter' ? triggerSopoUltimate : triggerBebiaUltimate}
-          disabled={(playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0}
+          disabled={(playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0 || isBossIntro}
           className="bebia-ultimate-btn"
           style={{
             padding: '10px 15px',
@@ -3348,14 +3515,14 @@ export default function VaultRunner() {
             color: (playerClass === 'Fighter' ? isSopoActive : isBebiaActive) ? '#fff' : (playerClass === 'Fighter' ? '#ff69b4' : '#00e5ff'),
             border: playerClass === 'Fighter' ? '2px solid #ff69b4' : '2px solid #00e5ff',
             borderRadius: '6px',
-            cursor: ((playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0) ? 'not-allowed' : 'pointer',
+            cursor: ((playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0 || isBossIntro) ? 'not-allowed' : 'pointer',
             fontWeight: 'bold',
             marginTop: '15px',
             width: '100%',
             textAlign: 'center',
             boxShadow: playerClass === 'Fighter' ? '0 0 10px rgba(255,105,180,0.3)' : '0 0 10px rgba(0,229,255,0.3)',
-            animation: ((playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0) ? 'none' : 'pulsate 2s infinite',
-            opacity: enemies.length === 0 ? 0.5 : 1,
+            animation: ((playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0 || isBossIntro) ? 'none' : 'pulsate 2s infinite',
+            opacity: (enemies.length === 0 || isBossIntro) ? 0.5 : 1,
             transition: 'all 0.3s ease',
             fontFamily: GEORGIAN_MONO_FONT,
           }}
@@ -3402,7 +3569,7 @@ export default function VaultRunner() {
       </div>
 
       <div 
-        className={`grid-container ${isBebiaActive ? 'bebia-crashing-grid' : isSopoActive ? 'sopo-loving-grid' : ''}`} 
+        className={`grid-container ${isBossIntro ? 'boss-intro-grid' : isBebiaActive ? 'bebia-crashing-grid' : isSopoActive ? 'sopo-loving-grid' : ''}`} 
         style={{
           ...styles.gridContainer,
           position: 'relative',
@@ -3511,6 +3678,56 @@ export default function VaultRunner() {
             </div>
           );
         })()}
+
+        {isBossIntro && (
+          <>
+            <div className="boss-overlay-flash" />
+            <div className="boss-entrance-container">
+              <svg viewBox="0 0 400 260" style={{ width: '100%', height: '100%', objectFit: 'contain' }}>
+                <defs>
+                  <linearGradient id="bossCardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#1a0003" stopOpacity="0.95" />
+                    <stop offset="50%" stopColor="#2b0006" stopOpacity="0.98" />
+                    <stop offset="100%" stopColor="#0d0002" stopOpacity="0.95" />
+                  </linearGradient>
+                  <filter id="crimsonGlow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="0" dy="0" stdDeviation="6" floodColor="#ff0033" floodOpacity="0.8" />
+                  </filter>
+                </defs>
+                <rect width="400" height="260" rx="16" fill="url(#bossCardGrad)" stroke="#ff1744" strokeWidth="3" filter="url(#crimsonGlow)" />
+                <rect x="8" y="8" width="384" height="244" rx="12" fill="none" stroke="#ffd700" strokeWidth="1" strokeDasharray="6 3" opacity="0.6" />
+                
+                {/* Boss Icon */}
+                <text x="200" y="65" fontSize="48" textAnchor="middle" filter="drop-shadow(0 0 10px #ff1744)">👹</text>
+                
+                {/* Title: VAULT WARLORD / ვაულტის მბრძანებელი */}
+                <text x="200" y="105" fill="#ff1744" fontSize="20" fontWeight="900" letterSpacing="3" fontFamily={GEORGIAN_MONO_FONT} textAnchor="middle">
+                  {lang === 'en' ? '⚠️ VAULT WARLORD ⚠️' : '⚠️ ვაულტის მბრძანებელი ⚠️'}
+                </text>
+                
+                {/* Subtitle: FINAL DUNGEON MASTER */}
+                <text x="200" y="132" fill="#ffd700" fontSize="13" fontWeight="bold" letterSpacing="1.5" fontFamily={GEORGIAN_MONO_FONT} textAnchor="middle">
+                  {lang === 'en' ? 'FINAL DUNGEON MASTER' : 'ვაულტის მთავარი მბრძანებელი'}
+                </text>
+
+                {/* Decorative divider */}
+                <line x1="60" y1="148" x2="340" y2="148" stroke="#ff1744" strokeWidth="2" opacity="0.7" />
+                <circle cx="200" cy="148" r="4" fill="#ffd700" />
+                
+                {/* Quote */}
+                <text x="200" y="178" fill="#ff8a80" fontSize="12" fontStyle="italic" fontWeight="600" fontFamily={GEORGIAN_MONO_FONT} textAnchor="middle">
+                  {lang === 'en' ? '"None shall leave the Vault alive!"' : '„ვერავინ დატოვებს ვაულტს ცოცხალი!“'}
+                </text>
+                <text x="200" y="202" fill="#e0e0e0" fontSize="11" fontFamily={GEORGIAN_MONO_FONT} textAnchor="middle">
+                  {lang === 'en' ? 'HP: 100 • ATK: 24 • IMMENSE POWER' : 'სიცოცხლე: 100 • შეტევა: 24 • უზარმაზარი ძალა'}
+                </text>
+                <text x="200" y="228" fill="#ffd700" fontSize="10" fontWeight="bold" fontFamily={GEORGIAN_MONO_FONT} textAnchor="middle">
+                  {lang === 'en' ? '⚔️ PREPARE FOR BATTLE! ⚔️' : '⚔️ მოემზადეთ ბრძოლისთვის! ⚔️'}
+                </text>
+              </svg>
+            </div>
+          </>
+        )}
 
         {(isBebiaActive || isSopoActive) && (
           <>
@@ -3899,7 +4116,7 @@ export default function VaultRunner() {
           <button 
             onTouchStart={(e) => { e.preventDefault(); if (playerClass === 'Fighter') triggerSopoUltimate(); else triggerBebiaUltimate(); }}
             onClick={(e) => { e.preventDefault(); if (playerClass === 'Fighter') triggerSopoUltimate(); else triggerBebiaUltimate(); }}
-            disabled={(playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0}
+            disabled={(playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0 || isBossIntro}
             style={{
               width: '64px',
               height: '64px',
@@ -3915,10 +4132,10 @@ export default function VaultRunner() {
               justifyContent: 'center',
               touchAction: 'none',
               userSelect: 'none',
-              cursor: ((playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0) ? 'not-allowed' : 'pointer',
+              cursor: ((playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0 || isBossIntro) ? 'not-allowed' : 'pointer',
               fontFamily: GEORGIAN_MONO_FONT,
-              opacity: enemies.length === 0 ? 0.5 : 1,
-              animation: ((playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0) ? 'none' : 'pulsate 2s infinite',
+              opacity: (enemies.length === 0 || isBossIntro) ? 0.5 : 1,
+              animation: ((playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0 || isBossIntro) ? 'none' : 'pulsate 2s infinite',
             }}
           >
             {playerClass === 'Fighter' ? '💍 Ultimate' : '🇬🇪 Ultimate'}
