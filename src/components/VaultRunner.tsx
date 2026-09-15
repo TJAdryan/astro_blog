@@ -983,6 +983,7 @@ export default function VaultRunner() {
   const [isSopoAudioPlaying, setIsSopoAudioPlaying] = useState<boolean>(false);
 
   const [isBossIntro, setIsBossIntro] = useState<boolean>(false);
+  const [startingMode, setStartingMode] = useState<'CAMPAIGN' | 'BOSS'>('CAMPAIGN');
   const bossIntroTimerRef = React.useRef<any>(null);
 
   const voiceToggleRef = React.useRef<boolean>(false);
@@ -1691,6 +1692,9 @@ export default function VaultRunner() {
       const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
       if (!AudioContext) return;
       const ctx = new AudioContext();
+      if (ctx.state === 'suspended') {
+        ctx.resume();
+      }
 
       // 1. Deep Sub-Bass Rumble (Ground tremors)
       const rumbleOsc = ctx.createOscillator();
@@ -1778,7 +1782,7 @@ export default function VaultRunner() {
     bossIntroTimerRef.current = setTimeout(() => {
       setIsBossIntro(false);
       bossIntroTimerRef.current = null;
-    }, 2800);
+    }, 3200);
   }, [lang, playBossIntroSound]);
 
   // --- AUTO COLLECT ALL GOLD ON BOARD ---
@@ -2276,7 +2280,7 @@ export default function VaultRunner() {
   }, [hasValidPath, triggerBossIntro]);
 
   // --- START GAME ---
-  const startGame = (selectedClass: CharacterClass) => {
+  const startGame = (selectedClass: CharacterClass, startingLevel: number = 1) => {
     if (bossIntroTimerRef.current) {
       clearTimeout(bossIntroTimerRef.current);
       bossIntroTimerRef.current = null;
@@ -2285,13 +2289,13 @@ export default function VaultRunner() {
     setPlayerClass(selectedClass);
     setPlayerStats({ class: selectedClass, ...CLASS_PRESETS[selectedClass] });
     setShieldTurns(0);
-    setCurrentLevel(1);
+    setCurrentLevel(startingLevel);
     setGoldCollected(0);
     setMonstersKilled(0);
     setScore(0);
-    setLog([TRANSLATIONS[lang].enterLog]);
+    setLog([startingLevel === TOTAL_LEVELS ? TRANSLATIONS[lang].bossSpawnLog : TRANSLATIONS[lang].enterLog]);
     setGameState('PLAYING');
-    generateLevel(1, selectedClass);
+    generateLevel(startingLevel, selectedClass);
   };
 
   // --- ENEMY AI TURN ---
@@ -3087,13 +3091,67 @@ export default function VaultRunner() {
         </div>
         <h1 style={styles.title}>{t.title}</h1>
         <p style={styles.subtitle}>{t.subtitle}</p>
+
+        {/* Mode Selector Toggle: Campaign vs Direct Boss Fight */}
+        <div style={{ display: 'flex', gap: '12px', marginBottom: '25px', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <button
+            onClick={() => setStartingMode('CAMPAIGN')}
+            style={{
+              padding: '10px 18px',
+              fontSize: '13px',
+              backgroundColor: startingMode === 'CAMPAIGN' ? '#ffd700' : '#111',
+              color: startingMode === 'CAMPAIGN' ? '#000' : '#ffd700',
+              border: '2px solid #ffd700',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontWeight: 'bold',
+              fontFamily: GEORGIAN_MONO_FONT,
+              boxShadow: startingMode === 'CAMPAIGN' ? '0 0 12px rgba(255,215,0,0.5)' : 'none',
+              transition: 'all 0.2s ease',
+            }}
+          >
+            {lang === 'en' ? '🏰 Standard Run (Floor 1)' : '🏰 სტანდარტული თამაში (დონე 1)'}
+          </button>
+          <button
+            onClick={() => setStartingMode('BOSS')}
+            style={{
+              padding: '10px 18px',
+              fontSize: '13px',
+              backgroundColor: startingMode === 'BOSS' ? '#ff1744' : '#111',
+              color: startingMode === 'BOSS' ? '#fff' : '#ff1744',
+              border: '2px solid #ff1744',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontWeight: 'bold',
+              fontFamily: GEORGIAN_MONO_FONT,
+              boxShadow: startingMode === 'BOSS' ? '0 0 15px rgba(255,23,68,0.7)' : 'none',
+              transition: 'all 0.2s ease',
+            }}
+          >
+            {lang === 'en' ? '👹 Direct Boss Fight (Floor 5)' : '👹 ბოსთან ბრძოლა (დონე 5)'}
+          </button>
+        </div>
+
         <div style={styles.selectionZone}>
           {(['Fighter', 'Mage', 'Rogue', 'Rene', 'Sandro', 'Bebia'] as CharacterClass[]).map(cls => (
-            <button key={cls} onClick={() => startGame(cls)} style={styles.btn}>
+            <button 
+              key={cls} 
+              onClick={() => startGame(cls, startingMode === 'BOSS' ? TOTAL_LEVELS : 1)} 
+              style={{
+                ...styles.btn,
+                borderColor: startingMode === 'BOSS' ? '#ff1744' : '#444',
+                boxShadow: startingMode === 'BOSS' ? '0 0 8px rgba(255,23,68,0.3)' : 'none'
+              }}
+            >
               {getClassEmoji(cls)} {getClassName(cls, lang)} <br />
               <span style={{ fontSize: '12px', opacity: 0.8 }}>
                 {t.hp}: {CLASS_PRESETS[cls].hp} | {t.atk}: {CLASS_PRESETS[cls].atk}
               </span>
+              {startingMode === 'BOSS' && (
+                <div style={{ marginTop: '6px', fontSize: '11px', color: '#ff5252', fontWeight: 'bold' }}>
+                  {lang === 'en' ? '⚔️ Enter Boss Arena' : '⚔️ ბოსის არენაზე შესვლა'}
+                </div>
+              )}
             </button>
           ))}
         </div>
@@ -3277,32 +3335,56 @@ export default function VaultRunner() {
           animation: card-zoom-in 0.5s ease-out forwards !important;
           filter: drop-shadow(0 0 20px rgba(255, 105, 180, 0.6)) !important;
         }
+        @keyframes boss-backdrop-fade {
+          0% { opacity: 0; }
+          12% { opacity: 1; }
+          85% { opacity: 1; }
+          100% { opacity: 0; }
+        }
         @keyframes boss-shake {
-          0% { transform: translate(2px, 1px) rotate(0deg); }
-          10% { transform: translate(-2px, -2px) rotate(-1deg); }
-          20% { transform: translate(-3px, 1px) rotate(1deg); }
-          30% { transform: translate(3px, 2px) rotate(0deg); }
-          40% { transform: translate(1px, -1px) rotate(1deg); }
-          50% { transform: translate(-2px, 3px) rotate(-1deg); }
-          60% { transform: translate(-3px, 1px) rotate(0deg); }
-          70% { transform: translate(3px, 1px) rotate(-1deg); }
-          80% { transform: translate(-1px, -2px) rotate(1deg); }
-          90% { transform: translate(2px, 2px) rotate(0deg); }
-          100% { transform: translate(1px, -2px) rotate(-1deg); }
+          0% { transform: translate(3px, 2px) rotate(0deg); }
+          10% { transform: translate(-3px, -3px) rotate(-1deg); }
+          20% { transform: translate(-4px, 2px) rotate(1deg); }
+          30% { transform: translate(4px, 3px) rotate(0deg); }
+          40% { transform: translate(2px, -2px) rotate(1deg); }
+          50% { transform: translate(-3px, 4px) rotate(-1deg); }
+          60% { transform: translate(-4px, 2px) rotate(0deg); }
+          70% { transform: translate(4px, 2px) rotate(-1deg); }
+          80% { transform: translate(-2px, -3px) rotate(1deg); }
+          90% { transform: translate(3px, 3px) rotate(0deg); }
+          100% { transform: translate(2px, -3px) rotate(-1deg); }
         }
         @keyframes boss-flash {
-          0% { background-color: rgba(255, 0, 0, 0.45); }
-          25% { background-color: rgba(0, 0, 0, 0.7); }
-          50% { background-color: rgba(255, 23, 68, 0.5); }
-          75% { background-color: rgba(20, 0, 0, 0.6); }
-          100% { background-color: rgba(255, 0, 0, 0.3); }
+          0% { background-color: rgba(255, 0, 30, 0.4); }
+          25% { background-color: rgba(0, 0, 0, 0.75); }
+          50% { background-color: rgba(255, 23, 68, 0.45); }
+          75% { background-color: rgba(30, 0, 5, 0.7); }
+          100% { background-color: rgba(255, 0, 30, 0.3); }
         }
         @keyframes boss-card-zoom-in {
-          0% { transform: scale(0.2) translateY(50px); opacity: 0; filter: blur(10px); }
-          15% { transform: scale(1.08) translateY(0); opacity: 1; filter: blur(0px); }
+          0% { transform: scale(0.25) translateY(40px); opacity: 0; filter: blur(12px); }
+          15% { transform: scale(1.06) translateY(0); opacity: 1; filter: blur(0px); }
           25% { transform: scale(1); opacity: 1; }
           85% { transform: scale(1); opacity: 1; }
-          100% { transform: scale(1.05) translateY(-20px); opacity: 0; filter: blur(4px); }
+          100% { transform: scale(1.1) translateY(-25px); opacity: 0; filter: blur(6px); }
+        }
+        .boss-intro-fullscreen-backdrop {
+          position: fixed !important;
+          top: 0 !important;
+          left: 0 !important;
+          right: 0 !important;
+          bottom: 0 !important;
+          width: 100vw !important;
+          height: 100vh !important;
+          background: rgba(8, 0, 2, 0.88) !important;
+          backdrop-filter: blur(6px) !important;
+          -webkit-backdrop-filter: blur(6px) !important;
+          z-index: 999999 !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          pointer-events: none !important;
+          animation: boss-backdrop-fade 3.2s ease-in-out forwards !important;
         }
         .boss-intro-grid {
           animation: boss-shake 0.12s infinite !important;
@@ -3314,23 +3396,21 @@ export default function VaultRunner() {
           left: 0 !important;
           right: 0 !important;
           bottom: 0 !important;
-          animation: boss-flash 0.7s infinite !important;
+          animation: boss-flash 0.6s infinite !important;
           pointer-events: none !important;
-          z-index: 25 !important;
+          z-index: 1000000 !important;
         }
         .boss-entrance-container {
-          position: absolute !important;
-          top: 5% !important;
-          left: 5% !important;
-          width: 90% !important;
-          height: 90% !important;
           display: flex !important;
           align-items: center !important;
           justify-content: center !important;
-          z-index: 30 !important;
+          z-index: 1000001 !important;
           pointer-events: none !important;
-          animation: boss-card-zoom-in 2.8s ease-in-out forwards !important;
-          filter: drop-shadow(0 0 35px rgba(255, 0, 0, 0.85)) !important;
+          animation: boss-card-zoom-in 3.2s ease-in-out forwards !important;
+          padding: 20px !important;
+          box-sizing: border-box !important;
+          width: 100% !important;
+          max-width: 540px !important;
         }
         @media (max-width: 768px) {
           .game-view {
@@ -3373,6 +3453,67 @@ export default function VaultRunner() {
         }
       `}} />
 
+      {/* Full-Screen Cinematic Boss Entrance Sequence */}
+      {isBossIntro && (
+        <div className="boss-intro-fullscreen-backdrop">
+          <div className="boss-overlay-flash" />
+          <div className="boss-entrance-container">
+            <svg viewBox="0 0 420 280" style={{ width: '100%', maxWidth: '520px', height: 'auto', filter: 'drop-shadow(0 0 40px rgba(255, 0, 50, 0.9))' }}>
+              <defs>
+                <linearGradient id="bossCardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#1a0003" stopOpacity="0.98" />
+                  <stop offset="50%" stopColor="#2b0008" stopOpacity="0.98" />
+                  <stop offset="100%" stopColor="#0d0002" stopOpacity="0.98" />
+                </linearGradient>
+                <filter id="crimsonGlow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="0" dy="0" stdDeviation="8" floodColor="#ff0033" floodOpacity="0.9" />
+                </filter>
+              </defs>
+              
+              <rect width="420" height="280" rx="18" fill="url(#bossCardGrad)" stroke="#ff1744" strokeWidth="3" filter="url(#crimsonGlow)" />
+              <rect x="8" y="8" width="404" height="264" rx="12" fill="none" stroke="#ffd700" strokeWidth="1.5" strokeDasharray="8 4" opacity="0.75" />
+              
+              {/* Animated Glowing Demon Skull */}
+              <text x="210" y="68" fontSize="52" textAnchor="middle" filter="drop-shadow(0 0 15px #ff1744)">👹</text>
+              
+              {/* Alert Tag */}
+              <text x="210" y="102" fill="#ff5252" fontSize="11" fontWeight="bold" letterSpacing="2" fontFamily={GEORGIAN_MONO_FONT} textAnchor="middle">
+                {lang === 'en' ? '⚠️ FINAL DUNGEON MASTER DETECTED ⚠️' : '⚠️ ვაულტის მთავარი მბრძანებელი გამოჩნდა ⚠️'}
+              </text>
+
+              {/* Title: VAULT WARLORD / ვაულტის მბრძანებელი */}
+              <text x="210" y="132" fill="#fff" fontSize="22" fontWeight="900" letterSpacing="3" fontFamily={GEORGIAN_MONO_FONT} textAnchor="middle" filter="drop-shadow(0 0 10px #ff1744)">
+                {lang === 'en' ? 'VAULT WARLORD' : 'ვაულტის მბრძანებელი'}
+              </text>
+              
+              {/* Subtitle */}
+              <text x="210" y="156" fill="#ffd700" fontSize="13" fontWeight="bold" letterSpacing="1.5" fontFamily={GEORGIAN_MONO_FONT} textAnchor="middle">
+                {lang === 'en' ? 'OVERLORD OF THE INNER SANCTUM • LEVEL 5' : 'შიდა ვაულტის უზენაესი მბრძანებელი • დონე 5'}
+              </text>
+
+              {/* Divider */}
+              <line x1="50" y1="170" x2="370" y2="170" stroke="#ff1744" strokeWidth="2" opacity="0.8" />
+              <circle cx="210" cy="170" r="4" fill="#ffd700" />
+              
+              {/* Quote */}
+              <text x="210" y="198" fill="#ff8a80" fontSize="12" fontStyle="italic" fontWeight="600" fontFamily={GEORGIAN_MONO_FONT} textAnchor="middle">
+                {lang === 'en' ? '"None shall leave the Vault alive!"' : '„ვერავინ დატოვებს ვაულტს ცოცხალი!“'}
+              </text>
+
+              {/* Boss Stats */}
+              <text x="210" y="222" fill="#e0e0e0" fontSize="11" fontFamily={GEORGIAN_MONO_FONT} textAnchor="middle">
+                {lang === 'en' ? 'HP: 100 • ATK: 24 • IMMENSE POWER' : 'სიცოცხლე: 100 • შეტევა: 24 • უზარმაზარი ძალა'}
+              </text>
+
+              {/* Battle Callout */}
+              <text x="210" y="252" fill="#ffd700" fontSize="12" fontWeight="bold" letterSpacing="1" fontFamily={GEORGIAN_MONO_FONT} textAnchor="middle">
+                {lang === 'en' ? '⚔️ BATTLE COMMENCED! ⚔️' : '⚔️ ბრძოლა დაიწყო! ⚔️'}
+              </text>
+            </svg>
+          </div>
+        </div>
+      )}
+
       {/* Mobile Top Header (Visible only on mobile) */}
       <div 
         className="mobile-header"
@@ -3409,6 +3550,43 @@ export default function VaultRunner() {
             >
               {lang === 'en' ? '🌐 EN' : '🌐 ქარ'}
             </button>
+            {currentLevel < TOTAL_LEVELS ? (
+              <button 
+                onClick={() => {
+                  setCurrentLevel(TOTAL_LEVELS);
+                  setLog(prev => [lang === 'en' ? '⚔️ Warped to Level 5: Boss!' : '⚔️ მე-5 დონე: ბოსი!', ...prev]);
+                  generateLevel(TOTAL_LEVELS, playerClass);
+                }} 
+                style={{
+                  padding: '3px 6px',
+                  fontSize: '11px',
+                  backgroundColor: '#111',
+                  color: '#ff5252',
+                  border: '1px solid #ff1744',
+                  borderRadius: '4px',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                }}
+              >
+                👹 L5
+              </button>
+            ) : (
+              <button 
+                onClick={() => triggerBossIntro()} 
+                style={{
+                  padding: '3px 6px',
+                  fontSize: '11px',
+                  backgroundColor: '#111',
+                  color: '#ffd700',
+                  border: '1px solid #ffd700',
+                  borderRadius: '4px',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                }}
+              >
+                🎬 Intro
+              </button>
+            )}
             <button 
               onClick={() => setGameState('START')} 
               style={{
@@ -3558,6 +3736,60 @@ export default function VaultRunner() {
           </button>
         )}
 
+        {currentLevel < TOTAL_LEVELS ? (
+          <button 
+            onClick={() => {
+              setCurrentLevel(TOTAL_LEVELS);
+              setLog(prev => [lang === 'en' ? '⚔️ Warped directly to Level 5: Final Boss!' : '⚔️ გადახვედით მე-5 დონეზე: მთავარი ბოსი!', ...prev]);
+              generateLevel(TOTAL_LEVELS, playerClass);
+            }} 
+            style={{
+              padding: '8px 12px',
+              fontSize: '12px',
+              backgroundColor: '#111',
+              color: '#ff5252',
+              border: '1px solid #ff1744',
+              cursor: 'pointer',
+              fontFamily: GEORGIAN_MONO_FONT,
+              borderRadius: '4px',
+              marginTop: '15px',
+              width: '100%',
+              textAlign: 'center',
+              fontWeight: 'bold',
+              transition: 'all 0.2s ease',
+              boxShadow: '0 0 8px rgba(255,23,68,0.2)'
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#ff1744'; e.currentTarget.style.color = '#fff'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#111'; e.currentTarget.style.color = '#ff5252'; }}
+          >
+            {lang === 'en' ? '👹 Skip to Boss Level (L5)' : '👹 ბოსის დონეზე გადასვლა (დ5)'}
+          </button>
+        ) : (
+          <button 
+            onClick={() => triggerBossIntro()} 
+            style={{
+              padding: '8px 12px',
+              fontSize: '12px',
+              backgroundColor: '#111',
+              color: '#ffd700',
+              border: '1px solid #ffd700',
+              cursor: 'pointer',
+              fontFamily: GEORGIAN_MONO_FONT,
+              borderRadius: '4px',
+              marginTop: '15px',
+              width: '100%',
+              textAlign: 'center',
+              fontWeight: 'bold',
+              transition: 'all 0.2s ease',
+              boxShadow: '0 0 8px rgba(255,215,0,0.2)'
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#ffd700'; e.currentTarget.style.color = '#000'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#111'; e.currentTarget.style.color = '#ffd700'; }}
+          >
+            {lang === 'en' ? '🎬 Replay Boss Intro' : '🎬 ბოსის ანიმაციის გამეორება'}
+          </button>
+        )}
+
         <button 
           onClick={() => setGameState('START')} 
           style={styles.restartBtn}
@@ -3678,56 +3910,6 @@ export default function VaultRunner() {
             </div>
           );
         })()}
-
-        {isBossIntro && (
-          <>
-            <div className="boss-overlay-flash" />
-            <div className="boss-entrance-container">
-              <svg viewBox="0 0 400 260" style={{ width: '100%', height: '100%', objectFit: 'contain' }}>
-                <defs>
-                  <linearGradient id="bossCardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#1a0003" stopOpacity="0.95" />
-                    <stop offset="50%" stopColor="#2b0006" stopOpacity="0.98" />
-                    <stop offset="100%" stopColor="#0d0002" stopOpacity="0.95" />
-                  </linearGradient>
-                  <filter id="crimsonGlow" x="-20%" y="-20%" width="140%" height="140%">
-                    <feDropShadow dx="0" dy="0" stdDeviation="6" floodColor="#ff0033" floodOpacity="0.8" />
-                  </filter>
-                </defs>
-                <rect width="400" height="260" rx="16" fill="url(#bossCardGrad)" stroke="#ff1744" strokeWidth="3" filter="url(#crimsonGlow)" />
-                <rect x="8" y="8" width="384" height="244" rx="12" fill="none" stroke="#ffd700" strokeWidth="1" strokeDasharray="6 3" opacity="0.6" />
-                
-                {/* Boss Icon */}
-                <text x="200" y="65" fontSize="48" textAnchor="middle" filter="drop-shadow(0 0 10px #ff1744)">👹</text>
-                
-                {/* Title: VAULT WARLORD / ვაულტის მბრძანებელი */}
-                <text x="200" y="105" fill="#ff1744" fontSize="20" fontWeight="900" letterSpacing="3" fontFamily={GEORGIAN_MONO_FONT} textAnchor="middle">
-                  {lang === 'en' ? '⚠️ VAULT WARLORD ⚠️' : '⚠️ ვაულტის მბრძანებელი ⚠️'}
-                </text>
-                
-                {/* Subtitle: FINAL DUNGEON MASTER */}
-                <text x="200" y="132" fill="#ffd700" fontSize="13" fontWeight="bold" letterSpacing="1.5" fontFamily={GEORGIAN_MONO_FONT} textAnchor="middle">
-                  {lang === 'en' ? 'FINAL DUNGEON MASTER' : 'ვაულტის მთავარი მბრძანებელი'}
-                </text>
-
-                {/* Decorative divider */}
-                <line x1="60" y1="148" x2="340" y2="148" stroke="#ff1744" strokeWidth="2" opacity="0.7" />
-                <circle cx="200" cy="148" r="4" fill="#ffd700" />
-                
-                {/* Quote */}
-                <text x="200" y="178" fill="#ff8a80" fontSize="12" fontStyle="italic" fontWeight="600" fontFamily={GEORGIAN_MONO_FONT} textAnchor="middle">
-                  {lang === 'en' ? '"None shall leave the Vault alive!"' : '„ვერავინ დატოვებს ვაულტს ცოცხალი!“'}
-                </text>
-                <text x="200" y="202" fill="#e0e0e0" fontSize="11" fontFamily={GEORGIAN_MONO_FONT} textAnchor="middle">
-                  {lang === 'en' ? 'HP: 100 • ATK: 24 • IMMENSE POWER' : 'სიცოცხლე: 100 • შეტევა: 24 • უზარმაზარი ძალა'}
-                </text>
-                <text x="200" y="228" fill="#ffd700" fontSize="10" fontWeight="bold" fontFamily={GEORGIAN_MONO_FONT} textAnchor="middle">
-                  {lang === 'en' ? '⚔️ PREPARE FOR BATTLE! ⚔️' : '⚔️ მოემზადეთ ბრძოლისთვის! ⚔️'}
-                </text>
-              </svg>
-            </div>
-          </>
-        )}
 
         {(isBebiaActive || isSopoActive) && (
           <>
