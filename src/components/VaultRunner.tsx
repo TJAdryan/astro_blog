@@ -983,8 +983,10 @@ export default function VaultRunner() {
   const [isSopoAudioPlaying, setIsSopoAudioPlaying] = useState<boolean>(false);
 
   const [isBossIntro, setIsBossIntro] = useState<boolean>(false);
+  const [bossEntrancePhase, setBossEntrancePhase] = useState<'NONE' | 'SUMMONING' | 'METEOR_SLAM' | 'ROAR'>('NONE');
   const [startingMode, setStartingMode] = useState<'CAMPAIGN' | 'BOSS'>('CAMPAIGN');
   const bossIntroTimerRef = React.useRef<any>(null);
+  const bossPhaseTimersRef = React.useRef<any[]>([]);
 
   const voiceToggleRef = React.useRef<boolean>(false);
   const audioGeorgiaRef = React.useRef<HTMLAudioElement | null>(null);
@@ -1011,6 +1013,8 @@ export default function VaultRunner() {
         clearTimeout(bossIntroTimerRef.current);
         bossIntroTimerRef.current = null;
       }
+      bossPhaseTimersRef.current.forEach(t => clearTimeout(t));
+      bossPhaseTimersRef.current = [];
     };
   }, []);
 
@@ -1696,47 +1700,37 @@ export default function VaultRunner() {
         ctx.resume();
       }
 
-      // 1. Deep Sub-Bass Rumble (Ground tremors)
-      const rumbleOsc = ctx.createOscillator();
-      const rumbleGain = ctx.createGain();
-      rumbleOsc.type = 'sawtooth';
-      rumbleOsc.frequency.setValueAtTime(55, ctx.currentTime);
-      rumbleOsc.frequency.exponentialRampToValueAtTime(32, ctx.currentTime + 2.5);
+      // 1. Phase 1: Rising Sub-Bass Summoning Drone (t = 0.0s to 0.9s)
+      const droneOsc = ctx.createOscillator();
+      const droneGain = ctx.createGain();
+      droneOsc.type = 'sawtooth';
+      droneOsc.frequency.setValueAtTime(45, ctx.currentTime);
+      droneOsc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.85);
 
-      rumbleGain.gain.setValueAtTime(0.22, ctx.currentTime);
-      rumbleGain.gain.linearRampToValueAtTime(0.32, ctx.currentTime + 0.8);
-      rumbleGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 2.8);
+      droneGain.gain.setValueAtTime(0.16, ctx.currentTime);
+      droneGain.gain.linearRampToValueAtTime(0.35, ctx.currentTime + 0.85);
+      droneGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.92);
 
-      rumbleOsc.connect(rumbleGain);
-      rumbleGain.connect(ctx.destination);
-      rumbleOsc.start(ctx.currentTime);
-      rumbleOsc.stop(ctx.currentTime + 2.8);
+      droneOsc.connect(droneGain);
+      droneGain.connect(ctx.destination);
+      droneOsc.start(ctx.currentTime);
+      droneOsc.stop(ctx.currentTime + 0.92);
 
-      // 2. Dark Minor Fanfare Stabs (D minor low triad)
-      const minorNotes = [
-        { freq: 73.42, delay: 0.1, dur: 0.8 },  // D2
-        { freq: 87.31, delay: 0.45, dur: 0.8 }, // F2
-        { freq: 110.00, delay: 0.8, dur: 1.0 }, // A2
-        { freq: 138.59, delay: 1.2, dur: 1.4 }, // C#3 (sinister diminished tension)
-        { freq: 146.83, delay: 1.6, dur: 1.2 }  // D3
-      ];
+      // 2. Phase 2: Meteor Descent Whistle + Thunder Slam Crash at t = 0.85s
+      const whistleOsc = ctx.createOscillator();
+      const whistleGain = ctx.createGain();
+      whistleOsc.type = 'sine';
+      whistleOsc.frequency.setValueAtTime(550, ctx.currentTime + 0.3);
+      whistleOsc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.85);
+      whistleGain.gain.setValueAtTime(0.01, ctx.currentTime + 0.3);
+      whistleGain.gain.linearRampToValueAtTime(0.20, ctx.currentTime + 0.85);
+      whistleGain.gain.setValueAtTime(0.001, ctx.currentTime + 0.88);
+      whistleOsc.connect(whistleGain);
+      whistleGain.connect(ctx.destination);
+      whistleOsc.start(ctx.currentTime + 0.3);
+      whistleOsc.stop(ctx.currentTime + 0.88);
 
-      minorNotes.forEach(({ freq, delay, dur }) => {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
-
-        gain.gain.setValueAtTime(0.16, ctx.currentTime + delay);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + dur);
-
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start(ctx.currentTime + delay);
-        osc.stop(ctx.currentTime + delay + dur);
-      });
-
-      // 3. Gong / Thunder Impact Burst at t=0.35s
+      // Thunder Impact Slam at t = 0.85s
       const bufferSize = ctx.sampleRate * 1.5;
       const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
       const output = noiseBuffer.getChannelData(0);
@@ -1747,18 +1741,41 @@ export default function VaultRunner() {
       noise.buffer = noiseBuffer;
       const filter = ctx.createBiquadFilter();
       filter.type = 'lowpass';
-      filter.frequency.setValueAtTime(320, ctx.currentTime + 0.35);
-      filter.frequency.exponentialRampToValueAtTime(60, ctx.currentTime + 2.2);
+      filter.frequency.setValueAtTime(360, ctx.currentTime + 0.85);
+      filter.frequency.exponentialRampToValueAtTime(50, ctx.currentTime + 2.4);
 
       const noiseGain = ctx.createGain();
-      noiseGain.gain.setValueAtTime(0.28, ctx.currentTime + 0.35);
-      noiseGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 2.4);
+      noiseGain.gain.setValueAtTime(0.38, ctx.currentTime + 0.85);
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 2.5);
 
       noise.connect(filter);
       filter.connect(noiseGain);
       noiseGain.connect(ctx.destination);
-      noise.start(ctx.currentTime + 0.35);
-      noise.stop(ctx.currentTime + 2.4);
+      noise.start(ctx.currentTime + 0.85);
+      noise.stop(ctx.currentTime + 2.5);
+
+      // 3. Phase 3: Demon Roar Brass Fanfare at t = 1.7s (D minor stabs)
+      const minorNotes = [
+        { freq: 73.42, delay: 1.7, dur: 0.6 },  // D2
+        { freq: 87.31, delay: 1.95, dur: 0.6 }, // F2
+        { freq: 110.00, delay: 2.2, dur: 0.8 }, // A2
+        { freq: 146.83, delay: 2.45, dur: 0.9 } // D3
+      ];
+
+      minorNotes.forEach(({ freq, delay, dur }) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
+
+        gain.gain.setValueAtTime(0.20, ctx.currentTime + delay);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + dur);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + delay);
+        osc.stop(ctx.currentTime + delay + dur);
+      });
 
     } catch (e) {
       console.warn("Web Audio boss intro sound failed", e);
@@ -1767,22 +1784,50 @@ export default function VaultRunner() {
 
   const triggerBossIntro = useCallback(() => {
     setIsBossIntro(true);
+    setBossEntrancePhase('SUMMONING');
     playBossIntroSound();
     setLog(prev => [
       lang === 'en'
-        ? "⚠️ WARNING: The Vault Warlord has awakened! Ground tremors shake the dungeon!"
-        : "⚠️ ყურადღება: ვაულტის მბრძანებელი გამოფხიზლდა! მიწისძვრა აზანზარებს დუნჯს!",
+        ? "⚠️ WARNING: A dark rift opens! The Vault Warlord is materializing!"
+        : "⚠️ ყურადღება: ბნელი პორტალი გაიხსნა! ვაულტის მბრძანებელი ჩნდება!",
       ...prev
     ]);
 
-    if (bossIntroTimerRef.current) {
-      clearTimeout(bossIntroTimerRef.current);
-    }
+    bossPhaseTimersRef.current.forEach(t => clearTimeout(t));
+    bossPhaseTimersRef.current = [];
 
-    bossIntroTimerRef.current = setTimeout(() => {
+    const t1 = setTimeout(() => {
+      setBossEntrancePhase('METEOR_SLAM');
+      setLog(prev => [
+        lang === 'en'
+          ? "💥 The Vault Warlord crashes down onto the dungeon floor!"
+          : "💥 ვაულტის მბრძანებელი მიწაზე დაეცა და იატაკი შეაზანზარა!",
+        ...prev
+      ]);
+    }, 850);
+
+    const t2 = setTimeout(() => {
+      setBossEntrancePhase('ROAR');
+      setLog(prev => [
+        lang === 'en'
+          ? "👹 The Vault Warlord unleashes a thunderous battle roar!"
+          : "👹 ვაულტის მბრძანებელი გამაყრუებლად ღრიალებს!",
+        ...prev
+      ]);
+    }, 1700);
+
+    const t3 = setTimeout(() => {
+      setBossEntrancePhase('NONE');
       setIsBossIntro(false);
-      bossIntroTimerRef.current = null;
-    }, 3200);
+      setLog(prev => [
+        lang === 'en'
+          ? "⚔️ Boss battle engaged! Slay the Vault Warlord to escape!"
+          : "⚔️ ბრძოლა დაიწყო! გაანადგურეთ ვაულტის მბრძანებელი!",
+        ...prev
+      ]);
+    }, 2800);
+
+    bossPhaseTimersRef.current = [t1, t2, t3];
   }, [lang, playBossIntroSound]);
 
   // --- AUTO COLLECT ALL GOLD ON BOARD ---
@@ -2285,6 +2330,9 @@ export default function VaultRunner() {
       clearTimeout(bossIntroTimerRef.current);
       bossIntroTimerRef.current = null;
     }
+    bossPhaseTimersRef.current.forEach(t => clearTimeout(t));
+    bossPhaseTimersRef.current = [];
+    setBossEntrancePhase('NONE');
     setIsBossIntro(false);
     setPlayerClass(selectedClass);
     setPlayerStats({ class: selectedClass, ...CLASS_PRESETS[selectedClass] });
@@ -3361,56 +3409,88 @@ export default function VaultRunner() {
           75% { background-color: rgba(30, 0, 5, 0.7); }
           100% { background-color: rgba(255, 0, 30, 0.3); }
         }
-        @keyframes boss-card-zoom-in {
-          0% { transform: scale(0.25) translateY(40px); opacity: 0; filter: blur(12px); }
-          15% { transform: scale(1.06) translateY(0); opacity: 1; filter: blur(0px); }
-          25% { transform: scale(1); opacity: 1; }
-          85% { transform: scale(1); opacity: 1; }
-          100% { transform: scale(1.1) translateY(-25px); opacity: 0; filter: blur(6px); }
+        @keyframes boss-summon-rift {
+          0% { transform: scale(0.2) rotate(0deg); filter: drop-shadow(0 0 6px #ba68c8); opacity: 0.4; }
+          40% { transform: scale(1.4) rotate(220deg); filter: drop-shadow(0 0 16px #e040fb); opacity: 1; }
+          70% { transform: scale(1.7) rotate(420deg); filter: drop-shadow(0 0 24px #ff0055); opacity: 1; }
+          100% { transform: scale(1.9) rotate(720deg); filter: drop-shadow(0 0 30px #ff1744); opacity: 0.9; }
         }
-        .boss-intro-fullscreen-backdrop {
-          position: fixed !important;
-          top: 0 !important;
-          left: 0 !important;
-          right: 0 !important;
-          bottom: 0 !important;
-          width: 100vw !important;
-          height: 100vh !important;
-          background: rgba(8, 0, 2, 0.88) !important;
-          backdrop-filter: blur(6px) !important;
-          -webkit-backdrop-filter: blur(6px) !important;
-          z-index: 999999 !important;
-          display: flex !important;
-          align-items: center !important;
-          justify-content: center !important;
-          pointer-events: none !important;
-          animation: boss-backdrop-fade 3.2s ease-in-out forwards !important;
+        @keyframes boss-meteor-slam {
+          0% { transform: translateY(-160px) scale(4); opacity: 0; filter: drop-shadow(0 -40px 25px #ff1744); }
+          55% { transform: translateY(0) scale(1.7); opacity: 1; filter: drop-shadow(0 0 35px #ff1744); }
+          70% { transform: translateY(-14px) scale(1.3); }
+          85% { transform: translateY(0) scale(1.5); }
+          100% { transform: translateY(0) scale(1.35); }
+        }
+        @keyframes boss-roar-pulse {
+          0% { transform: scale(1.35) rotate(0deg); filter: drop-shadow(0 0 20px #ff0055); }
+          15% { transform: scale(1.85) rotate(-5deg); filter: drop-shadow(0 0 45px #ff1744); }
+          30% { transform: scale(1.7) rotate(5deg); filter: drop-shadow(0 0 55px #ffd700); }
+          50% { transform: scale(1.9) rotate(-4deg); filter: drop-shadow(0 0 50px #ff0055); }
+          70% { transform: scale(1.75) rotate(3deg); filter: drop-shadow(0 0 40px #ff1744); }
+          85% { transform: scale(1.8) rotate(-2deg); filter: drop-shadow(0 0 45px #ffd700); }
+          100% { transform: scale(1.4) rotate(0deg); filter: drop-shadow(0 0 25px #ff0055); }
+        }
+        @keyframes boss-active-aura {
+          0% { filter: drop-shadow(0 0 8px #ff0055); transform: scale(1.12); }
+          50% { filter: drop-shadow(0 0 20px #ff1744) drop-shadow(0 0 8px #ffd700); transform: scale(1.28); }
+          100% { filter: drop-shadow(0 0 8px #ff0055); transform: scale(1.12); }
+        }
+        @keyframes boss-ground-shockwave {
+          0% { transform: scale(1); background-color: rgba(255, 23, 68, 0.85); box-shadow: 0 0 20px #ff1744; }
+          40% { transform: scale(1.2); background-color: rgba(255, 82, 82, 0.5); box-shadow: 0 0 15px #ff5252; }
+          100% { transform: scale(1); background-color: transparent; }
+        }
+        @keyframes boss-banner-float {
+          0% { transform: translateY(0) scale(0.9); opacity: 0; }
+          20% { transform: translateY(-16px) scale(1.1); opacity: 1; }
+          80% { transform: translateY(-16px) scale(1.05); opacity: 1; }
+          100% { transform: translateY(-24px) scale(0.9); opacity: 0; }
         }
         .boss-intro-grid {
-          animation: boss-shake 0.12s infinite !important;
+          animation: boss-shake 0.1s infinite !important;
           position: relative !important;
         }
-        .boss-overlay-flash {
-          position: absolute !important;
-          top: 0 !important;
-          left: 0 !important;
-          right: 0 !important;
-          bottom: 0 !important;
-          animation: boss-flash 0.6s infinite !important;
-          pointer-events: none !important;
-          z-index: 1000000 !important;
+        .boss-summon-portal {
+          display: inline-block !important;
+          font-size: 26px !important;
+          animation: boss-summon-rift 0.85s linear infinite !important;
+          z-index: 200 !important;
         }
-        .boss-entrance-container {
-          display: flex !important;
-          align-items: center !important;
-          justify-content: center !important;
-          z-index: 1000001 !important;
+        .boss-meteor-slam {
+          display: inline-block !important;
+          font-size: 28px !important;
+          animation: boss-meteor-slam 0.85s cubic-bezier(0.1, 0.9, 0.2, 1) forwards !important;
+          z-index: 200 !important;
+        }
+        .boss-roar-sprite {
+          display: inline-block !important;
+          font-size: 30px !important;
+          animation: boss-roar-pulse 1.1s ease-in-out infinite !important;
+          z-index: 200 !important;
+        }
+        .boss-combat-sprite {
+          display: inline-block !important;
+          font-size: 22px !important;
+          animation: boss-active-aura 2s ease-in-out infinite !important;
+        }
+        .boss-roar-banner {
+          position: absolute !important;
+          bottom: 110% !important;
+          left: 50% !important;
+          transform: translateX(-50%) !important;
+          background: rgba(20, 0, 5, 0.94) !important;
+          border: 1px solid #ff1744 !important;
+          box-shadow: 0 0 12px rgba(255, 23, 68, 0.8) !important;
+          color: #ffd700 !important;
+          padding: 2px 8px !important;
+          border-radius: 4px !important;
+          font-size: 11px !important;
+          font-weight: bold !important;
+          white-space: nowrap !important;
           pointer-events: none !important;
-          animation: boss-card-zoom-in 3.2s ease-in-out forwards !important;
-          padding: 20px !important;
-          box-sizing: border-box !important;
-          width: 100% !important;
-          max-width: 540px !important;
+          z-index: 300 !important;
+          animation: boss-banner-float 1.1s ease-in-out forwards !important;
         }
         @media (max-width: 768px) {
           .game-view {
@@ -3452,67 +3532,6 @@ export default function VaultRunner() {
           }
         }
       `}} />
-
-      {/* Full-Screen Cinematic Boss Entrance Sequence */}
-      {isBossIntro && (
-        <div className="boss-intro-fullscreen-backdrop">
-          <div className="boss-overlay-flash" />
-          <div className="boss-entrance-container">
-            <svg viewBox="0 0 420 280" style={{ width: '100%', maxWidth: '520px', height: 'auto', filter: 'drop-shadow(0 0 40px rgba(255, 0, 50, 0.9))' }}>
-              <defs>
-                <linearGradient id="bossCardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#1a0003" stopOpacity="0.98" />
-                  <stop offset="50%" stopColor="#2b0008" stopOpacity="0.98" />
-                  <stop offset="100%" stopColor="#0d0002" stopOpacity="0.98" />
-                </linearGradient>
-                <filter id="crimsonGlow" x="-20%" y="-20%" width="140%" height="140%">
-                  <feDropShadow dx="0" dy="0" stdDeviation="8" floodColor="#ff0033" floodOpacity="0.9" />
-                </filter>
-              </defs>
-              
-              <rect width="420" height="280" rx="18" fill="url(#bossCardGrad)" stroke="#ff1744" strokeWidth="3" filter="url(#crimsonGlow)" />
-              <rect x="8" y="8" width="404" height="264" rx="12" fill="none" stroke="#ffd700" strokeWidth="1.5" strokeDasharray="8 4" opacity="0.75" />
-              
-              {/* Animated Glowing Demon Skull */}
-              <text x="210" y="68" fontSize="52" textAnchor="middle" filter="drop-shadow(0 0 15px #ff1744)">👹</text>
-              
-              {/* Alert Tag */}
-              <text x="210" y="102" fill="#ff5252" fontSize="11" fontWeight="bold" letterSpacing="2" fontFamily={GEORGIAN_MONO_FONT} textAnchor="middle">
-                {lang === 'en' ? '⚠️ FINAL DUNGEON MASTER DETECTED ⚠️' : '⚠️ ვაულტის მთავარი მბრძანებელი გამოჩნდა ⚠️'}
-              </text>
-
-              {/* Title: VAULT WARLORD / ვაულტის მბრძანებელი */}
-              <text x="210" y="132" fill="#fff" fontSize="22" fontWeight="900" letterSpacing="3" fontFamily={GEORGIAN_MONO_FONT} textAnchor="middle" filter="drop-shadow(0 0 10px #ff1744)">
-                {lang === 'en' ? 'VAULT WARLORD' : 'ვაულტის მბრძანებელი'}
-              </text>
-              
-              {/* Subtitle */}
-              <text x="210" y="156" fill="#ffd700" fontSize="13" fontWeight="bold" letterSpacing="1.5" fontFamily={GEORGIAN_MONO_FONT} textAnchor="middle">
-                {lang === 'en' ? 'OVERLORD OF THE INNER SANCTUM • LEVEL 5' : 'შიდა ვაულტის უზენაესი მბრძანებელი • დონე 5'}
-              </text>
-
-              {/* Divider */}
-              <line x1="50" y1="170" x2="370" y2="170" stroke="#ff1744" strokeWidth="2" opacity="0.8" />
-              <circle cx="210" cy="170" r="4" fill="#ffd700" />
-              
-              {/* Quote */}
-              <text x="210" y="198" fill="#ff8a80" fontSize="12" fontStyle="italic" fontWeight="600" fontFamily={GEORGIAN_MONO_FONT} textAnchor="middle">
-                {lang === 'en' ? '"None shall leave the Vault alive!"' : '„ვერავინ დატოვებს ვაულტს ცოცხალი!“'}
-              </text>
-
-              {/* Boss Stats */}
-              <text x="210" y="222" fill="#e0e0e0" fontSize="11" fontFamily={GEORGIAN_MONO_FONT} textAnchor="middle">
-                {lang === 'en' ? 'HP: 100 • ATK: 24 • IMMENSE POWER' : 'სიცოცხლე: 100 • შეტევა: 24 • უზარმაზარი ძალა'}
-              </text>
-
-              {/* Battle Callout */}
-              <text x="210" y="252" fill="#ffd700" fontSize="12" fontWeight="bold" letterSpacing="1" fontFamily={GEORGIAN_MONO_FONT} textAnchor="middle">
-                {lang === 'en' ? '⚔️ BATTLE COMMENCED! ⚔️' : '⚔️ ბრძოლა დაიწყო! ⚔️'}
-              </text>
-            </svg>
-          </div>
-        </div>
-      )}
 
       {/* Mobile Top Header (Visible only on mobile) */}
       <div 
@@ -4040,7 +4059,7 @@ export default function VaultRunner() {
         {grid.map((row, y) => (
           <div key={y} style={styles.row}>
             {row.map((cell, x) => {
-              let glyph = cell;
+              let glyph: React.ReactNode = cell;
               let color = '#444';
               let cursor = 'default';
               let bg = cell === '#' ? '#222' : '#0a0a0a';
@@ -4050,6 +4069,11 @@ export default function VaultRunner() {
               const isRunner = bebiaRunnerPos && bebiaRunnerPos.x === x && bebiaRunnerPos.y === y;
               const isSopoRunner = sopoRunnerPos && sopoRunnerPos.x === x && sopoRunnerPos.y === y;
               const isDominick = dominickPosition && dominickPosition.x === x && dominickPosition.y === y;
+
+              const bossEnemy = enemies.find(e => e.isBoss);
+              const distToBoss = bossEnemy ? Math.max(Math.abs(x - bossEnemy.x), Math.abs(y - bossEnemy.y)) : 999;
+              const hasEnemy = enemies.find(e => e.x === x && e.y === y);
+              const isBossCell = hasEnemy && hasEnemy.isBoss;
 
               if (isRunner) {
                 glyph = '🇬🇪';
@@ -4082,9 +4106,47 @@ export default function VaultRunner() {
                   }
                   color = '#00e5ff';
                 }
-              } else {
-                const hasEnemy = enemies.find(e => e.x === x && e.y === y);
-                if (hasEnemy) {
+              } else if (hasEnemy) {
+                if (hasEnemy.isBoss) {
+                  if (bossEntrancePhase === 'SUMMONING') {
+                    glyph = <span className="boss-summon-portal" title="Summoning Rift">🌀</span>;
+                    color = '#e040fb';
+                    bg = 'radial-gradient(circle, rgba(156, 39, 176, 0.75) 0%, rgba(20, 0, 30, 0.95) 100%)';
+                  } else if (bossEntrancePhase === 'METEOR_SLAM') {
+                    glyph = <span className="boss-meteor-slam" title="Vault Warlord">👹</span>;
+                    color = '#ff1744';
+                    bg = 'radial-gradient(circle, rgba(255, 23, 68, 0.9) 0%, rgba(50, 0, 10, 0.95) 100%)';
+                  } else if (bossEntrancePhase === 'ROAR') {
+                    glyph = (
+                      <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
+                        <span className="boss-roar-sprite">👹</span>
+                        <span className="boss-roar-banner">{lang === 'en' ? '⚔️ ROAAAR! ⚔️' : '⚔️ ღრიალი! ⚔️'}</span>
+                      </div>
+                    );
+                    color = '#ffd700';
+                    bg = 'radial-gradient(circle, rgba(255, 23, 68, 0.7) 0%, rgba(30, 0, 5, 0.95) 100%)';
+                  } else {
+                    // Normal combat state
+                    if (playerClass === 'Fighter') {
+                      if (ultimatePhase === 'FRIGHTENED' || ultimatePhase === 'PROPOSING') {
+                        glyph = '😍';
+                        color = '#ff69b4';
+                      } else if (ultimatePhase === 'VANQUISHING') {
+                        glyph = '🧎';
+                        color = '#ff69b4';
+                      } else {
+                        glyph = <span className="boss-combat-sprite">👹</span>;
+                        color = '#ff0055';
+                      }
+                    } else {
+                      glyph = ultimatePhase === 'FRIGHTENED' ? '😱' : <span className="boss-combat-sprite">👹</span>;
+                      color = ultimatePhase === 'FRIGHTENED' ? '#ffea00' : '#ff0055';
+                    }
+                    bg = 'rgba(255, 0, 85, 0.22)';
+                  }
+                  cursor = 'pointer';
+                } else {
+                  // Non-boss regular enemies
                   if (playerClass === 'Fighter') {
                     if (ultimatePhase === 'FRIGHTENED' || ultimatePhase === 'PROPOSING') {
                       glyph = '😍';
@@ -4093,70 +4155,78 @@ export default function VaultRunner() {
                       glyph = '🧎';
                       color = '#ff69b4';
                     } else {
-                      glyph = getEnemyGlyph(currentLevel, hasEnemy.id, hasEnemy.isBoss);
-                      color = hasEnemy.isBoss ? '#ff0055' : '#ff1744';
+                      glyph = getEnemyGlyph(currentLevel, hasEnemy.id, false);
+                      color = '#ff1744';
                     }
                   } else {
-                    glyph = ultimatePhase === 'FRIGHTENED' ? '😱' : getEnemyGlyph(currentLevel, hasEnemy.id, hasEnemy.isBoss);
-                    color = ultimatePhase === 'FRIGHTENED' ? '#ffea00' : (hasEnemy.isBoss ? '#ff0055' : '#ff1744');
+                    glyph = ultimatePhase === 'FRIGHTENED' ? '😱' : getEnemyGlyph(currentLevel, hasEnemy.id, false);
+                    color = ultimatePhase === 'FRIGHTENED' ? '#ffea00' : '#ff1744';
                   }
                   cursor = 'pointer';
-                  if (hasEnemy.isBoss) {
-                    bg = 'rgba(255, 0, 85, 0.18)';
-                  }
-                } else if (cell === 'S') {
-                  const isBossAlive = enemies.some(e => e.isBoss);
-                  if (currentLevel === TOTAL_LEVELS && isBossAlive) {
-                    glyph = '🔒';
-                    color = '#ff1744';
-                  } else if (currentLevel === TOTAL_LEVELS) {
-                    glyph = '🏆';
-                    color = '#ffd700';
-                  } else {
-                    glyph = 'S';
-                    color = '#ffea00';
-                  }
-                } else if (cell === 'G') {
-                  glyph = playerClass === 'Fighter' ? '❤️' : '*';
-                  color = playerClass === 'Fighter' ? '#ff1744' : '#ffd700';
-                } else if (cell === 'B') {
-                  glyph = '🍾';
-                  color = '#00e5ff';
-                  cursor = 'pointer';
-                  bg = 'rgba(0, 229, 255, 0.12)';
-                } else if (cell === 'C') {
-                  glyph = '🍇';
-                  color = '#e040fb';
-                  cursor = 'pointer';
-                  bg = 'rgba(224, 64, 251, 0.12)';
-                } else if (cell === '#') {
-                  color = '#888';
+                }
+              } else if (cell === 'S') {
+                const isBossAlive = enemies.some(e => e.isBoss);
+                if (currentLevel === TOTAL_LEVELS && isBossAlive) {
+                  glyph = '🔒';
+                  color = '#ff1744';
+                } else if (currentLevel === TOTAL_LEVELS) {
+                  glyph = '🏆';
+                  color = '#ffd700';
                 } else {
-                  color = '#222';
+                  glyph = 'S';
+                  color = '#ffea00';
                 }
+              } else if (cell === 'G') {
+                glyph = playerClass === 'Fighter' ? '❤️' : '*';
+                color = playerClass === 'Fighter' ? '#ff1744' : '#ffd700';
+              } else if (cell === 'B') {
+                glyph = '🍾';
+                color = '#00e5ff';
+                cursor = 'pointer';
+                bg = 'rgba(0, 229, 255, 0.12)';
+              } else if (cell === 'C') {
+                glyph = '🍇';
+                color = '#e040fb';
+                cursor = 'pointer';
+                bg = 'rgba(224, 64, 251, 0.12)';
+              } else if (cell === '#') {
+                color = '#888';
+              } else {
+                color = '#222';
+              }
 
-                if (inPath && !hasEnemy) {
-                  if (playerClass === 'Bebia') {
-                    glyph = '🫓';
-                  } else {
-                    const dx = x - playerPosition.x;
-                    const dy = y - playerPosition.y;
-                    let arrow = '→';
-                    if (dx === 0 && dy < 0) arrow = '↑';
-                    else if (dx === 0 && dy > 0) arrow = '↓';
-                    else if (dx < 0 && dy === 0) arrow = '←';
-                    else if (dx > 0 && dy === 0) arrow = '→';
-                    else if (Math.abs(dx) > 0 && Math.abs(dy) > 0) {
-                      if (dx > 0 && dy < 0) arrow = '↗';
-                      else if (dx < 0 && dy < 0) arrow = '↖';
-                      else if (dx > 0 && dy > 0) arrow = '↘';
-                      else if (dx < 0 && dy > 0) arrow = '↙';
-                    }
-                    glyph = arrow;
-                  }
-                  color = projectileColor;
-                  bg = projectileColor + '22';
+              // Surrounding cells effect during boss entrance animation
+              if (!hasEnemy && bossEntrancePhase !== 'NONE' && distToBoss === 1) {
+                if (bossEntrancePhase === 'SUMMONING') {
+                  bg = 'rgba(186, 104, 200, 0.25)';
+                } else if (bossEntrancePhase === 'METEOR_SLAM') {
+                  bg = 'rgba(255, 23, 68, 0.5)';
+                } else if (bossEntrancePhase === 'ROAR') {
+                  bg = 'rgba(255, 152, 0, 0.25)';
                 }
+              }
+
+              if (inPath && !hasEnemy) {
+                if (playerClass === 'Bebia') {
+                  glyph = '🫓';
+                } else {
+                  const dx = x - playerPosition.x;
+                  const dy = y - playerPosition.y;
+                  let arrow = '→';
+                  if (dx === 0 && dy < 0) arrow = '↑';
+                  else if (dx === 0 && dy > 0) arrow = '↓';
+                  else if (dx < 0 && dy === 0) arrow = '←';
+                  else if (dx > 0 && dy === 0) arrow = '→';
+                  else if (Math.abs(dx) > 0 && Math.abs(dy) > 0) {
+                    if (dx > 0 && dy < 0) arrow = '↗';
+                    else if (dx < 0 && dy < 0) arrow = '↖';
+                    else if (dx > 0 && dy > 0) arrow = '↘';
+                    else if (dx < 0 && dy > 0) arrow = '↙';
+                  }
+                  glyph = arrow;
+                }
+                color = projectileColor;
+                bg = projectileColor + '22';
               }
 
               const isExplosion = explosionPositions.some(p => p.x === x && p.y === y);
@@ -4172,6 +4242,25 @@ export default function VaultRunner() {
                 borderRadius: '3px',
               } : {};
 
+              const bossCellExtraStyle: React.CSSProperties = isBossCell ? {
+                boxShadow: bossEntrancePhase === 'SUMMONING' 
+                  ? '0 0 35px 12px rgba(186, 104, 200, 0.95)'
+                  : bossEntrancePhase === 'METEOR_SLAM'
+                  ? '0 0 50px 18px rgba(255, 23, 68, 1)'
+                  : bossEntrancePhase === 'ROAR'
+                  ? '0 0 55px 22px rgba(255, 215, 0, 0.95)'
+                  : '0 0 16px 4px rgba(255, 23, 68, 0.65)',
+                zIndex: 50,
+                border: '1px solid #ff1744',
+                borderRadius: '4px',
+              } : (bossEnemy && distToBoss === 1 && bossEntrancePhase !== 'NONE') ? {
+                zIndex: 40,
+                border: bossEntrancePhase === 'SUMMONING' ? '1px dashed #ba68c8' : '1px solid #ff5252',
+                boxShadow: bossEntrancePhase === 'SUMMONING' 
+                  ? '0 0 12px 2px rgba(186, 104, 200, 0.7)' 
+                  : '0 0 18px 4px rgba(255, 23, 68, 0.8)',
+              } : {};
+
               const isHovered = hoveredCell?.x === x && hoveredCell?.y === y;
 
               return (
@@ -4181,7 +4270,7 @@ export default function VaultRunner() {
                   onMouseEnter={() => setHoveredCell({ x, y })}
                   onMouseLeave={() => setHoveredCell(null)}
                   className="game-cell"
-                  style={{ ...styles.cell, color, cursor, backgroundColor: bg, position: 'relative', ...playerShieldStyle }}
+                  style={{ ...styles.cell, color, cursor, backgroundColor: bg, position: 'relative', ...playerShieldStyle, ...bossCellExtraStyle }}
                 >
                   {glyph}
                   {isHovered && !isAnimating && !isBebiaActive && !isSopoActive && (() => {
