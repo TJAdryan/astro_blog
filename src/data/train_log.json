@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-09-16T13:06:39.459Z",
+    "status": "Service Change",
+    "details": [
+      "Southbound: Coney Island - Stillwell Av-bound trains are running in 2 sections: between 96 St and Coney Island - Stillwell Av, and between 9 Av and Coney Island - Stillwell Av via <D>."
+    ]
+  },
+  {
     "date": "2026-09-15T13:06:14.611Z",
     "status": "Delays",
     "details": [
@@ -201,13 +208,6 @@
     "details": [
       "<Q> trains are making local stops between 57 St - 7 Av and Canal St.",
       "Southbound: Coney Island - Stillwell Av-bound trains are skipping Avenue U, and Neck Rd."
-    ]
-  },
-  {
-    "date": "2026-08-14T13:28:28.506Z",
-    "status": "Delays",
-    "details": [
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times at 96 St (up to 12 mins, normally every 10 mins)."
     ]
   }
 ]
