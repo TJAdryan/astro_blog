@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-09-17T13:06:18.797Z",
+    "status": "Service Change",
+    "details": [
+      "Southbound: Brighton Beach/Coney Island - Stillwell Av-bound trains are running in 2 sections: between 96 St and Brighton Beach, and between 14 St - Union Sq and Coney Island - Stillwell Av."
+    ]
+  },
+  {
     "date": "2026-09-16T13:06:39.459Z",
     "status": "Service Change",
     "details": [
@@ -200,14 +207,6 @@
       "Some <Q> trains are making local stops between 57 St - 7 Av and Canal St.",
       "Southbound: Some Coney Island - Stillwell Av-bound trains are skipping Avenue U, and Neck Rd.",
       "Southbound: Some Coney Island - Stillwell Av-bound trains are making local stops between 57 St - 7 Av and Times Sq - 42 St."
-    ]
-  },
-  {
-    "date": "2026-08-15T13:12:50.011Z",
-    "status": "Service Change",
-    "details": [
-      "<Q> trains are making local stops between 57 St - 7 Av and Canal St.",
-      "Southbound: Coney Island - Stillwell Av-bound trains are skipping Avenue U, and Neck Rd."
     ]
   }
 ]
