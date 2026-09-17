@@ -41,7 +41,7 @@ const TRANSLATIONS = {
     monstersKilledSidebar: 'Monsters Killed',
     restartGame: 'Restart',
     restartGameSidebar: 'Restart Game',
-    controlsHint: 'Use Arrow keys or WASD to step/melee. Click an enemy or press Space/F to shoot. Press B/G/P for Ultimate. Press C to Auto-Collect Gold.',
+    controlsHint: 'Use Arrow keys or WASD to step/melee. Click an enemy or press Space/F to shoot. Press U/B/G/P for Ultimate. Press C to Auto-Collect Items.',
     moveStick: 'MOVE STICK',
     fire: 'FIRE',
     shootNearest: 'SHOOT NEAREST',
@@ -132,7 +132,7 @@ const TRANSLATIONS = {
     monstersKilledSidebar: 'მოკლული მონსტრები',
     restartGame: 'გადატვირთვა',
     restartGameSidebar: 'თამაშის გადატვირთვა',
-    controlsHint: 'გამოიყენეთ ისრები ან WASD გადასაადგილებლად. ესროლეთ Space/F-ით. Ultimate: B/G/P. ნივთების შეგროვება: C.',
+    controlsHint: 'გამოიყენეთ ისრები ან WASD გადასაადგილებლად. ესროლეთ Space/F-ით. Ultimate: U/B/G/P. ნივთების შეგროვება: C.',
     moveStick: 'მართვის ჯოხი',
     fire: 'სროლა',
     shootNearest: 'უახლოესის სროლა',
@@ -981,6 +981,7 @@ export default function VaultRunner() {
   const audioBebiaUltimateRef = React.useRef<HTMLAudioElement | null>(null);
   const audioSopoWinsRef = React.useRef<HTMLAudioElement | null>(null);
   const [isSopoAudioPlaying, setIsSopoAudioPlaying] = useState<boolean>(false);
+  const [ultimateCharges, setUltimateCharges] = useState<number>(1);
 
   const [isBossIntro, setIsBossIntro] = useState<boolean>(false);
   const [bossEntrancePhase, setBossEntrancePhase] = useState<'NONE' | 'SUMMONING' | 'METEOR_SLAM' | 'ROAR'>('NONE');
@@ -1154,11 +1155,21 @@ export default function VaultRunner() {
 
   const triggerBebiaUltimate = useCallback(() => {
     if (gameState !== 'PLAYING' || isAnimating || isBebiaActive || isBossIntro) return;
+    if (ultimateCharges <= 0) {
+      setLog(prev => [
+        lang === 'en' 
+          ? "⚠️ No Ultimate charges remaining! Look for scrolls on the dungeon floor." 
+          : "⚠️ ულტიმატუმის ძალა ამოიწურა! მოძებნეთ გრაგნილები იატაკზე.", 
+        ...prev
+      ]);
+      return;
+    }
     if (enemies.length === 0) {
       setLog(prev => [lang === 'en' ? "No enemies to destroy!" : "დასამარცხებელი მტერი არ არის!", ...prev]);
       return;
     }
 
+    setUltimateCharges(prev => Math.max(0, prev - 1));
     setIsBebiaActive(true);
     setUltimatePhase('FRIGHTENED');
     setLog(prev => [lang === 'en' ? "🔥 Bebia Ultimate Activated! 🇬🇪" : "🔥 ბებიას ძალა გააქტიურებულია! 🇬🇪", ...prev]);
@@ -1199,102 +1210,74 @@ export default function VaultRunner() {
     // After 1.8 seconds of frantic running, proceed to the Georgian flag chasing/explosion phase
     setTimeout(() => {
       clearInterval(intervalId);
-
-      const currentEnemies = enemiesRef.current;
-      if (currentEnemies.length === 0) {
-        setIsBebiaActive(false);
-        setUltimatePhase('NONE');
-        return;
-      }
-
       setUltimatePhase('CHASING');
+      setLog(prev => [lang === 'en' ? "🇬🇪 Bebia charges across the Vault in the name of Georgia!" : "🇬🇪 ბებია გარბის საქართველოს სახელით!", ...prev]);
 
-      // Sort targets using nearest neighbor starting from playerPosition
-      let currentLoc = { ...playerPosition };
-      const orderedTargets: Enemy[] = [];
-      const remainingTargets = [...currentEnemies];
-      while (remainingTargets.length > 0) {
+      // Calculate path hitting all monsters sequentially
+      let currentPos = { ...playerPosition };
+      const remainingEnemies = [...enemies];
+      const fullPath: Position[] = [];
+
+      while (remainingEnemies.length > 0) {
+        // Find closest enemy
         let closestIdx = 0;
-        let minDistance = Infinity;
-        for (let i = 0; i < remainingTargets.length; i++) {
-          const t = remainingTargets[i];
-          const dist = Math.abs(t.x - currentLoc.x) + Math.abs(t.y - currentLoc.y);
-          if (dist < minDistance) {
-            minDistance = dist;
-            closestIdx = i;
+        let closestDist = Infinity;
+        remainingEnemies.forEach((e, idx) => {
+          const d = Math.abs(e.x - currentPos.x) + Math.abs(e.y - currentPos.y);
+          if (d < closestDist) {
+            closestDist = d;
+            closestIdx = idx;
           }
-        }
-        const closest = remainingTargets.splice(closestIdx, 1)[0];
-        orderedTargets.push(closest);
-        currentLoc = { x: closest.x, y: closest.y };
+        });
+
+        const target = remainingEnemies.splice(closestIdx, 1)[0];
+        const seg = getBresenhamPath(currentPos.x, currentPos.y, target.x, target.y);
+        fullPath.push(...seg);
+        currentPos = { x: target.x, y: target.y };
       }
 
-      // Build step-by-step path visiting all enemies
-      let pathSteps: Position[] = [];
-      let lastPos = { ...playerPosition };
-      orderedTargets.forEach(target => {
-        const segment = getBresenhamPath(lastPos.x, lastPos.y, target.x, target.y);
-        pathSteps = [...pathSteps, ...segment, { x: target.x, y: target.y }];
-        lastPos = { x: target.x, y: target.y };
-      });
-
+      // Animate Bebia running across the path
       let currentStepIndex = 0;
-      setBebiaRunnerPos(playerPosition);
-      let remainingEnemies = [...currentEnemies];
-
-      const stepInterval = setInterval(() => {
-        if (currentStepIndex >= pathSteps.length) {
-          clearInterval(stepInterval);
+      const runInterval = setInterval(() => {
+        if (currentStepIndex >= fullPath.length) {
+          clearInterval(runInterval);
           setBebiaRunnerPos(null);
-          setUltimatePhase('FLAG');
-
-          // Flag cover phase runs for 2 seconds, then ultimate ends
-          setTimeout(() => {
-            setIsBebiaActive(false);
-            setUltimatePhase('NONE');
-            setLog(prev => [lang === 'en' ? "✨ Golden dust settles. Gold spawned where enemies fell!" : "✨ ოქრო გაჩნდა იქ, სადაც მტრები დაეცნენ!", ...prev]);
-          }, 2000);
+          setIsBebiaActive(false);
+          setUltimatePhase('NONE');
+          setLog(prev => [lang === 'en' ? "🇬🇪 All enemies turned to gold! Georgia is triumphant!" : "🇬🇪 ყველა მტერი ოქროდ იქცა! საქართველო იმარჯვებს!", ...prev]);
           return;
         }
 
-        const nextPos = pathSteps[currentStepIndex];
-        setBebiaRunnerPos(nextPos);
+        const step = fullPath[currentStepIndex];
+        setBebiaRunnerPos(step);
 
-        const hitEnemyIdx = remainingEnemies.findIndex(e => e.x === nextPos.x && e.y === nextPos.y);
-        if (hitEnemyIdx !== -1) {
-          const enemy = remainingEnemies[hitEnemyIdx];
-          remainingEnemies.splice(hitEnemyIdx, 1);
+        // Check if an enemy is at this position
+        const enemy = enemies.find(e => e.x === step.x && e.y === step.y);
+        if (enemy) {
+          // Play Bebia voice clip randomly
+          playBebiaVoice();
 
-          // Trigger explosion
-          setExplosionPositions(prev => [...prev, { x: enemy.x, y: enemy.y }]);
-          setTimeout(() => {
-            setExplosionPositions(prev => prev.filter(pos => !(pos.x === enemy.x && pos.y === enemy.y)));
-          }, 250);
+          // Transform cell to gold
+          setGrid(prevGrid => 
+            prevGrid.map((row, y) => 
+              row.map((c, x) => (x === step.x && y === step.y ? 'G' : c))
+            )
+          );
 
-          // Change cell to gold
-          setGrid(prevGrid => {
-            const newGrid = prevGrid.map((row, y) =>
-              row.map((cell, x) => (x === enemy.x && y === enemy.y ? 'G' : cell))
-            );
-            return newGrid;
-          });
+          // Add gold value
           const isBoss = enemy.isBoss;
           setGoldValues(prev => ({
             ...prev,
             [`${enemy.x},${enemy.y}`]: isBoss ? 50 : Math.floor(Math.random() * 16) + (10 + currentLevel * 2)
           }));
 
-          // Play audio voice
-          playBebiaVoice();
-
-          // Update game score/kills and logs
           setMonstersKilled(prev => prev + 1);
           setScore(prev => prev + (isBoss ? 100 : 20));
           if (isBoss) {
             setLog(prev => [
               lang === 'en'
-                ? "🏆 The Vault Warlord was pulverized by Bebia's supreme power! (+100 pts) Exit unlocked!"
-                : "🏆 ვაულტის მბრძანებელი განადგურდა ბებიას უზენაესი ძალით! (+100 ქულა) გასასვლელი ღიაა!",
+                ? "👑 The Vault Warlord was turned into pure gold by Bebia! The exit portal is now open!"
+                : "👑 ვაულტის მბრძანებელი ბებიამ სუფთა ოქროდ აქცია! გასასვლელი პორტალი გაიხსნა!",
               ...prev
             ]);
           } else {
@@ -1308,15 +1291,25 @@ export default function VaultRunner() {
         currentStepIndex++;
       }, 180);
     }, 2800);
-  }, [gameState, isAnimating, isBebiaActive, isBossIntro, enemies, lang, grid, playerPosition, getBresenhamPath, playBebiaVoice]);
+  }, [gameState, isAnimating, isBebiaActive, isBossIntro, enemies, lang, grid, playerPosition, getBresenhamPath, playBebiaVoice, ultimateCharges]);
 
   const triggerSopoUltimate = useCallback(() => {
     if (gameState !== 'PLAYING' || isAnimating || isSopoActive || isBossIntro) return;
+    if (ultimateCharges <= 0) {
+      setLog(prev => [
+        lang === 'en' 
+          ? "⚠️ No Ultimate charges remaining! Look for scrolls on the dungeon floor." 
+          : "⚠️ ულტიმატუმის ძალა ამოიწურა! მოძებნეთ გრაგნილები იატაკზე.", 
+        ...prev
+      ]);
+      return;
+    }
     if (enemies.length === 0) {
       setLog(prev => [lang === 'en' ? "No targets to propose to!" : "მოსახიბლი მტერი არ არის!", ...prev]);
       return;
     }
 
+    setUltimateCharges(prev => Math.max(0, prev - 1));
     setIsSopoActive(true);
     setUltimatePhase('FRIGHTENED');
     setLog(prev => [
@@ -1598,7 +1591,7 @@ export default function VaultRunner() {
       }, 180);
 
     }, 2800);
-  }, [gameState, isAnimating, isSopoActive, isBossIntro, enemies, lang, grid, playerPosition, getBresenhamPath, playLaserSound, audioSopoWinsRef, setIsSopoAudioPlaying]);
+  }, [gameState, isAnimating, isSopoActive, isBossIntro, enemies, lang, grid, playerPosition, getBresenhamPath, playLaserSound, audioSopoWinsRef, setIsSopoAudioPlaying, ultimateCharges]);
 
   // --- RETRO COIN PICKUP SOUND ---
   const playCoinSound = useCallback(() => {
@@ -1687,6 +1680,31 @@ export default function VaultRunner() {
       osc2.stop(ctx.currentTime + 0.35);
     } catch (e) {
       console.warn("Web Audio shield sound failed", e);
+    }
+  }, []);
+
+  // --- RETRO ULTIMATE CHARGE PICKUP SOUND ---
+  const playUltimatePickupSound = useCallback(() => {
+    try {
+      const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContext) return;
+      const ctx = new AudioContext();
+      
+      const notes = [440, 554.37, 659.25, 880, 1108.73]; // A4, C#5, E5, A5, C#6 radiant fanfare arpeggio
+      notes.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.05);
+        gain.gain.setValueAtTime(0.12, ctx.currentTime + idx * 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.05 + 0.25);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + idx * 0.05);
+        osc.stop(ctx.currentTime + idx * 0.05 + 0.25);
+      });
+    } catch (e) {
+      console.warn("Web Audio ultimate pickup sound failed", e);
     }
   }, []);
 
@@ -1853,13 +1871,13 @@ export default function VaultRunner() {
       return;
     }
 
-    // Scan for all collectible item tiles (Gold, Borjomi, Churchkhela) and exit portal
+    // Scan for all collectible item tiles (Gold, Borjomi, Churchkhela, Ultimate Scrolls) and exit portal
     const itemTiles: Position[] = [];
     let exitTile: Position | null = null;
     for (let y = 0; y < GRID_SIZE; y++) {
       for (let x = 0; x < GRID_SIZE; x++) {
         const cell = grid[y] ? grid[y][x] : '';
-        if (cell === 'G' || cell === 'B' || cell === 'C') {
+        if (cell === 'G' || cell === 'B' || cell === 'C' || cell === 'U') {
           itemTiles.push({ x, y });
         } else if (cell === 'S') {
           exitTile = { x, y };
@@ -2073,11 +2091,25 @@ export default function VaultRunner() {
         setGrid(workingGrid.map(row => [...row]));
         playShieldSound();
         setLog(prev => [t.churchkhelaEatenLog(15), ...prev]);
+      } else if (workingGrid[nextPos.y] && workingGrid[nextPos.y][nextPos.x] === 'U') {
+        workingGrid[nextPos.y][nextPos.x] = '.';
+        collectedCount++;
+        scoreGained += 25;
+        setUltimateCharges(prev => prev + 1);
+        setScore(prev => prev + 25);
+        setGrid(workingGrid.map(row => [...row]));
+        playUltimatePickupSound();
+        setLog(prev => [
+          lang === 'en'
+            ? '✨ Acquired an Ultimate Charge Scroll (+1)!'
+            : '✨ აიღეთ ულტიმატუმის გრაგნილი (+1)!',
+          ...prev
+        ]);
       }
 
       stepIdx++;
     }, 70);
-  }, [gameState, isAnimating, isBebiaActive, isSopoActive, isAutoCollecting, isBossIntro, grid, playerPosition, enemies, goldValues, currentLevel, t, lang, playCoinSound, playBorjomiSound, playShieldSound, playerStats.maxHp]);
+  }, [gameState, isAnimating, isBebiaActive, isSopoActive, isAutoCollecting, isBossIntro, grid, playerPosition, enemies, goldValues, currentLevel, t, lang, playCoinSound, playBorjomiSound, playShieldSound, playUltimatePickupSound, playerStats.maxHp]);
 
   // --- BFS PATHFINDING VALIDATION ---
   const hasValidPath = useCallback((testGrid: string[][], startX: number, startY: number, targetX: number, targetY: number) => {
@@ -2314,6 +2346,26 @@ export default function VaultRunner() {
       }
     }
 
+    // Spawn Ultimate Power-Up Scroll (U) (50% chance per floor)
+    if (Math.random() < 0.5) {
+      let ux, uy;
+      let uAttempts = 0;
+      do {
+        ux = Math.floor(Math.random() * (GRID_SIZE - 2)) + 1;
+        uy = Math.floor(Math.random() * (GRID_SIZE - 2)) + 1;
+        uAttempts++;
+      } while (
+        (newGrid[uy][ux] !== '.' ||
+          (ux === 1 && uy === 1) ||
+          (ux === exitX && uy === exitY) ||
+          !hasValidPath(newGrid, 1, 1, ux, uy)) &&
+        uAttempts < 100
+      );
+      if (newGrid[uy][ux] === '.') {
+        newGrid[uy][ux] = 'U';
+      }
+    }
+
     setGrid(newGrid);
     setEnemies(newEnemies);
     setGoldValues(newGoldValues);
@@ -2334,6 +2386,7 @@ export default function VaultRunner() {
     bossPhaseTimersRef.current = [];
     setBossEntrancePhase('NONE');
     setIsBossIntro(false);
+    setUltimateCharges(1);
     setPlayerClass(selectedClass);
     setPlayerStats({ class: selectedClass, ...CLASS_PRESETS[selectedClass] });
     setShieldTurns(0);
@@ -2566,6 +2619,20 @@ export default function VaultRunner() {
       setScore(prev => prev + 15);
       setLog(prev => [t.churchkhelaEatenLog(15), ...prev]);
       playShieldSound();
+      nextGrid = grid.map((row, y) =>
+        row.map((cell, x) => (x === newX && y === newY ? '.' : cell))
+      );
+      setGrid(nextGrid);
+    } else if (grid[newY] && grid[newY][newX] === 'U') {
+      setUltimateCharges(prev => prev + 1);
+      setScore(prev => prev + 25);
+      setLog(prev => [
+        lang === 'en'
+          ? `✨ Picked up an Ultimate Charge Scroll (+1)! (Charges: ${ultimateCharges + 1})`
+          : `✨ აიღეთ ულტიმატუმის გრაგნილი (+1)! (სულ: ${ultimateCharges + 1})`,
+        ...prev
+      ]);
+      playUltimatePickupSound();
       nextGrid = grid.map((row, y) =>
         row.map((cell, x) => (x === newX && y === newY ? '.' : cell))
       );
@@ -2963,6 +3030,27 @@ export default function VaultRunner() {
       }
     }
 
+    if (cell === 'U') {
+      const isSopo = playerStats.class === 'Fighter';
+      const isBebia = playerStats.class === 'Bebia';
+      const uIcon = isSopo ? '💍' : (isBebia ? '🇬🇪' : '⚡');
+      const uTitle = isSopo 
+        ? (lang === 'en' ? 'Proposal Ring Scroll' : 'ნიშნობის ბეჭედი')
+        : isBebia
+        ? (lang === 'en' ? 'Supra Blessing Scroll' : 'სუფრის ლოცვა-კურთხევა')
+        : (lang === 'en' ? 'Ultimate Power Scroll' : 'ულტიმატუმის გრაგნილი');
+      const uSubtitle = lang === 'en' ? '+1 Ultimate Charge' : '+1 ულტიმატუმის დამუხტვა';
+      const uStats = lang === 'en' ? 'Unlocks Special Class Ultimate' : 'ხსნის სპეციალურ კლასის ულტიმატუმს';
+      const uExtra = lang === 'en' ? 'Step on to collect or use Auto-Collect (C)' : 'გაიარეთ ასაღებად ან გამოიყენეთ Auto-Collect (C)';
+      return {
+        title: `${uIcon} ${uTitle}`,
+        subtitle: uSubtitle,
+        stats: uStats,
+        extra: uExtra,
+        accent: '#ffd700'
+      };
+    }
+
     // 5. Gold / Heart drop check
     if (cell === 'G') {
       const gVal = goldValues[`${x},${y}`] || (10 + currentLevel * 2);
@@ -3068,7 +3156,7 @@ export default function VaultRunner() {
           triggerAutoCollectGold();
           break;
         case 'f':          case ' ': e.preventDefault(); fireAtNearest(); break;
-        case 'b':          case 'g':          case 'p':
+        case 'b':          case 'B': case 'u': case 'U': case 'g': case 'G': case 'p': case 'P':
           if (playerStats.class === 'Fighter') triggerSopoUltimate();
           else triggerBebiaUltimate();
           break;
@@ -3703,7 +3791,7 @@ export default function VaultRunner() {
         
         <button
           onClick={playerClass === 'Fighter' ? triggerSopoUltimate : triggerBebiaUltimate}
-          disabled={(playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0 || isBossIntro}
+          disabled={(playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0 || isBossIntro || ultimateCharges === 0}
           className="bebia-ultimate-btn"
           style={{
             padding: '10px 15px',
@@ -3712,21 +3800,21 @@ export default function VaultRunner() {
             color: (playerClass === 'Fighter' ? isSopoActive : isBebiaActive) ? '#fff' : (playerClass === 'Fighter' ? '#ff69b4' : '#00e5ff'),
             border: playerClass === 'Fighter' ? '2px solid #ff69b4' : '2px solid #00e5ff',
             borderRadius: '6px',
-            cursor: ((playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0 || isBossIntro) ? 'not-allowed' : 'pointer',
+            cursor: ((playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0 || isBossIntro || ultimateCharges === 0) ? 'not-allowed' : 'pointer',
             fontWeight: 'bold',
             marginTop: '15px',
             width: '100%',
             textAlign: 'center',
             boxShadow: playerClass === 'Fighter' ? '0 0 10px rgba(255,105,180,0.3)' : '0 0 10px rgba(0,229,255,0.3)',
-            animation: ((playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0 || isBossIntro) ? 'none' : 'pulsate 2s infinite',
-            opacity: (enemies.length === 0 || isBossIntro) ? 0.5 : 1,
+            animation: ((playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0 || isBossIntro || ultimateCharges === 0) ? 'none' : 'pulsate 2s infinite',
+            opacity: (enemies.length === 0 || isBossIntro || ultimateCharges === 0) ? 0.45 : 1,
             transition: 'all 0.3s ease',
             fontFamily: GEORGIAN_MONO_FONT,
           }}
         >
           {playerClass === 'Fighter' 
-            ? (isSopoActive ? t.sopoActive : t.sopoUltimate) 
-            : (isBebiaActive ? t.bebiaActive : t.bebiaUltimate)}
+            ? (isSopoActive ? t.sopoActive : `${t.sopoUltimate} (x${ultimateCharges})`) 
+            : (isBebiaActive ? t.bebiaActive : `${t.bebiaUltimate} (x${ultimateCharges})`)}
         </button>
 
         {playerClass === 'Fighter' && (
@@ -3981,7 +4069,7 @@ export default function VaultRunner() {
         {/* Board Auto-Collect Button (Only visible when ALL monsters are dead & (items remain on floor OR player is not next to exit)) */}
         {(() => {
           if (enemies.length > 0) return null;
-          const hasItems = grid.some(row => row.some(cell => cell === 'G' || cell === 'B' || cell === 'C'));
+          const hasItems = grid.some(row => row.some(cell => cell === 'G' || cell === 'B' || cell === 'C' || cell === 'U'));
           let exitPos: Position | null = null;
           for (let y = 0; y < GRID_SIZE; y++) {
             for (let x = 0; x < GRID_SIZE; x++) {
@@ -4189,6 +4277,11 @@ export default function VaultRunner() {
                 color = '#e040fb';
                 cursor = 'pointer';
                 bg = 'rgba(224, 64, 251, 0.12)';
+              } else if (cell === 'U') {
+                glyph = playerClass === 'Fighter' ? '💍' : (playerClass === 'Bebia' ? '🇬🇪' : '⚡');
+                color = '#ffd700';
+                cursor = 'pointer';
+                bg = 'rgba(255, 215, 0, 0.18)';
               } else if (cell === '#') {
                 color = '#888';
               } else {
@@ -4242,6 +4335,13 @@ export default function VaultRunner() {
                 borderRadius: '3px',
               } : {};
 
+              const isUltimateTile = cell === 'U';
+              const ultimateTileStyle: React.CSSProperties = isUltimateTile ? {
+                boxShadow: '0 0 12px 3px rgba(255, 215, 0, 0.65)',
+                border: '1px solid #ffd700',
+                borderRadius: '4px',
+              } : {};
+
               const bossCellExtraStyle: React.CSSProperties = isBossCell ? {
                 boxShadow: bossEntrancePhase === 'SUMMONING' 
                   ? '0 0 35px 12px rgba(186, 104, 200, 0.95)'
@@ -4270,7 +4370,7 @@ export default function VaultRunner() {
                   onMouseEnter={() => setHoveredCell({ x, y })}
                   onMouseLeave={() => setHoveredCell(null)}
                   className="game-cell"
-                  style={{ ...styles.cell, color, cursor, backgroundColor: bg, position: 'relative', ...playerShieldStyle, ...bossCellExtraStyle }}
+                  style={{ ...styles.cell, color, cursor, backgroundColor: bg, position: 'relative', ...playerShieldStyle, ...ultimateTileStyle, ...bossCellExtraStyle }}
                 >
                   {glyph}
                   {isHovered && !isAnimating && !isBebiaActive && !isSopoActive && (() => {
@@ -4387,7 +4487,7 @@ export default function VaultRunner() {
           <button 
             onTouchStart={(e) => { e.preventDefault(); if (playerClass === 'Fighter') triggerSopoUltimate(); else triggerBebiaUltimate(); }}
             onClick={(e) => { e.preventDefault(); if (playerClass === 'Fighter') triggerSopoUltimate(); else triggerBebiaUltimate(); }}
-            disabled={(playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0 || isBossIntro}
+            disabled={(playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0 || isBossIntro || ultimateCharges === 0}
             style={{
               width: '64px',
               height: '64px',
@@ -4395,7 +4495,7 @@ export default function VaultRunner() {
               backgroundColor: (playerClass === 'Fighter' ? isSopoActive : isBebiaActive) ? '#ff1744' : '#111',
               border: playerClass === 'Fighter' ? '2px solid #ff69b4' : '2px solid #00e5ff',
               color: (playerClass === 'Fighter' ? isSopoActive : isBebiaActive) ? '#fff' : (playerClass === 'Fighter' ? '#ff69b4' : '#00e5ff'),
-              fontSize: '12px',
+              fontSize: '11px',
               fontWeight: 'bold',
               boxShadow: (playerClass === 'Fighter' ? isSopoActive : isBebiaActive) ? '0 0 15px #ff1744' : (playerClass === 'Fighter' ? '0 0 8px rgba(255,105,180,0.4)' : '0 0 8px rgba(0,229,255,0.4)'),
               display: 'flex',
@@ -4403,13 +4503,13 @@ export default function VaultRunner() {
               justifyContent: 'center',
               touchAction: 'none',
               userSelect: 'none',
-              cursor: ((playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0 || isBossIntro) ? 'not-allowed' : 'pointer',
+              cursor: ((playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0 || isBossIntro || ultimateCharges === 0) ? 'not-allowed' : 'pointer',
               fontFamily: GEORGIAN_MONO_FONT,
-              opacity: (enemies.length === 0 || isBossIntro) ? 0.5 : 1,
-              animation: ((playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0 || isBossIntro) ? 'none' : 'pulsate 2s infinite',
+              opacity: (enemies.length === 0 || isBossIntro || ultimateCharges === 0) ? 0.45 : 1,
+              animation: ((playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0 || isBossIntro || ultimateCharges === 0) ? 'none' : 'pulsate 2s infinite',
             }}
           >
-            {playerClass === 'Fighter' ? '💍 Ultimate' : '🇬🇪 Ultimate'}
+            {playerClass === 'Fighter' ? `💍 (x${ultimateCharges})` : `🇬🇪 (x${ultimateCharges})`}
           </button>
           <span style={{ fontSize: '10px', color: '#666', fontFamily: GEORGIAN_MONO_FONT }}>{playerClass === 'Fighter' ? 'Sopo' : getClassName(playerClass, lang)}</span>
         </div>
