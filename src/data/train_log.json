@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-09-19T13:05:28.219Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times between Avenue H and Newkirk Plaza (up to 16 mins, normally every 12 mins).",
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between 14 St - Union Sq and 7 Av (up to 15 mins, normally every 11 mins)."
+    ]
+  },
+  {
     "date": "2026-09-18T13:05:28.654Z",
     "status": "Delays",
     "details": [
@@ -199,12 +207,5 @@
     "date": "2026-08-18T13:18:33.342Z",
     "status": "Good Service",
     "details": []
-  },
-  {
-    "date": "2026-08-17T13:17:16.861Z",
-    "status": "Delays",
-    "details": [
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Atlantic Av - Barclays Ctr and Coney Island - Stillwell Av (up to 14 mins, normally every 10 mins)."
-    ]
   }
 ]
