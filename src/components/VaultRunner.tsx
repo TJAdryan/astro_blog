@@ -2918,16 +2918,24 @@ export default function VaultRunner() {
   }, [gameState, enemies, playerPosition, grid, hasLineOfSight, handleRangedAttack, lang, playerStats.class, getBresenhamPath, processEnemyTurns, isAnimating, isBossIntro, playLaserSound, playBebiaVoice]);
 
   // --- CLICK INTERACTION ---
-  const handleCellClick = (x: number, y: number) => {
+  const handleCellClick = useCallback((x: number, y: number) => {
     if (gameState !== 'PLAYING' || isAnimating || isBebiaActive || isSopoActive || isBossIntro) return;
     const clickedEnemy = enemies.find(e => e.x === x && e.y === y);
     if (clickedEnemy) {
       handleRangedAttack(clickedEnemy);
     }
-  };
+  }, [gameState, isAnimating, isBebiaActive, isSopoActive, isBossIntro, enemies, handleRangedAttack]);
+
+  const handleCellHover = useCallback((pos: { x: number; y: number } | null) => {
+    setHoveredCell(prev => {
+      if (prev === null && pos === null) return prev;
+      if (prev !== null && pos !== null && prev.x === pos.x && prev.y === pos.y) return prev;
+      return pos;
+    });
+  }, []);
 
   // --- CELL HOVER TOOLTIP HELPER ---
-  const getCellTooltip = (x: number, y: number) => {
+  const getCellTooltip = useCallback((x: number, y: number) => {
     // 1. Player check
     if (x === playerPosition.x && y === playerPosition.y) {
       const pName = getClassName(playerStats.class, lang);
@@ -3128,7 +3136,7 @@ export default function VaultRunner() {
     }
 
     return null;
-  };
+  }, [playerPosition, playerStats, lang, shieldTurns, enemies, currentLevel, dominickPosition, grid, t, goldValues]);
 
   // Keyboard navigation mappings
   useEffect(() => {
@@ -4144,292 +4152,30 @@ export default function VaultRunner() {
           );
         })()}
 
-        {grid.map((row, y) => (
-          <div key={y} style={styles.row}>
-            {row.map((cell, x) => {
-              let glyph: React.ReactNode = cell;
-              let color = '#444';
-              let cursor = 'default';
-              let bg = cell === '#' ? '#222' : '#0a0a0a';
-
-              const inPath = projectilePath.some(p => p.x === x && p.y === y);
-
-              const isRunner = bebiaRunnerPos && bebiaRunnerPos.x === x && bebiaRunnerPos.y === y;
-              const isSopoRunner = sopoRunnerPos && sopoRunnerPos.x === x && sopoRunnerPos.y === y;
-              const isDominick = dominickPosition && dominickPosition.x === x && dominickPosition.y === y;
-
-              const bossEnemy = enemies.find(e => e.isBoss);
-              const distToBoss = bossEnemy ? Math.max(Math.abs(x - bossEnemy.x), Math.abs(y - bossEnemy.y)) : 999;
-              const hasEnemy = enemies.find(e => e.x === x && e.y === y);
-              const isBossCell = hasEnemy && hasEnemy.isBoss;
-
-              if (isRunner) {
-                glyph = '🇬🇪';
-                color = '#ffd700';
-              } else if (isSopoRunner) {
-                glyph = ultimatePhase === 'PROPOSING' ? '🧎‍♀️' : '💍';
-                color = '#ff69b4';
-              } else if (isDominick) {
-                glyph = '🤵';
-                color = '#00e5ff';
-              } else if (x === playerPosition.x && y === playerPosition.y) {
-                if (ultimatePhase === 'CHASING' || ultimatePhase === 'PROPOSING' || ultimatePhase === 'VANQUISHING' || ultimatePhase === 'FLAG') {
-                  glyph = '.';
-                  color = '#222';
-                } else {
-                  if (playerClass === 'Rene') {
-                    glyph = isAnimating ? '🗡️' : '🦊';
-                  } else if (playerClass === 'Sandro') {
-                    glyph = isAnimating ? '🪓' : '🛡️';
-                  } else if (playerClass === 'Bebia') {
-                    glyph = '🇬🇪';
-                  } else if (playerClass === 'Fighter') {
-                    glyph = '👑';
-                  } else if (playerClass === 'Mage') {
-                    glyph = '📖';
-                  } else if (playerClass === 'Rogue') {
-                    glyph = '📸';
-                  } else {
-                    glyph = '@';
-                  }
-                  color = '#00e5ff';
-                }
-              } else if (hasEnemy) {
-                if (hasEnemy.isBoss) {
-                  if (bossEntrancePhase === 'SUMMONING') {
-                    glyph = <span className="boss-summon-portal" title="Summoning Rift">🌀</span>;
-                    color = '#e040fb';
-                    bg = 'radial-gradient(circle, rgba(156, 39, 176, 0.75) 0%, rgba(20, 0, 30, 0.95) 100%)';
-                  } else if (bossEntrancePhase === 'METEOR_SLAM') {
-                    glyph = <span className="boss-meteor-slam" title="Vault Warlord">👹</span>;
-                    color = '#ff1744';
-                    bg = 'radial-gradient(circle, rgba(255, 23, 68, 0.9) 0%, rgba(50, 0, 10, 0.95) 100%)';
-                  } else if (bossEntrancePhase === 'ROAR') {
-                    glyph = (
-                      <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
-                        <span className="boss-roar-sprite">👹</span>
-                        <span className="boss-roar-banner">{lang === 'en' ? '⚔️ ROAAAR! ⚔️' : '⚔️ ღრიალი! ⚔️'}</span>
-                      </div>
-                    );
-                    color = '#ffd700';
-                    bg = 'radial-gradient(circle, rgba(255, 23, 68, 0.7) 0%, rgba(30, 0, 5, 0.95) 100%)';
-                  } else {
-                    // Normal combat state
-                    if (playerClass === 'Fighter') {
-                      if (ultimatePhase === 'FRIGHTENED' || ultimatePhase === 'PROPOSING') {
-                        glyph = '😍';
-                        color = '#ff69b4';
-                      } else if (ultimatePhase === 'VANQUISHING') {
-                        glyph = '🧎';
-                        color = '#ff69b4';
-                      } else {
-                        glyph = <span className="boss-combat-sprite">👹</span>;
-                        color = '#ff0055';
-                      }
-                    } else {
-                      glyph = ultimatePhase === 'FRIGHTENED' ? '😱' : <span className="boss-combat-sprite">👹</span>;
-                      color = ultimatePhase === 'FRIGHTENED' ? '#ffea00' : '#ff0055';
-                    }
-                    bg = 'rgba(255, 0, 85, 0.22)';
-                  }
-                  cursor = 'pointer';
-                } else {
-                  // Non-boss regular enemies
-                  if (playerClass === 'Fighter') {
-                    if (ultimatePhase === 'FRIGHTENED' || ultimatePhase === 'PROPOSING') {
-                      glyph = '😍';
-                      color = '#ff69b4';
-                    } else if (ultimatePhase === 'VANQUISHING') {
-                      glyph = '🧎';
-                      color = '#ff69b4';
-                    } else {
-                      glyph = getEnemyGlyph(currentLevel, hasEnemy.id, false);
-                      color = '#ff1744';
-                    }
-                  } else {
-                    glyph = ultimatePhase === 'FRIGHTENED' ? '😱' : getEnemyGlyph(currentLevel, hasEnemy.id, false);
-                    color = ultimatePhase === 'FRIGHTENED' ? '#ffea00' : '#ff1744';
-                  }
-                  cursor = 'pointer';
-                }
-              } else if (cell === 'S') {
-                const isBossAlive = enemies.some(e => e.isBoss);
-                if (currentLevel === TOTAL_LEVELS && isBossAlive) {
-                  glyph = '🔒';
-                  color = '#ff1744';
-                } else if (currentLevel === TOTAL_LEVELS) {
-                  glyph = '🏆';
-                  color = '#ffd700';
-                } else {
-                  glyph = 'S';
-                  color = '#ffea00';
-                }
-              } else if (cell === 'G') {
-                glyph = playerClass === 'Fighter' ? '❤️' : '*';
-                color = playerClass === 'Fighter' ? '#ff1744' : '#ffd700';
-              } else if (cell === 'B') {
-                glyph = '🍾';
-                color = '#00e5ff';
-                cursor = 'pointer';
-                bg = 'rgba(0, 229, 255, 0.12)';
-              } else if (cell === 'C') {
-                glyph = '🍇';
-                color = '#e040fb';
-                cursor = 'pointer';
-                bg = 'rgba(224, 64, 251, 0.12)';
-              } else if (cell === 'U') {
-                glyph = playerClass === 'Fighter' ? '💍' : (playerClass === 'Bebia' ? '🇬🇪' : '⚡');
-                color = '#ffd700';
-                cursor = 'pointer';
-                bg = 'rgba(255, 215, 0, 0.18)';
-              } else if (cell === '#') {
-                color = '#888';
-              } else {
-                color = '#222';
-              }
-
-              // Surrounding cells effect during boss entrance animation
-              if (!hasEnemy && bossEntrancePhase !== 'NONE' && distToBoss === 1) {
-                if (bossEntrancePhase === 'SUMMONING') {
-                  bg = 'rgba(186, 104, 200, 0.25)';
-                } else if (bossEntrancePhase === 'METEOR_SLAM') {
-                  bg = 'rgba(255, 23, 68, 0.5)';
-                } else if (bossEntrancePhase === 'ROAR') {
-                  bg = 'rgba(255, 152, 0, 0.25)';
-                }
-              }
-
-              if (inPath && !hasEnemy) {
-                if (playerClass === 'Bebia') {
-                  glyph = '🫓';
-                } else {
-                  const dx = x - playerPosition.x;
-                  const dy = y - playerPosition.y;
-                  let arrow = '→';
-                  if (dx === 0 && dy < 0) arrow = '↑';
-                  else if (dx === 0 && dy > 0) arrow = '↓';
-                  else if (dx < 0 && dy === 0) arrow = '←';
-                  else if (dx > 0 && dy === 0) arrow = '→';
-                  else if (Math.abs(dx) > 0 && Math.abs(dy) > 0) {
-                    if (dx > 0 && dy < 0) arrow = '↗';
-                    else if (dx < 0 && dy < 0) arrow = '↖';
-                    else if (dx > 0 && dy > 0) arrow = '↘';
-                    else if (dx < 0 && dy > 0) arrow = '↙';
-                  }
-                  glyph = arrow;
-                }
-                color = projectileColor;
-                bg = projectileColor + '22';
-              }
-
-              const isExplosion = explosionPositions.some(p => p.x === x && p.y === y);
-              if (isExplosion) {
-                glyph = playerClass === 'Fighter' ? '💖' : '💥';
-                color = playerClass === 'Fighter' ? '#ff69b4' : '#ff1744';
-              }
-
-              const isPlayerCell = x === playerPosition.x && y === playerPosition.y;
-              const playerShieldStyle = (isPlayerCell && shieldTurns > 0) ? {
-                boxShadow: '0 0 10px 3px rgba(224, 64, 251, 0.85)',
-                border: '1px solid #e040fb',
-                borderRadius: '3px',
-              } : {};
-
-              const isUltimateTile = cell === 'U';
-              const ultimateTileStyle: React.CSSProperties = isUltimateTile ? {
-                boxShadow: '0 0 12px 3px rgba(255, 215, 0, 0.65)',
-                border: '1px solid #ffd700',
-                borderRadius: '4px',
-              } : {};
-
-              const bossCellExtraStyle: React.CSSProperties = isBossCell ? {
-                boxShadow: bossEntrancePhase === 'SUMMONING' 
-                  ? '0 0 35px 12px rgba(186, 104, 200, 0.95)'
-                  : bossEntrancePhase === 'METEOR_SLAM'
-                  ? '0 0 50px 18px rgba(255, 23, 68, 1)'
-                  : bossEntrancePhase === 'ROAR'
-                  ? '0 0 55px 22px rgba(255, 215, 0, 0.95)'
-                  : '0 0 16px 4px rgba(255, 23, 68, 0.65)',
-                zIndex: 50,
-                border: '1px solid #ff1744',
-                borderRadius: '4px',
-              } : (bossEnemy && distToBoss === 1 && bossEntrancePhase !== 'NONE') ? {
-                zIndex: 40,
-                border: bossEntrancePhase === 'SUMMONING' ? '1px dashed #ba68c8' : '1px solid #ff5252',
-                boxShadow: bossEntrancePhase === 'SUMMONING' 
-                  ? '0 0 12px 2px rgba(186, 104, 200, 0.7)' 
-                  : '0 0 18px 4px rgba(255, 23, 68, 0.8)',
-              } : {};
-
-              const isHovered = hoveredCell?.x === x && hoveredCell?.y === y;
-
-              return (
-                <div 
-                  key={x} 
-                  onClick={() => handleCellClick(x, y)}
-                  onMouseEnter={() => setHoveredCell({ x, y })}
-                  onMouseLeave={() => setHoveredCell(null)}
-                  className="game-cell"
-                  style={{ ...styles.cell, color, cursor, backgroundColor: bg, position: 'relative', ...playerShieldStyle, ...ultimateTileStyle, ...bossCellExtraStyle }}
-                >
-                  {glyph}
-                  {isHovered && !isAnimating && !isBebiaActive && !isSopoActive && (() => {
-                    const info = getCellTooltip(x, y);
-                    if (!info) return null;
-                    const isTopRow = y <= 2;
-                    const isLeftEdge = x <= 2;
-                    const isRightEdge = x >= GRID_SIZE - 3;
-                    let transform = 'translateX(-50%)';
-                    let leftVal = '50%';
-                    if (isLeftEdge) {
-                      transform = 'translateX(0)';
-                      leftVal = '0%';
-                    } else if (isRightEdge) {
-                      transform = 'translateX(-100%)';
-                      leftVal = '100%';
-                    }
-
-                    return (
-                      <div
-                        className="cell-tooltip"
-                        style={{
-                          position: 'absolute',
-                          [isTopRow ? 'top' : 'bottom']: '115%',
-                          left: leftVal,
-                          transform,
-                          backgroundColor: 'rgba(10, 10, 10, 0.95)',
-                          border: `1px solid ${info.accent}`,
-                          backdropFilter: 'blur(6px)',
-                          borderRadius: '6px',
-                          padding: '6px 10px',
-                          boxShadow: `0 6px 20px rgba(0,0,0,0.9), 0 0 12px ${info.accent}44`,
-                          zIndex: 300,
-                          pointerEvents: 'none',
-                          whiteSpace: 'nowrap',
-                          textAlign: 'left',
-                          fontFamily: GEORGIAN_MONO_FONT,
-                          minWidth: '130px'
-                        }}
-                      >
-                        <div style={{ color: info.accent, fontWeight: 'bold', fontSize: '12px', borderBottom: '1px solid #222', paddingBottom: '2px', marginBottom: '3px' }}>
-                          {info.title}
-                        </div>
-                        <div style={{ color: '#fff', fontSize: '11px', fontWeight: 'bold' }}>
-                          {info.stats}
-                        </div>
-                        {info.extra && (
-                          <div style={{ color: '#888', fontSize: '10px', marginTop: '2px' }}>
-                            {info.extra}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })()}
-                </div>
-              );
-            })}
-          </div>
-        ))}
+        <GameBoard
+          grid={grid}
+          playerPosition={playerPosition}
+          playerClass={playerClass}
+          currentLevel={currentLevel}
+          shieldTurns={shieldTurns}
+          enemies={enemies}
+          projectilePath={projectilePath}
+          projectileColor={projectileColor}
+          explosionPositions={explosionPositions}
+          isAnimating={isAnimating}
+          isBebiaActive={isBebiaActive}
+          isSopoActive={isSopoActive}
+          ultimatePhase={ultimatePhase}
+          bebiaRunnerPos={bebiaRunnerPos}
+          sopoRunnerPos={sopoRunnerPos}
+          dominickPosition={dominickPosition}
+          bossEntrancePhase={bossEntrancePhase}
+          hoveredCell={hoveredCell}
+          lang={lang}
+          onCellClick={handleCellClick}
+          onCellHover={handleCellHover}
+          getCellTooltip={getCellTooltip}
+        />
 
         {/* Desktop-only Dungeon Messages under the grid */}
         <div 
@@ -4776,3 +4522,497 @@ const styles = {
     transition: 'all 0.2s ease',
   }
 };
+
+// --- MEMOIZED BOARD & CELL COMPONENTS ---
+
+interface CellTooltipInfo {
+  title: string;
+  subtitle: string;
+  stats: string;
+  extra?: string;
+  accent: string;
+}
+
+interface GameCellProps {
+  x: number;
+  y: number;
+  cell: string;
+  isPlayer: boolean;
+  playerClass: CharacterClass;
+  isAnimating: boolean;
+  shieldActive: boolean;
+  enemyId?: string;
+  enemyIsBoss?: boolean;
+  bossEntrancePhase: 'NONE' | 'SUMMONING' | 'METEOR_SLAM' | 'ROAR';
+  isBossSurrounding: boolean;
+  isRunner: boolean;
+  isSopoRunner: boolean;
+  isDominick: boolean;
+  ultimatePhase: 'NONE' | 'FRIGHTENED' | 'PROPOSING' | 'VANQUISHING' | 'CHASING' | 'FLAG';
+  currentLevel: number;
+  lang: Language;
+  inPath: boolean;
+  projectileArrow?: string;
+  projectileColor?: string;
+  isExplosion: boolean;
+  isHovered: boolean;
+  tooltipInfo: CellTooltipInfo | null;
+  isBossAlive: boolean;
+}
+
+const GameCell = React.memo(function GameCell({
+  x,
+  y,
+  cell,
+  isPlayer,
+  playerClass,
+  isAnimating,
+  shieldActive,
+  enemyId,
+  enemyIsBoss,
+  bossEntrancePhase,
+  isBossSurrounding,
+  isRunner,
+  isSopoRunner,
+  isDominick,
+  ultimatePhase,
+  currentLevel,
+  lang,
+  inPath,
+  projectileArrow,
+  projectileColor,
+  isExplosion,
+  isHovered,
+  tooltipInfo,
+  isBossAlive,
+}: GameCellProps) {
+  let glyph: React.ReactNode = cell;
+  let color = '#444';
+  let cursor = 'default';
+  let bg = cell === '#' ? '#222' : '#0a0a0a';
+
+  if (isRunner) {
+    glyph = '🇬🇪';
+    color = '#ffd700';
+  } else if (isSopoRunner) {
+    glyph = ultimatePhase === 'PROPOSING' ? '🧎‍♀️' : '💍';
+    color = '#ff69b4';
+  } else if (isDominick) {
+    glyph = '🤵';
+    color = '#00e5ff';
+  } else if (isPlayer) {
+    if (ultimatePhase === 'CHASING' || ultimatePhase === 'PROPOSING' || ultimatePhase === 'VANQUISHING' || ultimatePhase === 'FLAG') {
+      glyph = '.';
+      color = '#222';
+    } else {
+      if (playerClass === 'Rene') {
+        glyph = isAnimating ? '🗡️' : '🦊';
+      } else if (playerClass === 'Sandro') {
+        glyph = isAnimating ? '🪓' : '🛡️';
+      } else if (playerClass === 'Bebia') {
+        glyph = '🇬🇪';
+      } else if (playerClass === 'Fighter') {
+        glyph = '👑';
+      } else if (playerClass === 'Mage') {
+        glyph = '📖';
+      } else if (playerClass === 'Rogue') {
+        glyph = '📸';
+      } else {
+        glyph = '@';
+      }
+      color = '#00e5ff';
+    }
+  } else if (enemyId) {
+    if (enemyIsBoss) {
+      if (bossEntrancePhase === 'SUMMONING') {
+        glyph = <span className="boss-summon-portal" title="Summoning Rift">🌀</span>;
+        color = '#e040fb';
+        bg = 'radial-gradient(circle, rgba(156, 39, 176, 0.75) 0%, rgba(20, 0, 30, 0.95) 100%)';
+      } else if (bossEntrancePhase === 'METEOR_SLAM') {
+        glyph = <span className="boss-meteor-slam" title="Vault Warlord">👹</span>;
+        color = '#ff1744';
+        bg = 'radial-gradient(circle, rgba(255, 23, 68, 0.9) 0%, rgba(50, 0, 10, 0.95) 100%)';
+      } else if (bossEntrancePhase === 'ROAR') {
+        glyph = (
+          <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
+            <span className="boss-roar-sprite">👹</span>
+            <span className="boss-roar-banner">{lang === 'en' ? '⚔️ ROAAAR! ⚔️' : '⚔️ ღრიალი! ⚔️'}</span>
+          </div>
+        );
+        color = '#ffd700';
+        bg = 'radial-gradient(circle, rgba(255, 23, 68, 0.7) 0%, rgba(30, 0, 5, 0.95) 100%)';
+      } else {
+        // Normal combat state
+        if (playerClass === 'Fighter') {
+          if (ultimatePhase === 'FRIGHTENED' || ultimatePhase === 'PROPOSING') {
+            glyph = '😍';
+            color = '#ff69b4';
+          } else if (ultimatePhase === 'VANQUISHING') {
+            glyph = '🧎';
+            color = '#ff69b4';
+          } else {
+            glyph = <span className="boss-combat-sprite">👹</span>;
+            color = '#ff0055';
+          }
+        } else {
+          glyph = ultimatePhase === 'FRIGHTENED' ? '😱' : <span className="boss-combat-sprite">👹</span>;
+          color = ultimatePhase === 'FRIGHTENED' ? '#ffea00' : '#ff0055';
+        }
+        bg = 'rgba(255, 0, 85, 0.22)';
+      }
+      cursor = 'pointer';
+    } else {
+      // Non-boss regular enemies
+      if (playerClass === 'Fighter') {
+        if (ultimatePhase === 'FRIGHTENED' || ultimatePhase === 'PROPOSING') {
+          glyph = '😍';
+          color = '#ff69b4';
+        } else if (ultimatePhase === 'VANQUISHING') {
+          glyph = '🧎';
+          color = '#ff69b4';
+        } else {
+          glyph = getEnemyGlyph(currentLevel, enemyId, false);
+          color = '#ff1744';
+        }
+      } else {
+        glyph = ultimatePhase === 'FRIGHTENED' ? '😱' : getEnemyGlyph(currentLevel, enemyId, false);
+        color = ultimatePhase === 'FRIGHTENED' ? '#ffea00' : '#ff1744';
+      }
+      cursor = 'pointer';
+    }
+  } else if (cell === 'S') {
+    if (currentLevel === TOTAL_LEVELS && isBossAlive) {
+      glyph = '🔒';
+      color = '#ff1744';
+    } else if (currentLevel === TOTAL_LEVELS) {
+      glyph = '🏆';
+      color = '#ffd700';
+    } else {
+      glyph = 'S';
+      color = '#ffea00';
+    }
+  } else if (cell === 'G') {
+    glyph = playerClass === 'Fighter' ? '❤️' : '*';
+    color = playerClass === 'Fighter' ? '#ff1744' : '#ffd700';
+  } else if (cell === 'B') {
+    glyph = '🍾';
+    color = '#00e5ff';
+    cursor = 'pointer';
+    bg = 'rgba(0, 229, 255, 0.12)';
+  } else if (cell === 'C') {
+    glyph = '🍇';
+    color = '#e040fb';
+    cursor = 'pointer';
+    bg = 'rgba(224, 64, 251, 0.12)';
+  } else if (cell === 'U') {
+    glyph = playerClass === 'Fighter' ? '💍' : (playerClass === 'Bebia' ? '🇬🇪' : '⚡');
+    color = '#ffd700';
+    cursor = 'pointer';
+    bg = 'rgba(255, 215, 0, 0.18)';
+  } else if (cell === '#') {
+    color = '#888';
+  } else {
+    color = '#222';
+  }
+
+  // Surrounding cells effect during boss entrance animation
+  if (!enemyId && isBossSurrounding) {
+    if (bossEntrancePhase === 'SUMMONING') {
+      bg = 'rgba(186, 104, 200, 0.25)';
+    } else if (bossEntrancePhase === 'METEOR_SLAM') {
+      bg = 'rgba(255, 23, 68, 0.5)';
+    } else if (bossEntrancePhase === 'ROAR') {
+      bg = 'rgba(255, 152, 0, 0.25)';
+    }
+  }
+
+  if (inPath && !enemyId) {
+    glyph = projectileArrow || '→';
+    color = projectileColor || '#00e5ff';
+    bg = (projectileColor || '#00e5ff') + '22';
+  }
+
+  if (isExplosion) {
+    glyph = playerClass === 'Fighter' ? '💖' : '💥';
+    color = playerClass === 'Fighter' ? '#ff69b4' : '#ff1744';
+  }
+
+  const playerShieldStyle: React.CSSProperties | undefined = (isPlayer && shieldActive) ? {
+    boxShadow: '0 0 10px 3px rgba(224, 64, 251, 0.85)',
+    border: '1px solid #e040fb',
+    borderRadius: '3px',
+  } : undefined;
+
+  const isUltimateTile = cell === 'U';
+  const ultimateTileStyle: React.CSSProperties | undefined = isUltimateTile ? {
+    boxShadow: '0 0 12px 3px rgba(255, 215, 0, 0.65)',
+    border: '1px solid #ffd700',
+    borderRadius: '4px',
+  } : undefined;
+
+  const isBossCell = Boolean(enemyId && enemyIsBoss);
+  const bossCellExtraStyle: React.CSSProperties | undefined = isBossCell ? {
+    boxShadow: bossEntrancePhase === 'SUMMONING' 
+      ? '0 0 35px 12px rgba(186, 104, 200, 0.95)'
+      : bossEntrancePhase === 'METEOR_SLAM'
+      ? '0 0 50px 18px rgba(255, 23, 68, 1)'
+      : bossEntrancePhase === 'ROAR'
+      ? '0 0 55px 22px rgba(255, 215, 0, 0.95)'
+      : '0 0 16px 4px rgba(255, 23, 68, 0.65)',
+    zIndex: 50,
+    border: '1px solid #ff1744',
+    borderRadius: '4px',
+  } : (isBossSurrounding && bossEntrancePhase !== 'NONE') ? {
+    zIndex: 40,
+    border: bossEntrancePhase === 'SUMMONING' ? '1px dashed #ba68c8' : '1px solid #ff5252',
+    boxShadow: bossEntrancePhase === 'SUMMONING' 
+      ? '0 0 12px 2px rgba(186, 104, 200, 0.7)' 
+      : '0 0 18px 4px rgba(255, 23, 68, 0.8)',
+  } : undefined;
+
+  return (
+    <div 
+      data-cell-x={x}
+      data-cell-y={y}
+      className="game-cell"
+      style={{
+        ...styles.cell,
+        color,
+        cursor,
+        backgroundColor: bg,
+        position: 'relative',
+        ...playerShieldStyle,
+        ...ultimateTileStyle,
+        ...bossCellExtraStyle,
+      }}
+    >
+      {glyph}
+      {isHovered && tooltipInfo && (() => {
+        const isTopRow = y <= 2;
+        const isLeftEdge = x <= 2;
+        const isRightEdge = x >= GRID_SIZE - 3;
+        let transform = 'translateX(-50%)';
+        let leftVal = '50%';
+        if (isLeftEdge) {
+          transform = 'translateX(0)';
+          leftVal = '0%';
+        } else if (isRightEdge) {
+          transform = 'translateX(-100%)';
+          leftVal = '100%';
+        }
+
+        return (
+          <div
+            className="cell-tooltip"
+            style={{
+              position: 'absolute',
+              [isTopRow ? 'top' : 'bottom']: '115%',
+              left: leftVal,
+              transform,
+              backgroundColor: 'rgba(10, 10, 10, 0.95)',
+              border: `1px solid ${tooltipInfo.accent}`,
+              backdropFilter: 'blur(6px)',
+              borderRadius: '6px',
+              padding: '6px 10px',
+              boxShadow: `0 6px 20px rgba(0,0,0,0.9), 0 0 12px ${tooltipInfo.accent}44`,
+              zIndex: 300,
+              pointerEvents: 'none',
+              whiteSpace: 'nowrap',
+              textAlign: 'left',
+              fontFamily: GEORGIAN_MONO_FONT,
+              minWidth: '130px'
+            }}
+          >
+            <div style={{ color: tooltipInfo.accent, fontWeight: 'bold', fontSize: '12px', borderBottom: '1px solid #222', paddingBottom: '2px', marginBottom: '3px' }}>
+              {tooltipInfo.title}
+            </div>
+            <div style={{ color: '#fff', fontSize: '11px', fontWeight: 'bold' }}>
+              {tooltipInfo.stats}
+            </div>
+            {tooltipInfo.extra && (
+              <div style={{ color: '#888', fontSize: '10px', marginTop: '2px' }}>
+                {tooltipInfo.extra}
+              </div>
+            )}
+          </div>
+        );
+      })()}
+    </div>
+  );
+});
+
+interface GameBoardProps {
+  grid: string[][];
+  playerPosition: Position;
+  playerClass: CharacterClass;
+  currentLevel: number;
+  shieldTurns: number;
+  enemies: Enemy[];
+  projectilePath: Position[];
+  projectileColor: string;
+  explosionPositions: Position[];
+  isAnimating: boolean;
+  isBebiaActive: boolean;
+  isSopoActive: boolean;
+  ultimatePhase: 'NONE' | 'FRIGHTENED' | 'PROPOSING' | 'VANQUISHING' | 'CHASING' | 'FLAG';
+  bebiaRunnerPos: Position | null;
+  sopoRunnerPos: Position | null;
+  dominickPosition: Position | null;
+  bossEntrancePhase: 'NONE' | 'SUMMONING' | 'METEOR_SLAM' | 'ROAR';
+  hoveredCell: { x: number; y: number } | null;
+  lang: Language;
+  onCellClick: (x: number, y: number) => void;
+  onCellHover: (pos: { x: number; y: number } | null) => void;
+  getCellTooltip: (x: number, y: number) => CellTooltipInfo | null;
+}
+
+const GameBoard = React.memo(function GameBoard({
+  grid,
+  playerPosition,
+  playerClass,
+  currentLevel,
+  shieldTurns,
+  enemies,
+  projectilePath,
+  projectileColor,
+  explosionPositions,
+  isAnimating,
+  isBebiaActive,
+  isSopoActive,
+  ultimatePhase,
+  bebiaRunnerPos,
+  sopoRunnerPos,
+  dominickPosition,
+  bossEntrancePhase,
+  hoveredCell,
+  lang,
+  onCellClick,
+  onCellHover,
+  getCellTooltip,
+}: GameBoardProps) {
+  // Pre-index spatial data into O(1) lookups
+  const enemyMap = new Map<string, Enemy>();
+  for (let i = 0; i < enemies.length; i++) {
+    const e = enemies[i];
+    enemyMap.set(`${e.x},${e.y}`, e);
+  }
+
+  const projectileSet = new Set<string>();
+  for (let i = 0; i < projectilePath.length; i++) {
+    const p = projectilePath[i];
+    projectileSet.add(`${p.x},${p.y}`);
+  }
+
+  const explosionSet = new Set<string>();
+  for (let i = 0; i < explosionPositions.length; i++) {
+    const p = explosionPositions[i];
+    explosionSet.add(`${p.x},${p.y}`);
+  }
+
+  const bossEnemy = enemies.find(e => e.isBoss);
+  const isBossAlive = Boolean(bossEnemy);
+  const canShowTooltip = !isAnimating && !isBebiaActive && !isSopoActive;
+
+  const handleBoardClick = (e: React.MouseEvent) => {
+    const target = (e.target as HTMLElement).closest('[data-cell-x]');
+    if (target) {
+      const x = parseInt(target.getAttribute('data-cell-x') || '-1', 10);
+      const y = parseInt(target.getAttribute('data-cell-y') || '-1', 10);
+      if (x >= 0 && y >= 0) {
+        onCellClick(x, y);
+      }
+    }
+  };
+
+  const handleBoardMouseOver = (e: React.MouseEvent) => {
+    const target = (e.target as HTMLElement).closest('[data-cell-x]');
+    if (target) {
+      const x = parseInt(target.getAttribute('data-cell-x') || '-1', 10);
+      const y = parseInt(target.getAttribute('data-cell-y') || '-1', 10);
+      if (x >= 0 && y >= 0) {
+        onCellHover({ x, y });
+      }
+    }
+  };
+
+  const handleBoardMouseLeave = () => {
+    onCellHover(null);
+  };
+
+  return (
+    <div 
+      className="game-board-rows"
+      onClick={handleBoardClick}
+      onMouseOver={handleBoardMouseOver}
+      onMouseLeave={handleBoardMouseLeave}
+    >
+      {grid.map((row, y) => (
+        <div key={y} style={styles.row}>
+          {row.map((cell, x) => {
+            const coordKey = `${x},${y}`;
+            const enemy = enemyMap.get(coordKey);
+            const isHovered = hoveredCell?.x === x && hoveredCell?.y === y;
+            const inPath = projectileSet.has(coordKey);
+            let projectileArrow: string | undefined = undefined;
+            if (inPath && !enemy) {
+              if (playerClass === 'Bebia') {
+                projectileArrow = '🫓';
+              } else {
+                const dx = x - playerPosition.x;
+                const dy = y - playerPosition.y;
+                let arrow = '→';
+                if (dx === 0 && dy < 0) arrow = '↑';
+                else if (dx === 0 && dy > 0) arrow = '↓';
+                else if (dx < 0 && dy === 0) arrow = '←';
+                else if (dx > 0 && dy === 0) arrow = '→';
+                else if (Math.abs(dx) > 0 && Math.abs(dy) > 0) {
+                  if (dx > 0 && dy < 0) arrow = '↗';
+                  else if (dx < 0 && dy < 0) arrow = '↖';
+                  else if (dx > 0 && dy > 0) arrow = '↘';
+                  else if (dx < 0 && dy > 0) arrow = '↙';
+                }
+                projectileArrow = arrow;
+              }
+            }
+
+            const isBossSurrounding = Boolean(
+              bossEnemy && 
+              bossEntrancePhase !== 'NONE' && 
+              Math.max(Math.abs(x - bossEnemy.x), Math.abs(y - bossEnemy.y)) === 1
+            );
+
+            return (
+              <GameCell
+                key={x}
+                x={x}
+                y={y}
+                cell={cell}
+                isPlayer={x === playerPosition.x && y === playerPosition.y}
+                playerClass={playerClass}
+                isAnimating={isAnimating}
+                shieldActive={shieldTurns > 0}
+                enemyId={enemy?.id}
+                enemyIsBoss={enemy?.isBoss}
+                bossEntrancePhase={bossEntrancePhase}
+                isBossSurrounding={isBossSurrounding}
+                isRunner={Boolean(bebiaRunnerPos && bebiaRunnerPos.x === x && bebiaRunnerPos.y === y)}
+                isSopoRunner={Boolean(sopoRunnerPos && sopoRunnerPos.x === x && sopoRunnerPos.y === y)}
+                isDominick={Boolean(dominickPosition && dominickPosition.x === x && dominickPosition.y === y)}
+                ultimatePhase={ultimatePhase}
+                currentLevel={currentLevel}
+                lang={lang}
+                inPath={inPath}
+                projectileArrow={projectileArrow}
+                projectileColor={projectileColor}
+                isExplosion={explosionSet.has(coordKey)}
+                isHovered={isHovered}
+                tooltipInfo={isHovered && canShowTooltip ? getCellTooltip(x, y) : null}
+                isBossAlive={isBossAlive}
+              />
+            );
+          })}
+        </div>
+      ))}
+    </div>
+  );
+});
