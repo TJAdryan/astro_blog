@@ -2346,8 +2346,9 @@ export default function VaultRunner() {
       }
     }
 
-    // Spawn Ultimate Power-Up Scroll (U) (50% chance per floor)
-    if (Math.random() < 0.5) {
+    // Spawn Ultimate Power-Up Scroll / Ring (U) (Guaranteed 1-2 per floor, not covered by enemies)
+    const ultimateCount = Math.random() < 0.5 ? 2 : 1;
+    for (let i = 0; i < ultimateCount; i++) {
       let ux, uy;
       let uAttempts = 0;
       do {
@@ -2358,6 +2359,7 @@ export default function VaultRunner() {
         (newGrid[uy][ux] !== '.' ||
           (ux === 1 && uy === 1) ||
           (ux === exitX && uy === exitY) ||
+          newEnemies.some(e => e.x === ux && e.y === uy) ||
           !hasValidPath(newGrid, 1, 1, ux, uy)) &&
         uAttempts < 100
       );
@@ -2542,8 +2544,20 @@ export default function VaultRunner() {
       updatedEnemies.splice(index, 1);
       setMonstersKilled(prev => prev + 1);
 
-      // Bebia turns monsters to gold!
-      if (playerStats.class === 'Bebia' && !target.isBoss) {
+      // 15% chance for defeated monsters to drop an Ultimate Charge / Ring (U)
+      const dropsUltimate = !target.isBoss && Math.random() < 0.15;
+
+      if (dropsUltimate) {
+        setGrid(prevGrid => prevGrid.map((row, y) =>
+          row.map((cell, x) => (x === target.x && y === target.y ? 'U' : cell))
+        ));
+        nextLog.unshift(
+          lang === 'en'
+            ? (playerStats.class === 'Fighter' ? '💍 The enemy dropped a Proposal Ring!' : '⚡ The enemy dropped an Ultimate Charge!')
+            : (playerStats.class === 'Fighter' ? '💍 მტერმა ნიშნობის ბეჭედი დააგდო!' : '⚡ მტერმა ულტიმატუმის დამუხტვა დააგდო!')
+        );
+      } else if (playerStats.class === 'Bebia' && !target.isBoss) {
+        // Bebia turns monsters to gold!
         setGrid(prevGrid => prevGrid.map((row, y) =>
           row.map((cell, x) => (x === target.x && y === target.y ? 'G' : cell))
         ));
@@ -2787,8 +2801,20 @@ export default function VaultRunner() {
               latestEnemiesList.splice(currEnemyIndex, 1);
               setMonstersKilled(prev => prev + 1);
 
-              // Bebia turns monsters to gold!
-              if (playerStats.class === 'Bebia' && !target.isBoss) {
+              // 15% chance for defeated monsters to drop an Ultimate Charge / Ring (U)
+              const dropsUltimate = !target.isBoss && Math.random() < 0.15;
+
+              if (dropsUltimate) {
+                setGrid(prevGrid => prevGrid.map((row, y) =>
+                  row.map((cell, x) => (x === target.x && y === target.y ? 'U' : cell))
+                ));
+                nextLog.unshift(
+                  lang === 'en'
+                    ? (playerStats.class === 'Fighter' ? '💍 The enemy dropped a Proposal Ring!' : '⚡ The enemy dropped an Ultimate Charge!')
+                    : (playerStats.class === 'Fighter' ? '💍 მტერმა ნიშნობის ბეჭედი დააგდო!' : '⚡ მტერმა ულტიმატუმის დამუხტვა დააგდო!')
+                );
+              } else if (playerStats.class === 'Bebia' && !target.isBoss) {
+                // Bebia turns monsters to gold!
                 setGrid(prevGrid => prevGrid.map((row, y) =>
                   row.map((cell, x) => (x === target.x && y === target.y ? 'G' : cell))
                 ));
