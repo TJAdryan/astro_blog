@@ -980,8 +980,17 @@ export default function VaultRunner() {
   const [dominickPosition, setDominickPosition] = useState<Position | null>(null);
   const audioBebiaUltimateRef = React.useRef<HTMLAudioElement | null>(null);
   const audioSopoWinsRef = React.useRef<HTMLAudioElement | null>(null);
+  const proposalVideoRef = React.useRef<HTMLVideoElement | null>(null);
+  const sopoProposalDismissRef = React.useRef<(() => void) | null>(null);
   const [isSopoAudioPlaying, setIsSopoAudioPlaying] = useState<boolean>(false);
   const [ultimateCharges, setUltimateCharges] = useState<number>(1);
+
+  const dismissSopoProposal = useCallback(() => {
+    if (sopoProposalDismissRef.current) {
+      sopoProposalDismissRef.current();
+      sopoProposalDismissRef.current = null;
+    }
+  }, []);
 
   const [isBossIntro, setIsBossIntro] = useState<boolean>(false);
   const [bossEntrancePhase, setBossEntrancePhase] = useState<'NONE' | 'SUMMONING' | 'METEOR_SLAM' | 'ROAR'>('NONE');
@@ -1026,8 +1035,30 @@ export default function VaultRunner() {
         audioSopoWinsRef.current.currentTime = 0;
         setIsSopoAudioPlaying(false);
       }
+      if (proposalVideoRef.current) {
+        proposalVideoRef.current.pause();
+      }
+      if (sopoProposalDismissRef.current) {
+        sopoProposalDismissRef.current();
+        sopoProposalDismissRef.current = null;
+      }
     }
   }, [gameState]);
+
+  useEffect(() => {
+    if (ultimatePhase === 'FLAG' && isSopoActive && proposalVideoRef.current) {
+      const video = proposalVideoRef.current;
+      video.currentTime = 0;
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(err => {
+          console.warn('Proposal video autoplay with sound blocked, trying muted:', err);
+          video.muted = true;
+          video.play().catch(e => console.error('Muted proposal video autoplay failed:', e));
+        });
+      }
+    }
+  }, [ultimatePhase, isSopoActive]);
 
   const toggleSopoWinsAudio = () => {
     if (audioSopoWinsRef.current) {
@@ -1488,8 +1519,14 @@ export default function VaultRunner() {
                 const endUltimate = () => {
                   if (hasEnded) return;
                   hasEnded = true;
+                  sopoProposalDismissRef.current = null;
+                  if (proposalVideoRef.current) {
+                    proposalVideoRef.current.pause();
+                  }
                   if (audioSopoWinsRef.current) {
                     audioSopoWinsRef.current.onended = null;
+                    audioSopoWinsRef.current.pause();
+                    audioSopoWinsRef.current.currentTime = 0;
                   }
                   setIsSopoActive(false);
                   setUltimatePhase('NONE');
@@ -1498,31 +1535,26 @@ export default function VaultRunner() {
                   const elapsed = Date.now() - cardShowTime;
                   setLog(prev => [
                     lang === 'en' 
-                      ? `✨ Sopo is unmatched in Beauty or Battle! (Card shown for ${(elapsed / 1000).toFixed(1)}s)` 
-                      : `✨ სოფო შეუდარებელია სილამაზესა და ბრძოლაში! (ბარათი გამოჩნდა ${(elapsed / 1000).toFixed(1)}წმ)`, 
+                      ? `✨ Sopo is unmatched in Beauty or Battle! (Proposal video played for ${(elapsed / 1000).toFixed(1)}s)` 
+                      : `✨ სოფო შეუდარებელია სილამაზესა და ბრძოლაში! (ვიდეო გამოჩნდა ${(elapsed / 1000).toFixed(1)}წმ)`, 
                     ...prev
                   ]);
                 };
 
-                const tryDismiss = () => {
-                  const elapsed = Date.now() - cardShowTime;
-                  if (elapsed >= minCardDisplayMs) {
-                    endUltimate();
-                  } else {
-                    setTimeout(endUltimate, minCardDisplayMs - elapsed);
-                  }
-                };
+                sopoProposalDismissRef.current = endUltimate;
 
-                if (audioSopoWinsRef.current && !audioSopoWinsRef.current.paused && !audioSopoWinsRef.current.ended) {
-                  audioSopoWinsRef.current.onended = () => {
-                    tryDismiss();
-                  };
-                  // Safety timer to prevent ultimate getting stuck in case of event loss
-                  setTimeout(tryDismiss, 30000);
-                } else {
-                  // Fallback if audio is muted or blocked: show card for exactly 10 seconds
-                  setTimeout(endUltimate, minCardDisplayMs);
+                // Pause Sopo_Wins audio so proposal video audio is heard cleanly
+                if (audioSopoWinsRef.current && !audioSopoWinsRef.current.paused) {
+                  audioSopoWinsRef.current.pause();
+                  setIsSopoAudioPlaying(false);
                 }
+
+                // Safety fallback: if video doesn't end naturally within 11s, return to game
+                setTimeout(() => {
+                  if (!hasEnded) {
+                    endUltimate();
+                  }
+                }, minCardDisplayMs + 1000);
                 return;
               }
 
@@ -3174,6 +3206,14 @@ export default function VaultRunner() {
         return;
       }
 
+      if (isSopoActive && ultimatePhase === 'FLAG') {
+        if (e.key === ' ' || e.key === 'Escape' || e.key === 'Enter') {
+          e.preventDefault();
+          dismissSopoProposal();
+          return;
+        }
+      }
+
       if (isAnimating || isBebiaActive || isSopoActive || isBossIntro) return;
 
       switch (e.key) {
@@ -3198,7 +3238,7 @@ export default function VaultRunner() {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [playerPosition, gameState, enemies, grid, playerStats, fireAtNearest, isAnimating, isBebiaActive, isSopoActive, isBossIntro, isAutoCollecting, triggerBebiaUltimate, triggerSopoUltimate, triggerAutoCollectGold, stopAutoCollect]);
+  }, [playerPosition, gameState, enemies, grid, playerStats, fireAtNearest, isAnimating, isBebiaActive, isSopoActive, ultimatePhase, isBossIntro, isAutoCollecting, triggerBebiaUltimate, triggerSopoUltimate, triggerAutoCollectGold, stopAutoCollect, dismissSopoProposal]);
 
   // Weapon meta calculations
   const weaponName = getWeaponName(playerStats.class, lang);
@@ -3493,17 +3533,18 @@ export default function VaultRunner() {
         }
         .sopo-proposal-container {
           position: absolute !important;
-          top: 10% !important;
-          left: 10% !important;
-          width: 80% !important;
-          height: 80% !important;
+          top: 0 !important;
+          left: 0 !important;
+          right: 0 !important;
+          bottom: 0 !important;
           display: flex !important;
           align-items: center !important;
           justify-content: center !important;
-          z-index: 15 !important;
-          pointer-events: none !important;
-          animation: card-zoom-in 0.5s ease-out forwards !important;
-          filter: drop-shadow(0 0 20px rgba(255, 105, 180, 0.6)) !important;
+          z-index: 25 !important;
+          pointer-events: auto !important;
+          animation: card-zoom-in 0.4s ease-out forwards !important;
+          background: rgba(0, 0, 0, 0.7) !important;
+          backdrop-filter: blur(4px) !important;
         }
         @keyframes boss-backdrop-fade {
           0% { opacity: 0; }
@@ -4069,31 +4110,131 @@ export default function VaultRunner() {
                 </div>
               ) : (
                 <div className="sopo-proposal-container">
-                  <svg viewBox="0 0 300 200" style={{ width: '100%', height: '100%', objectFit: 'contain' }}>
-                    <defs>
-                      <radialGradient id="heartGrad" cx="50%" cy="50%" r="50%">
-                        <stop offset="0%" stopColor="#fff0f5" stopOpacity="0.95" />
-                        <stop offset="100%" stopColor="#ffe4e1" stopOpacity="0.95" />
-                      </radialGradient>
-                    </defs>
-                    <rect width="300" height="200" fill="url(#heartGrad)" rx="15" stroke="#ff69b4" strokeWidth="3" />
-                    <path d="M150 140 C110 95, 80 65, 80 40 C80 20, 95 5, 115 5 C130 5, 142 15, 150 25 C158 15, 170 5, 185 5 C205 5, 220 20, 220 40 C220 65, 190 95, 150 140 Z" fill="#ffb6c1" opacity="0.3" />
-                    <circle cx="130" cy="75" r="24" stroke="#ffd700" strokeWidth="6" fill="none" filter="drop-shadow(0 0 3px rgba(255,215,0,0.8))" />
-                    <rect x="124" y="46" width="12" height="7" rx="2" fill="#00e5ff" filter="drop-shadow(0 0 4px #00e5ff)" />
-                    <circle cx="170" cy="75" r="24" stroke="#ffa500" strokeWidth="6" fill="none" filter="drop-shadow(0 0 3px rgba(255,165,0,0.8))" />
-                    <text x="110" y="82" fontSize="22" textAnchor="middle">👑</text>
-                    <text x="190" y="82" fontSize="22" textAnchor="middle">🤵</text>
-                    <text x="150" y="82" fontSize="20" textAnchor="middle">💖</text>
-                    <text x="150" y="140" fill="#d6336c" fontSize="12" fontWeight="bold" fontFamily={GEORGIAN_MONO_FONT} textAnchor="middle">
-                      {t.sopoProclamation}
-                    </text>
-                    <text x="150" y="160" fill="#4a4a4a" fontSize="8" fontFamily={GEORGIAN_MONO_FONT} textAnchor="middle">
-                      {t.sopoProclamationSubtitle1}
-                    </text>
-                    <text x="150" y="176" fill="#4a4a4a" fontSize="8" fontFamily={GEORGIAN_MONO_FONT} textAnchor="middle">
-                      {t.sopoProclamationSubtitle2}
-                    </text>
-                  </svg>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      background: 'rgba(20, 5, 18, 0.94)',
+                      border: '3px solid #ff69b4',
+                      borderRadius: '16px',
+                      padding: '16px',
+                      boxShadow: '0 0 35px rgba(255, 105, 180, 0.75), 0 0 70px rgba(255, 215, 0, 0.4)',
+                      maxWidth: '580px',
+                      width: '92%',
+                      pointerEvents: 'auto',
+                    }}
+                  >
+                    {/* Header Banner */}
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        marginBottom: '12px',
+                        color: '#ff69b4',
+                        fontWeight: 'bold',
+                        fontSize: '15px',
+                        fontFamily: GEORGIAN_MONO_FONT,
+                        textAlign: 'center',
+                        textShadow: '0 0 12px rgba(255, 105, 180, 0.8)',
+                        width: '100%',
+                      }}
+                    >
+                      <span style={{ fontSize: '20px' }}>👑</span>
+                      <span style={{ fontSize: '18px' }}>💖</span>
+                      <span>{t.sopoProclamation}</span>
+                      <span style={{ fontSize: '18px' }}>💍</span>
+                      <span style={{ fontSize: '20px' }}>🤵</span>
+                    </div>
+
+                    {/* Proposal Video Player */}
+                    <div
+                      style={{
+                        position: 'relative',
+                        width: '100%',
+                        borderRadius: '10px',
+                        overflow: 'hidden',
+                        backgroundColor: '#000',
+                        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.9), inset 0 0 10px rgba(255, 105, 180, 0.3)',
+                        aspectRatio: '16 / 9',
+                      }}
+                    >
+                      <video
+                        ref={proposalVideoRef}
+                        src="/video/proposal.mp4"
+                        autoPlay
+                        playsInline
+                        onEnded={dismissSopoProposal}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'contain',
+                          display: 'block',
+                        }}
+                      />
+                    </div>
+
+                    {/* Footer Controls & Subtitle */}
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        width: '100%',
+                        marginTop: '12px',
+                        padding: '0 4px',
+                        gap: '10px',
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontSize: '11px',
+                          color: '#ffb6c1',
+                          fontFamily: GEORGIAN_MONO_FONT,
+                          opacity: 0.9,
+                          lineHeight: '1.4',
+                        }}
+                      >
+                        <div>{t.sopoProclamationSubtitle1}</div>
+                        <div style={{ fontSize: '10px', color: '#ff80bf', opacity: 0.75 }}>{t.sopoProclamationSubtitle2}</div>
+                      </div>
+
+                      <button
+                        onClick={dismissSopoProposal}
+                        style={{
+                          background: 'linear-gradient(135deg, rgba(255, 105, 180, 0.4), rgba(255, 20, 147, 0.7))',
+                          border: '1.5px solid #ff69b4',
+                          color: '#fff',
+                          borderRadius: '20px',
+                          padding: '7px 16px',
+                          fontSize: '12px',
+                          fontWeight: 'bold',
+                          cursor: 'pointer',
+                          fontFamily: GEORGIAN_MONO_FONT,
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          boxShadow: '0 0 12px rgba(255, 105, 180, 0.6)',
+                          transition: 'all 0.2s ease',
+                          whiteSpace: 'nowrap',
+                          flexShrink: 0,
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = 'scale(1.05)';
+                          e.currentTarget.style.boxShadow = '0 0 18px rgba(255, 105, 180, 0.9)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = 'scale(1)';
+                          e.currentTarget.style.boxShadow = '0 0 12px rgba(255, 105, 180, 0.6)';
+                        }}
+                      >
+                        <span>{lang === 'en' ? 'Skip (Space)' : 'გამოტოვება (Space)'}</span>
+                        <span>⏩</span>
+                      </button>
+                    </div>
+                  </div>
                 </div>
               )
             )}
