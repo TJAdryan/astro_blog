@@ -1049,14 +1049,8 @@ export default function VaultRunner() {
     if (ultimatePhase === 'FLAG' && isSopoActive && proposalVideoRef.current) {
       const video = proposalVideoRef.current;
       video.currentTime = 0;
-      const playPromise = video.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(err => {
-          console.warn('Proposal video autoplay with sound blocked, trying muted:', err);
-          video.muted = true;
-          video.play().catch(e => console.error('Muted proposal video autoplay failed:', e));
-        });
-      }
+      video.muted = true;
+      video.play().catch(e => console.error('Proposal video autoplay failed:', e));
     }
   }, [ultimatePhase, isSopoActive]);
 
@@ -1543,10 +1537,10 @@ export default function VaultRunner() {
 
                 sopoProposalDismissRef.current = endUltimate;
 
-                // Pause Sopo_Wins audio so proposal video audio is heard cleanly
-                if (audioSopoWinsRef.current && !audioSopoWinsRef.current.paused) {
-                  audioSopoWinsRef.current.pause();
-                  setIsSopoAudioPlaying(false);
+                // Keep Sopo_Wins song playing seamlessly over the proposal video
+                if (audioSopoWinsRef.current && audioSopoWinsRef.current.paused) {
+                  audioSopoWinsRef.current.play().catch(() => {});
+                  setIsSopoAudioPlaying(true);
                 }
 
                 // Safety fallback: if video doesn't end naturally within 11s, return to game
@@ -4165,6 +4159,7 @@ export default function VaultRunner() {
                         ref={proposalVideoRef}
                         src="/video/proposal.mp4"
                         autoPlay
+                        muted
                         playsInline
                         onEnded={dismissSopoProposal}
                         style={{
