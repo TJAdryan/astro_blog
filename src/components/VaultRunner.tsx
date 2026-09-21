@@ -4757,7 +4757,7 @@ const GameCell = React.memo(function GameCell({
     glyph = '🇬🇪';
     color = '#ffd700';
   } else if (isSopoRunner) {
-    glyph = ultimatePhase === 'PROPOSING' ? '🧎‍♀️' : '💍';
+    glyph = ultimatePhase === 'PROPOSING' ? '👸' : '💍';
     color = '#ff69b4';
   } else if (isDominick) {
     glyph = '🤵';
