@@ -367,5 +367,23 @@
     "source": "arXiv",
     "topic": "Python",
     "dateAdded": "2026-09-07T13:05:58.487Z"
+  },
+  {
+    "id": "http://arxiv.org/abs/2604.15108v1",
+    "title": "Data Engineering Patterns for Cross-System Reconciliation in Regulated Enterprises: Architecture, Anomaly Detection, and Governance",
+    "summary": "Regulated enterprises in the United States -- banks, telecommunications providers, large technology companies -- operate across heterogeneous systems that were rarely designed to interoperate. ERP platforms, billing engines, supply chain tools, and financial reporting infrastructure coexist within the same organization, but they do not talk to each other well. The resulting fragmentation produces familiar problems: transactions recorded in one system but unreconciled in another, asset inventories drifting from their systems of record, and audit-readiness that depends on manual effort. The PCAOB's 2024 inspection cycle put a number on the consequences: a 39% aggregate Part I.A deficiency rate across all inspected firms. This paper introduces the GERA Framework (Governed Enterprise Reconciliation Architecture) -- a vendor-neutral, four-layer data architecture that integrates deterministic cross-system reconciliation, statistical anomaly detection (baseline Z-Score with robust alternatives), governed semantic standardization, and NIST CSF 2.0-aligned security controls into a single methodology. The architecture spans four layers (ingestion, staging, core models, and semantic serving), following the multi-layer pattern now common in modern data platforms. The patterns are demonstrated through U.S. broadband operations -- where billing reconciliation, inventory aging, and governance are tightly coupled -- and draw on the author's implementation experience across three regulated enterprise environments: a regional bank, a national broadband provider, and a Fortune 500 technology company's central finance organization. This is a practitioner reference -- an architectural framework paper documenting field-tested patterns -- not a controlled experiment or benchmark study. No proprietary systems, datasets, or internal implementations are disclosed.",
+    "link": "http://arxiv.org/abs/2604.15108v1",
+    "source": "arXiv",
+    "topic": "Data Engineering",
+    "dateAdded": "2026-09-21T13:05:32.533Z"
+  },
+  {
+    "id": "http://arxiv.org/abs/2608.28788v1",
+    "title": "FoldKit: A Python library for efficient storage and retrieval of co-folding predictions",
+    "summary": "AlphaFold 3 (AF3) enables structure prediction of biomolecular complexes through co-folding multiple interacting molecules, making it increasingly useful for de novo protein design and for large-scale studies of protein-protein, protein-peptide, and other biomolecular interactions. However, systematic co-folding experiments can produce large volumes of output data, particularly when multiple random seeds and samples are generated for each input complex. We introduce FoldKit, a Python package for efficient storage and analysis of large-scale AF3 co-folding results. FoldKit converts raw AF3 outputs into a compact, structured representation while preserving the metadata needed for downstream analysis. The FoldKit Python library provides convenient programmatic access to global, single chain, and interface confidence metrics such as pLDDT, pTM, ipTM, ipAE, and ipSAE, as well as an ensemble-level interface for accessing and aggregating these metrics for a single input across multiple seeds and samples. We benchmark FoldKit on three types of AF3 co-folding datasets: (i) a protein design campaign with 2 chains per input, (ii) a TCR-pMHC dataset with 4 chains per input, and (iii) a pooled-AF3 protein-protein interaction dataset with up to 22 chains per input. We find that FoldKit reduces storage requirements by approximately 5-15-fold compared to native AF3 outputs, depending on dataset composition, while maintaining direct programmatic access to individual predictions, ensembles, and confidence metrics. By reducing storage requirements and facilitating programmatic access to relevant outputs, FoldKit facilitates large-scale computational studies of biomolecular interactions. FoldKit is available from PyPI and can be installed using pip.",
+    "link": "http://arxiv.org/abs/2608.28788v1",
+    "source": "arXiv",
+    "topic": "Python",
+    "dateAdded": "2026-09-21T13:05:33.184Z"
   }
 ]
