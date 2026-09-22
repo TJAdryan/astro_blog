@@ -1049,8 +1049,16 @@ export default function VaultRunner() {
     if (ultimatePhase === 'FLAG' && isSopoActive && proposalVideoRef.current) {
       const video = proposalVideoRef.current;
       video.currentTime = 0;
-      video.muted = true;
-      video.play().catch(e => console.error('Proposal video autoplay failed:', e));
+      video.muted = false;
+      video.volume = 1.0;
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(err => {
+          console.warn('Unmuted proposal video autoplay blocked by browser policy, trying muted:', err);
+          video.muted = true;
+          video.play().catch(e => console.error('Muted proposal video autoplay failed:', e));
+        });
+      }
     }
   }, [ultimatePhase, isSopoActive]);
 
@@ -1353,6 +1361,7 @@ export default function VaultRunner() {
     try {
       if (audioSopoWinsRef.current) {
         audioSopoWinsRef.current.currentTime = 0;
+        audioSopoWinsRef.current.volume = 1.0;
         audioSopoWinsRef.current.play()
           .then(() => setIsSopoAudioPlaying(true))
           .catch(e => console.warn("Failed to play Sopo ultimate sound:", e));
@@ -1521,6 +1530,7 @@ export default function VaultRunner() {
                     audioSopoWinsRef.current.onended = null;
                     audioSopoWinsRef.current.pause();
                     audioSopoWinsRef.current.currentTime = 0;
+                    audioSopoWinsRef.current.volume = 1.0;
                   }
                   setIsSopoActive(false);
                   setUltimatePhase('NONE');
@@ -1537,10 +1547,13 @@ export default function VaultRunner() {
 
                 sopoProposalDismissRef.current = endUltimate;
 
-                // Keep Sopo_Wins song playing seamlessly over the proposal video
-                if (audioSopoWinsRef.current && audioSopoWinsRef.current.paused) {
-                  audioSopoWinsRef.current.play().catch(() => {});
-                  setIsSopoAudioPlaying(true);
+                // Lower Sopo_Wins song to 30% volume so proposal video audio plays simultaneously
+                if (audioSopoWinsRef.current) {
+                  audioSopoWinsRef.current.volume = 0.3;
+                  if (audioSopoWinsRef.current.paused) {
+                    audioSopoWinsRef.current.play().catch(() => {});
+                    setIsSopoAudioPlaying(true);
+                  }
                 }
 
                 // Safety fallback: if video doesn't end naturally within 11s, return to game
@@ -4159,7 +4172,6 @@ export default function VaultRunner() {
                         ref={proposalVideoRef}
                         src="/video/proposal.mp4"
                         autoPlay
-                        muted
                         playsInline
                         onEnded={dismissSopoProposal}
                         style={{
