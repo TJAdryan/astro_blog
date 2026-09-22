@@ -1361,7 +1361,7 @@ export default function VaultRunner() {
       console.warn("Audio playback failed", e);
     }
 
-    // Spawn Dominick 🤵 at closest open cell to center (7,7)
+    // Spawn Dominick 🤵🏻‍♂️ at closest open cell to center (7,7)
     let domX = 7, domY = 7;
     let foundCell = false;
     const queue: Position[] = [{ x: 7, y: 7 }];
@@ -3040,7 +3040,7 @@ export default function VaultRunner() {
     // 3. Dominick (during Sopo proposal sequence)
     if (dominickPosition && dominickPosition.x === x && dominickPosition.y === y) {
       return {
-        title: `🤵 Dominick`,
+        title: `🤵🏻‍♂️ Dominick`,
         subtitle: lang === 'en' ? `Sopo's Groom` : `სოფოს რჩეული`,
         stats: lang === 'en' ? `The greatest adventure` : `უდიდესი თავგადასავალი`,
         extra: lang === 'en' ? `Destined for ultimate victory` : `საბოლოო გამარჯვება`,
@@ -4140,7 +4140,7 @@ export default function VaultRunner() {
                       <span style={{ fontSize: '18px' }}>💖</span>
                       <span>{t.sopoProclamation}</span>
                       <span style={{ fontSize: '18px' }}>💍</span>
-                      <span style={{ fontSize: '20px' }}>🤵</span>
+                      <span style={{ fontSize: '20px' }}>🤵🏻‍♂️</span>
                     </div>
 
                     {/* Proposal Video Player */}
@@ -4760,7 +4760,7 @@ const GameCell = React.memo(function GameCell({
     glyph = ultimatePhase === 'PROPOSING' ? '👸' : '💍';
     color = '#ff69b4';
   } else if (isDominick) {
-    glyph = '🤵';
+    glyph = '🤵🏻‍♂️';
     color = '#00e5ff';
   } else if (isPlayer) {
     if (ultimatePhase === 'CHASING' || ultimatePhase === 'PROPOSING' || ultimatePhase === 'VANQUISHING' || ultimatePhase === 'FLAG') {
