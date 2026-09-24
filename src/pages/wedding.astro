@@ -916,6 +916,8 @@ import Layout from "../layouts/BlogPost.astro";
 			animation-name: fall, sway;
 			animation-timing-function: linear, ease-in-out;
 			animation-iteration-count: infinite, infinite;
+			will-change: transform, top;
+			contain: layout style paint;
 		}
 
 		@keyframes fall {
@@ -938,6 +940,16 @@ import Layout from "../layouts/BlogPost.astro";
 				transform: translateX(0px) rotate(0deg);
 			}
 		}
+
+		@media (prefers-reduced-motion: reduce) {
+			#heart-rain-container {
+				display: none !important;
+			}
+			.falling-heart {
+				animation: none !important;
+				display: none !important;
+			}
+		}
 	</style>
 
 	<div id="heart-rain-container"></div>
@@ -947,8 +959,16 @@ import Layout from "../layouts/BlogPost.astro";
 			const container = document.getElementById("heart-rain-container");
 			if (!container) return;
 
+			// Accessibility: Respect user's motion preferences
+			if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+				container.remove();
+				return;
+			}
+
 			// Move the container directly under body immediately on load to prevent constraints from nested parent containers
 			document.body.appendChild(container);
+
+			const MAX_HEARTS = 25; // Enforce maximum concurrent active DOM elements for 60fps mobile performance
 
 			const colors = [
 				"#ffb6c1",
@@ -962,7 +982,13 @@ import Layout from "../layouts/BlogPost.astro";
 			const totalDuration = 15000; // 15 seconds
 
 			function createHeart() {
-				if (!container) return;
+				if (!container || !container.isConnected) return;
+				if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+				// Enforce active node cap: prune oldest if at max capacity
+				while (container.children.length >= MAX_HEARTS && container.firstElementChild) {
+					container.firstElementChild.remove();
+				}
 
 				const heart = document.createElement("div");
 				heart.innerHTML = "❤";
@@ -1003,10 +1029,10 @@ import Layout from "../layouts/BlogPost.astro";
 				}
 
 				// Calculate delay based on time (Quadratic/Power curve)
-				// Start: ~30ms delay (very fast)
-				// End: ~800ms delay (trickle)
+				// Start: ~80ms delay
+				// End: ~1000ms delay (trickle)
 				const progress = elapsed / totalDuration;
-				const nextDelay = 30 + 1000 * Math.pow(progress, 2.5);
+				const nextDelay = 80 + 1000 * Math.pow(progress, 2.5);
 
 				createHeart();
 				setTimeout(spawnLoop, nextDelay);
@@ -1015,8 +1041,8 @@ import Layout from "../layouts/BlogPost.astro";
 			// Start the main loop
 			spawnLoop();
 
-			// Initial Burst to fill the screen immediately
-			for (let i = 0; i < 20; i++) {
+			// Initial Burst to fill the screen smoothly without exceeding cap
+			for (let i = 0; i < 15; i++) {
 				setTimeout(createHeart, Math.random() * 1000);
 			}
 
@@ -1024,6 +1050,8 @@ import Layout from "../layouts/BlogPost.astro";
 			const heartTrigger = document.getElementById("heart-trigger");
 			if (heartTrigger) {
 				heartTrigger.addEventListener("click", () => {
+					if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
 					// Ensure container is active
 					if (container) {
 						// If it was removed or hidden, revive it
@@ -1034,8 +1062,8 @@ import Layout from "../layouts/BlogPost.astro";
 						container.style.transition = "none";
 						container.style.opacity = "1";
 
-						// Trigger a burst
-						for (let i = 0; i < 30; i++) {
+						// Trigger a burst respecting node cap
+						for (let i = 0; i < 20; i++) {
 							setTimeout(createHeart, Math.random() * 800);
 						}
 					}
