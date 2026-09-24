@@ -92,6 +92,11 @@ const TRANSLATIONS = {
     losBlockedLog: 'Line of sight to enemy is blocked by a wall!',
     fireWeaponLog: (weapon: string, dmg: number) => `You fire ${weapon} at enemy for ${dmg} DMG.`,
     noTargetsLog: 'No targets in line of sight.',
+    secretRoomDiscoveredLog: '🗝️ SECRET CHAMBER UNCOVERED! The cracked wall crumbled, revealing a hidden vault cache! (+50 pts)',
+    crackedWallTitle: 'Cracked Stone Wall',
+    crackedWallSubtitle: 'Fragile Secret Passage',
+    crackedWallStats: 'Condition: Cracked & Hollow',
+    crackedWallExtra: 'Blast with ranged weapon or hit to reveal hidden chamber!',
     // Weapons
     throwingAxe: 'Throwing Axe',
     recurveBow: 'Recurve Bow',
@@ -183,6 +188,11 @@ const TRANSLATIONS = {
     losBlockedLog: 'ხედვის არე მტერთან დაბლოკილია კედლით!',
     fireWeaponLog: (weapon: string, dmg: number) => `თქვენ ესროლეთ ${weapon} მტერს ${dmg} ზიანით.`,
     noTargetsLog: 'ხედვის არეში მტერი არ არის.',
+    secretRoomDiscoveredLog: '🗝️ საიდუმლო ოთახი აღმოჩენილია! დაბზარული კედელი ჩამოიშალა და საიდუმლო საგანძური გამოჩნდა! (+50 ქულა)',
+    crackedWallTitle: 'დაბზარული ქვის კედელი',
+    crackedWallSubtitle: 'საიდუმლო გასასვლელი',
+    crackedWallStats: 'მდგომარეობა: მყიფე და გამოფიტული',
+    crackedWallExtra: 'ესროლეთ ან დაარტყით საიდუმლო ოთახის გასახსნელად!',
     // Weapons
     throwingAxe: 'სატყორცნი ცული',
     recurveBow: 'მშვილდი',
@@ -995,6 +1005,7 @@ export default function VaultRunner() {
   const [isBossIntro, setIsBossIntro] = useState<boolean>(false);
   const [bossEntrancePhase, setBossEntrancePhase] = useState<'NONE' | 'SUMMONING' | 'METEOR_SLAM' | 'ROAR'>('NONE');
   const [startingMode, setStartingMode] = useState<'CAMPAIGN' | 'BOSS'>('CAMPAIGN');
+  const secretRoomFloorRef = React.useRef<number>(3);
   const bossIntroTimerRef = React.useRef<any>(null);
   const bossPhaseTimersRef = React.useRef<any[]>([]);
 
@@ -1138,7 +1149,7 @@ export default function VaultRunner() {
     while (true) {
       if (curX === x2 && curY === y2) return true;
       if ((curX !== x1 || curY !== y1) && (curX !== x2 || curY !== y2)) {
-        if (currentGrid[curY] && currentGrid[curY][curX] === '#') {
+        if (currentGrid[curY] && (currentGrid[curY][curX] === '#' || currentGrid[curY][curX] === 'W')) {
           return false;
         }
       }
@@ -1747,6 +1758,89 @@ export default function VaultRunner() {
     }
   }, []);
 
+  // --- RETRO SECRET ROOM CRACKED WALL EXPLOSION SOUND ---
+  const playSecretRoomExplosionSound = useCallback(() => {
+    try {
+      const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContext) return;
+      const ctx = new AudioContext();
+
+      // 1. Low rumble & rubble crumbling noise
+      const bufferSize = ctx.sampleRate * 0.45;
+      const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const output = noiseBuffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        output[i] = Math.random() * 2 - 1;
+      }
+      const noise = ctx.createBufferSource();
+      noise.buffer = noiseBuffer;
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(240, ctx.currentTime);
+      filter.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 0.4);
+
+      const noiseGain = ctx.createGain();
+      noiseGain.gain.setValueAtTime(0.35, ctx.currentTime);
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.45);
+
+      noise.connect(filter);
+      filter.connect(noiseGain);
+      noiseGain.connect(ctx.destination);
+      noise.start(ctx.currentTime);
+      noise.stop(ctx.currentTime + 0.45);
+
+      // Low frequency wall shatter boom
+      const boomOsc = ctx.createOscillator();
+      const boomGain = ctx.createGain();
+      boomOsc.type = 'sawtooth';
+      boomOsc.frequency.setValueAtTime(140, ctx.currentTime);
+      boomOsc.frequency.exponentialRampToValueAtTime(35, ctx.currentTime + 0.35);
+      boomGain.gain.setValueAtTime(0.3, ctx.currentTime);
+      boomGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+      boomOsc.connect(boomGain);
+      boomGain.connect(ctx.destination);
+      boomOsc.start(ctx.currentTime);
+      boomOsc.stop(ctx.currentTime + 0.35);
+
+      // 2. Secret Discovery Fanfare Chime arpeggio: C5, E5, G5, B5, C6
+      const chimeNotes = [523.25, 659.25, 783.99, 987.77, 1046.50];
+      chimeNotes.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + 0.12 + idx * 0.06);
+        gain.gain.setValueAtTime(0.16, ctx.currentTime + 0.12 + idx * 0.06);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12 + idx * 0.06 + 0.3);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + 0.12 + idx * 0.06);
+        osc.stop(ctx.currentTime + 0.12 + idx * 0.06 + 0.3);
+      });
+    } catch (e) {
+      console.warn("Web Audio secret room sound failed", e);
+    }
+  }, []);
+
+  // --- BREAK CRACKED WALL ACTION ---
+  const breakCrackedWall = useCallback((wx: number, wy: number) => {
+    setGrid(prevGrid => {
+      if (!prevGrid[wy] || prevGrid[wy][wx] !== 'W') return prevGrid;
+      const nextGrid = prevGrid.map((row, y) =>
+        row.map((cell, x) => (x === wx && y === wy ? '.' : cell))
+      );
+      return nextGrid;
+    });
+
+    playSecretRoomExplosionSound();
+    setExplosionPositions([{ x: wx, y: wy }]);
+    setTimeout(() => {
+      setExplosionPositions(prev => prev.filter(pos => !(pos.x === wx && pos.y === wy)));
+    }, 350);
+
+    setScore(prev => prev + 50);
+    setLog(prev => [TRANSLATIONS[lang].secretRoomDiscoveredLog, ...prev]);
+  }, [lang, playSecretRoomExplosionSound]);
+
   // --- RETRO BOSS ENTRANCE SOUND (>2s dramatic intro) ---
   const playBossIntroSound = useCallback(() => {
     try {
@@ -1962,10 +2056,12 @@ export default function VaultRunner() {
           const ny = curr.y + d.y;
 
           if (nx >= 0 && nx < GRID_SIZE && ny >= 0 && ny < GRID_SIZE && !visited[ny][nx]) {
-            if (currentGrid[ny][nx] === '#') continue;
+            if (currentGrid[ny][nx] === '#' || currentGrid[ny][nx] === 'W') continue;
             // Prevent cutting through diagonal wall corners
             if (d.x !== 0 && d.y !== 0) {
-              if (currentGrid[curr.y][nx] === '#' && currentGrid[ny][curr.x] === '#') continue;
+              const w1 = currentGrid[curr.y][nx];
+              const w2 = currentGrid[ny][curr.x];
+              if ((w1 === '#' || w1 === 'W') && (w2 === '#' || w2 === 'W')) continue;
             }
             // Avoid tiles with enemies unless it's the target tile
             if (currentEnemies.some(e => e.x === nx && e.y === ny && (nx !== target.x || ny !== target.y))) {
@@ -2036,7 +2132,7 @@ export default function VaultRunner() {
         for (const d of adjacentDeltas) {
           const ax = exitTile.x + d.x;
           const ay = exitTile.y + d.y;
-          if (ax >= 0 && ax < GRID_SIZE && ay >= 0 && ay < GRID_SIZE && grid[ay][ax] !== '#') {
+          if (ax >= 0 && ax < GRID_SIZE && ay >= 0 && ay < GRID_SIZE && grid[ay][ax] !== '#' && grid[ay][ax] !== 'W') {
             candidateTiles.push({ x: ax, y: ay });
           }
         }
@@ -2175,7 +2271,8 @@ export default function VaultRunner() {
           nx >= 0 && nx < GRID_SIZE &&
           ny >= 0 && ny < GRID_SIZE &&
           !visited[ny][nx] &&
-          testGrid[ny][nx] !== '#'
+          testGrid[ny][nx] !== '#' &&
+          testGrid[ny][nx] !== 'W'
         ) {
           visited[ny][nx] = true;
           queue.push({ x: nx, y: ny });
@@ -2227,6 +2324,80 @@ export default function VaultRunner() {
     }
 
     const newEnemies: Enemy[] = [];
+    const newGoldValues: Record<string, number> = {};
+
+    // 🧱 HIDDEN BREAKABLE SECRET ROOM (Exactly 1 Secret Chamber per Game Run)
+    if (level === secretRoomFloorRef.current) {
+      const candidateRooms = [
+        { sx: 11, sy: 2, door: { wx: 10, wy: 2, ox: 9, oy: 2 } }, // East wall top
+        { sx: 11, sy: 10, door: { wx: 10, wy: 10, ox: 9, oy: 10 } }, // East wall bottom
+        { sx: 2, sy: 10, door: { wx: 2, wy: 9, ox: 2, oy: 8 } }, // South wall left
+        { sx: 6, sy: 10, door: { wx: 6, wy: 9, ox: 6, oy: 8 } }, // South wall mid
+        { sx: 6, sy: 2, door: { wx: 6, wy: 4, ox: 6, oy: 5 } }, // North wall mid
+      ];
+
+      const shuffledCandidates = [...candidateRooms].sort(() => Math.random() - 0.5);
+
+      for (const cand of shuffledCandidates) {
+        const { sx, sy, door } = cand;
+        let overlapsKeyPoints = false;
+        for (let dy = -1; dy <= 2; dy++) {
+          for (let dx = -1; dx <= 2; dx++) {
+            const rx = sx + dx;
+            const ry = sy + dy;
+            if ((rx === 1 && ry === 1) || (rx === exitX && ry === exitY)) {
+              overlapsKeyPoints = true;
+              break;
+            }
+          }
+          if (overlapsKeyPoints) break;
+        }
+
+        if (overlapsKeyPoints) continue;
+
+        const testGrid = newGrid.map(row => [...row]);
+
+        for (let dy = -1; dy <= 2; dy++) {
+          for (let dx = -1; dx <= 2; dx++) {
+            const rx = sx + dx;
+            const ry = sy + dy;
+            if (dx === -1 || dx === 2 || dy === -1 || dy === 2) {
+              testGrid[ry][rx] = '#';
+            }
+          }
+        }
+
+        testGrid[door.wy][door.wx] = 'W';
+        testGrid[door.oy][door.ox] = '.';
+
+        if (
+          hasValidPath(testGrid, 1, 1, exitX, exitY) &&
+          hasValidPath(testGrid, 1, 1, door.ox, door.oy)
+        ) {
+          for (let dy = -1; dy <= 2; dy++) {
+            for (let dx = -1; dx <= 2; dx++) {
+              const rx = sx + dx;
+              const ry = sy + dy;
+              if (dx === -1 || dx === 2 || dy === -1 || dy === 2) {
+                newGrid[ry][rx] = '#';
+              }
+            }
+          }
+          newGrid[door.wy][door.wx] = 'W';
+          newGrid[door.oy][door.ox] = '.';
+
+          // Populate the secret room cache!
+          newGrid[sy][sx] = 'B'; // Borjomi Full HP (🍾)
+          newGrid[sy][sx + 1] = 'C'; // Churchkhela Shield Armor (🍇)
+          newGrid[sy + 1][sx] = 'G'; // Secret Room Pile of Gold (💰)
+          newGoldValues[`${sx},${sy + 1}`] = Math.floor(Math.random() * 21) + 40; // High-value cache (40-60 pts)
+          newGrid[sy + 1][sx + 1] = 'U'; // Ultimate Power Charge Scroll (⚡ / 💍 / 🇬🇪)
+
+          break;
+        }
+      }
+    }
+
     if (level === TOTAL_LEVELS) {
       // Spawn Level 5 Boss (Vault Warlord)
       let bx = GRID_SIZE - 2;
@@ -2322,7 +2493,6 @@ export default function VaultRunner() {
 
     // Spawn gold pieces
     const goldCount = 4 + level;
-    const newGoldValues: Record<string, number> = {};
     for (let i = 0; i < goldCount; i++) {
       let gx, gy;
       let gAttempts = 0;
@@ -2428,6 +2598,11 @@ export default function VaultRunner() {
     setBossEntrancePhase('NONE');
     setIsBossIntro(false);
     setUltimateCharges(1);
+    if (startingLevel === TOTAL_LEVELS) {
+      secretRoomFloorRef.current = TOTAL_LEVELS;
+    } else {
+      secretRoomFloorRef.current = Math.floor(Math.random() * 3) + 2; // Floor 2, 3, or 4
+    }
     setPlayerClass(selectedClass);
     setPlayerStats({ class: selectedClass, ...CLASS_PRESETS[selectedClass] });
     setShieldTurns(0);
@@ -2473,21 +2648,21 @@ export default function VaultRunner() {
 
         const occupied = currentEnemiesList.some(e => e.id !== enemy.id && e.x === nextX && e.y === nextY);
 
-        if (grid[nextY] && grid[nextY][nextX] !== '#' && !(nextX === pX && nextY === pY) && !occupied) {
+        if (grid[nextY] && grid[nextY][nextX] !== '#' && grid[nextY][nextX] !== 'W' && !(nextX === pX && nextY === pY) && !occupied) {
           return { ...enemy, x: nextX, y: nextY };
         } else {
           // If the diagonal move is blocked, try cardinal movements as alternative steps (X first, then Y)
           const altX = enemy.x + moveX;
           const altY = enemy.y;
           const altOccupied1 = currentEnemiesList.some(e => e.id !== enemy.id && e.x === altX && e.y === altY);
-          if (grid[altY] && grid[altY][altX] !== '#' && !(altX === pX && altY === pY) && !altOccupied1) {
+          if (grid[altY] && grid[altY][altX] !== '#' && grid[altY][altX] !== 'W' && !(altX === pX && altY === pY) && !altOccupied1) {
             return { ...enemy, x: altX, y: altY };
           }
 
           const altX2 = enemy.x;
           const altY2 = enemy.y + moveY;
           const altOccupied2 = currentEnemiesList.some(e => e.id !== enemy.id && e.x === altX2 && e.y === altY2);
-          if (grid[altY2] && grid[altY2][altX2] !== '#' && !(altX2 === pX && altY2 === pY) && !altOccupied2) {
+          if (grid[altY2] && grid[altY2][altX2] !== '#' && grid[altY2][altX2] !== 'W' && !(altX2 === pX && altY2 === pY) && !altOccupied2) {
             return { ...enemy, x: altX2, y: altY2 };
           }
         }
@@ -2515,6 +2690,7 @@ export default function VaultRunner() {
         if (
           grid[roamY] &&
           grid[roamY][roamX] !== '#' &&
+          grid[roamY][roamX] !== 'W' &&
           !(roamX === pX && roamY === pY) &&
           !occupied
         ) {
@@ -2634,6 +2810,21 @@ export default function VaultRunner() {
     const newY = playerPosition.y + dy;
 
     if (grid[newY] && grid[newY][newX] === '#') return;
+
+    if (grid[newY] && grid[newY][newX] === 'W') {
+      breakCrackedWall(newX, newY);
+      if (shieldTurns > 0) {
+        setShieldTurns(prev => {
+          if (prev === 1) {
+            setLog(l => [t.shieldExpiredLog, ...l]);
+            return 0;
+          }
+          return Math.max(0, prev - 1);
+        });
+      }
+      processEnemyTurns(playerPosition.x, playerPosition.y, enemies);
+      return;
+    }
 
     const enemyIndex = enemies.findIndex(e => e.x === newX && e.y === newY);
     if (enemyIndex !== -1) {
@@ -2877,6 +3068,67 @@ export default function VaultRunner() {
     animate();
   }, [gameState, playerStats.class, playerStats.atk, playerPosition, grid, enemies, hasLineOfSight, getBresenhamPath, processEnemyTurns, lang, isAnimating, isBossIntro, playLaserSound, playBebiaVoice, currentLevel, shieldTurns, t]);
 
+  // --- RANGED ATTACK ON CRACKED SECRET WALL ---
+  const handleRangedWallAttack = useCallback((targetX: number, targetY: number) => {
+    if (gameState !== 'PLAYING' || isAnimating || isBebiaActive || isBossIntro) return;
+
+    if (!hasLineOfSight(playerPosition.x, playerPosition.y, targetX, targetY, grid)) {
+      setLog(prev => [t.losBlockedLog, ...prev]);
+      return;
+    }
+
+    const path = getBresenhamPath(playerPosition.x, playerPosition.y, targetX, targetY);
+    if (path.length === 0) return;
+
+    if (shieldTurns > 0) {
+      setShieldTurns(prev => {
+        if (prev === 1) {
+          setLog(l => [t.shieldExpiredLog, ...l]);
+          return 0;
+        }
+        return Math.max(0, prev - 1);
+      });
+    }
+
+    setIsAnimating(true);
+    playLaserSound();
+
+    const isBebia = playerStats.class === 'Bebia';
+    if (isBebia) {
+      playBebiaVoice();
+    }
+    const speed = isBebia ? 150 : 60;
+
+    const color = playerStats.class === 'Mage'
+      ? '#00e5ff'
+      : playerStats.class === 'Rogue'
+      ? '#00e676'
+      : playerStats.class === 'Rene'
+      ? '#e040fb'
+      : playerStats.class === 'Sandro'
+      ? '#ffeb3b'
+      : playerStats.class === 'Bebia'
+      ? '#ffd700'
+      : '#ff1744';
+
+    setProjectileColor(color);
+    let step = 0;
+    const animate = () => {
+      if (step < path.length) {
+        setProjectilePath([path[step]]);
+        step++;
+        setTimeout(animate, speed);
+      } else {
+        setProjectilePath([]);
+        breakCrackedWall(targetX, targetY);
+        setIsAnimating(false);
+        setProjectileColor('');
+        processEnemyTurns(playerPosition.x, playerPosition.y, enemies);
+      }
+    };
+    animate();
+  }, [gameState, isAnimating, isBebiaActive, isBossIntro, playerPosition.x, playerPosition.y, grid, hasLineOfSight, t.losBlockedLog, t.shieldExpiredLog, getBresenhamPath, shieldTurns, playLaserSound, playerStats.class, playBebiaVoice, breakCrackedWall, processEnemyTurns, enemies]);
+
   // --- AUTO TARGET NEAREST ---
   const fireAtNearest = useCallback(() => {
     if (gameState !== 'PLAYING' || isAnimating || isBebiaActive || isBossIntro) return;
@@ -2886,6 +3138,25 @@ export default function VaultRunner() {
     });
 
     if (validEnemies.length === 0) {
+      // Check if there is a cracked secret wall 'W' in line of sight
+      let crackedWallTarget: Position | null = null;
+      for (let y = 0; y < GRID_SIZE; y++) {
+        for (let x = 0; x < GRID_SIZE; x++) {
+          if (grid[y] && grid[y][x] === 'W') {
+            if (hasLineOfSight(playerPosition.x, playerPosition.y, x, y, grid)) {
+              crackedWallTarget = { x, y };
+              break;
+            }
+          }
+        }
+        if (crackedWallTarget) break;
+      }
+
+      if (crackedWallTarget) {
+        handleRangedWallAttack(crackedWallTarget.x, crackedWallTarget.y);
+        return;
+      }
+
       setLog(prev => [t.noTargetsLog, ...prev]);
       return;
     }
@@ -2980,7 +3251,7 @@ export default function VaultRunner() {
     });
 
     handleRangedAttack(validEnemies[0]);
-  }, [gameState, enemies, playerPosition, grid, hasLineOfSight, handleRangedAttack, lang, playerStats.class, getBresenhamPath, processEnemyTurns, isAnimating, isBossIntro, playLaserSound, playBebiaVoice]);
+  }, [gameState, enemies, playerPosition, grid, hasLineOfSight, handleRangedAttack, handleRangedWallAttack, lang, playerStats.class, getBresenhamPath, processEnemyTurns, isAnimating, isBossIntro, playLaserSound, playBebiaVoice, t.noTargetsLog, t.fireWeaponLog, t.bossDefeatedLog, t.enemyDefeatedLog, currentLevel]);
 
   // --- CLICK INTERACTION ---
   const handleCellClick = useCallback((x: number, y: number) => {
@@ -2988,8 +3259,13 @@ export default function VaultRunner() {
     const clickedEnemy = enemies.find(e => e.x === x && e.y === y);
     if (clickedEnemy) {
       handleRangedAttack(clickedEnemy);
+      return;
     }
-  }, [gameState, isAnimating, isBebiaActive, isSopoActive, isBossIntro, enemies, handleRangedAttack]);
+    if (grid[y] && grid[y][x] === 'W') {
+      handleRangedWallAttack(x, y);
+      return;
+    }
+  }, [gameState, isAnimating, isBebiaActive, isSopoActive, isBossIntro, enemies, grid, handleRangedAttack, handleRangedWallAttack]);
 
   const handleCellHover = useCallback((pos: { x: number; y: number } | null) => {
     setHoveredCell(prev => {
@@ -3189,7 +3465,18 @@ export default function VaultRunner() {
       }
     }
 
-    // 6. Wall check
+    // 6. Cracked Secret Wall check
+    if (cell === 'W') {
+      return {
+        title: `🧱 ${t.crackedWallTitle}`,
+        subtitle: t.crackedWallSubtitle,
+        stats: t.crackedWallStats,
+        extra: t.crackedWallExtra,
+        accent: '#ffb74d'
+      };
+    }
+
+    // 7. Wall check
     if (cell === '#') {
       return {
         title: lang === 'en' ? `🧱 Stone Wall` : `🧱 ქვის კედელი`,
@@ -3661,6 +3948,15 @@ export default function VaultRunner() {
           pointer-events: none !important;
           z-index: 300 !important;
           animation: boss-banner-float 1.1s ease-in-out forwards !important;
+        }
+        @keyframes cracked-wall-pulse {
+          0% { filter: drop-shadow(0 0 2px rgba(255, 183, 77, 0.4)); transform: scale(1); }
+          50% { filter: drop-shadow(0 0 8px rgba(255, 183, 77, 0.9)); transform: scale(1.05); }
+          100% { filter: drop-shadow(0 0 2px rgba(255, 183, 77, 0.4)); transform: scale(1); }
+        }
+        .cracked-wall-sprite {
+          display: inline-block !important;
+          animation: cracked-wall-pulse 2.2s ease-in-out infinite !important;
         }
         @media (max-width: 768px) {
           .game-view {
@@ -4883,6 +5179,11 @@ const GameCell = React.memo(function GameCell({
     color = '#ffd700';
     cursor = 'pointer';
     bg = 'rgba(255, 215, 0, 0.18)';
+  } else if (cell === 'W') {
+    glyph = <span className="cracked-wall-sprite">🧱</span>;
+    color = '#ffb74d';
+    cursor = 'pointer';
+    bg = 'radial-gradient(circle, rgba(255, 183, 77, 0.25) 0%, rgba(30, 20, 10, 0.95) 100%)';
   } else if (cell === '#') {
     color = '#888';
   } else {
