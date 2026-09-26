@@ -124,7 +124,19 @@ const TRANSLATIONS = {
     defeatBadge: 'DEFEAT',
     floorReachedBadge: 'Floor',
     allTimeBestComparison: 'All-Time Best',
-    classBestComparison: 'Class Best'
+    classBestComparison: 'Class Best',
+    // Secret Room & Bonus Vault
+    secretPortalTitle: 'Secret Rift Portal',
+    secretPortalSubtitle: 'Mystical Dungeon Rift',
+    secretPortalStats: 'Destination: Secret Treasure Vault',
+    secretPortalExtra: 'Step here to enter secret bonus level!',
+    secretPortalEnterLog: '🌀 WHOOSH! You stepped into the mystical rift and transported to the Secret Treasure Vault! (+50 pts)',
+    secretPortalReturnLog: (lvl: number) => `🌀 You stepped through the return rift and emerged safely back on Floor ${lvl}!`,
+    secretVaultTitle: 'Secret Treasure Vault',
+    secretVaultObjective: '🗝️ SECRET TREASURE VAULT — Gather random prizes & step into the return portal!',
+    secretVaultReturnPortal: 'Return Portal',
+    secretVaultReturnSubtitle: 'Returns to current floor',
+    warpToSecretVaultBtn: '🌀 Warp to Secret Vault'
   },
   ka: {
     backToHome: '← მთავარზე დაბრუნება',
@@ -240,7 +252,19 @@ const TRANSLATIONS = {
     defeatBadge: 'დამარცხება',
     floorReachedBadge: 'დონე',
     allTimeBestComparison: 'აბსოლუტური რეკორდი',
-    classBestComparison: 'კლასის რეკორდი'
+    classBestComparison: 'კლასის რეკორდი',
+    // Secret Room & Bonus Vault
+    secretPortalTitle: 'საიდუმლო პორტალი',
+    secretPortalSubtitle: 'მისტიკური რღვევა ვაულტში',
+    secretPortalStats: 'დანიშნულება: საიდუმლო საგანძურის ვაულტი',
+    secretPortalExtra: 'დაადექით საიდუმლო ბონუს დონეზე გადასასვლელად!',
+    secretPortalEnterLog: '🌀 ვუშ! თქვენ შეაბიჯეთ მისტიკურ პორტალში და გადახვედით საიდუმლო საგანძურის ვაულტში! (+50 ქულა)',
+    secretPortalReturnLog: (lvl: number) => `🌀 თქვენ გაიარეთ დაბრუნების პორტალი და უსაფრთხოდ დაბრუნდით მე-${lvl} დონეზე!`,
+    secretVaultTitle: 'საიდუმლო საგანძურის ვაულტი',
+    secretVaultObjective: '🗝️ საიდუმლო საგანძური — შეაგროვეთ პრიზები და შედით დაბრუნების პორტალში!',
+    secretVaultReturnPortal: 'დაბრუნების პორტალი',
+    secretVaultReturnSubtitle: 'დაბრუნება წინა დონეზე',
+    warpToSecretVaultBtn: '🌀 საიდუმლო ვაულტში გადასვლა'
   }
 };
 
@@ -375,6 +399,14 @@ interface Enemy {
   maxHp: number;
   atk: number;
   isBoss?: boolean;
+}
+
+interface SavedFloorState {
+  level: number;
+  grid: string[][];
+  enemies: Enemy[];
+  goldValues: Record<string, number>;
+  portalPos: Position;
 }
 
 const getEnemyGlyph = (lvl: number, id: string, isBoss?: boolean) => {
@@ -1078,6 +1110,8 @@ export default function VaultRunner() {
   const [goldValues, setGoldValues] = useState<Record<string, number>>({});
   const [hoveredCell, setHoveredCell] = useState<{ x: number; y: number } | null>(null);
   const [shieldTurns, setShieldTurns] = useState<number>(0);
+  const [isSecretRoom, setIsSecretRoom] = useState<boolean>(false);
+  const savedFloorStateRef = React.useRef<SavedFloorState | null>(null);
 
   // Persistent High Scores & Personal Bests State
   const [highScores, setHighScores] = useState<VaultRunnerHighScores>(DEFAULT_HIGH_SCORES);
@@ -2004,6 +2038,161 @@ export default function VaultRunner() {
     }
   }, []);
 
+  // --- RETRO TELEPORT / MYSTICAL PORTAL SOUND ---
+  const playTeleportSound = useCallback(() => {
+    try {
+      const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContext) return;
+      const ctx = new AudioContext();
+
+      // Shimmering mystical teleport arpeggio sweep
+      const freqs = [330, 440, 554.37, 659.25, 880, 1108.73, 1318.51];
+      freqs.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.035);
+        osc.frequency.exponentialRampToValueAtTime(freq * 1.5, ctx.currentTime + idx * 0.035 + 0.22);
+
+        gain.gain.setValueAtTime(0.001, ctx.currentTime + idx * 0.035);
+        gain.gain.linearRampToValueAtTime(0.12, ctx.currentTime + idx * 0.035 + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.035 + 0.25);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + idx * 0.035);
+        osc.stop(ctx.currentTime + idx * 0.035 + 0.25);
+      });
+    } catch (e) {
+      console.warn("Web Audio teleport sound failed", e);
+    }
+  }, []);
+
+  // --- SECRET ROOM TELEPORTATION & BONUS LEVEL ---
+  const enterSecretRoom = useCallback((portalX: number, portalY: number) => {
+    playTeleportSound();
+
+    // 1. Save previous dungeon floor state to restore upon return
+    savedFloorStateRef.current = {
+      level: currentLevel,
+      grid: grid.map(row => [...row]),
+      enemies: enemies.map(e => ({ ...e })),
+      goldValues: { ...goldValues },
+      portalPos: { x: portalX, y: portalY }
+    };
+
+    setIsSecretRoom(true);
+    setScore(prev => prev + 50); // +50 bonus points for discovering secret room!
+
+    // 2. Build 15x15 grand vaulted treasure chamber
+    const vaultGrid: string[][] = Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill('#'));
+    const vaultGoldValues: Record<string, number> = {};
+
+    for (let y = 2; y <= 12; y++) {
+      for (let x = 2; x <= 12; x++) {
+        vaultGrid[y][x] = '.';
+      }
+    }
+
+    // Grand architectural stone pillars
+    const pillars = [
+      { x: 5, y: 5 }, { x: 5, y: 9 },
+      { x: 9, y: 5 }, { x: 9, y: 9 }
+    ];
+    for (const p of pillars) {
+      vaultGrid[p.y][p.x] = '#';
+    }
+
+    // Player spawn & Return Portal
+    const startX = 3, startY = 7;
+    const exitX = 11, exitY = 7;
+    vaultGrid[exitY][exitX] = 'S';
+
+    // Eligible prize positions in the chamber
+    const prizePositions: Position[] = [];
+    for (let y = 3; y <= 11; y++) {
+      for (let x = 3; x <= 11; x++) {
+        if (
+          vaultGrid[y][x] === '.' &&
+          !(x === startX && y === startY) &&
+          !(x === exitX && y === exitY)
+        ) {
+          prizePositions.push({ x, y });
+        }
+      }
+    }
+    // Shuffle positions
+    prizePositions.sort(() => Math.random() - 0.5);
+
+    // 1. Borjomi Mineral Water (2 full heal bottles)
+    for (let i = 0; i < 2 && prizePositions.length > 0; i++) {
+      const pos = prizePositions.pop()!;
+      vaultGrid[pos.y][pos.x] = 'B';
+    }
+
+    // 2. Churchkhela Power Shield (2 shields)
+    for (let i = 0; i < 2 && prizePositions.length > 0; i++) {
+      const pos = prizePositions.pop()!;
+      vaultGrid[pos.y][pos.x] = 'C';
+    }
+
+    // 3. Ultimate Power Charge Scrolls (2 charges)
+    for (let i = 0; i < 2 && prizePositions.length > 0; i++) {
+      const pos = prizePositions.pop()!;
+      vaultGrid[pos.y][pos.x] = 'U';
+    }
+
+    // 4. Legendary Relic Cache (+100 gold points!)
+    if (prizePositions.length > 0) {
+      const pos = prizePositions.pop()!;
+      vaultGrid[pos.y][pos.x] = 'G';
+      vaultGoldValues[`${pos.x},${pos.y}`] = 100;
+    }
+
+    // 5. Random High-Value Gold Treasures (6 to 8 piles, 40-75 pts each)
+    const goldCount = Math.floor(Math.random() * 3) + 6;
+    for (let i = 0; i < goldCount && prizePositions.length > 0; i++) {
+      const pos = prizePositions.pop()!;
+      vaultGrid[pos.y][pos.x] = 'G';
+      vaultGoldValues[`${pos.x},${pos.y}`] = Math.floor(Math.random() * 36) + 40;
+    }
+
+    setGrid(vaultGrid);
+    setEnemies([]);
+    setGoldValues(vaultGoldValues);
+    setPlayerPosition({ x: startX, y: startY });
+    setExplosionPositions([{ x: startX, y: startY }]);
+    setTimeout(() => setExplosionPositions([]), 350);
+
+    setLog(prev => [TRANSLATIONS[lang].secretPortalEnterLog, ...prev]);
+  }, [currentLevel, grid, enemies, goldValues, lang, playTeleportSound]);
+
+  // --- RETURN FROM SECRET ROOM TO PREVIOUS FLOOR ---
+  const returnFromSecretRoom = useCallback(() => {
+    playTeleportSound();
+
+    const saved = savedFloorStateRef.current;
+    if (!saved) return;
+
+    // Remove the secret portal tile from the saved grid so it cannot be re-entered
+    const restoredGrid = saved.grid.map((row, y) =>
+      row.map((cell, x) => (x === saved.portalPos.x && y === saved.portalPos.y ? '.' : cell))
+    );
+
+    setGrid(restoredGrid);
+    setEnemies(saved.enemies);
+    setGoldValues(saved.goldValues);
+    setCurrentLevel(saved.level);
+    setPlayerPosition(saved.portalPos);
+    setIsSecretRoom(false);
+    savedFloorStateRef.current = null;
+
+    setExplosionPositions([saved.portalPos]);
+    setTimeout(() => setExplosionPositions([]), 350);
+
+    setLog(prev => [TRANSLATIONS[lang].secretPortalReturnLog(saved.level), ...prev]);
+  }, [lang, playTeleportSound]);
+
   // --- BREAK CRACKED WALL ACTION ---
   const breakCrackedWall = useCallback((wx: number, wy: number) => {
     setGrid(prevGrid => {
@@ -2239,12 +2428,12 @@ export default function VaultRunner() {
           const ny = curr.y + d.y;
 
           if (nx >= 0 && nx < GRID_SIZE && ny >= 0 && ny < GRID_SIZE && !visited[ny][nx]) {
-            if (currentGrid[ny][nx] === '#' || currentGrid[ny][nx] === 'W') continue;
+            if (currentGrid[ny][nx] === '#' || currentGrid[ny][nx] === 'W' || currentGrid[ny][nx] === 'R') continue;
             // Prevent cutting through diagonal wall corners
             if (d.x !== 0 && d.y !== 0) {
               const w1 = currentGrid[curr.y][nx];
               const w2 = currentGrid[ny][curr.x];
-              if ((w1 === '#' || w1 === 'W') && (w2 === '#' || w2 === 'W')) continue;
+              if ((w1 === '#' || w1 === 'W' || w1 === 'R') && (w2 === '#' || w2 === 'W' || w2 === 'R')) continue;
             }
             // Avoid tiles with enemies unless it's the target tile
             if (currentEnemies.some(e => e.x === nx && e.y === ny && (nx !== target.x || ny !== target.y))) {
@@ -2315,7 +2504,7 @@ export default function VaultRunner() {
         for (const d of adjacentDeltas) {
           const ax = exitTile.x + d.x;
           const ay = exitTile.y + d.y;
-          if (ax >= 0 && ax < GRID_SIZE && ay >= 0 && ay < GRID_SIZE && grid[ay][ax] !== '#' && grid[ay][ax] !== 'W') {
+          if (ax >= 0 && ax < GRID_SIZE && ay >= 0 && ay < GRID_SIZE && grid[ay][ax] !== '#' && grid[ay][ax] !== 'W' && grid[ay][ax] !== 'R') {
             candidateTiles.push({ x: ax, y: ay });
           }
         }
@@ -2509,75 +2698,24 @@ export default function VaultRunner() {
     const newEnemies: Enemy[] = [];
     const newGoldValues: Record<string, number> = {};
 
-    // 🧱 HIDDEN BREAKABLE SECRET ROOM (Exactly 1 Secret Chamber per Game Run)
-    if (level === secretRoomFloorRef.current) {
-      const candidateRooms = [
-        { sx: 11, sy: 2, door: { wx: 10, wy: 2, ox: 9, oy: 2 } }, // East wall top
-        { sx: 11, sy: 10, door: { wx: 10, wy: 10, ox: 9, oy: 10 } }, // East wall bottom
-        { sx: 2, sy: 10, door: { wx: 2, wy: 9, ox: 2, oy: 8 } }, // South wall left
-        { sx: 6, sy: 10, door: { wx: 6, wy: 9, ox: 6, oy: 8 } }, // South wall mid
-        { sx: 6, sy: 2, door: { wx: 6, wy: 4, ox: 6, oy: 5 } }, // North wall mid
-      ];
-
-      const shuffledCandidates = [...candidateRooms].sort(() => Math.random() - 0.5);
-
-      for (const cand of shuffledCandidates) {
-        const { sx, sy, door } = cand;
-        let overlapsKeyPoints = false;
-        for (let dy = -1; dy <= 2; dy++) {
-          for (let dx = -1; dx <= 2; dx++) {
-            const rx = sx + dx;
-            const ry = sy + dy;
-            if ((rx === 1 && ry === 1) || (rx === exitX && ry === exitY)) {
-              overlapsKeyPoints = true;
-              break;
-            }
-          }
-          if (overlapsKeyPoints) break;
-        }
-
-        if (overlapsKeyPoints) continue;
-
-        const testGrid = newGrid.map(row => [...row]);
-
-        for (let dy = -1; dy <= 2; dy++) {
-          for (let dx = -1; dx <= 2; dx++) {
-            const rx = sx + dx;
-            const ry = sy + dy;
-            if (dx === -1 || dx === 2 || dy === -1 || dy === 2) {
-              testGrid[ry][rx] = '#';
-            }
-          }
-        }
-
-        testGrid[door.wy][door.wx] = 'W';
-        testGrid[door.oy][door.ox] = '.';
-
-        if (
-          hasValidPath(testGrid, 1, 1, exitX, exitY) &&
-          hasValidPath(testGrid, 1, 1, door.ox, door.oy)
-        ) {
-          for (let dy = -1; dy <= 2; dy++) {
-            for (let dx = -1; dx <= 2; dx++) {
-              const rx = sx + dx;
-              const ry = sy + dy;
-              if (dx === -1 || dx === 2 || dy === -1 || dy === 2) {
-                newGrid[ry][rx] = '#';
-              }
-            }
-          }
-          newGrid[door.wy][door.wx] = 'W';
-          newGrid[door.oy][door.ox] = '.';
-
-          // Populate the secret room cache!
-          newGrid[sy][sx] = 'B'; // Borjomi Full HP (🍾)
-          newGrid[sy][sx + 1] = 'C'; // Churchkhela Shield Armor (🍇)
-          newGrid[sy + 1][sx] = 'G'; // Secret Room Pile of Gold (💰)
-          newGoldValues[`${sx},${sy + 1}`] = Math.floor(Math.random() * 21) + 40; // High-value cache (40-60 pts)
-          newGrid[sy + 1][sx + 1] = 'U'; // Ultimate Power Charge Scroll (⚡ / 💍 / 🇬🇪)
-
-          break;
-        }
+    // 🌀 SECRET RIFT PORTAL (Exactly 1 Secret Portal per Game Run, on Floor 1, 2, 3, or 4)
+    if (level === secretRoomFloorRef.current && !isSecretRoom) {
+      let rx = 0, ry = 0;
+      let rAttempts = 0;
+      do {
+        rx = Math.floor(Math.random() * (GRID_SIZE - 2)) + 1;
+        ry = Math.floor(Math.random() * (GRID_SIZE - 2)) + 1;
+        rAttempts++;
+      } while (
+        (newGrid[ry][rx] !== '.' ||
+          (rx === 1 && ry === 1) ||
+          (rx === exitX && ry === exitY) ||
+          Math.abs(rx - 1) + Math.abs(ry - 1) < 4 ||
+          !hasValidPath(newGrid, 1, 1, rx, ry)) &&
+        rAttempts < 100
+      );
+      if (newGrid[ry][rx] === '.') {
+        newGrid[ry][rx] = 'R';
       }
     }
 
@@ -2783,10 +2921,12 @@ export default function VaultRunner() {
     setBossEntrancePhase('NONE');
     setIsBossIntro(false);
     setUltimateCharges(1);
+    setIsSecretRoom(false);
+    savedFloorStateRef.current = null;
     if (startingLevel === TOTAL_LEVELS) {
       secretRoomFloorRef.current = TOTAL_LEVELS;
     } else {
-      secretRoomFloorRef.current = Math.floor(Math.random() * 3) + 2; // Floor 2, 3, or 4
+      secretRoomFloorRef.current = Math.floor(Math.random() * 4) + 1; // Floor 1, 2, 3, or 4
     }
     setPlayerClass(selectedClass);
     setPlayerStats({ class: selectedClass, ...CLASS_PRESETS[selectedClass] });
@@ -2996,6 +3136,11 @@ export default function VaultRunner() {
 
     if (grid[newY] && grid[newY][newX] === '#') return;
 
+    if (grid[newY] && grid[newY][newX] === 'R') {
+      enterSecretRoom(newX, newY);
+      return;
+    }
+
     if (grid[newY] && grid[newY][newX] === 'W') {
       breakCrackedWall(newX, newY);
       if (shieldTurns > 0) {
@@ -3079,6 +3224,10 @@ export default function VaultRunner() {
     }
 
     if (nextGrid[newY] && nextGrid[newY][newX] === 'S') {
+      if (isSecretRoom) {
+        returnFromSecretRoom();
+        return;
+      }
       const isBossAlive = enemies.some(e => e.isBoss);
       if (currentLevel === TOTAL_LEVELS && isBossAlive) {
         setLog(prev => [t.bossExitSealedLog, ...prev]);
@@ -3608,8 +3757,28 @@ export default function VaultRunner() {
       }
     }
 
-    // 6. Stairs check
+    // 6. Stairs / Return Portal check
     if (cell === 'S') {
+      if (isSecretRoom) {
+        const returnLvl = savedFloorStateRef.current ? savedFloorStateRef.current.level : currentLevel;
+        if (lang === 'en') {
+          return {
+            title: `🌀 ${t.secretVaultReturnPortal}`,
+            subtitle: t.secretVaultReturnSubtitle,
+            stats: `Target: Return to Floor ${returnLvl}`,
+            extra: `Step here to return safely to your floor`,
+            accent: '#00e5ff'
+          };
+        } else {
+          return {
+            title: `🌀 ${t.secretVaultReturnPortal}`,
+            subtitle: t.secretVaultReturnSubtitle,
+            stats: `მიზანი: დაბრუნება მე-${returnLvl} დონეზე`,
+            extra: `დაადექით თქვენს დონეზე დასაბრუნებლად`,
+            accent: '#00e5ff'
+          };
+        }
+      }
       const isVictory = currentLevel === TOTAL_LEVELS;
       const isBossAlive = enemies.some(e => e.isBoss);
       if (isVictory && isBossAlive) {
@@ -3650,7 +3819,18 @@ export default function VaultRunner() {
       }
     }
 
-    // 6. Cracked Secret Wall check
+    // 7. Secret Rift Portal check
+    if (cell === 'R') {
+      return {
+        title: `🌀 ${t.secretPortalTitle}`,
+        subtitle: t.secretPortalSubtitle,
+        stats: t.secretPortalStats,
+        extra: t.secretPortalExtra,
+        accent: '#e040fb'
+      };
+    }
+
+    // 8. Cracked Secret Wall check
     if (cell === 'W') {
       return {
         title: `🧱 ${t.crackedWallTitle}`,
@@ -3661,7 +3841,7 @@ export default function VaultRunner() {
       };
     }
 
-    // 7. Wall check
+    // 9. Wall check
     if (cell === '#') {
       return {
         title: lang === 'en' ? `🧱 Stone Wall` : `🧱 ქვის კედელი`,
@@ -3673,7 +3853,7 @@ export default function VaultRunner() {
     }
 
     return null;
-  }, [playerPosition, playerStats, lang, shieldTurns, enemies, currentLevel, dominickPosition, grid, t, goldValues]);
+  }, [playerPosition, playerStats, lang, shieldTurns, enemies, currentLevel, dominickPosition, grid, t, goldValues, isSecretRoom]);
 
   // Keyboard navigation mappings
   useEffect(() => {
@@ -4420,6 +4600,15 @@ export default function VaultRunner() {
           display: inline-block !important;
           animation: cracked-wall-pulse 2.2s ease-in-out infinite !important;
         }
+        @keyframes secret-portal-pulse {
+          0% { filter: drop-shadow(0 0 4px rgba(224, 64, 251, 0.6)) drop-shadow(0 0 8px rgba(0, 229, 255, 0.4)); transform: scale(1) rotate(0deg); }
+          50% { filter: drop-shadow(0 0 12px rgba(224, 64, 251, 0.95)) drop-shadow(0 0 16px rgba(0, 229, 255, 0.8)); transform: scale(1.15) rotate(180deg); }
+          100% { filter: drop-shadow(0 0 4px rgba(224, 64, 251, 0.6)) drop-shadow(0 0 8px rgba(0, 229, 255, 0.4)); transform: scale(1) rotate(360deg); }
+        }
+        .secret-portal-sprite {
+          display: inline-block !important;
+          animation: secret-portal-pulse 3s ease-in-out infinite !important;
+        }
         @media (max-width: 768px) {
           .game-view {
             flex-direction: column !important;
@@ -4478,9 +4667,44 @@ export default function VaultRunner() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <a href="/" style={styles.navLink}>{t.backToHome}</a>
           <span style={{ fontSize: '13px', fontWeight: 'bold', color: '#00e5ff' }}>
-            {getClassName(playerStats.class, lang).toUpperCase()} <span style={{ color: '#aaa' }}>({t.level} {currentLevel}/{TOTAL_LEVELS})</span>
+            {getClassName(playerStats.class, lang).toUpperCase()} <span style={{ color: isSecretRoom ? '#00e5ff' : '#aaa' }}>({isSecretRoom ? t.secretVaultTitle : `${t.level} ${currentLevel}/${TOTAL_LEVELS}`})</span>
           </span>
           <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
+            {isSecretRoom ? (
+              <button
+                onClick={() => returnFromSecretRoom()}
+                style={{
+                  padding: '3px 6px',
+                  fontSize: '11px',
+                  backgroundColor: '#111',
+                  color: '#00e5ff',
+                  border: '1px solid #00e5ff',
+                  borderRadius: '4px',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                }}
+                title={lang === 'en' ? 'Return to Floor' : 'დონეზე დაბრუნება'}
+              >
+                🌀 {lang === 'en' ? 'Return' : 'დაბრუნება'}
+              </button>
+            ) : (
+              <button
+                onClick={() => enterSecretRoom(playerPosition.x, playerPosition.y)}
+                style={{
+                  padding: '3px 6px',
+                  fontSize: '11px',
+                  backgroundColor: '#111',
+                  color: '#e040fb',
+                  border: '1px solid #e040fb',
+                  borderRadius: '4px',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                }}
+                title={t.warpToSecretVaultBtn}
+              >
+                🌀 Vault
+              </button>
+            )}
             <button
               onClick={() => setLang(prev => prev === 'en' ? 'ka' : 'en')}
               className="lang-toggle-btn"
@@ -4601,7 +4825,7 @@ export default function VaultRunner() {
           </button>
         </div>
         <h2>{getClassName(playerStats.class, lang)}</h2>
-        <p>{t.level}: <strong>{currentLevel} / {TOTAL_LEVELS}</strong></p>
+        <p>{t.level}: <strong style={{ color: isSecretRoom ? '#00e5ff' : '#fff' }}>{isSecretRoom ? t.secretVaultTitle : `${currentLevel} / ${TOTAL_LEVELS}`}</strong></p>
         <p>{t.hp}: <strong>{playerStats.hp} / {playerStats.maxHp}</strong></p>
         <p>
           {t.atk}: <strong>{playerStats.atk}</strong> | {t.def}: <strong>{playerStats.def}</strong>
@@ -4749,6 +4973,56 @@ export default function VaultRunner() {
           </button>
         )}
 
+        {isSecretRoom ? (
+          <button 
+            onClick={() => returnFromSecretRoom()} 
+            style={{
+              padding: '8px 12px',
+              fontSize: '12px',
+              backgroundColor: '#111',
+              color: '#00e5ff',
+              border: '1px solid #00e5ff',
+              cursor: 'pointer',
+              fontFamily: GEORGIAN_MONO_FONT,
+              borderRadius: '4px',
+              marginTop: '10px',
+              width: '100%',
+              textAlign: 'center',
+              fontWeight: 'bold',
+              transition: 'all 0.2s ease',
+              boxShadow: '0 0 8px rgba(0,229,255,0.25)'
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#00e5ff'; e.currentTarget.style.color = '#000'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#111'; e.currentTarget.style.color = '#00e5ff'; }}
+          >
+            {lang === 'en' ? '🌀 Return to Floor' : '🌀 დონეზე დაბრუნება'}
+          </button>
+        ) : (
+          <button 
+            onClick={() => enterSecretRoom(playerPosition.x, playerPosition.y)} 
+            style={{
+              padding: '8px 12px',
+              fontSize: '12px',
+              backgroundColor: '#111',
+              color: '#e040fb',
+              border: '1px solid #e040fb',
+              cursor: 'pointer',
+              fontFamily: GEORGIAN_MONO_FONT,
+              borderRadius: '4px',
+              marginTop: '10px',
+              width: '100%',
+              textAlign: 'center',
+              fontWeight: 'bold',
+              transition: 'all 0.2s ease',
+              boxShadow: '0 0 8px rgba(224,64,251,0.25)'
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#e040fb'; e.currentTarget.style.color = '#000'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#111'; e.currentTarget.style.color = '#e040fb'; }}
+          >
+            {t.warpToSecretVaultBtn}
+          </button>
+        )}
+
         <button 
           onClick={() => setGameState('START')} 
           style={styles.restartBtn}
@@ -4771,13 +5045,17 @@ export default function VaultRunner() {
         <div 
           className="scroll-banner"
           style={{
-            background: 'linear-gradient(to right, #f4e2bb, #fff8e7, #f4e2bb)',
-            color: '#3e2723',
-            border: '2px solid #8d6e63',
+            background: isSecretRoom 
+              ? 'linear-gradient(to right, rgba(0, 229, 255, 0.2), rgba(224, 64, 251, 0.25), rgba(0, 229, 255, 0.2))' 
+              : 'linear-gradient(to right, #f4e2bb, #fff8e7, #f4e2bb)',
+            color: isSecretRoom ? '#00e5ff' : '#3e2723',
+            border: isSecretRoom ? '2px solid #00e5ff' : '2px solid #8d6e63',
             borderRadius: '4px',
             padding: '8px 16px',
             marginBottom: '16px',
-            boxShadow: '0 4px 10px rgba(0,0,0,0.6), inset 0 0 10px rgba(141,110,99,0.3)',
+            boxShadow: isSecretRoom 
+              ? '0 4px 14px rgba(0,229,255,0.35), inset 0 0 10px rgba(224,64,251,0.25)' 
+              : '0 4px 10px rgba(0,0,0,0.6), inset 0 0 10px rgba(141,110,99,0.3)',
             textAlign: 'center',
             fontWeight: 'bold',
             fontSize: '13px',
@@ -4795,9 +5073,9 @@ export default function VaultRunner() {
             userSelect: 'none',
           }}
         >
-          <span style={{ fontSize: '15px' }}>📜</span>
-          <span>{getLevelObjective(currentLevel, lang)}</span>
-          <span style={{ fontSize: '15px' }}>📜</span>
+          <span style={{ fontSize: '15px' }}>{isSecretRoom ? '🌀' : '📜'}</span>
+          <span>{isSecretRoom ? t.secretVaultObjective : getLevelObjective(currentLevel, lang)}</span>
+          <span style={{ fontSize: '15px' }}>{isSecretRoom ? '🌀' : '📜'}</span>
         </div>
 
         {/* Boss Health Bar Banner (Level 5) */}
@@ -5119,6 +5397,7 @@ export default function VaultRunner() {
           onCellClick={handleCellClick}
           onCellHover={handleCellHover}
           getCellTooltip={getCellTooltip}
+          isSecretRoom={isSecretRoom}
         />
 
         {/* Desktop-only Dungeon Messages under the grid */}
@@ -5502,6 +5781,7 @@ interface GameCellProps {
   isHovered: boolean;
   tooltipInfo: CellTooltipInfo | null;
   isBossAlive: boolean;
+  isSecretRoom: boolean;
 }
 
 const GameCell = React.memo(function GameCell({
@@ -5529,6 +5809,7 @@ const GameCell = React.memo(function GameCell({
   isHovered,
   tooltipInfo,
   isBossAlive,
+  isSecretRoom,
 }: GameCellProps) {
   let glyph: React.ReactNode = cell;
   let color = '#444';
@@ -5625,7 +5906,12 @@ const GameCell = React.memo(function GameCell({
       cursor = 'pointer';
     }
   } else if (cell === 'S') {
-    if (currentLevel === TOTAL_LEVELS && isBossAlive) {
+    if (isSecretRoom) {
+      glyph = <span className="secret-portal-sprite" style={{ color: '#00e5ff', display: 'inline-block' }}>🌀</span>;
+      color = '#00e5ff';
+      cursor = 'pointer';
+      bg = 'radial-gradient(circle, rgba(0, 229, 255, 0.35) 0%, rgba(0, 20, 40, 0.95) 100%)';
+    } else if (currentLevel === TOTAL_LEVELS && isBossAlive) {
       glyph = '🔒';
       color = '#ff1744';
     } else if (currentLevel === TOTAL_LEVELS) {
@@ -5635,6 +5921,11 @@ const GameCell = React.memo(function GameCell({
       glyph = 'S';
       color = '#ffea00';
     }
+  } else if (cell === 'R') {
+    glyph = <span className="secret-portal-sprite" style={{ color: '#e040fb', display: 'inline-block' }}>🌀</span>;
+    color = '#e040fb';
+    cursor = 'pointer';
+    bg = 'radial-gradient(circle, rgba(224, 64, 251, 0.35) 0%, rgba(30, 0, 40, 0.95) 100%)';
   } else if (cell === 'G') {
     glyph = playerClass === 'Fighter' ? '❤️' : '*';
     color = playerClass === 'Fighter' ? '#ff1744' : '#ffd700';
@@ -5813,6 +6104,7 @@ interface GameBoardProps {
   onCellClick: (x: number, y: number) => void;
   onCellHover: (pos: { x: number; y: number } | null) => void;
   getCellTooltip: (x: number, y: number) => CellTooltipInfo | null;
+  isSecretRoom: boolean;
 }
 
 const GameBoard = React.memo(function GameBoard({
@@ -5838,6 +6130,7 @@ const GameBoard = React.memo(function GameBoard({
   onCellClick,
   onCellHover,
   getCellTooltip,
+  isSecretRoom,
 }: GameBoardProps) {
   // Pre-index spatial data into O(1) lookups
   const enemyMap = new Map<string, Enemy>();
@@ -5957,6 +6250,7 @@ const GameBoard = React.memo(function GameBoard({
                 isHovered={isHovered}
                 tooltipInfo={isHovered && canShowTooltip ? getCellTooltip(x, y) : null}
                 isBossAlive={isBossAlive}
+                isSecretRoom={isSecretRoom}
               />
             );
           })}
