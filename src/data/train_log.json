@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-09-26T13:05:27.940Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times at Coney Island - Stillwell Av (up to 15 mins, normally every 12 mins).",
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between DeKalb Av and Canal St (up to 16 mins, normally every 11 mins)."
+    ]
+  },
+  {
     "date": "2026-09-25T13:06:46.724Z",
     "status": "Good Service",
     "details": []
@@ -203,13 +211,6 @@
     "status": "Service Change",
     "details": [
       "Southbound: Some Coney Island - Stillwell Av-bound trains are skipping Avenue H, Avenue J, and Avenue M."
-    ]
-  },
-  {
-    "date": "2026-08-23T13:14:40.845Z",
-    "status": "Service Change",
-    "details": [
-      "<Q> trains are making local stops between 57 St - 7 Av and Canal St."
     ]
   }
 ]
