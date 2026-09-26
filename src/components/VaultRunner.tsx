@@ -104,7 +104,27 @@ const TRANSLATIONS = {
     khevsurianSword: 'Khevsurian Sword',
     khachapuri: 'Khachapuri',
     magicBolt: 'Magic Bolt',
-    infinity: '∞'
+    infinity: '∞',
+    // High Scores & Personal Bests
+    allTimeHighScore: 'All-Time High Score',
+    personalBest: 'Personal Best',
+    deepestFloor: 'Deepest Floor',
+    totalVictories: 'Total Victories',
+    totalRuns: 'Total Runs',
+    newHighScoreBanner: '🎉 NEW ALL-TIME HIGH SCORE! 🎉',
+    newClassRecordBanner: '⭐ NEW CLASS RECORD! ⭐',
+    bestLabel: 'Best',
+    recentRuns: 'Recent Runs',
+    viewRunHistory: '📜 Run History',
+    hideRunHistory: '✖ Close History',
+    noRecordsYet: 'No runs recorded yet. Venture into the Vault!',
+    resetRecords: 'Reset Records',
+    confirmReset: 'Are you sure you want to reset all high scores and run history?',
+    victoryBadge: 'VICTORY',
+    defeatBadge: 'DEFEAT',
+    floorReachedBadge: 'Floor',
+    allTimeBestComparison: 'All-Time Best',
+    classBestComparison: 'Class Best'
   },
   ka: {
     backToHome: '← მთავარზე დაბრუნება',
@@ -200,7 +220,27 @@ const TRANSLATIONS = {
     khevsurianSword: 'ხევსურული ფარი-ხმალი',
     khachapuri: 'ხაჭაპური',
     magicBolt: 'მაგიური ნაკადი',
-    infinity: '∞'
+    infinity: '∞',
+    // High Scores & Personal Bests
+    allTimeHighScore: 'ყველა დროის რეკორდი',
+    personalBest: 'პირადი რეკორდი',
+    deepestFloor: 'მაქსიმალური დონე',
+    totalVictories: 'სულ გამარჯვებები',
+    totalRuns: 'სულ თამაშები',
+    newHighScoreBanner: '🎉 ახალი აბსოლუტური რეკორდი! 🎉',
+    newClassRecordBanner: '⭐ ახალი კლასის რეკორდი! ⭐',
+    bestLabel: 'რეკორდი',
+    recentRuns: 'ბოლო თამაშები',
+    viewRunHistory: '📜 თამაშების ისტორია',
+    hideRunHistory: '✖ ისტორიის დახურვა',
+    noRecordsYet: 'ჩანაწერები ჯერ არ არის. შეაბიჯეთ ვაულტში!',
+    resetRecords: 'რეკორდების განულება',
+    confirmReset: 'დარწმუნებული ხართ, რომ გსურთ ყველა რეკორდისა და ისტორიის წაშლა?',
+    victoryBadge: 'გამარჯვება',
+    defeatBadge: 'დამარცხება',
+    floorReachedBadge: 'დონე',
+    allTimeBestComparison: 'აბსოლუტური რეკორდი',
+    classBestComparison: 'კლასის რეკორდი'
   }
 };
 
@@ -238,6 +278,79 @@ const getClassEmoji = (cls: CharacterClass) => {
     case 'Sandro': return '🛡️';
     case 'Bebia': return '🇬🇪';
     default: return '';
+  }
+};
+
+export interface VaultRunnerRunRecord {
+  timestamp: number;
+  playerClass: CharacterClass;
+  score: number;
+  levelReached: number;
+  goldCollected: number;
+  monstersKilled: number;
+  outcome: 'VICTORY' | 'DEFEAT';
+}
+
+export interface VaultRunnerHighScores {
+  allTimeHighScore: number;
+  deepestFloor: number;
+  totalVictories: number;
+  totalRuns: number;
+  totalGoldCollected: number;
+  totalMonstersKilled: number;
+  classBests: Partial<Record<CharacterClass, number>>;
+  recentRuns: VaultRunnerRunRecord[];
+}
+
+export interface LastRunSummary {
+  isNewAllTimeBest: boolean;
+  isNewClassBest: boolean;
+  previousAllTimeBest: number;
+  previousClassBest: number;
+  score: number;
+}
+
+const HIGH_SCORES_STORAGE_KEY = 'vault_runner_records_v1';
+
+const DEFAULT_HIGH_SCORES: VaultRunnerHighScores = {
+  allTimeHighScore: 0,
+  deepestFloor: 1,
+  totalVictories: 0,
+  totalRuns: 0,
+  totalGoldCollected: 0,
+  totalMonstersKilled: 0,
+  classBests: {},
+  recentRuns: []
+};
+
+const loadStoredHighScores = (): VaultRunnerHighScores => {
+  if (typeof window === 'undefined') return DEFAULT_HIGH_SCORES;
+  try {
+    const raw = localStorage.getItem(HIGH_SCORES_STORAGE_KEY);
+    if (!raw) return DEFAULT_HIGH_SCORES;
+    const parsed = JSON.parse(raw);
+    return {
+      allTimeHighScore: typeof parsed.allTimeHighScore === 'number' ? parsed.allTimeHighScore : 0,
+      deepestFloor: typeof parsed.deepestFloor === 'number' ? parsed.deepestFloor : 1,
+      totalVictories: typeof parsed.totalVictories === 'number' ? parsed.totalVictories : 0,
+      totalRuns: typeof parsed.totalRuns === 'number' ? parsed.totalRuns : 0,
+      totalGoldCollected: typeof parsed.totalGoldCollected === 'number' ? parsed.totalGoldCollected : 0,
+      totalMonstersKilled: typeof parsed.totalMonstersKilled === 'number' ? parsed.totalMonstersKilled : 0,
+      classBests: typeof parsed.classBests === 'object' && parsed.classBests !== null ? parsed.classBests : {},
+      recentRuns: Array.isArray(parsed.recentRuns) ? parsed.recentRuns : []
+    };
+  } catch (err) {
+    console.warn("Failed to load Vault Runner high scores from localStorage:", err);
+    return DEFAULT_HIGH_SCORES;
+  }
+};
+
+const saveStoredHighScores = (scores: VaultRunnerHighScores): void => {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(HIGH_SCORES_STORAGE_KEY, JSON.stringify(scores));
+  } catch (err) {
+    console.warn("Failed to save Vault Runner high scores to localStorage:", err);
   }
 };
 
@@ -966,7 +1079,77 @@ export default function VaultRunner() {
   const [hoveredCell, setHoveredCell] = useState<{ x: number; y: number } | null>(null);
   const [shieldTurns, setShieldTurns] = useState<number>(0);
 
+  // Persistent High Scores & Personal Bests State
+  const [highScores, setHighScores] = useState<VaultRunnerHighScores>(DEFAULT_HIGH_SCORES);
+  const [showHistoryModal, setShowHistoryModal] = useState<boolean>(false);
+  const [lastRunSummary, setLastRunSummary] = useState<LastRunSummary | null>(null);
+  const hasRecordedRunRef = useRef<boolean>(false);
+
+  // Load high scores on client mount
+  useEffect(() => {
+    setHighScores(loadStoredHighScores());
+  }, []);
+
   const t = TRANSLATIONS[lang];
+
+  // Record completed run exactly once upon VICTORY or DEFEAT
+  useEffect(() => {
+    if ((gameState === 'VICTORY' || gameState === 'DEFEAT') && !hasRecordedRunRef.current) {
+      hasRecordedRunRef.current = true;
+
+      const prevScores = loadStoredHighScores();
+      const prevAllTime = prevScores.allTimeHighScore;
+      const prevClassBest = prevScores.classBests[playerClass] ?? 0;
+
+      const isNewAllTime = score > prevAllTime;
+      const isNewClass = score > prevClassBest;
+
+      setLastRunSummary({
+        isNewAllTimeBest: isNewAllTime,
+        isNewClassBest: isNewClass,
+        previousAllTimeBest: prevAllTime,
+        previousClassBest: prevClassBest,
+        score
+      });
+
+      const newRunRecord: VaultRunnerRunRecord = {
+        timestamp: Date.now(),
+        playerClass,
+        score,
+        levelReached: currentLevel,
+        goldCollected,
+        monstersKilled,
+        outcome: gameState
+      };
+
+      const updatedScores: VaultRunnerHighScores = {
+        allTimeHighScore: Math.max(prevAllTime, score),
+        deepestFloor: Math.max(prevScores.deepestFloor, currentLevel),
+        totalVictories: prevScores.totalVictories + (gameState === 'VICTORY' ? 1 : 0),
+        totalRuns: prevScores.totalRuns + 1,
+        totalGoldCollected: prevScores.totalGoldCollected + goldCollected,
+        totalMonstersKilled: prevScores.totalMonstersKilled + monstersKilled,
+        classBests: {
+          ...prevScores.classBests,
+          [playerClass]: Math.max(prevClassBest, score)
+        },
+        recentRuns: [newRunRecord, ...prevScores.recentRuns].slice(0, 5)
+      };
+
+      setHighScores(updatedScores);
+      saveStoredHighScores(updatedScores);
+    }
+  }, [gameState, score, currentLevel, goldCollected, monstersKilled, playerClass]);
+
+  const handleResetRecords = () => {
+    if (typeof window !== 'undefined') {
+      if (window.confirm(t.confirmReset)) {
+        saveStoredHighScores(DEFAULT_HIGH_SCORES);
+        setHighScores(DEFAULT_HIGH_SCORES);
+        setLastRunSummary(null);
+      }
+    }
+  };
 
   useEffect(() => {
     if (gameState === 'START' || gameState === 'SELECT_CHARACTER') {
@@ -2589,6 +2772,8 @@ export default function VaultRunner() {
 
   // --- START GAME ---
   const startGame = (selectedClass: CharacterClass, startingLevel: number = 1) => {
+    hasRecordedRunRef.current = false;
+    setLastRunSummary(null);
     if (bossIntroTimerRef.current) {
       clearTimeout(bossIntroTimerRef.current);
       bossIntroTimerRef.current = null;
@@ -3596,6 +3781,160 @@ export default function VaultRunner() {
         <h1 style={styles.title}>{t.title}</h1>
         <p style={styles.subtitle}>{t.subtitle}</p>
 
+        {/* High Scores & Hall of Fame Banner */}
+        <div style={{
+          maxWidth: '560px',
+          width: '100%',
+          margin: '0 auto 20px auto',
+          background: 'linear-gradient(135deg, rgba(20, 24, 33, 0.95), rgba(10, 14, 22, 0.98))',
+          border: '2px solid #ffd700',
+          borderRadius: '8px',
+          padding: '12px 16px',
+          boxShadow: '0 4px 20px rgba(255, 215, 0, 0.15), inset 0 0 10px rgba(255, 215, 0, 0.05)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '10px'
+        }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '8px',
+            borderBottom: '1px solid rgba(255, 215, 0, 0.2)',
+            paddingBottom: '8px'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#ffd700', fontWeight: 'bold', fontSize: '14px' }}>
+              <span style={{ fontSize: '18px' }}>🏆</span>
+              <span>{t.allTimeHighScore}: <span style={{ fontSize: '18px', color: '#fff', textShadow: '0 0 8px #ffd700' }}>{highScores.allTimeHighScore}</span></span>
+            </div>
+            <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+              <button
+                onClick={() => setShowHistoryModal(prev => !prev)}
+                style={{
+                  background: showHistoryModal ? '#ffd700' : 'rgba(255, 215, 0, 0.1)',
+                  color: showHistoryModal ? '#000' : '#ffd700',
+                  border: '1px solid #ffd700',
+                  borderRadius: '4px',
+                  padding: '4px 10px',
+                  fontSize: '11px',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                  fontFamily: GEORGIAN_MONO_FONT,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}
+              >
+                {showHistoryModal ? t.hideRunHistory : t.viewRunHistory}
+              </button>
+              {highScores.totalRuns > 0 && (
+                <button
+                  onClick={handleResetRecords}
+                  title={t.resetRecords}
+                  style={{
+                    background: 'none',
+                    color: '#888',
+                    border: '1px solid #444',
+                    borderRadius: '4px',
+                    padding: '4px 8px',
+                    fontSize: '11px',
+                    cursor: 'pointer',
+                    fontFamily: GEORGIAN_MONO_FONT,
+                    transition: 'all 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.color = '#ff5252'; e.currentTarget.style.borderColor = '#ff5252'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.color = '#888'; e.currentTarget.style.borderColor = '#444'; }}
+                >
+                  🗑️
+                </button>
+              )}
+            </div>
+          </div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))',
+            gap: '8px',
+            fontSize: '12px',
+            color: '#ccc',
+            textAlign: 'center'
+          }}>
+            <div style={{ background: 'rgba(255,255,255,0.03)', padding: '6px 8px', borderRadius: '4px' }}>
+              <div style={{ color: '#888', fontSize: '11px' }}>{t.deepestFloor}</div>
+              <div style={{ color: '#00e5ff', fontWeight: 'bold', fontSize: '15px' }}>{t.floorReachedBadge} {highScores.deepestFloor} / 5</div>
+            </div>
+            <div style={{ background: 'rgba(255,255,255,0.03)', padding: '6px 8px', borderRadius: '4px' }}>
+              <div style={{ color: '#888', fontSize: '11px' }}>{t.totalVictories}</div>
+              <div style={{ color: '#4caf50', fontWeight: 'bold', fontSize: '15px' }}>{highScores.totalVictories}</div>
+            </div>
+            <div style={{ background: 'rgba(255,255,255,0.03)', padding: '6px 8px', borderRadius: '4px' }}>
+              <div style={{ color: '#888', fontSize: '11px' }}>{t.totalRuns}</div>
+              <div style={{ color: '#e0e0e0', fontWeight: 'bold', fontSize: '15px' }}>{highScores.totalRuns}</div>
+            </div>
+          </div>
+
+          {/* Collapsible History Drawer */}
+          {showHistoryModal && (
+            <div style={{
+              marginTop: '6px',
+              paddingTop: '10px',
+              borderTop: '1px dashed rgba(255, 215, 0, 0.3)'
+            }}>
+              <div style={{ fontSize: '12px', color: '#ffd700', fontWeight: 'bold', marginBottom: '8px' }}>
+                {t.recentRuns} ({highScores.recentRuns.length})
+              </div>
+              {highScores.recentRuns.length === 0 ? (
+                <div style={{ fontSize: '11px', color: '#888', fontStyle: 'italic', padding: '8px 0' }}>
+                  {t.noRecordsYet}
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', maxHeight: '180px', overflowY: 'auto' }}>
+                  {highScores.recentRuns.map((run, idx) => (
+                    <div
+                      key={idx}
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        padding: '6px 10px',
+                        backgroundColor: 'rgba(0,0,0,0.4)',
+                        borderRadius: '4px',
+                        borderLeft: run.outcome === 'VICTORY' ? '3px solid #4caf50' : '3px solid #f44336',
+                        fontSize: '11px',
+                        flexWrap: 'wrap',
+                        gap: '6px'
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <span>{getClassEmoji(run.playerClass)}</span>
+                        <span style={{ fontWeight: 'bold', color: '#fff' }}>{getClassName(run.playerClass, lang)}</span>
+                        <span style={{
+                          padding: '1px 5px',
+                          borderRadius: '3px',
+                          fontSize: '9px',
+                          fontWeight: 'bold',
+                          backgroundColor: run.outcome === 'VICTORY' ? 'rgba(76, 175, 80, 0.2)' : 'rgba(244, 67, 54, 0.2)',
+                          color: run.outcome === 'VICTORY' ? '#4caf50' : '#f44336'
+                        }}>
+                          {run.outcome === 'VICTORY' ? t.victoryBadge : t.defeatBadge}
+                        </span>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#aaa' }}>
+                        <span>{t.floorReachedBadge} {run.levelReached}</span>
+                        <span style={{ color: '#ffd700', fontWeight: 'bold' }}>{run.score} pts</span>
+                        <span style={{ color: '#666', fontSize: '10px' }}>
+                          {new Date(run.timestamp).toLocaleDateString(lang === 'ka' ? 'ka-GE' : 'en-US', { month: 'short', day: 'numeric' })}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
         {/* Mode Selector Toggle: Campaign vs Direct Boss Fight */}
         <div style={{ display: 'flex', gap: '12px', marginBottom: '25px', justifyContent: 'center', flexWrap: 'wrap' }}>
           <button
@@ -3637,27 +3976,49 @@ export default function VaultRunner() {
         </div>
 
         <div style={styles.selectionZone}>
-          {(['Fighter', 'Mage', 'Rogue', 'Rene', 'Sandro', 'Bebia'] as CharacterClass[]).map(cls => (
-            <button 
-              key={cls} 
-              onClick={() => startGame(cls, startingMode === 'BOSS' ? TOTAL_LEVELS : 1)} 
-              style={{
-                ...styles.btn,
-                borderColor: startingMode === 'BOSS' ? '#ff1744' : '#444',
-                boxShadow: startingMode === 'BOSS' ? '0 0 8px rgba(255,23,68,0.3)' : 'none'
-              }}
-            >
-              {getClassEmoji(cls)} {getClassName(cls, lang)} <br />
-              <span style={{ fontSize: '12px', opacity: 0.8 }}>
-                {t.hp}: {CLASS_PRESETS[cls].hp} | {t.atk}: {CLASS_PRESETS[cls].atk}
-              </span>
-              {startingMode === 'BOSS' && (
-                <div style={{ marginTop: '6px', fontSize: '11px', color: '#ff5252', fontWeight: 'bold' }}>
-                  {lang === 'en' ? '⚔️ Enter Boss Arena' : '⚔️ ბოსის არენაზე შესვლა'}
+          {(['Fighter', 'Mage', 'Rogue', 'Rene', 'Sandro', 'Bebia'] as CharacterClass[]).map(cls => {
+            const classBest = highScores.classBests[cls];
+            return (
+              <button 
+                key={cls} 
+                onClick={() => startGame(cls, startingMode === 'BOSS' ? TOTAL_LEVELS : 1)} 
+                style={{
+                  ...styles.btn,
+                  borderColor: startingMode === 'BOSS' ? '#ff1744' : '#444',
+                  boxShadow: startingMode === 'BOSS' ? '0 0 8px rgba(255,23,68,0.3)' : 'none'
+                }}
+              >
+                {getClassEmoji(cls)} {getClassName(cls, lang)} <br />
+                <span style={{ fontSize: '12px', opacity: 0.8 }}>
+                  {t.hp}: {CLASS_PRESETS[cls].hp} | {t.atk}: {CLASS_PRESETS[cls].atk}
+                </span>
+
+                {/* Personal Best Badge */}
+                <div style={{
+                  marginTop: '6px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  padding: '2px 8px',
+                  borderRadius: '4px',
+                  fontSize: '11px',
+                  fontWeight: 'bold',
+                  backgroundColor: classBest && classBest > 0 ? 'rgba(255, 215, 0, 0.12)' : 'rgba(255, 255, 255, 0.05)',
+                  color: classBest && classBest > 0 ? '#ffd700' : '#888',
+                  border: classBest && classBest > 0 ? '1px solid rgba(255, 215, 0, 0.3)' : '1px solid rgba(255, 255, 255, 0.1)'
+                }}>
+                  <span>⭐</span>
+                  <span>{t.bestLabel}: {classBest && classBest > 0 ? `${classBest} pts` : '—'}</span>
                 </div>
-              )}
-            </button>
-          ))}
+
+                {startingMode === 'BOSS' && (
+                  <div style={{ marginTop: '6px', fontSize: '11px', color: '#ff5252', fontWeight: 'bold' }}>
+                    {lang === 'en' ? '⚔️ Enter Boss Arena' : '⚔️ ბოსის არენაზე შესვლა'}
+                  </div>
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
     );
@@ -3685,11 +4046,61 @@ export default function VaultRunner() {
 
         <GeorgianHillVictoryScene charClass={playerClass} lang={lang} />
 
+        {lastRunSummary?.isNewAllTimeBest && (
+          <div style={{
+            background: 'linear-gradient(90deg, rgba(255,215,0,0.2), rgba(255,215,0,0.4), rgba(255,215,0,0.2))',
+            border: '2px solid #ffd700',
+            color: '#ffd700',
+            padding: '8px 16px',
+            borderRadius: '6px',
+            fontWeight: 'bold',
+            fontSize: '16px',
+            textAlign: 'center',
+            marginBottom: '16px',
+            boxShadow: '0 0 20px rgba(255,215,0,0.6)'
+          }}>
+            {t.newHighScoreBanner}
+          </div>
+        )}
+        {!lastRunSummary?.isNewAllTimeBest && lastRunSummary?.isNewClassBest && (
+          <div style={{
+            background: 'linear-gradient(90deg, rgba(0,229,255,0.2), rgba(0,229,255,0.4), rgba(0,229,255,0.2))',
+            border: '2px solid #00e5ff',
+            color: '#00e5ff',
+            padding: '8px 16px',
+            borderRadius: '6px',
+            fontWeight: 'bold',
+            fontSize: '15px',
+            textAlign: 'center',
+            marginBottom: '16px',
+            boxShadow: '0 0 15px rgba(0,229,255,0.5)'
+          }}>
+            {t.newClassRecordBanner}
+          </div>
+        )}
+
         <div style={{ fontSize: '1.2rem', marginBottom: '30px', textAlign: 'center', lineHeight: '1.6' }}>
           <div style={{ color: '#ffd700' }}>{t.goldCollected}: <strong>{goldCollected}</strong></div>
           <div style={{ color: '#ff1744' }}>{t.monstersKilled}: <strong>{monstersKilled}</strong> (+{monstersKilled * 20} pts)</div>
           <div style={{ fontSize: '1.8rem', fontWeight: 'bold', marginTop: '15px', borderTop: '1px solid #333', paddingTop: '10px' }}>
             {t.finalScore}: <span style={{ color: '#ffd700' }}>{score}</span>
+          </div>
+          <div style={{
+            marginTop: '10px',
+            display: 'flex',
+            justifyContent: 'center',
+            gap: '15px',
+            fontSize: '12px',
+            color: '#aaa',
+            flexWrap: 'wrap'
+          }}>
+            <div>
+              {t.classBestComparison} ({getClassName(playerClass, lang)}): <strong style={{ color: '#ffd700' }}>{Math.max(highScores.classBests[playerClass] ?? 0, score)}</strong>
+            </div>
+            <div>•</div>
+            <div>
+              {t.allTimeBestComparison}: <strong style={{ color: '#ffd700' }}>{Math.max(highScores.allTimeHighScore, score)}</strong>
+            </div>
           </div>
         </div>
         <button onClick={() => setGameState('START')} style={styles.btn}>{t.runAgain}</button>
@@ -3716,12 +4127,63 @@ export default function VaultRunner() {
         <p style={{ ...styles.subtitle, fontStyle: 'italic' }}>
           {t.deathDesc}
         </p>
+
+        {lastRunSummary?.isNewAllTimeBest && (
+          <div style={{
+            background: 'linear-gradient(90deg, rgba(255,215,0,0.2), rgba(255,215,0,0.4), rgba(255,215,0,0.2))',
+            border: '2px solid #ffd700',
+            color: '#ffd700',
+            padding: '8px 16px',
+            borderRadius: '6px',
+            fontWeight: 'bold',
+            fontSize: '15px',
+            textAlign: 'center',
+            marginBottom: '16px',
+            boxShadow: '0 0 15px rgba(255,215,0,0.5)'
+          }}>
+            {t.newHighScoreBanner}
+          </div>
+        )}
+        {!lastRunSummary?.isNewAllTimeBest && lastRunSummary?.isNewClassBest && (
+          <div style={{
+            background: 'linear-gradient(90deg, rgba(0,229,255,0.2), rgba(0,229,255,0.4), rgba(0,229,255,0.2))',
+            border: '2px solid #00e5ff',
+            color: '#00e5ff',
+            padding: '8px 16px',
+            borderRadius: '6px',
+            fontWeight: 'bold',
+            fontSize: '14px',
+            textAlign: 'center',
+            marginBottom: '16px',
+            boxShadow: '0 0 12px rgba(0,229,255,0.4)'
+          }}>
+            {t.newClassRecordBanner}
+          </div>
+        )}
+
         <div style={{ fontSize: '1.2rem', marginBottom: '30px', textAlign: 'center', lineHeight: '1.6' }}>
           <div>{t.levelReached}: <strong>{currentLevel}</strong></div>
           <div style={{ color: '#ffd700' }}>{t.goldCollected}: <strong>{goldCollected}</strong></div>
           <div style={{ color: '#ff1744' }}>{t.monstersKilled}: <strong>{monstersKilled}</strong> (+{monstersKilled * 20} pts)</div>
           <div style={{ fontSize: '1.8rem', fontWeight: 'bold', marginTop: '15px', borderTop: '1px solid #333', paddingTop: '10px' }}>
             {t.finalScore}: <span style={{ color: '#ffd700' }}>{score}</span>
+          </div>
+          <div style={{
+            marginTop: '10px',
+            display: 'flex',
+            justifyContent: 'center',
+            gap: '15px',
+            fontSize: '12px',
+            color: '#aaa',
+            flexWrap: 'wrap'
+          }}>
+            <div>
+              {t.classBestComparison} ({getClassName(playerClass, lang)}): <strong style={{ color: '#ffd700' }}>{Math.max(highScores.classBests[playerClass] ?? 0, score)}</strong>
+            </div>
+            <div>•</div>
+            <div>
+              {t.allTimeBestComparison}: <strong style={{ color: '#ffd700' }}>{Math.max(highScores.allTimeHighScore, score)}</strong>
+            </div>
           </div>
         </div>
         <button onClick={() => setGameState('START')} style={styles.btn}>{t.tryAgain}</button>
@@ -4097,7 +4559,14 @@ export default function VaultRunner() {
               🍇 {lang === 'en' ? 'Shield' : 'ფარი'}: {shieldTurns} (+8 {t.def})
             </span>
           )}
-          <span>{t.score}: <strong style={{ color: '#ffd700' }}>{score}</strong> ({t.goldPieces}: {goldCollected})</span>
+          <span>
+            {t.score}: <strong style={{ color: '#ffd700' }}>{score}</strong>
+            {highScores.allTimeHighScore > 0 && (
+              <span style={{ color: '#888', fontSize: '10px', marginLeft: '4px' }}>
+                ({t.bestLabel}: {highScores.allTimeHighScore})
+              </span>
+            )}
+          </span>
           <span>{t.level}: <strong>{currentLevel}</strong></span>
         </div>
 
@@ -4159,6 +4628,11 @@ export default function VaultRunner() {
         <p>{t.weapon}: <strong>{weaponName}</strong> ({t.range}: {t.infinity})</p>
         <p style={{ marginTop: '15px', paddingTop: '15px', borderTop: '1px solid #333' }}>
           {t.score}: <strong style={{ color: '#ffd700', fontSize: '1.25rem' }}>{score}</strong>
+          {highScores.allTimeHighScore > 0 && (
+            <span style={{ fontSize: '11px', color: '#888', marginLeft: '8px' }}>
+              ({t.bestLabel}: <strong style={{ color: score >= highScores.allTimeHighScore ? '#ffd700' : '#aaa' }}>{highScores.allTimeHighScore}</strong>)
+            </span>
+          )}
         </p>
         <p style={{ fontSize: '13px', color: '#aaa', margin: 0 }}>
           {t.goldPieces}: <strong style={{ color: '#ffd700' }}>{goldCollected}</strong> (+{goldCollected * 10} pts) <br />
