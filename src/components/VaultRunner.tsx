@@ -3860,6 +3860,15 @@ export default function VaultRunner() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (gameState !== 'PLAYING') return;
 
+      // Prevent default browser scrolling and window movement for all game controls
+      const PREVENT_DEFAULT_KEYS = [
+        'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 
+        ' ', 'PageUp', 'PageDown', 'Home', 'End'
+      ];
+      if (PREVENT_DEFAULT_KEYS.includes(e.key)) {
+        e.preventDefault();
+      }
+
       if (isAutoCollecting) {
         stopAutoCollect();
         return;
@@ -3876,20 +3885,21 @@ export default function VaultRunner() {
       if (isAnimating || isBebiaActive || isSopoActive || isBossIntro) return;
 
       switch (e.key) {
-        case 'ArrowUp':    case 'w': case '8': handleMove(0, -1); break;
-        case 'ArrowDown':  case 's': case '2': handleMove(0, 1);  break;
-        case 'ArrowLeft':  case 'a': case '4': handleMove(-1, 0); break;
-        case 'ArrowRight': case 'd': case '6': handleMove(1, 0);  break;
-        case 'q':          case '7': handleMove(-1, -1); break;
-        case 'e':          case '9': handleMove(1, -1);  break;
-        case 'z':          case '1': handleMove(-1, 1);  break;
-        case '3':                    handleMove(1, 1);   break;
+        case 'ArrowUp':    case 'w': case 'W': case '8': e.preventDefault(); handleMove(0, -1); break;
+        case 'ArrowDown':  case 's': case 'S': case '2': e.preventDefault(); handleMove(0, 1);  break;
+        case 'ArrowLeft':  case 'a': case 'A': case '4': e.preventDefault(); handleMove(-1, 0); break;
+        case 'ArrowRight': case 'd': case 'D': case '6': e.preventDefault(); handleMove(1, 0);  break;
+        case 'q':          case 'Q': case '7': e.preventDefault(); handleMove(-1, -1); break;
+        case 'e':          case 'E': case '9': e.preventDefault(); handleMove(1, -1);  break;
+        case 'z':          case 'Z': case '1': e.preventDefault(); handleMove(-1, 1);  break;
+        case '3':                              e.preventDefault(); handleMove(1, 1);   break;
         case 'c':          case 'C': case 'l': case 'L':
           e.preventDefault();
           triggerAutoCollectGold();
           break;
-        case 'f':          case ' ': e.preventDefault(); fireAtNearest(); break;
+        case 'f':          case 'F': case ' ': e.preventDefault(); fireAtNearest(); break;
         case 'b':          case 'B': case 'u': case 'U': case 'g': case 'G': case 'p': case 'P':
+          e.preventDefault();
           if (playerStats.class === 'Fighter') triggerSopoUltimate();
           else triggerBebiaUltimate();
           break;
@@ -4609,6 +4619,42 @@ export default function VaultRunner() {
           display: inline-block !important;
           animation: secret-portal-pulse 3s ease-in-out infinite !important;
         }
+        .desktop-only-sidebar {
+          scrollbar-width: thin;
+          scrollbar-color: #333 transparent;
+        }
+        .desktop-only-sidebar::-webkit-scrollbar {
+          width: 5px;
+        }
+        .desktop-only-sidebar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .desktop-only-sidebar::-webkit-scrollbar-thumb {
+          background-color: #333;
+          border-radius: 3px;
+        }
+        @media (min-width: 769px) and (max-height: 860px) {
+          .game-cell {
+            width: 36px !important;
+            height: 36px !important;
+            font-size: 19px !important;
+          }
+          .desktop-only-log-box {
+            height: 85px !important;
+            margin-top: 10px !important;
+          }
+        }
+        @media (min-width: 769px) and (max-height: 720px) {
+          .game-cell {
+            width: 30px !important;
+            height: 30px !important;
+            font-size: 15px !important;
+          }
+          .desktop-only-log-box {
+            height: 65px !important;
+            margin-top: 6px !important;
+          }
+        }
         @media (max-width: 768px) {
           .game-view {
             flex-direction: column !important;
@@ -4803,7 +4849,7 @@ export default function VaultRunner() {
 
       {/* Desktop Sidebar (Hidden on mobile) */}
       <div className="desktop-only-sidebar" style={styles.sidebar}>
-        <div style={{ marginBottom: '15px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <a href="/" style={styles.navLink}>
             {t.backToHome}
           </a>
@@ -4811,7 +4857,7 @@ export default function VaultRunner() {
             onClick={() => setLang(prev => prev === 'en' ? 'ka' : 'en')}
             className="lang-toggle-btn"
             style={{
-              padding: '4px 8px',
+              padding: '3px 8px',
               fontSize: '11px',
               backgroundColor: '#111',
               color: '#fff',
@@ -4824,10 +4870,16 @@ export default function VaultRunner() {
             {lang === 'en' ? '🌐 EN' : '🌐 ქარ'}
           </button>
         </div>
-        <h2>{getClassName(playerStats.class, lang)}</h2>
-        <p>{t.level}: <strong style={{ color: isSecretRoom ? '#00e5ff' : '#fff' }}>{isSecretRoom ? t.secretVaultTitle : `${currentLevel} / ${TOTAL_LEVELS}`}</strong></p>
-        <p>{t.hp}: <strong>{playerStats.hp} / {playerStats.maxHp}</strong></p>
-        <p>
+        <h2 style={{ margin: '0 0 4px 0', fontSize: '1.25rem', color: '#00e5ff' }}>
+          {getClassName(playerStats.class, lang)}
+        </h2>
+        <p style={{ margin: '2px 0', fontSize: '13px' }}>
+          {t.level}: <strong style={{ color: isSecretRoom ? '#00e5ff' : '#fff' }}>{isSecretRoom ? t.secretVaultTitle : `${currentLevel} / ${TOTAL_LEVELS}`}</strong>
+        </p>
+        <p style={{ margin: '2px 0', fontSize: '13px' }}>
+          {t.hp}: <strong>{playerStats.hp} / {playerStats.maxHp}</strong>
+        </p>
+        <p style={{ margin: '2px 0', fontSize: '13px' }}>
           {t.atk}: <strong>{playerStats.atk}</strong> | {t.def}: <strong>{playerStats.def}</strong>
           {shieldTurns > 0 && (
             <span style={{ marginLeft: '6px', color: '#e040fb', fontWeight: 'bold' }}>
@@ -4840,197 +4892,215 @@ export default function VaultRunner() {
             backgroundColor: 'rgba(224, 64, 251, 0.15)',
             border: '1px solid #e040fb',
             borderRadius: '4px',
-            padding: '4px 8px',
-            margin: '6px 0',
+            padding: '3px 6px',
+            margin: '3px 0',
             color: '#e040fb',
-            fontSize: '12px',
+            fontSize: '11px',
             fontWeight: 'bold'
           }}>
             🍇 {lang === 'en' ? `Churchkhela Shield: ${shieldTurns} turns (+8 DEF)` : `ჩურჩხელის ფარი: ${shieldTurns} სვლა (+8 DEF)`}
           </div>
         )}
-        <p>{t.weapon}: <strong>{weaponName}</strong> ({t.range}: {t.infinity})</p>
-        <p style={{ marginTop: '15px', paddingTop: '15px', borderTop: '1px solid #333' }}>
-          {t.score}: <strong style={{ color: '#ffd700', fontSize: '1.25rem' }}>{score}</strong>
+        <p style={{ margin: '2px 0', fontSize: '13px' }}>
+          {t.weapon}: <strong>{weaponName}</strong> ({t.range}: {t.infinity})
+        </p>
+        <p style={{ marginTop: '6px', paddingTop: '6px', borderTop: '1px solid #333', margin: '6px 0 2px 0', fontSize: '13px' }}>
+          {t.score}: <strong style={{ color: '#ffd700', fontSize: '1.2rem' }}>{score}</strong>
           {highScores.allTimeHighScore > 0 && (
             <span style={{ fontSize: '11px', color: '#888', marginLeft: '8px' }}>
               ({t.bestLabel}: <strong style={{ color: score >= highScores.allTimeHighScore ? '#ffd700' : '#aaa' }}>{highScores.allTimeHighScore}</strong>)
             </span>
           )}
         </p>
-        <p style={{ fontSize: '13px', color: '#aaa', margin: 0 }}>
+        <p style={{ fontSize: '12px', color: '#aaa', margin: '2px 0 4px 0' }}>
           {t.goldPieces}: <strong style={{ color: '#ffd700' }}>{goldCollected}</strong> (+{goldCollected * 10} pts) <br />
           {t.monstersKilledSidebar}: <strong style={{ color: '#ff1744' }}>{monstersKilled}</strong> (+{monstersKilled * 20} pts)
         </p>
 
-        <p className="controls-hint" style={styles.controlsHint}>{t.controlsHint}</p>
+        <p className="controls-hint" style={{ fontSize: '11px', color: '#666', margin: '4px 0 8px 0', fontFamily: GEORGIAN_MONO_FONT }}>
+          {t.controlsHint}
+        </p>
         
-        <button
-          onClick={playerClass === 'Fighter' ? triggerSopoUltimate : triggerBebiaUltimate}
-          disabled={(playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0 || isBossIntro || ultimateCharges === 0}
-          className="bebia-ultimate-btn"
-          style={{
-            padding: '10px 15px',
-            fontSize: '14px',
-            backgroundColor: (playerClass === 'Fighter' ? isSopoActive : isBebiaActive) ? '#ff1744' : '#111',
-            color: (playerClass === 'Fighter' ? isSopoActive : isBebiaActive) ? '#fff' : (playerClass === 'Fighter' ? '#ff69b4' : '#00e5ff'),
-            border: playerClass === 'Fighter' ? '2px solid #ff69b4' : '2px solid #00e5ff',
-            borderRadius: '6px',
-            cursor: ((playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0 || isBossIntro || ultimateCharges === 0) ? 'not-allowed' : 'pointer',
-            fontWeight: 'bold',
-            marginTop: '15px',
-            width: '100%',
-            textAlign: 'center',
-            boxShadow: playerClass === 'Fighter' ? '0 0 10px rgba(255,105,180,0.3)' : '0 0 10px rgba(0,229,255,0.3)',
-            animation: ((playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0 || isBossIntro || ultimateCharges === 0) ? 'none' : 'pulsate 2s infinite',
-            opacity: (enemies.length === 0 || isBossIntro || ultimateCharges === 0) ? 0.45 : 1,
-            transition: 'all 0.3s ease',
-            fontFamily: GEORGIAN_MONO_FONT,
-          }}
-        >
-          {playerClass === 'Fighter' 
-            ? (isSopoActive ? t.sopoActive : `${t.sopoUltimate} (x${ultimateCharges})`) 
-            : (isBebiaActive ? t.bebiaActive : `${t.bebiaUltimate} (x${ultimateCharges})`)}
-        </button>
-
-        {playerClass === 'Fighter' && (
+        {/* Buttons Action Panel */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '100%', marginTop: '2px' }}>
           <button
-            onClick={toggleSopoWinsAudio}
+            onClick={playerClass === 'Fighter' ? triggerSopoUltimate : triggerBebiaUltimate}
+            disabled={(playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0 || isBossIntro || ultimateCharges === 0}
+            className="bebia-ultimate-btn"
             style={{
-              padding: '10px 15px',
-              fontSize: '14px',
-              backgroundColor: isSopoAudioPlaying ? '#ffd700' : '#111',
-              color: isSopoAudioPlaying ? '#000' : '#ffd700',
-              border: '2px solid #ffd700',
+              padding: '8px 12px',
+              fontSize: '13px',
+              backgroundColor: (playerClass === 'Fighter' ? isSopoActive : isBebiaActive) ? '#ff1744' : '#111',
+              color: (playerClass === 'Fighter' ? isSopoActive : isBebiaActive) ? '#fff' : (playerClass === 'Fighter' ? '#ff69b4' : '#00e5ff'),
+              border: playerClass === 'Fighter' ? '2px solid #ff69b4' : '2px solid #00e5ff',
               borderRadius: '6px',
-              cursor: 'pointer',
+              cursor: ((playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0 || isBossIntro || ultimateCharges === 0) ? 'not-allowed' : 'pointer',
               fontWeight: 'bold',
-              marginTop: '15px',
               width: '100%',
               textAlign: 'center',
-              boxShadow: isSopoAudioPlaying ? '0 0 15px rgba(255,215,0,0.6)' : '0 0 10px rgba(255,215,0,0.2)',
+              boxShadow: playerClass === 'Fighter' ? '0 0 10px rgba(255,105,180,0.3)' : '0 0 10px rgba(0,229,255,0.3)',
+              animation: ((playerClass === 'Fighter' ? isSopoActive : isBebiaActive) || enemies.length === 0 || isBossIntro || ultimateCharges === 0) ? 'none' : 'pulsate 2s infinite',
+              opacity: (enemies.length === 0 || isBossIntro || ultimateCharges === 0) ? 0.45 : 1,
               transition: 'all 0.3s ease',
               fontFamily: GEORGIAN_MONO_FONT,
+              margin: 0,
             }}
           >
-            {isSopoAudioPlaying 
-              ? (lang === 'en' ? '⏸️ Pause Sopo Song' : '⏸️ შეჩერება') 
-              : (lang === 'en' ? '👑 Play Sopo Wins' : '👑 ჩართე სოფოს სიმღერა')}
+            {playerClass === 'Fighter' 
+              ? (isSopoActive ? t.sopoActive : `${t.sopoUltimate} (x${ultimateCharges})`) 
+              : (isBebiaActive ? t.bebiaActive : `${t.bebiaUltimate} (x${ultimateCharges})`)}
           </button>
-        )}
 
-        {currentLevel < TOTAL_LEVELS ? (
-          <button 
-            onClick={() => {
-              setCurrentLevel(TOTAL_LEVELS);
-              setLog(prev => [lang === 'en' ? '⚔️ Warped directly to Level 5: Final Boss!' : '⚔️ გადახვედით მე-5 დონეზე: მთავარი ბოსი!', ...prev]);
-              generateLevel(TOTAL_LEVELS, playerClass);
-            }} 
-            style={{
-              padding: '8px 12px',
-              fontSize: '12px',
-              backgroundColor: '#111',
-              color: '#ff5252',
-              border: '1px solid #ff1744',
-              cursor: 'pointer',
-              fontFamily: GEORGIAN_MONO_FONT,
-              borderRadius: '4px',
-              marginTop: '15px',
-              width: '100%',
-              textAlign: 'center',
-              fontWeight: 'bold',
-              transition: 'all 0.2s ease',
-              boxShadow: '0 0 8px rgba(255,23,68,0.2)'
-            }}
-            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#ff1744'; e.currentTarget.style.color = '#fff'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#111'; e.currentTarget.style.color = '#ff5252'; }}
-          >
-            {lang === 'en' ? '👹 Skip to Boss Level (L5)' : '👹 ბოსის დონეზე გადასვლა (დ5)'}
-          </button>
-        ) : (
-          <button 
-            onClick={() => triggerBossIntro()} 
-            style={{
-              padding: '8px 12px',
-              fontSize: '12px',
-              backgroundColor: '#111',
-              color: '#ffd700',
-              border: '1px solid #ffd700',
-              cursor: 'pointer',
-              fontFamily: GEORGIAN_MONO_FONT,
-              borderRadius: '4px',
-              marginTop: '15px',
-              width: '100%',
-              textAlign: 'center',
-              fontWeight: 'bold',
-              transition: 'all 0.2s ease',
-              boxShadow: '0 0 8px rgba(255,215,0,0.2)'
-            }}
-            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#ffd700'; e.currentTarget.style.color = '#000'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#111'; e.currentTarget.style.color = '#ffd700'; }}
-          >
-            {lang === 'en' ? '🎬 Replay Boss Intro' : '🎬 ბოსის ანიმაციის გამეორება'}
-          </button>
-        )}
+          {playerClass === 'Fighter' && (
+            <button
+              onClick={toggleSopoWinsAudio}
+              style={{
+                padding: '7px 10px',
+                fontSize: '12px',
+                backgroundColor: isSopoAudioPlaying ? '#ffd700' : '#111',
+                color: isSopoAudioPlaying ? '#000' : '#ffd700',
+                border: '2px solid #ffd700',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                fontWeight: 'bold',
+                width: '100%',
+                textAlign: 'center',
+                boxShadow: isSopoAudioPlaying ? '0 0 12px rgba(255,215,0,0.6)' : '0 0 8px rgba(255,215,0,0.2)',
+                transition: 'all 0.3s ease',
+                fontFamily: GEORGIAN_MONO_FONT,
+                margin: 0,
+              }}
+            >
+              {isSopoAudioPlaying 
+                ? (lang === 'en' ? '⏸️ Pause Sopo Song' : '⏸️ შეჩერება') 
+                : (lang === 'en' ? '👑 Play Sopo Wins' : '👑 ჩართე სოფოს სიმღერა')}
+            </button>
+          )}
 
-        {isSecretRoom ? (
-          <button 
-            onClick={() => returnFromSecretRoom()} 
-            style={{
-              padding: '8px 12px',
-              fontSize: '12px',
-              backgroundColor: '#111',
-              color: '#00e5ff',
-              border: '1px solid #00e5ff',
-              cursor: 'pointer',
-              fontFamily: GEORGIAN_MONO_FONT,
-              borderRadius: '4px',
-              marginTop: '10px',
-              width: '100%',
-              textAlign: 'center',
-              fontWeight: 'bold',
-              transition: 'all 0.2s ease',
-              boxShadow: '0 0 8px rgba(0,229,255,0.25)'
-            }}
-            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#00e5ff'; e.currentTarget.style.color = '#000'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#111'; e.currentTarget.style.color = '#00e5ff'; }}
-          >
-            {lang === 'en' ? '🌀 Return to Floor' : '🌀 დონეზე დაბრუნება'}
-          </button>
-        ) : (
-          <button 
-            onClick={() => enterSecretRoom(playerPosition.x, playerPosition.y)} 
-            style={{
-              padding: '8px 12px',
-              fontSize: '12px',
-              backgroundColor: '#111',
-              color: '#e040fb',
-              border: '1px solid #e040fb',
-              cursor: 'pointer',
-              fontFamily: GEORGIAN_MONO_FONT,
-              borderRadius: '4px',
-              marginTop: '10px',
-              width: '100%',
-              textAlign: 'center',
-              fontWeight: 'bold',
-              transition: 'all 0.2s ease',
-              boxShadow: '0 0 8px rgba(224,64,251,0.25)'
-            }}
-            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#e040fb'; e.currentTarget.style.color = '#000'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#111'; e.currentTarget.style.color = '#e040fb'; }}
-          >
-            {t.warpToSecretVaultBtn}
-          </button>
-        )}
+          {/* 2-Column Grid: Boss Jump/Replay + Secret Vault/Return */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', width: '100%' }}>
+            {currentLevel < TOTAL_LEVELS ? (
+              <button 
+                onClick={() => {
+                  setCurrentLevel(TOTAL_LEVELS);
+                  setLog(prev => [lang === 'en' ? '⚔️ Warped directly to Level 5: Final Boss!' : '⚔️ გადახვედით მე-5 დონეზე: მთავარი ბოსი!', ...prev]);
+                  generateLevel(TOTAL_LEVELS, playerClass);
+                }} 
+                style={{
+                  padding: '7px 6px',
+                  fontSize: '11px',
+                  backgroundColor: '#111',
+                  color: '#ff5252',
+                  border: '1px solid #ff1744',
+                  cursor: 'pointer',
+                  fontFamily: GEORGIAN_MONO_FONT,
+                  borderRadius: '4px',
+                  textAlign: 'center',
+                  fontWeight: 'bold',
+                  transition: 'all 0.2s ease',
+                  boxShadow: '0 0 6px rgba(255,23,68,0.2)',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+                title={lang === 'en' ? 'Skip to Boss Level (L5)' : 'ბოსის დონეზე გადასვლა (დ5)'}
+                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#ff1744'; e.currentTarget.style.color = '#fff'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#111'; e.currentTarget.style.color = '#ff5252'; }}
+              >
+                {lang === 'en' ? '👹 Skip to L5' : '👹 მე-5 დონე'}
+              </button>
+            ) : (
+              <button 
+                onClick={() => triggerBossIntro()} 
+                style={{
+                  padding: '7px 6px',
+                  fontSize: '11px',
+                  backgroundColor: '#111',
+                  color: '#ffd700',
+                  border: '1px solid #ffd700',
+                  cursor: 'pointer',
+                  fontFamily: GEORGIAN_MONO_FONT,
+                  borderRadius: '4px',
+                  textAlign: 'center',
+                  fontWeight: 'bold',
+                  transition: 'all 0.2s ease',
+                  boxShadow: '0 0 6px rgba(255,215,0,0.2)',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+                title={lang === 'en' ? 'Replay Boss Intro' : 'ბოსის ანიმაციის გამეორება'}
+                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#ffd700'; e.currentTarget.style.color = '#000'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#111'; e.currentTarget.style.color = '#ffd700'; }}
+              >
+                {lang === 'en' ? '🎬 Replay Intro' : '🎬 ანიმაცია'}
+              </button>
+            )}
 
-        <button 
-          onClick={() => setGameState('START')} 
-          style={styles.restartBtn}
-          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#ff1744'; e.currentTarget.style.color = '#000'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#111'; e.currentTarget.style.color = '#fff'; }}
-        >
-          {t.restartGameSidebar}
-        </button>
+            {isSecretRoom ? (
+              <button 
+                onClick={() => returnFromSecretRoom()} 
+                style={{
+                  padding: '7px 6px',
+                  fontSize: '11px',
+                  backgroundColor: '#111',
+                  color: '#00e5ff',
+                  border: '1px solid #00e5ff',
+                  cursor: 'pointer',
+                  fontFamily: GEORGIAN_MONO_FONT,
+                  borderRadius: '4px',
+                  textAlign: 'center',
+                  fontWeight: 'bold',
+                  transition: 'all 0.2s ease',
+                  boxShadow: '0 0 6px rgba(0,229,255,0.25)',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+                title={lang === 'en' ? 'Return to Floor' : 'დონეზე დაბრუნება'}
+                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#00e5ff'; e.currentTarget.style.color = '#000'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#111'; e.currentTarget.style.color = '#00e5ff'; }}
+              >
+                {lang === 'en' ? '🌀 Return Floor' : '🌀 დაბრუნება'}
+              </button>
+            ) : (
+              <button 
+                onClick={() => enterSecretRoom(playerPosition.x, playerPosition.y)} 
+                style={{
+                  padding: '7px 6px',
+                  fontSize: '11px',
+                  backgroundColor: '#111',
+                  color: '#e040fb',
+                  border: '1px solid #e040fb',
+                  cursor: 'pointer',
+                  fontFamily: GEORGIAN_MONO_FONT,
+                  borderRadius: '4px',
+                  textAlign: 'center',
+                  fontWeight: 'bold',
+                  transition: 'all 0.2s ease',
+                  boxShadow: '0 0 6px rgba(224,64,251,0.25)',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+                title={t.warpToSecretVaultBtn}
+                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#e040fb'; e.currentTarget.style.color = '#000'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#111'; e.currentTarget.style.color = '#e040fb'; }}
+              >
+                {lang === 'en' ? '🌀 Secret Vault' : '🌀 საიდუმლო'}
+              </button>
+            )}
+          </div>
+
+          <button 
+            onClick={() => setGameState('START')} 
+            style={styles.restartBtn}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#ff1744'; e.currentTarget.style.color = '#000'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#111'; e.currentTarget.style.color = '#fff'; }}
+          >
+            {t.restartGameSidebar}
+          </button>
+        </div>
       </div>
 
       <div 
@@ -5051,8 +5121,8 @@ export default function VaultRunner() {
             color: isSecretRoom ? '#00e5ff' : '#3e2723',
             border: isSecretRoom ? '2px solid #00e5ff' : '2px solid #8d6e63',
             borderRadius: '4px',
-            padding: '8px 16px',
-            marginBottom: '16px',
+            padding: '6px 14px',
+            marginBottom: '8px',
             boxShadow: isSecretRoom 
               ? '0 4px 14px rgba(0,229,255,0.35), inset 0 0 10px rgba(224,64,251,0.25)' 
               : '0 4px 10px rgba(0,0,0,0.6), inset 0 0 10px rgba(141,110,99,0.3)',
@@ -5332,8 +5402,8 @@ export default function VaultRunner() {
                 color: isAutoCollecting ? '#000' : '#ffd700',
                 border: '2px solid #ffd700',
                 borderRadius: '8px',
-                padding: '8px 18px',
-                marginBottom: '14px',
+                padding: '6px 14px',
+                marginBottom: '8px',
                 boxShadow: '0 0 20px rgba(255, 215, 0, 0.6), inset 0 0 10px rgba(255, 215, 0, 0.25)',
                 fontSize: '13px',
                 fontWeight: 'bold',
@@ -5406,8 +5476,8 @@ export default function VaultRunner() {
           style={{
             width: '100%',
             maxWidth: '500px',
-            marginTop: '20px',
-            height: '130px',
+            marginTop: '10px',
+            height: '90px',
             overflowY: 'auto',
             fontSize: '13px',
             color: '#ccc',
@@ -5694,13 +5764,42 @@ const styles = {
     border: '1px solid #444', cursor: 'pointer', fontFamily: GEORGIAN_MONO_FONT, borderRadius: '4px'
   },
   gameView: {
-    display: 'flex', height: '100vh', backgroundColor: '#0a0a0a', color: '#fff', fontFamily: GEORGIAN_MONO_FONT
+    display: 'flex',
+    height: '100vh',
+    maxHeight: '100vh',
+    overflow: 'hidden',
+    backgroundColor: '#0a0a0a',
+    color: '#fff',
+    fontFamily: GEORGIAN_MONO_FONT
   },
   sidebar: {
-    width: '300px', padding: '20px', borderRight: '1px solid #333', display: 'flex', flexDirection: 'column' as const, fontFamily: GEORGIAN_MONO_FONT
+    width: '300px',
+    minWidth: '270px',
+    padding: '12px 14px',
+    borderRight: '1px solid #333',
+    display: 'flex',
+    flexDirection: 'column' as const,
+    fontFamily: GEORGIAN_MONO_FONT,
+    boxSizing: 'border-box' as const,
+    height: '100vh',
+    maxHeight: '100vh',
+    overflowY: 'auto' as const,
+    overflowX: 'hidden' as const,
+    flexShrink: 0
   },
   gridContainer: {
-    flex: 1, display: 'flex', flexDirection: 'column' as const, alignItems: 'center', justifyContent: 'center', backgroundColor: '#020202'
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column' as const,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#020202',
+    height: '100vh',
+    maxHeight: '100vh',
+    overflowY: 'auto' as const,
+    overflowX: 'hidden' as const,
+    boxSizing: 'border-box' as const,
+    padding: '10px 0'
   },
   row: { display: 'flex' },
   cell: {
@@ -5710,19 +5809,19 @@ const styles = {
   },
   logBox: { flex: 1, overflowY: 'auto' as const, fontSize: '13px', color: '#ccc', fontFamily: GEORGIAN_MONO_FONT },
   logEntry: { marginBottom: '8px', borderBottom: '1px solid #151515', paddingBottom: '4px' },
-  controlsHint: { fontSize: '11px', color: '#666', marginTop: 'auto', fontFamily: GEORGIAN_MONO_FONT },
+  controlsHint: { fontSize: '11px', color: '#666', fontFamily: GEORGIAN_MONO_FONT },
   backLinkAbsolute: { position: 'absolute' as const, top: '20px', left: '20px' },
   navLink: { color: '#00e5ff', textDecoration: 'none', fontSize: '14px', fontWeight: 'bold' as const, fontFamily: GEORGIAN_MONO_FONT },
   restartBtn: {
-    padding: '8px 12px',
-    fontSize: '12px',
+    padding: '6px 10px',
+    fontSize: '11px',
     backgroundColor: '#111',
     color: '#fff',
     border: '1px solid #ff1744',
     cursor: 'pointer',
     fontFamily: GEORGIAN_MONO_FONT,
     borderRadius: '4px',
-    marginTop: '15px',
+    marginTop: '0px',
     width: '100%',
     textAlign: 'center' as const,
     fontWeight: 'bold' as const,
