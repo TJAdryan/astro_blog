@@ -135,8 +135,7 @@ const TRANSLATIONS = {
     secretVaultTitle: 'Secret Treasure Vault',
     secretVaultObjective: '🗝️ SECRET TREASURE VAULT — Gather random prizes & step into the return portal!',
     secretVaultReturnPortal: 'Return Portal',
-    secretVaultReturnSubtitle: 'Returns to current floor',
-    warpToSecretVaultBtn: '🌀 Warp to Secret Vault'
+    secretVaultReturnSubtitle: 'Returns to current floor'
   },
   ka: {
     backToHome: '← მთავარზე დაბრუნება',
@@ -263,8 +262,7 @@ const TRANSLATIONS = {
     secretVaultTitle: 'საიდუმლო საგანძურის ვაულტი',
     secretVaultObjective: '🗝️ საიდუმლო საგანძური — შეაგროვეთ პრიზები და შედით დაბრუნების პორტალში!',
     secretVaultReturnPortal: 'დაბრუნების პორტალი',
-    secretVaultReturnSubtitle: 'დაბრუნება წინა დონეზე',
-    warpToSecretVaultBtn: '🌀 საიდუმლო ვაულტში გადასვლა'
+    secretVaultReturnSubtitle: 'დაბრუნება წინა დონეზე'
   }
 };
 
@@ -4716,41 +4714,6 @@ export default function VaultRunner() {
             {getClassName(playerStats.class, lang).toUpperCase()} <span style={{ color: isSecretRoom ? '#00e5ff' : '#aaa' }}>({isSecretRoom ? t.secretVaultTitle : `${t.level} ${currentLevel}/${TOTAL_LEVELS}`})</span>
           </span>
           <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
-            {isSecretRoom ? (
-              <button
-                onClick={() => returnFromSecretRoom()}
-                style={{
-                  padding: '3px 6px',
-                  fontSize: '11px',
-                  backgroundColor: '#111',
-                  color: '#00e5ff',
-                  border: '1px solid #00e5ff',
-                  borderRadius: '4px',
-                  fontWeight: 'bold',
-                  cursor: 'pointer',
-                }}
-                title={lang === 'en' ? 'Return to Floor' : 'დონეზე დაბრუნება'}
-              >
-                🌀 {lang === 'en' ? 'Return' : 'დაბრუნება'}
-              </button>
-            ) : (
-              <button
-                onClick={() => enterSecretRoom(playerPosition.x, playerPosition.y)}
-                style={{
-                  padding: '3px 6px',
-                  fontSize: '11px',
-                  backgroundColor: '#111',
-                  color: '#e040fb',
-                  border: '1px solid #e040fb',
-                  borderRadius: '4px',
-                  fontWeight: 'bold',
-                  cursor: 'pointer',
-                }}
-                title={t.warpToSecretVaultBtn}
-              >
-                🌀 Vault
-              </button>
-            )}
             <button
               onClick={() => setLang(prev => prev === 'en' ? 'ka' : 'en')}
               className="lang-toggle-btn"
@@ -4767,43 +4730,6 @@ export default function VaultRunner() {
             >
               {lang === 'en' ? '🌐 EN' : '🌐 ქარ'}
             </button>
-            {currentLevel < TOTAL_LEVELS ? (
-              <button 
-                onClick={() => {
-                  setCurrentLevel(TOTAL_LEVELS);
-                  setLog(prev => [lang === 'en' ? '⚔️ Warped to Level 5: Boss!' : '⚔️ მე-5 დონე: ბოსი!', ...prev]);
-                  generateLevel(TOTAL_LEVELS, playerClass);
-                }} 
-                style={{
-                  padding: '3px 6px',
-                  fontSize: '11px',
-                  backgroundColor: '#111',
-                  color: '#ff5252',
-                  border: '1px solid #ff1744',
-                  borderRadius: '4px',
-                  fontWeight: 'bold',
-                  cursor: 'pointer',
-                }}
-              >
-                👹 L5
-              </button>
-            ) : (
-              <button 
-                onClick={() => triggerBossIntro()} 
-                style={{
-                  padding: '3px 6px',
-                  fontSize: '11px',
-                  backgroundColor: '#111',
-                  color: '#ffd700',
-                  border: '1px solid #ffd700',
-                  borderRadius: '4px',
-                  fontWeight: 'bold',
-                  cursor: 'pointer',
-                }}
-              >
-                🎬 Intro
-              </button>
-            )}
             <button 
               onClick={() => setGameState('START')} 
               style={{
@@ -4976,121 +4902,6 @@ export default function VaultRunner() {
                 : (lang === 'en' ? '👑 Play Sopo Wins' : '👑 ჩართე სოფოს სიმღერა')}
             </button>
           )}
-
-          {/* 2-Column Grid: Boss Jump/Replay + Secret Vault/Return */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', width: '100%' }}>
-            {currentLevel < TOTAL_LEVELS ? (
-              <button 
-                onClick={() => {
-                  setCurrentLevel(TOTAL_LEVELS);
-                  setLog(prev => [lang === 'en' ? '⚔️ Warped directly to Level 5: Final Boss!' : '⚔️ გადახვედით მე-5 დონეზე: მთავარი ბოსი!', ...prev]);
-                  generateLevel(TOTAL_LEVELS, playerClass);
-                }} 
-                style={{
-                  padding: '7px 6px',
-                  fontSize: '11px',
-                  backgroundColor: '#111',
-                  color: '#ff5252',
-                  border: '1px solid #ff1744',
-                  cursor: 'pointer',
-                  fontFamily: GEORGIAN_MONO_FONT,
-                  borderRadius: '4px',
-                  textAlign: 'center',
-                  fontWeight: 'bold',
-                  transition: 'all 0.2s ease',
-                  boxShadow: '0 0 6px rgba(255,23,68,0.2)',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                }}
-                title={lang === 'en' ? 'Skip to Boss Level (L5)' : 'ბოსის დონეზე გადასვლა (დ5)'}
-                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#ff1744'; e.currentTarget.style.color = '#fff'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#111'; e.currentTarget.style.color = '#ff5252'; }}
-              >
-                {lang === 'en' ? '👹 Skip to L5' : '👹 მე-5 დონე'}
-              </button>
-            ) : (
-              <button 
-                onClick={() => triggerBossIntro()} 
-                style={{
-                  padding: '7px 6px',
-                  fontSize: '11px',
-                  backgroundColor: '#111',
-                  color: '#ffd700',
-                  border: '1px solid #ffd700',
-                  cursor: 'pointer',
-                  fontFamily: GEORGIAN_MONO_FONT,
-                  borderRadius: '4px',
-                  textAlign: 'center',
-                  fontWeight: 'bold',
-                  transition: 'all 0.2s ease',
-                  boxShadow: '0 0 6px rgba(255,215,0,0.2)',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                }}
-                title={lang === 'en' ? 'Replay Boss Intro' : 'ბოსის ანიმაციის გამეორება'}
-                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#ffd700'; e.currentTarget.style.color = '#000'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#111'; e.currentTarget.style.color = '#ffd700'; }}
-              >
-                {lang === 'en' ? '🎬 Replay Intro' : '🎬 ანიმაცია'}
-              </button>
-            )}
-
-            {isSecretRoom ? (
-              <button 
-                onClick={() => returnFromSecretRoom()} 
-                style={{
-                  padding: '7px 6px',
-                  fontSize: '11px',
-                  backgroundColor: '#111',
-                  color: '#00e5ff',
-                  border: '1px solid #00e5ff',
-                  cursor: 'pointer',
-                  fontFamily: GEORGIAN_MONO_FONT,
-                  borderRadius: '4px',
-                  textAlign: 'center',
-                  fontWeight: 'bold',
-                  transition: 'all 0.2s ease',
-                  boxShadow: '0 0 6px rgba(0,229,255,0.25)',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                }}
-                title={lang === 'en' ? 'Return to Floor' : 'დონეზე დაბრუნება'}
-                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#00e5ff'; e.currentTarget.style.color = '#000'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#111'; e.currentTarget.style.color = '#00e5ff'; }}
-              >
-                {lang === 'en' ? '🌀 Return Floor' : '🌀 დაბრუნება'}
-              </button>
-            ) : (
-              <button 
-                onClick={() => enterSecretRoom(playerPosition.x, playerPosition.y)} 
-                style={{
-                  padding: '7px 6px',
-                  fontSize: '11px',
-                  backgroundColor: '#111',
-                  color: '#e040fb',
-                  border: '1px solid #e040fb',
-                  cursor: 'pointer',
-                  fontFamily: GEORGIAN_MONO_FONT,
-                  borderRadius: '4px',
-                  textAlign: 'center',
-                  fontWeight: 'bold',
-                  transition: 'all 0.2s ease',
-                  boxShadow: '0 0 6px rgba(224,64,251,0.25)',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                }}
-                title={t.warpToSecretVaultBtn}
-                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#e040fb'; e.currentTarget.style.color = '#000'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#111'; e.currentTarget.style.color = '#e040fb'; }}
-              >
-                {lang === 'en' ? '🌀 Secret Vault' : '🌀 საიდუმლო'}
-              </button>
-            )}
-          </div>
 
           <button 
             onClick={() => setGameState('START')} 
