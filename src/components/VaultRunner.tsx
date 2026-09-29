@@ -1445,8 +1445,8 @@ export default function VaultRunner() {
 
     // Start frantic random movement interval
     const intervalId = setInterval(() => {
-      setEnemies(prevEnemies => 
-        prevEnemies.map(e => {
+      setEnemies(prevEnemies => {
+        const next = prevEnemies.map(e => {
           const dirs = [
             { dx: 1, dy: 0 },
             { dx: -1, dy: 0 },
@@ -1462,44 +1462,90 @@ export default function VaultRunner() {
             }
           }
           return e;
-        })
-      );
+        });
+        enemiesRef.current = next;
+        return next;
+      });
     }, 150);
 
-    // After 1.8 seconds of frantic running, proceed to the Georgian flag chasing/explosion phase
+    // After 2.0 seconds of frantic running, proceed to the Georgian flag chasing/explosion phase
     setTimeout(() => {
       clearInterval(intervalId);
       setUltimatePhase('CHASING');
       setLog(prev => [lang === 'en' ? "🇬🇪 Bebia charges across the Vault in the name of Georgia!" : "🇬🇪 ბებია გარბის საქართველოს სახელით!", ...prev]);
 
-      // Calculate path hitting all monsters sequentially
-      let currentPos = { ...playerPosition };
-      const remainingEnemies = [...enemies];
-      const fullPath: Position[] = [];
-
-      while (remainingEnemies.length > 0) {
-        // Find closest enemy
-        let closestIdx = 0;
-        let closestDist = Infinity;
-        remainingEnemies.forEach((e, idx) => {
-          const d = Math.abs(e.x - currentPos.x) + Math.abs(e.y - currentPos.y);
-          if (d < closestDist) {
-            closestDist = d;
-            closestIdx = idx;
-          }
-        });
-
-        const target = remainingEnemies.splice(closestIdx, 1)[0];
-        const seg = getBresenhamPath(currentPos.x, currentPos.y, target.x, target.y);
-        fullPath.push(...seg);
-        currentPos = { x: target.x, y: target.y };
+      // Snapshot latest enemies from ref to avoid stale closure
+      const currentEnemies = [...enemiesRef.current];
+      if (currentEnemies.length === 0) {
+        setBebiaRunnerPos(null);
+        setIsBebiaActive(false);
+        setUltimatePhase('NONE');
+        return;
       }
+
+      // Calculate path hitting all monsters sequentially using nearest neighbor
+      let currentLoc = { ...playerPosition };
+      const orderedTargets: Enemy[] = [];
+      const remainingTargets = [...currentEnemies];
+
+      while (remainingTargets.length > 0) {
+        let closestIdx = 0;
+        let minDistance = Infinity;
+        for (let i = 0; i < remainingTargets.length; i++) {
+          const t = remainingTargets[i];
+          const dist = Math.abs(t.x - currentLoc.x) + Math.abs(t.y - currentLoc.y);
+          if (dist < minDistance) {
+            minDistance = dist;
+            closestIdx = i;
+          }
+        }
+        const closest = remainingTargets.splice(closestIdx, 1)[0];
+        orderedTargets.push(closest);
+        currentLoc = { x: closest.x, y: closest.y };
+      }
+
+      // Build fullPath including the destination tile of each segment!
+      let pathSteps: Position[] = [];
+      let lastPos = { ...playerPosition };
+      orderedTargets.forEach(target => {
+        const seg = getBresenhamPath(lastPos.x, lastPos.y, target.x, target.y);
+        pathSteps = [...pathSteps, ...seg, { x: target.x, y: target.y }];
+        lastPos = { x: target.x, y: target.y };
+      });
 
       // Animate Bebia running across the path
       let currentStepIndex = 0;
+      let remainingEnemies = [...orderedTargets];
+
       const runInterval = setInterval(() => {
-        if (currentStepIndex >= fullPath.length) {
+        if (currentStepIndex >= pathSteps.length) {
           clearInterval(runInterval);
+
+          // Absolute cleanup guarantee: if any enemies somehow remained, sweep and eliminate them
+          if (remainingEnemies.length > 0) {
+            remainingEnemies.forEach(enemy => {
+              const isBoss = enemy.isBoss;
+              setGrid(prevGrid => 
+                prevGrid.map((row, y) => 
+                  row.map((c, x) => (x === enemy.x && y === enemy.y ? 'G' : c))
+                )
+              );
+              setGoldValues(prev => ({
+                ...prev,
+                [`${enemy.x},${enemy.y}`]: isBoss ? 50 : Math.floor(Math.random() * 16) + (10 + currentLevel * 2)
+              }));
+              setMonstersKilled(prev => prev + 1);
+              setScore(prev => prev + (isBoss ? 100 : 20));
+              setExplosionPositions(prev => [...prev, { x: enemy.x, y: enemy.y }]);
+              setTimeout(() => {
+                setExplosionPositions(prev => prev.filter(pos => !(pos.x === enemy.x && pos.y === enemy.y)));
+              }, 250);
+            });
+          }
+
+          // 100% guarantee all enemies are cleared from state
+          setEnemies([]);
+          enemiesRef.current = [];
           setBebiaRunnerPos(null);
           setIsBebiaActive(false);
           setUltimatePhase('NONE');
@@ -1507,12 +1553,20 @@ export default function VaultRunner() {
           return;
         }
 
-        const step = fullPath[currentStepIndex];
+        const step = pathSteps[currentStepIndex];
         setBebiaRunnerPos(step);
 
         // Check if an enemy is at this position
-        const enemy = enemies.find(e => e.x === step.x && e.y === step.y);
-        if (enemy) {
+        const hitIdx = remainingEnemies.findIndex(e => e.x === step.x && e.y === step.y);
+        if (hitIdx !== -1) {
+          const enemy = remainingEnemies.splice(hitIdx, 1)[0];
+
+          // Trigger explosion flash at enemy tile
+          setExplosionPositions(prev => [...prev, { x: enemy.x, y: enemy.y }]);
+          setTimeout(() => {
+            setExplosionPositions(prev => prev.filter(pos => !(pos.x === enemy.x && pos.y === enemy.y)));
+          }, 250);
+
           // Play Bebia voice clip randomly
           playBebiaVoice();
 
@@ -1544,13 +1598,17 @@ export default function VaultRunner() {
           }
 
           // Remove enemy from state
-          setEnemies(prev => prev.filter(e => e.id !== enemy.id));
+          setEnemies(prev => {
+            const next = prev.filter(e => e.id !== enemy.id);
+            enemiesRef.current = next;
+            return next;
+          });
         }
 
         currentStepIndex++;
-      }, 180);
-    }, 2800);
-  }, [gameState, isAnimating, isBebiaActive, isBossIntro, enemies, lang, grid, playerPosition, getBresenhamPath, playBebiaVoice, ultimateCharges]);
+      }, 120);
+    }, 2000);
+  }, [gameState, isAnimating, isBebiaActive, isBossIntro, enemies, lang, grid, playerPosition, currentLevel, getBresenhamPath, playBebiaVoice, ultimateCharges]);
 
   const triggerSopoUltimate = useCallback(() => {
     if (gameState !== 'PLAYING' || isAnimating || isSopoActive || isBossIntro) return;
@@ -1633,8 +1691,8 @@ export default function VaultRunner() {
 
     // Start charmed sway movement interval
     const intervalId = setInterval(() => {
-      setEnemies(prevEnemies => 
-        prevEnemies.map(e => {
+      setEnemies(prevEnemies => {
+        const next = prevEnemies.map(e => {
           const dirs = [
             { dx: 1, dy: 0 },
             { dx: -1, dy: 0 },
@@ -1650,8 +1708,10 @@ export default function VaultRunner() {
             }
           }
           return e;
-        })
-      );
+        });
+        enemiesRef.current = next;
+        return next;
+      });
     }, 200);
 
     // After 2.8 seconds of charmed walking, proceed to proposing phase
@@ -1738,6 +1798,24 @@ export default function VaultRunner() {
             const stepInterval = setInterval(() => {
               if (currentStepIndex >= pathSteps.length) {
                 clearInterval(stepInterval);
+                if (remainingEnemies.length > 0) {
+                  remainingEnemies.forEach(enemy => {
+                    const isBoss = enemy.isBoss;
+                    setGrid(prevGrid =>
+                      prevGrid.map((row, y) =>
+                        row.map((cell, x) => (x === enemy.x && y === enemy.y ? 'G' : cell))
+                      )
+                    );
+                    setGoldValues(prev => ({
+                      ...prev,
+                      [`${enemy.x},${enemy.y}`]: isBoss ? 50 : Math.floor(Math.random() * 16) + (10 + currentLevel * 2)
+                    }));
+                    setMonstersKilled(prev => prev + 1);
+                    setScore(prev => prev + (isBoss ? 100 : 20));
+                  });
+                }
+                setEnemies([]);
+                enemiesRef.current = [];
                 setSopoRunnerPos(null);
                 setDominickPosition(null);
                 setUltimatePhase('FLAG');
@@ -1841,7 +1919,11 @@ export default function VaultRunner() {
                 }
 
                 // Remove enemy
-                setEnemies(prev => prev.filter(e => e.id !== enemy.id));
+                setEnemies(prev => {
+                  const next = prev.filter(e => e.id !== enemy.id);
+                  enemiesRef.current = next;
+                  return next;
+                });
               }
 
               currentStepIndex++;
