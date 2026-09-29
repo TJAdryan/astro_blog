@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-09-29T13:09:59.247Z",
+    "status": "Service Change",
+    "details": [
+      "Southbound: Some Coney Island - Stillwell Av-bound trains are making local stops between 57 St - 7 Av and Times Sq - 42 St."
+    ]
+  },
+  {
     "date": "2026-09-27T13:05:31.523Z",
     "status": "Service Change",
     "details": [
@@ -205,13 +212,6 @@
     "status": "Delays",
     "details": [
       "Northbound: 96 St-bound trains are having longer wait times between Kings Hwy and Church Av (up to 13 mins, normally every 9 mins)."
-    ]
-  },
-  {
-    "date": "2026-08-26T13:22:14.669Z",
-    "status": "Delays",
-    "details": [
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times at 96 St (up to 12 mins, normally every 10 mins)."
     ]
   }
 ]
