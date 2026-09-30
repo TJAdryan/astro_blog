@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-09-30T13:10:57.120Z",
+    "status": "Service Change",
+    "details": [
+      "Southbound: Brighton Beach/Coney Island - Stillwell Av-bound trains are running in 2 sections: between 96 St and Brighton Beach, and between 14 St - Union Sq and Coney Island - Stillwell Av."
+    ]
+  },
+  {
     "date": "2026-09-29T13:09:59.247Z",
     "status": "Service Change",
     "details": [
@@ -205,13 +212,6 @@
     "details": [
       "Northbound: 96 St-bound trains are having longer wait times between Kings Hwy and Newkirk Plaza (up to 18 mins, normally every 9 mins).",
       "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between 96 St and Avenue M (up to 12 mins, normally every 9 mins)."
-    ]
-  },
-  {
-    "date": "2026-08-27T16:44:03.390Z",
-    "status": "Delays",
-    "details": [
-      "Northbound: 96 St-bound trains are having longer wait times between Kings Hwy and Church Av (up to 13 mins, normally every 9 mins)."
     ]
   }
 ]
