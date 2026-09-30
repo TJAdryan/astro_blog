@@ -4,7 +4,7 @@ import Layout from "../layouts/BlogPost.astro";
 
 <Layout
 	title="About Me"
-	description="Senior Systems and Data Engineer focused on architecting reliable, high-performance data transformations and cloud infrastructure."
+	description="Senior Systems and Data Engineer focused on building practical, reliable data pipelines and infrastructure."
 	hideTitle={true}
 >
 	<div class="profile-header">
@@ -22,10 +22,10 @@ import Layout from "../layouts/BlogPost.astro";
 						Dominick Ryan
 					</h1>
 					<h2 class="profile-subtitle">
-						Senior Systems & Data Architect
+						Senior Systems & Data Engineer
 					</h2>
 					<p class="profile-bio">
-						I bridge the gap between complex legacy infrastructure and modern data lakehouse architectures. My work focuses on the engineering requirements of <strong>data gravity</strong>—ensuring that underlying systems (compute, storage, and networking) are architected specifically to support high-throughput, reliable data transformations.
+						I build and fix the plumbing that makes data systems actually work. Most of my work sits right where messy legacy infrastructure meets modern data stacks—untangling bottlenecks in compute, storage, and networking so pipelines run fast and don't break at 2 AM.
 					</p>
 				</div>
 			</div>
@@ -40,60 +40,60 @@ import Layout from "../layouts/BlogPost.astro";
 	</div>
 
 	<div class="content-section">
-		<h3>Infrastructure & Systems Strategy</h3>
+		<h3>Infrastructure & Systems</h3>
 		<p>
-			I specialize in the design and management of high-concurrency environments, ensuring that infrastructure is a performance enabler rather than a bottleneck.
+			Reliable data starts with reliable infrastructure. I focus on keeping systems fast, stable, and cost-effective rather than adding complexity for its own sake.
 		</p>
 		<div class="grid-list">
 			<div class="project-card">
-				<h4>Hybrid Cloud Orchestration</h4>
-				<p>Expert-level administration of <strong>Azure</strong> and on-prem <strong>VMware/Hyper-V</strong> environments. This includes architecting <strong>Azure Virtual Desktop (AVD)</strong> for secure data access and managing complex identity lifecycles via <strong>Entra ID</strong>.</p>
+				<h4>Hybrid Cloud & Virtualization</h4>
+				<p>Hands-on administration across <strong>Azure</strong> and on-prem <strong>VMware/Hyper-V</strong> environments. I set up secure, low-friction access using <strong>Azure Virtual Desktop (AVD)</strong> and keep identity management clean with <strong>Entra ID</strong>.</p>
 			</div>
 			<div class="project-card">
-				<h4>Performance Engineering</h4>
-				<p>I specialize in removing compute bottlenecks by offloading CPU-bound workloads to <strong>GPU-accelerated processing (CUDA/RAPIDS)</strong>, achieving measured <strong>70x speedups</strong> in data processing latency.</p>
+				<h4>Practical Performance Tuning</h4>
+				<p>Instead of throwing expensive cloud compute at slow workloads, I profile bottlenecks directly—whether that means writing better queries, adopting columnar tools, or offloading heavy compute to <strong>GPU acceleration (CUDA/RAPIDS)</strong> for measured <strong>70x speedups</strong>.</p>
 			</div>
 			<div class="project-card">
-				<h4>Observability & Telemetry</h4>
-				<p>I engineered a high-availability monitoring platform integrating real-time telemetry from <strong>2,000+ distributed devices</strong>, providing sub-second support desk metrics and 24/7 infrastructure health visibility.</p>
+				<h4>Real-World Monitoring</h4>
+				<p>Built a high-availability telemetry platform collecting real-time health data from <strong>2,000+ distributed devices</strong>, giving support teams sub-second visibility so issues get caught before users feel them.</p>
 			</div>
 		</div>
 	</div>
 
 	<div class="content-section">
-		<h3>Data Architecture & Engineering</h3>
+		<h3>Data Engineering & Pipelines</h3>
 		<p>
-			I treat data as a distributed systems product, focusing on reliability and strictly typed lineages.
+			I build straightforward pipelines designed to handle real-world edge cases, dirty inputs, and schema surprises without falling over.
 		</p>
 		<div class="grid-list">
 			<div class="project-card">
-				<h4>Lakehouse Implementation</h4>
-				<p>I architect end-to-end data lifecycles using the <strong>Medallion Architecture</strong> (Bronze/Silver/Gold) on <strong>Microsoft Fabric</strong>.</p>
+				<h4>Pragmatic Lakehouses</h4>
+				<p>Structuring raw, messy inputs into clean, queryable datasets using the <strong>Medallion Architecture</strong> (Bronze/Silver/Gold) on <strong>Microsoft Fabric</strong>.</p>
 			</div>
 			<div class="project-card">
-				<h4>Modern Orchestration</h4>
-				<p>I utilize <strong>Dagster</strong> for software-defined orchestration, implementing event-driven pipelines that prioritize data quality and idempotent processing.</p>
+				<h4>Workflow Orchestration</h4>
+				<p>Using <strong>Dagster</strong> for software-defined orchestration, building event-driven, idempotent pipelines with built-in asset checks and clear error tracing so failures are easy to debug.</p>
 			</div>
 			<div class="project-card">
-				<h4>Systems Reliability</h4>
-				<p>My background in systems allows me to implement <strong>Event-Driven Microservices</strong> as the backbone for real-time data services, ensuring pipelines are as resilient as the infrastructure they run on.</p>
+				<h4>Resilient Services</h4>
+				<p>Bringing systems engineering habits to data services—building lightweight, event-driven services that handle network hiccups gracefully and recover automatically.</p>
 			</div>
 		</div>
 	</div>
 
 	<div class="content-section">
-		<h3>High-Compliance Industry Impact</h3>
+		<h3>Problem Solving in Regulated Environments</h3>
 		<p>
-			My career is defined by solving bottlenecks in regulated environments where technical reliability directly impacts financial outcomes.
+			A lot of my experience comes from healthcare and regulated spaces where bad data or stalled pipelines have immediate, tangible consequences.
 		</p>
 		<div class="grid-list">
 			<div class="project-card">
-				<h4>Healthcare Revenue Optimization</h4>
-				<p>I have a proven track record of re-engineering legacy EDI transaction pipelines for <strong>LHCSAs</strong> to <strong>resolve stalled revenue cycles</strong> and migrating fragmented on-prem SQL environments to modern <strong>FHIR-compliant cloud architectures</strong>.</p>
+				<h4>Fixing Healthcare Data Plumbing</h4>
+				<p>Re-engineered stalled EDI claims pipelines for home care agencies (<strong>LHCSAs</strong>) to resolve blocked revenue cycles, and migrated legacy on-prem SQL setups to modern <strong>FHIR-compliant cloud architectures</strong>.</p>
 			</div>
 			<div class="project-card">
-				<h4>Technical Documentation</h4>
-				<p>This site, <strong>NextValData.com</strong>, serves as a repository for my deep dives into <strong>CRISPR data pipelines</strong> (processing 21M+ rows via DuckDB) and emerging patterns in the Python ecosystem, including <code>uv</code>, <code>Polars</code>, and <code>Ruff</code>.</p>
+				<h4>Hands-On Experiments & Writing</h4>
+				<p>I use this site (<strong>NextValData.com</strong>) to document real experiments—like crunching <strong>21M+ rows of CRISPR data</strong> on a laptop with DuckDB, or testing newer tooling in the Python ecosystem like <code>uv</code>, <code>Polars</code>, and <code>Ruff</code>.</p>
 			</div>
 		</div>
 	</div>
@@ -109,10 +109,9 @@ import Layout from "../layouts/BlogPost.astro";
 	</div>
 
 	<div class="content-section">
-		<h3>Literary Interests</h3>
+		<h3>Beyond the Terminal</h3>
 		<p>
-			I am a sophisticate when it comes to literature, enjoying great
-			works by the likes of <strong>Stoppard</strong> and <strong>Vonnegut</strong> and the venerable <strong>Matt Dinniman</strong> who writes <strong>The Dungeon Crawler Carl</strong> series.
+			When I'm away from data pipelines, I'm usually reading—ranging from <strong>Tom Stoppard</strong> and <strong>Kurt Vonnegut</strong> to the chaotic fun of Matt Dinniman's <strong>Dungeon Crawler Carl</strong> series. If you want to read more about the non-work side, check out <a href="/more-about-me/">more about me</a>.
 		</p>
 	</div>
 
