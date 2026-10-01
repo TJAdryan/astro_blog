@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-10-01T13:11:07.312Z",
+    "status": "Service Change",
+    "details": [
+      "Southbound: Brighton Beach/Coney Island - Stillwell Av-bound trains are running in 2 sections: between 96 St and Brighton Beach, and between DeKalb Av and Coney Island - Stillwell Av."
+    ]
+  },
+  {
     "date": "2026-09-30T13:10:57.120Z",
     "status": "Service Change",
     "details": [
@@ -204,14 +211,6 @@
     "details": [
       "<Q> trains are making local stops between 57 St - 7 Av and Canal St.",
       "Southbound: Some Coney Island - Stillwell Av-bound trains are skipping Avenue H, Avenue J, and Avenue M."
-    ]
-  },
-  {
-    "date": "2026-08-28T17:02:44.940Z",
-    "status": "Delays",
-    "details": [
-      "Northbound: 96 St-bound trains are having longer wait times between Kings Hwy and Newkirk Plaza (up to 18 mins, normally every 9 mins).",
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between 96 St and Avenue M (up to 12 mins, normally every 9 mins)."
     ]
   }
 ]
