@@ -23,8 +23,6 @@ Without an explicit `encoding="utf-8"`, that simple two-line block behaved diffe
 
 **PEP 686** permanently fixes this in Python 3.15.
 
----
-
 ### What Changes Under PEP 686
 
 For years, avoiding this bug required sheer habit: remembering to pass `encoding="utf-8"` to every single `open()` call, `TextIOWrapper`, and file-based helper function across your entire codebase. Miss it once in an auxiliary utility, and cross-platform parity fell apart.
@@ -40,8 +38,6 @@ with open("export.csv", encoding="locale") as f:
 ```
 
 If you want this cross-platform consistency in your pipelines right now without waiting for Python 3.15, you can opt in today by setting the environment variable `PYTHONUTF8=1` or running Python with the `-X utf8` flag.
-
----
 
 ### The PowerShell 5.1 Trap
 
@@ -65,8 +61,6 @@ $OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 # Force '>' (Out-File) to write UTF-8 rather than UTF-16 LE
 $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
 ```
-
----
 
 ### Closing the Gap
 
