@@ -8,7 +8,7 @@ category: "Data Engineering"
 
 If you develop on Linux or macOS and run pipelines on Windows—or manage cross-platform CI matrix builds—you have almost certainly run headfirst into the Windows locale bug. 
 
-Your code looks completely clean and idiomatic. Your test suite runs without a hitch on your local machine. But the moment your runner spins up on a Windows agent, the build halts with an infuriating exception:
+Your code looks completely clean and idiomatic. Your test suite runs without a hitch on your local machine. But the moment your runner spins up on a Windows box, the build halts with an infuriating exception:
 
 `UnicodeDecodeError: 'charmap' codec can't decode byte 0x9d in position...`
 
