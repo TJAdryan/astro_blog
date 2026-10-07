@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-10-07T13:11:26.787Z",
+    "status": "Service Change",
+    "details": [
+      "Northbound: Some 96 St-bound trains are skipping Avenue M, Avenue J, Avenue H, Cortelyou Rd, Beverley Rd, and Parkside Av."
+    ]
+  },
+  {
     "date": "2026-10-06T13:08:16.323Z",
     "status": "Service Change",
     "details": [
@@ -203,12 +210,5 @@
     "date": "2026-09-04T13:05:35.584Z",
     "status": "Good Service",
     "details": []
-  },
-  {
-    "date": "2026-09-03T13:06:05.258Z",
-    "status": "Service Change",
-    "details": [
-      "Southbound: Some Coney Island - Stillwell Av-bound trains are making local stops between 57 St - 7 Av and Times Sq - 42 St."
-    ]
   }
 ]
