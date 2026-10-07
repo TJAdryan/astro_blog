@@ -39,7 +39,7 @@ with open("export.csv", encoding="locale") as f:
 
 If you want this cross-platform consistency in your pipelines right now without waiting for Python 3.15, you can opt in today by setting the environment variable `PYTHONUTF8=1` or running Python with the `-X utf8` flag.
 
-### The PowerShell 5.1 Trap
+### Really PowerShell 5.1 ?
 
 While Python 3.15 solves the encoding issue inside the interpreter, data engineering scripts rarely execute in a vacuum. On Windows, Python jobs are routinely triggered by scheduled tasks, build agents, and shell wrappers.
 
