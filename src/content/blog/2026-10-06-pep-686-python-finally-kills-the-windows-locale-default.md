@@ -51,7 +51,7 @@ The problem lies with Windows PowerShell 5.1 (`powershell.exe`). Version 5.1 rem
 
 2. **Redirection to Disk (`>`):** In 5.1, the `>` redirection operator is syntactic sugar for `Out-File`, which defaults to `Unicode` (UTF-16 LE with BOM). If a script redirects program output to a file and you later read it in Python 3.15 with a bare `open("output.json")`, it immediately fails because Python expects UTF-8, not UTF-16.
 
-If you have legacy 5.1 automation orchestrating Python tasks, you need to normalize both stdio streaming and cmdlet redirection upfront:
+If you have to build a new legacy 5.1 PowerShell automation, you need to explicitly define the output:
 
 ```powershell
 # Prevent ASCII mangling when piping to external executables
@@ -62,8 +62,6 @@ $OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
 ```
 
-### Closing the Gap
-
-It is a modest change in the language specification, but PEP 686 eliminates decades of unnecessary platform drift. Once Python 3.15 becomes your baseline, UTF-8 is simply the default language of text I/O everywhere. 
+It is a modest change in the language specification, but PEP 686 removes what has been a point of friction. Once Python 3.15 becomes your baseline, UTF-8 is simply the default language of text I/O everywhere.
 
 Just make sure your host shell isn't quietly converting your strings to ASCII behind the interpreter's back.
