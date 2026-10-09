@@ -21,7 +21,7 @@ with open("data.json") as f:
 
 Without an explicit `encoding="utf-8"`, that simple two-line block behaved differently depending on where the interpreter was running. On Linux and macOS, Python has long defaulted to UTF-8. On Windows, Python inspected the system locale and defaulted to the legacy ANSI code page—typically `cp1252` in Western environments, or `Shift-JIS`, `GBK`, or `cp949` elsewhere. The moment your file contained a curly apostrophe, an em dash, or an accented vowel, the code broke.
 
-**PEP 686** permanently fixes this in Python 3.15.
+[**PEP 686**](https://peps.python.org/pep-0686/) permanently fixes this in [Python 3.15](https://www.python.org/downloads/).
 
 ### What Changes Under PEP 686
 
@@ -62,6 +62,6 @@ $OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
 ```
 
-It is a modest change in the language specification, but PEP 686 removes what has been a point of friction. Once Python 3.15 becomes your baseline, UTF-8 is simply the default language of text I/O everywhere.
+It is a modest change in the language specification, but PEP 686 removes what has been a point of friction. You can read the full specification for yourself in [PEP 686](https://peps.python.org/pep-0686/) and download the release from the [Python 3.15 download page](https://www.python.org/downloads/). Once Python 3.15 becomes your baseline, UTF-8 is simply the default language of text I/O everywhere.
 
 Just make sure your host shell isn't quietly converting your strings to ASCII behind the interpreter's back.
