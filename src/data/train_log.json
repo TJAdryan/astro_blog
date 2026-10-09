@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-10-09T13:09:54.537Z",
+    "status": "Service Change",
+    "details": [
+      "Northbound: Some 96 St-bound trains are skipping Avenue M, Avenue J, Avenue H, Cortelyou Rd, Beverley Rd, and Parkside Av.",
+      "Northbound: Some 96 St-bound trains are making local stops between Times Sq - 42 St and 57 St - 7 Av."
+    ]
+  },
+  {
     "date": "2026-10-08T13:11:51.847Z",
     "status": "Service Change",
     "details": [
@@ -205,11 +213,6 @@
   },
   {
     "date": "2026-09-06T13:04:48.336Z",
-    "status": "Good Service",
-    "details": []
-  },
-  {
-    "date": "2026-09-05T13:05:18.013Z",
     "status": "Good Service",
     "details": []
   }
