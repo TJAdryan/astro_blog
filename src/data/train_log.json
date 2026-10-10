@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-10-10T13:06:32.623Z",
+    "status": "Service Change",
+    "details": [
+      "<Q> trains are running between 96 St and Prospect Park."
+    ]
+  },
+  {
     "date": "2026-10-09T13:09:54.537Z",
     "status": "Service Change",
     "details": [
@@ -210,10 +217,5 @@
       "Northbound: 96 St-bound trains are having longer wait times at Canal St (up to 15 mins, normally every 10 mins).",
       "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times at Parkside Av (up to 12 mins, normally every 10 mins)."
     ]
-  },
-  {
-    "date": "2026-09-06T13:04:48.336Z",
-    "status": "Good Service",
-    "details": []
   }
 ]
