@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-10-13T13:14:56.245Z",
+    "status": "Service Change",
+    "details": [
+      "Northbound: Some 96 St-bound trains are skipping Avenue M, Avenue J, Avenue H, Cortelyou Rd, Beverley Rd, and Parkside Av."
+    ]
+  },
+  {
     "date": "2026-10-11T13:06:32.901Z",
     "status": "Service Change",
     "details": [
@@ -208,13 +215,6 @@
     "details": [
       "Northbound: 96 St-bound trains are having longer wait times at Canal St (up to 16 mins, normally every 10 mins).",
       "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Newkirk Plaza and Avenue M (up to 16 mins, normally every 10 mins)."
-    ]
-  },
-  {
-    "date": "2026-09-09T13:05:38.052Z",
-    "status": "Service Change",
-    "details": [
-      "Southbound: Some Coney Island - Stillwell Av-bound trains are making local stops between 57 St - 7 Av and Times Sq - 42 St."
     ]
   }
 ]
