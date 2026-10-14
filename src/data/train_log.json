@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-10-14T13:04:56.720Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times between 14 St - Union Sq and 34 St - Herald Sq (up to 12 mins, normally every 10 mins).",
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times at W 8 St - NY Aquarium (up to 12 mins, normally every 10 mins)."
+    ]
+  },
+  {
     "date": "2026-10-13T13:14:56.245Z",
     "status": "Service Change",
     "details": [
@@ -207,14 +215,6 @@
     "status": "Service Change",
     "details": [
       "Southbound: Some Coney Island - Stillwell Av-bound trains are making local stops between 57 St - 7 Av and Times Sq - 42 St."
-    ]
-  },
-  {
-    "date": "2026-09-10T13:05:00.775Z",
-    "status": "Delays",
-    "details": [
-      "Northbound: 96 St-bound trains are having longer wait times at Canal St (up to 16 mins, normally every 10 mins).",
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Newkirk Plaza and Avenue M (up to 16 mins, normally every 10 mins)."
     ]
   }
 ]
