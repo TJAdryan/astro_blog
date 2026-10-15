@@ -64,4 +64,4 @@ $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
 
 It is a modest change in the language specification, but PEP 686 removes what has been a long-standing point of friction. You can read the full specification in [PEP 686](https://peps.python.org/pep-0686/). To try it out today, grab the latest version of Python [here](https://www.python.org/downloads/), or reference my [previous post about using uv to install Python](/blog/2026-06-04-dont-be-shy-about-trying-new-python-features) to test pre-releases in an isolated environment.
 
-Once Python 3.15 becomes your baseline, UTF-8 is simply the default language of text I/O everywhere.
+Once Python 3.15 becomes your baseline, your life will become easier.
