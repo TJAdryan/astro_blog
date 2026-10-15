@@ -1,5 +1,10 @@
 [
   {
+    "date": "2026-10-15T13:07:52.620Z",
+    "status": "Good Service",
+    "details": []
+  },
+  {
     "date": "2026-10-14T13:04:56.720Z",
     "status": "Delays",
     "details": [
@@ -208,13 +213,6 @@
     "details": [
       "Northbound: 96 St-bound trains are having longer wait times at DeKalb Av (up to 17 mins, normally every 12 mins).",
       "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times at Neck Rd (up to 14 mins, normally every 11 mins)."
-    ]
-  },
-  {
-    "date": "2026-09-11T13:05:36.896Z",
-    "status": "Service Change",
-    "details": [
-      "Southbound: Some Coney Island - Stillwell Av-bound trains are making local stops between 57 St - 7 Av and Times Sq - 42 St."
     ]
   }
 ]
