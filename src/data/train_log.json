@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-10-17T13:05:09.803Z",
+    "status": "Service Change",
+    "details": [
+      "Northbound: Some 96 St-bound trains are skipping Cortelyou Rd, Beverley Rd, and Parkside Av."
+    ]
+  },
+  {
     "date": "2026-10-16T13:07:10.442Z",
     "status": "Service Change",
     "details": [
@@ -205,13 +212,6 @@
     "details": [
       "Northbound: 96 St-bound trains are having longer wait times between 14 St - Union Sq and Canal St (up to 12 mins, normally every 10 mins).",
       "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Cortelyou Rd and Newkirk Plaza (up to 13 mins, normally every 10 mins)."
-    ]
-  },
-  {
-    "date": "2026-09-13T13:05:25.179Z",
-    "status": "Delays",
-    "details": [
-      "Northbound: 96 St-bound trains are having longer wait times between Coney Island - Stillwell Av and Canal St (up to 16 mins, normally every 11 mins)."
     ]
   }
 ]
