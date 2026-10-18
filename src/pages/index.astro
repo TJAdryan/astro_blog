@@ -108,6 +108,76 @@ const latestPosts = posts.slice(0, 3);
         )
       }
 
+      <!-- Interactive Projects & Tools -->
+      <section class="interactive-showcase-section">
+        <div class="section-header mb-4">
+          <h2 class="text-2xl font-bold default-title">Interactive Projects & Tools</h2>
+        </div>
+        <div class="interactive-grid">
+          <!-- Card 1: Q Train Tracker -->
+          <a href="/q-train" class="project-card">
+            <div class="project-image-wrap">
+              <img src="/img/train_pic.png" alt="BMT Brighton Line Transit Tracker" class="project-img" />
+              <div class="project-overlay">
+                <span class="project-overlay-text">Launch Tracker →</span>
+              </div>
+            </div>
+            <div class="project-card-body">
+              <span class="project-badge badge-transit">Live Transit & Weather</span>
+              <h3 class="project-title">BMT Brighton Line Tracker</h3>
+              <p class="project-desc">
+                Real-time MTA arrival tracking, live weather commute alerts, and historical performance diagnostics for the Q and B corridor.
+              </p>
+              <span class="project-link-text">Launch Tracker &rarr;</span>
+            </div>
+          </a>
+
+          <!-- Card 2: Housing Simulation -->
+          <a href="/housing_simulation" class="project-card">
+            <div class="project-image-wrap">
+              <img src="/img/housing_sim.jpg" alt="Housing Market Simulation" class="project-img" />
+              <div class="project-overlay">
+                <span class="project-overlay-text">Run Simulation →</span>
+              </div>
+            </div>
+            <div class="project-card-body">
+              <span class="project-badge badge-macro">Macroeconomic Modeling</span>
+              <h3 class="project-title">Housing Market Simulation</h3>
+              <p class="project-desc">
+                Interactive computational model simulating regional listing volumes, inventory absorption, foreclosure rates, and market pricing.
+              </p>
+              <span class="project-link-text">Run Simulation &rarr;</span>
+            </div>
+          </a>
+
+          <!-- Card 3: Vault Runner -->
+          <a href="/VaultRunner" class="project-card">
+            <div class="project-image-wrap">
+              <img src="/img/vault_runner.svg" alt="Vault Runner Rogue-like Game" class="project-img" />
+              <div class="project-overlay">
+                <span class="project-overlay-text">Play Game →</span>
+              </div>
+            </div>
+            <div class="project-card-body">
+              <span class="project-badge badge-game">Procedural Game Engine</span>
+              <h3 class="project-title">Vault Runner</h3>
+              <p class="project-desc">
+                A rogue-like procedural dungeon escape built with custom React state machines, turn-based mechanics, and real-time canvas rendering.
+              </p>
+              <span class="project-link-text">Play Game &rarr;</span>
+            </div>
+          </a>
+        </div>
+        <div class="mt-6 text-center">
+          <a
+            href="/interactive"
+            class="inline-block px-6 py-2 bg-slate-800 dark:bg-slate-700 text-white rounded-lg font-semibold shadow hover:bg-slate-700 dark:hover:bg-slate-600 transition-colors"
+          >
+            Explore All Simulations
+          </a>
+        </div>
+      </section>
+
       <!-- Interesting Articles: show 3 random from public/data/articles.json -->
       <section id="all-articles" class="reading-list-section">
         <h2 class="text-2xl font-bold mb-4">My Reading List</h2>
@@ -702,6 +772,160 @@ const latestPosts = posts.slice(0, 3);
     padding: 0.2rem 0.5rem;
     border-radius: 4px;
     font-weight: 500;
+  }
+
+  /* ------------------------------------- */
+  /* Featured Interactive Projects & Tools */
+  /* ------------------------------------- */
+  .interactive-grid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .interactive-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .project-card {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 107, 53, 0.12);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .project-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(255, 107, 53, 0.12);
+    border-color: rgba(255, 107, 53, 0.4);
+    background: white;
+  }
+
+  .project-image-wrap {
+    position: relative;
+    width: 100%;
+    height: 160px;
+    overflow: hidden;
+    background: #0f172a;
+  }
+
+  .project-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .project-card:hover .project-img {
+    transform: scale(1.06);
+  }
+
+  .project-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .project-card:hover .project-overlay {
+    opacity: 1;
+  }
+
+  .project-overlay-text {
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 0.4rem 0.85rem;
+    background: rgba(0, 0, 0, 0.85);
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  .project-card-body {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+
+  .project-badge {
+    align-self: flex-start;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 0.2rem 0.55rem;
+    border-radius: 4px;
+    margin-bottom: 0.65rem;
+  }
+
+  .badge-transit {
+    background-color: #fef3c7;
+    color: #b45309;
+    border: 1px solid #fde68a;
+  }
+
+  .badge-macro {
+    background-color: #f3e8ff;
+    color: #7e22ce;
+    border: 1px solid #e9d5ff;
+  }
+
+  .badge-game {
+    background-color: #e0f2fe;
+    color: #0369a1;
+    border: 1px solid #bae6fd;
+  }
+
+  .project-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    margin: 0 0 0.5rem 0;
+    line-height: 1.35;
+    color: rgb(var(--black));
+    letter-spacing: -0.01em;
+    transition: color 0.2s;
+  }
+
+  .project-card:hover .project-title {
+    color: var(--accent);
+  }
+
+  .project-desc {
+    font-size: 0.92rem;
+    color: rgb(var(--gray-dark));
+    line-height: 1.55;
+    margin: 0 0 1.25rem 0;
+    flex-grow: 1;
+  }
+
+  .project-link-text {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-top: auto;
+    transition: gap 0.2s ease;
+  }
+
+  .project-card:hover .project-link-text {
+    gap: 0.45rem;
   }
 
   /* Reading stack as a balanced horizontal grid under the writing */

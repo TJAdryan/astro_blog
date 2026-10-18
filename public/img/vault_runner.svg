@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 340" width="100%" height="100%">
+  <defs>
+    <radialGradient id="vaultGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.25" />
+      <stop offset="60%" stop-color="#d97706" stop-opacity="0.08" />
+      <stop offset="100%" stop-color="#090d16" stop-opacity="0" />
+    </radialGradient>
+    <pattern id="gridPattern" width="30" height="30" patternUnits="userSpaceOnUse">
+      <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#1e293b" stroke-width="0.8" />
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="600" height="340" fill="#090d16" />
+  <rect width="600" height="340" fill="url(#gridPattern)" opacity="0.7" />
+  <circle cx="300" cy="170" r="220" fill="url(#vaultGlow)" />
+
+  <!-- Vault Arch / Gate -->
+  <path d="M 230 240 L 230 150 A 70 70 0 0 1 370 150 L 370 240 Z" fill="#0f172a" stroke="#f59e0b" stroke-width="2.5" stroke-dasharray="6,4" />
+  <circle cx="300" cy="150" r="35" fill="#1e293b" stroke="#fbbf24" stroke-width="2" />
+
+  <!-- Keyhole / Core -->
+  <path d="M 294 142 A 8 8 0 1 1 306 142 L 308 160 L 292 160 Z" fill="#fbbf24" />
+
+  <!-- Runes & Sparks -->
+  <circle cx="210" cy="130" r="3" fill="#fbbf24" opacity="0.6" />
+  <circle cx="390" cy="130" r="3" fill="#fbbf24" opacity="0.6" />
+  <circle cx="180" cy="190" r="2" fill="#f59e0b" opacity="0.5" />
+  <circle cx="420" cy="190" r="2" fill="#f59e0b" opacity="0.5" />
+
+  <!-- Title Text -->
+  <text x="300" y="278" font-family="'JetBrains Mono', monospace, sans-serif" font-size="24" font-weight="900" fill="#fbbf24" letter-spacing="4" text-anchor="middle">VAULT RUNNER</text>
+  <text x="300" y="302" font-family="'JetBrains Mono', monospace, sans-serif" font-size="11" font-weight="700" fill="#94a3b8" letter-spacing="3" text-anchor="middle">PROCEDURAL DUNGEON ESCAPE</text>
+</svg>
