@@ -2,11 +2,39 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 import FormattedDate from "../components/FormattedDate.astro";
+import articlesData from "../data/articles.json";
 
 // Fetch posts and sort
 const posts = await getCollection("blog");
 posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 const latestPosts = posts.slice(0, 3);
+
+// Helper functions for reading list
+function getDomain(urlStr: string) {
+  try {
+    const hostname = new URL(urlStr).hostname;
+    return hostname.replace(/^www\./, "");
+  } catch (e) {
+    return "external resource";
+  }
+}
+
+function getCategoryClass(area: string) {
+  const norm = (area || "").toLowerCase();
+  if (norm.includes("ai") || norm.includes("machine learning")) return "badge-ai";
+  if (norm.includes("database")) return "badge-db";
+  if (norm.includes("distributed")) return "badge-dist";
+  if (norm.includes("social")) return "badge-social";
+  if (norm.includes("economics")) return "badge-econ";
+  if (norm.includes("genomics") || norm.includes("crispr")) return "badge-crispr";
+  if (norm.includes("software") || norm.includes("engineering")) return "badge-se";
+  return "badge-default";
+}
+
+// Select 3 random articles for server-side rendering
+const featuredArticles = [...articlesData]
+  .sort(() => 0.5 - Math.random())
+  .slice(0, 3);
 ---
 
 <BaseLayout>
@@ -178,18 +206,80 @@ const latestPosts = posts.slice(0, 3);
         </div>
       </section>
 
-      <!-- Interesting Articles: show 3 random from public/data/articles.json -->
+      <!-- Interesting Articles: Server-Rendered from articles.json -->
       <section id="all-articles" class="reading-list-section">
         <h2 class="text-2xl font-bold mb-4">My Reading List</h2>
         <div id="articles-list" class="reading-stack">
-          <!-- client-side will render 3 random articles here -->
+          {
+            featuredArticles.map((article) => {
+              const badgeClass = getCategoryClass(article.area);
+              const domain = getDomain(article.url);
+              return (
+                <div class="reading-item-container">
+                  <a
+                    href={article.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="reading-list-card"
+                  >
+                    <div class="reading-card-header">
+                      <span class={`reading-area-badge ${badgeClass}`}>
+                        {article.area || "Resource"}
+                      </span>
+                      <span class="reading-domain-badge">
+                        <svg
+                          style="width: 12px; height: 12px; margin-right: 4px; display: inline-block;"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                          />
+                        </svg>
+                        {domain}
+                      </span>
+                    </div>
+                    <h3 class="reading-card-title">
+                      {article.title}
+                      <svg
+                        style="width: 12px; height: 12px; margin-left: 4px; display: inline-block;"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                        />
+                      </svg>
+                    </h3>
+                    <p class="reading-card-author">
+                      By {article.author || "Unknown"}
+                    </p>
+                  </a>
+                  {article.description && (
+                    <p class="reading-card-desc-free">{article.description}</p>
+                  )}
+                </div>
+              );
+            })
+          }
         </div>
         <div class="mt-6 text-center">
           <a
             href="/interesting-articles/"
             class="inline-block px-6 py-2 bg-slate-800 dark:bg-slate-700 text-white rounded-lg font-semibold shadow hover:bg-slate-700 dark:hover:bg-slate-600 transition-colors"
-            >View Full Reading List</a
           >
+            View Full Reading List
+          </a>
         </div>
       </section>
     </div>
@@ -300,99 +390,6 @@ const latestPosts = posts.slice(0, 3);
         }, 5000);
       }
     }
-
-    // ---------------------------------------------------------
-    // 2. Fetch Articles Logic
-    // ---------------------------------------------------------
-    fetch("/data/articles.json")
-      .then((res) =>
-        res.ok
-          ? res.json()
-          : Promise.reject(new Error("articles.json not found")),
-      )
-      .then((articles) => {
-        function shuffle(array) {
-          let arr = array.slice();
-          for (let i = arr.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [arr[i], arr[j]] = [arr[j], arr[i]];
-          }
-          return arr;
-        }
-        function getDomain(urlStr) {
-          try {
-            const hostname = new URL(urlStr).hostname;
-            return hostname.replace(/^www\./, '');
-          } catch (e) {
-            return 'external resource';
-          }
-        }
-        function getCategoryClass(area) {
-          const norm = (area || '').toLowerCase();
-          if (norm.includes('ai') || norm.includes('machine learning')) return 'badge-ai';
-          if (norm.includes('database')) return 'badge-db';
-          if (norm.includes('distributed')) return 'badge-dist';
-          if (norm.includes('social')) return 'badge-social';
-          if (norm.includes('economics')) return 'badge-econ';
-          if (norm.includes('genomics') || norm.includes('crispr')) return 'badge-crispr';
-          if (norm.includes('software') || norm.includes('engineering')) return 'badge-se';
-          return 'badge-default';
-        }
-
-        const three = shuffle(articles).slice(0, 3);
-        const container = document.getElementById("articles-list");
-        if (!container) return;
-        container.innerHTML = "";
-        three.forEach((article) => {
-          const item = document.createElement("div");
-          item.className = "reading-item-container";
-
-          const card = document.createElement("a");
-          card.href = article.url;
-          card.target = "_blank";
-          card.rel = "noopener";
-          card.className = "reading-list-card";
-
-          const badgeClass = getCategoryClass(article.area);
-
-          card.innerHTML = `
-            <div class="reading-card-header">
-              <span class="reading-area-badge ${badgeClass}">${article.area || "Resource"}</span>
-              <span class="reading-domain-badge">
-                <svg style="width: 12px; height: 12px; margin-right: 4px; display: inline-block;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
-                </svg>
-                ${getDomain(article.url)}
-              </span>
-            </div>
-            <h3 class="reading-card-title">
-              ${article.title}
-              <svg style="width: 12px; height: 12px; margin-left: 4px; display: inline-block;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-              </svg>
-            </h3>
-            <p class="reading-card-author">By ${article.author || "Unknown"}</p>
-          `;
-
-          item.appendChild(card);
-
-          if (article.description) {
-            const desc = document.createElement("p");
-            desc.className = "reading-card-desc-free";
-            desc.textContent = article.description;
-            item.appendChild(desc);
-          }
-
-          container.appendChild(item);
-        });
-      })
-      .catch((err) => {
-        const container = document.getElementById("articles-list");
-        if (container)
-          container.innerHTML =
-            '<p class="text-gray-500">Unable to load articles.</p>';
-        console.warn("Failed to load articles.json", err);
-      });
   });
 </script>
 
