@@ -228,12 +228,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   @media (prefers-color-scheme: dark) {
     .search-input {
       background:
-        linear-gradient(#1e293b, #1e293b) padding-box,
+        linear-gradient(#f8fafc, #f8fafc) padding-box,
         linear-gradient(to right, #ff6b35, #ff9f43) border-box;
-      color: #f8fafc;
+      color: #0f172a;
     }
     .search-input::placeholder {
-      color: #64748b;
+      color: #94a3b8;
     }
   }
 
@@ -272,13 +272,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   @media (prefers-color-scheme: dark) {
     .category-pill {
-      background: rgba(30, 41, 59, 0.8);
-      color: #cbd5e1;
-      border-color: rgba(255, 255, 255, 0.05);
+      background: rgba(226, 232, 240, 0.85);
+      color: #334155;
+      border-color: rgba(255, 107, 53, 0.15);
     }
     .category-pill:hover {
-      background: #334155;
-      color: #f8fafc;
+      background: #cbd5e1;
+      color: #0f172a;
     }
     .category-pill.active {
       background: var(--accent);
@@ -378,12 +378,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     color: #475569;
   }
 
-  @media (prefers-color-scheme: dark) {
-    .description {
-      color: #cbd5e1;
-    }
-  }
-
   .date {
     margin: 0;
     color: rgb(var(--gray));
@@ -398,12 +392,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   @media (prefers-color-scheme: dark) {
     ul li a {
-      background: rgba(30, 41, 59, 0.8);
-      border-color: rgba(255, 107, 53, 0.15);
+      background: rgba(226, 232, 240, 0.75);
+      border-color: rgba(255, 107, 53, 0.2);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
     }
     ul li a:hover {
-      background: rgba(30, 41, 59, 0.95);
-      border-color: rgba(255, 107, 53, 0.5);
+      background: rgba(255, 255, 255, 0.95);
+      border-color: rgba(255, 107, 53, 0.45);
     }
   }
 
@@ -434,17 +429,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .badge-crispr { background-color: #fff1f2; color: #e11d48; border: 1px solid #fecdd3; }
   .badge-se { background-color: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
   .badge-default { background-color: #f8fafc; color: #475569; border: 1px solid #e2e8f0; }
-
-  @media (prefers-color-scheme: dark) {
-    .badge-ai { background-color: rgba(124, 58, 237, 0.15); color: #c084fc; border-color: rgba(124, 58, 237, 0.3); }
-    .badge-db { background-color: rgba(37, 99, 235, 0.15); color: #93c5fd; border-color: rgba(37, 99, 235, 0.3); }
-    .badge-dist { background-color: rgba(79, 70, 229, 0.15); color: #a5b4fc; border-color: rgba(79, 70, 229, 0.3); }
-    .badge-social { background-color: rgba(219, 39, 119, 0.15); color: #f472b6; border-color: rgba(219, 39, 119, 0.3); }
-    .badge-econ { background-color: rgba(5, 150, 105, 0.15); color: #6ee7b7; border-color: rgba(5, 150, 105, 0.3); }
-    .badge-crispr { background-color: rgba(225, 29, 72, 0.15); color: #fda4af; border-color: rgba(225, 29, 72, 0.3); }
-    .badge-se { background-color: rgba(217, 119, 6, 0.15); color: #fcd34d; border-color: rgba(217, 119, 6, 0.3); }
-    .badge-default { background-color: rgba(71, 85, 105, 0.15); color: #cbd5e1; border-color: rgba(71, 85, 105, 0.3); }
-  }
 
   .domain-badge {
     display: inline-flex;
