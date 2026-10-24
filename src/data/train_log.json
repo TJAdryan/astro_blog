@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-10-24T13:05:50.051Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times at Church Av (up to 14 mins, normally every 12 mins).",
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between 14 St - Union Sq and Atlantic Av - Barclays Ctr (up to 14 mins, normally every 11 mins)."
+    ]
+  },
+  {
     "date": "2026-10-23T13:06:48.202Z",
     "status": "Delays",
     "details": [
@@ -203,14 +211,6 @@
     "details": [
       "Northbound: 96 St-bound trains are taking 7 mins longer to travel between Church Av and Canal St, and having longer wait times between W 8 St - NY Aquarium and 14 St - Union Sq (up to 13 mins, normally every 10 mins).",
       "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Ocean Pkwy and Coney Island - Stillwell Av (up to 12 mins, normally every 10 mins)."
-    ]
-  },
-  {
-    "date": "2026-09-20T13:04:57.646Z",
-    "status": "Delays",
-    "details": [
-      "Northbound: 96 St-bound trains are having longer wait times between Coney Island - Stillwell Av and 86 St (up to 15 mins, normally every 11 mins).",
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between DeKalb Av and Avenue H (up to 16 mins, normally every 13 mins)."
     ]
   }
 ]
