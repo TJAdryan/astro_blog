@@ -718,6 +718,18 @@ const featuredArticles = [...articlesData]
     background: white;
   }
 
+  @media (prefers-color-scheme: dark) {
+    .writing-card {
+      background: rgba(226, 232, 240, 0.75);
+      border-color: rgba(255, 107, 53, 0.2);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    }
+    .writing-card:hover {
+      background: rgba(255, 255, 255, 0.95);
+      border-color: rgba(255, 107, 53, 0.45);
+    }
+  }
+
   .writing-card-meta {
     display: flex;
     justify-content: space-between;

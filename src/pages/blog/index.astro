@@ -42,6 +42,18 @@ const posts = (await getCollection("blog")).sort(
 			color: #999;
 		}
 
+		@media (prefers-color-scheme: dark) {
+			.search-input {
+				background:
+					linear-gradient(#f8fafc, #f8fafc) padding-box,
+					linear-gradient(to right, #ff6b35, #ff9f43) border-box;
+				color: #0f172a;
+			}
+			.search-input::placeholder {
+				color: #94a3b8;
+			}
+		}
+
 		ul {
 			display: flex;
 			flex-wrap: wrap;
@@ -127,6 +139,17 @@ const posts = (await getCollection("blog")).sort(
 			transform: translateY(-5px);
 			box-shadow: 0 12px 30px rgba(255, 107, 53, 0.25);
 			border-color: rgba(255, 107, 53, 0.4);
+		}
+		@media (prefers-color-scheme: dark) {
+			ul li a {
+				background: rgba(226, 232, 240, 0.75);
+				border-color: rgba(255, 107, 53, 0.2);
+				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+			}
+			ul li a:hover {
+				background: rgba(255, 255, 255, 0.95);
+				border-color: rgba(255, 107, 53, 0.45);
+			}
 		}
 		.title {
 			margin: 0;
