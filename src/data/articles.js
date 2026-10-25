@@ -9,14 +9,6 @@ export const featuredArticles = [
     description: "This study examines how observers perceive and react to unequal resource allocation through the lens of a rigged Monopoly game, providing insights into attitudes towards economic inequality and resource distribution."
   },
   {
-    title: "The Economics of Healthcare Rationing",
-    authors: "Michael Frakes, Matthew Frank, Kyle Rozema",
-    year: "2015",
-    journal: "SSRN (Free)",
-    url: "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2603876",
-    description: "This comprehensive analysis examines the economics of healthcare rationing decisions, including cost-benefit and cost-effectiveness analysis. The paper explores how economic analyses inform healthcare coverage decisions and discusses practical and conceptual challenges that span both economics and ethics in healthcare resource allocation."
-  },
-  {
     title: "The Twelve-Factor App Methodology",
     authors: "Adam Wiggins",
     year: "2017",
