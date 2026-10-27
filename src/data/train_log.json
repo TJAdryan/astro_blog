@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-10-27T13:11:00.675Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times between Neck Rd and Coney Island - Stillwell Av (up to 81 mins, normally every 12 mins).",
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Church Av and Beverley Rd (up to 13 mins, normally every 10 mins)."
+    ]
+  },
+  {
     "date": "2026-10-25T13:04:43.123Z",
     "status": "Delays",
     "details": [
@@ -204,13 +212,6 @@
     "status": "Service Change",
     "details": [
       "Southbound: Some Coney Island - Stillwell Av-bound trains are making local stops between 57 St - 7 Av and Times Sq - 42 St."
-    ]
-  },
-  {
-    "date": "2026-09-23T13:06:41.677Z",
-    "status": "Service Change",
-    "details": [
-      "Northbound: Some 96 St-bound trains are making local stops between Times Sq - 42 St and 57 St - 7 Av."
     ]
   }
 ]
