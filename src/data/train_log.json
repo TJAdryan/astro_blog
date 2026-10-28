@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-10-28T18:36:27.880Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times between 14 St - Union Sq and 34 St - Herald Sq (up to 14 mins, normally every 10 mins).",
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Atlantic Av - Barclays Ctr and Ocean Pkwy (up to 14 mins, normally every 9 mins)."
+    ]
+  },
+  {
     "date": "2026-10-27T13:11:00.675Z",
     "status": "Delays",
     "details": [
@@ -206,12 +214,5 @@
     "date": "2026-09-25T13:06:46.724Z",
     "status": "Good Service",
     "details": []
-  },
-  {
-    "date": "2026-09-24T13:06:22.804Z",
-    "status": "Service Change",
-    "details": [
-      "Southbound: Some Coney Island - Stillwell Av-bound trains are making local stops between 57 St - 7 Av and Times Sq - 42 St."
-    ]
   }
 ]
