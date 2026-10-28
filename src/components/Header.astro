@@ -43,8 +43,39 @@ import HolidayToggle from "./HolidayToggle.astro";
 			<HeaderLink href="/interactive">Interactive</HeaderLink>
 			<HeaderLink href="/about">About</HeaderLink>
 			<HeaderLink href="/contact">Contact</HeaderLink>
-			<HeaderLink href="/q-train" aria-label="BMT Brighton Line Status">
-				<span class="mta-bullet q-bullet">Q</span>
+			<HeaderLink href="/q-train" aria-label="BMT Brighton Line Status" title="BMT Brighton Line Status">
+				<span class="mta-bullet q-bullet">
+					Q
+					<svg
+						class="q-santa-cap"
+						viewBox="0 0 120 100"
+						fill="none"
+						xmlns="http://www.w3.org/2000/svg"
+						aria-hidden="true"
+					>
+						<defs>
+							<linearGradient id="q-santa-red" x1="15" y1="10" x2="95" y2="75" gradientUnits="userSpaceOnUse">
+								<stop offset="0%" stop-color="#ef233c" />
+								<stop offset="55%" stop-color="#d90429" />
+								<stop offset="100%" stop-color="#8d0801" />
+							</linearGradient>
+							<linearGradient id="q-santa-brim" x1="10" y1="45" x2="80" y2="85" gradientUnits="userSpaceOnUse">
+								<stop offset="0%" stop-color="#ffffff" />
+								<stop offset="75%" stop-color="#f8fafc" />
+								<stop offset="100%" stop-color="#cbd5e1" />
+							</linearGradient>
+						</defs>
+						<path
+							d="M18 52 C22 18, 56 6, 84 20 C98 27, 105 44, 102 64 C96 58, 89 48, 80 45 C72 42, 74 58, 76 66 Z"
+							fill="url(#q-santa-red)"
+						/>
+						<path
+							d="M8 50 C6 42, 16 38, 26 41 C34 38, 46 41, 56 46 C66 49, 78 55, 84 64 C88 71, 82 80, 72 79 C62 78, 52 74, 40 69 C28 64, 16 61, 10 56 C7 54, 8 52, 8 50 Z"
+							fill="url(#q-santa-brim)"
+						/>
+						<circle cx="101" cy="69" r="14" fill="#ffffff" />
+					</svg>
+				</span>
 			</HeaderLink>
 			<HolidayToggle />
 		</div>
@@ -321,6 +352,7 @@ import HolidayToggle from "./HolidayToggle.astro";
 	}
 	/* MTA Bullet Styles */
 	.mta-bullet {
+		position: relative;
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
@@ -331,10 +363,32 @@ import HolidayToggle from "./HolidayToggle.astro";
 		font-weight: bold;
 		font-size: 16px;
 		line-height: 1;
+		overflow: visible;
 	}
 	.q-bullet {
 		background-color: #fccc0a;
 		color: black;
+		transition: box-shadow 0.25s ease, transform 0.25s ease;
+	}
+	.q-santa-cap {
+		display: none;
+		position: absolute;
+		top: -10px;
+		right: -11px;
+		width: 24px;
+		height: 20px;
+		pointer-events: none;
+		transform: rotate(12deg);
+		filter: drop-shadow(0 1px 2px rgba(15, 23, 42, 0.35));
+		z-index: 3;
+	}
+	:global(html.holiday-mode) .q-bullet {
+		box-shadow:
+			0 0 0 2px #1b5e20,
+			0 2px 8px rgba(217, 4, 41, 0.35);
+	}
+	:global(html.holiday-mode) .q-santa-cap {
+		display: block;
 	}
 </style>
 
