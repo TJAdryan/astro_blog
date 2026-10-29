@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-10-29T18:46:02.772Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times between Canal St and 72 St (up to 15 mins, normally every 10 mins).",
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Church Av and Beverley Rd (up to 13 mins, normally every 9 mins)."
+    ]
+  },
+  {
     "date": "2026-10-28T18:36:27.880Z",
     "status": "Delays",
     "details": [
@@ -209,10 +217,5 @@
       "Northbound: 96 St-bound trains are having longer wait times at Coney Island - Stillwell Av (up to 15 mins, normally every 12 mins).",
       "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between DeKalb Av and Canal St (up to 16 mins, normally every 11 mins)."
     ]
-  },
-  {
-    "date": "2026-09-25T13:06:46.724Z",
-    "status": "Good Service",
-    "details": []
   }
 ]
