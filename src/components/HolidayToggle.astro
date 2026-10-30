@@ -21,9 +21,23 @@
         const start = new Date(currentYear, 11, 10); // Dec 10
         const end = new Date(currentYear, 11, 31, 23, 59, 59); // Dec 31 end of day
 
-        // Check if within date range (Dec 10 - Dec 31)
-        if (now >= start && now <= end) {
+        const isLocalDev =
+            window.location.hostname === "localhost" ||
+            window.location.hostname === "127.0.0.1";
+        const urlParams = new URLSearchParams(window.location.search);
+        const forceHolidayParam =
+            urlParams.get("holiday") === "true" ||
+            urlParams.get("holiday") === "1";
+
+        // Check if within date range (Dec 10 - Dec 31), or running on local dev / preview param
+        if ((now >= start && now <= end) || isLocalDev || forceHolidayParam) {
             toggleBtn.hidden = false;
+
+            // On local dev or ?holiday=true, auto-enable Holiday Mode on initial load
+            if ((isLocalDev || forceHolidayParam) && !sessionStorage.getItem("holiday-dev-initialized")) {
+                sessionStorage.setItem("holiday-dev-initialized", "true");
+                localStorage.setItem("holiday-mode", "true");
+            }
 
             // Check stored preference
             const isHolidayMode =
@@ -32,7 +46,7 @@
                 enableHolidayMode();
             }
 
-            toggleBtn.addEventListener("click", () => {
+            toggleBtn.onclick = () => {
                 const isActive =
                     document.documentElement.classList.contains("holiday-mode");
                 if (isActive) {
@@ -40,7 +54,7 @@
                 } else {
                     enableHolidayMode();
                 }
-            });
+            };
         } else {
             toggleBtn.hidden = true;
             document.documentElement.classList.remove("holiday-mode");
