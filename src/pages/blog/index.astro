@@ -54,6 +54,27 @@ const posts = (await getCollection("blog")).sort(
 			}
 		}
 
+		:global(html.holiday-mode) .search-input {
+			background:
+				linear-gradient(#fff, #fff) padding-box,
+				linear-gradient(to right, #2e8b57, #d90429, #d4af37) border-box;
+			box-shadow: 0 4px 15px rgba(46, 139, 87, 0.14);
+		}
+
+		:global(html.holiday-mode) .search-input:focus {
+			box-shadow:
+				0 8px 25px rgba(46, 139, 87, 0.25),
+				0 4px 14px rgba(217, 4, 41, 0.15);
+		}
+
+		@media (prefers-color-scheme: dark) {
+			:global(html.holiday-mode) .search-input {
+				background:
+					linear-gradient(#f8fafc, #f8fafc) padding-box,
+					linear-gradient(to right, #2e8b57, #d90429, #d4af37) border-box;
+			}
+		}
+
 		ul {
 			display: flex;
 			flex-wrap: wrap;
@@ -163,6 +184,28 @@ const posts = (await getCollection("blog")).sort(
 		ul li a:hover h4,
 		ul li a:hover .date {
 			color: rgb(var(--accent));
+		}
+		:global(html.holiday-mode) ul li a {
+			border-color: rgba(46, 139, 87, 0.18);
+		}
+		:global(html.holiday-mode) ul li a::before {
+			background: linear-gradient(
+				90deg,
+				transparent,
+				rgba(224, 242, 254, 0.55),
+				rgba(254, 243, 199, 0.45),
+				transparent
+			);
+		}
+		:global(html.holiday-mode) ul li a:hover {
+			border-color: rgba(46, 139, 87, 0.55);
+			box-shadow:
+				0 12px 30px rgba(46, 139, 87, 0.2),
+				0 0 0 1px rgba(212, 175, 55, 0.35);
+		}
+		:global(html.holiday-mode) ul li a:hover h4,
+		:global(html.holiday-mode) ul li a:hover .date {
+			color: #2e8b57;
 		}
 		ul a:hover img {
 			box-shadow: var(--box-shadow);
