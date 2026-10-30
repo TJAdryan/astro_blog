@@ -8,26 +8,42 @@ const description = "Real-time status updates for the Q and B trains on the BMT 
 
 <Layout title={title} description={description}>
   <main class="container mx-auto px-4 py-12">
-    <h1 class="text-4xl font-bold text-center mb-8">{title}</h1>
+    <h1 class="q-page-title text-4xl font-bold text-center mb-6">{title}</h1>
+
+    <!-- MTA Holiday Nostalgia Train Banner (Visible only in Holiday Mode) -->
+    <div class="holiday-nostalgia-banner max-w-md mx-auto mb-8" role="region" aria-label="Holiday Nostalgia Ride Special">
+      <div class="nostalgia-rollsign">
+        <span class="nostalgia-bullet">Q</span>
+        <span class="nostalgia-rollsign-text">HOLIDAY NOSTALGIA SPECIAL</span>
+        <span class="nostalgia-snowflake" aria-hidden="true">❄️</span>
+      </div>
+      <div class="nostalgia-body">
+        <p class="nostalgia-headline">Vintage Arnine &amp; Brighton Line Festive Dispatch</p>
+        <p class="nostalgia-subtext">
+          Decked in 1930s rattan-seat green &amp; brass trim for the holidays. Watch the snow-dusted corridor below for live arrivals.
+        </p>
+      </div>
+    </div>
+
     <div class="flex justify-center">
       <QTrainTracker client:load />
     </div>
 
     <!-- Dedicated Brighton Line History Banner Link -->
     <section class="mt-16 border-t border-slate-200 dark:border-slate-800 pt-12 max-w-md mx-auto">
-      <div class="bg-gradient-to-br from-slate-50 to-white dark:from-slate-800/20 dark:to-slate-900/30 rounded-3xl p-6 border border-slate-200/60 dark:border-slate-800/80 shadow-md transition-all duration-300 hover:shadow-xl hover:scale-[1.01] group relative overflow-hidden">
+      <div class="brighton-timeline-card bg-gradient-to-br from-slate-50 to-white dark:from-slate-800/20 dark:to-slate-900/30 rounded-3xl p-6 border border-slate-200/60 dark:border-slate-800/80 shadow-md transition-all duration-300 hover:shadow-xl hover:scale-[1.01] group relative overflow-hidden">
         
         <!-- Subtle background decorative element representing subway line layout -->
-        <div class="absolute -right-6 -bottom-6 w-32 h-32 rounded-full bg-[#FCCC0A]/5 dark:bg-[#FCCC0A]/3 border-8 border-[#FF6319]/10 group-hover:scale-110 transition-transform duration-500 pointer-events-none"></div>
+        <div class=" absolute -right-6 -bottom-6 w-32 h-32 rounded-full bg-[#FCCC0A]/5 dark:bg-[#FCCC0A]/3 border-8 border-[#FF6319]/10 group-hover:scale-110 transition-transform duration-500 pointer-events-none"></div>
 
-        <div class="flex items-start gap-4">
+        <div class="flex items-start gap-4 relative z-10">
           <!-- Styled transit bullet graphic -->
-          <div class="w-12 h-12 rounded-full bg-slate-900 dark:bg-slate-800 flex items-center justify-center flex-shrink-0 shadow border border-slate-800 dark:border-slate-700">
+          <div class="timeline-icon-badge w-12 h-12 rounded-full bg-slate-900 dark:bg-slate-800 flex items-center justify-center flex-shrink-0 shadow border border-slate-800 dark:border-slate-700">
             <span class="text-xl">⏱️</span>
           </div>
 
           <div class="flex-1 space-y-2">
-            <h3 class="text-xl font-black text-slate-900 dark:text-white tracking-tight leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+            <h3 class="timeline-card-title text-xl font-black text-slate-900 dark:text-white tracking-tight leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
               Brighton Line History
             </h3>
             <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed font-medium">
@@ -36,7 +52,7 @@ const description = "Real-time status updates for the Q and B trains on the BMT 
             <div class="pt-2">
               <a 
                 href="/brighton-history" 
-                class="inline-flex items-center gap-1.5 text-sm font-black text-blue-600 dark:text-blue-400 group-hover:text-blue-800 dark:group-hover:text-blue-300"
+                class="timeline-card-link inline-flex items-center gap-1.5 text-sm font-black text-blue-600 dark:text-blue-400 group-hover:text-blue-800 dark:group-hover:text-blue-300"
               >
                 Explore Timeline
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transform group-hover:translate-x-1 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -50,3 +66,198 @@ const description = "Real-time status updates for the Q and B trains on the BMT 
     </section>
   </main>
 </Layout>
+
+<style>
+  /* Hidden by default; revealed when Holiday Mode is enabled */
+  .holiday-nostalgia-banner {
+    display: none;
+    flex-direction: column;
+    border-radius: 16px;
+    overflow: hidden;
+    background: linear-gradient(145deg, #1b4332 0%, #0f291e 100%);
+    border: 2px solid #d4af37;
+    box-shadow:
+      0 10px 25px rgba(20, 54, 37, 0.28),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    color: #f8fafc;
+    position: relative;
+  }
+
+  /* Snow-dusted top rim on the nostalgia banner */
+  .holiday-nostalgia-banner::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.9) 0%,
+      rgba(224, 242, 254, 0.95) 35%,
+      rgba(255, 255, 255, 0.85) 70%,
+      rgba(224, 242, 254, 0.9) 100%
+    );
+    pointer-events: none;
+  }
+
+  .nostalgia-rollsign {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    padding: 0.65rem 1rem 0.55rem;
+    background: #111827;
+    border-bottom: 2px solid #d4af37;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    letter-spacing: 0.08em;
+  }
+
+  .nostalgia-bullet {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 9999px;
+    background: #fccc0a;
+    color: #000;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: 800;
+    font-size: 0.85rem;
+    box-shadow: 0 0 0 2px #d4af37;
+    flex-shrink: 0;
+  }
+
+  .nostalgia-rollsign-text {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #fef08a;
+    text-transform: uppercase;
+    text-align: center;
+    flex: 1;
+  }
+
+  .nostalgia-snowflake {
+    font-size: 0.95rem;
+  }
+
+  .nostalgia-body {
+    padding: 0.9rem 1.1rem;
+    text-align: center;
+  }
+
+  .nostalgia-headline {
+    margin: 0 0 0.25rem 0;
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #fef3c7;
+    letter-spacing: -0.01em;
+  }
+
+  .nostalgia-subtext {
+    margin: 0;
+    font-size: 0.8rem;
+    line-height: 1.45;
+    color: #d1fae5;
+  }
+
+  :global(html.holiday-mode) .holiday-nostalgia-banner {
+    display: flex;
+  }
+
+  /* Festive Header Accent in Holiday Mode */
+  :global(html.holiday-mode) .q-page-title {
+    color: #1b4332;
+    text-shadow: 0 1px 0 rgba(212, 175, 55, 0.35);
+  }
+
+  /* QTrainTracker Santa Cap & Status Card Holiday Styling */
+  :global(.q-tracker-santa-cap) {
+    display: none;
+    position: absolute;
+    top: -14px;
+    right: -14px;
+    width: 36px;
+    height: 30px;
+    pointer-events: none;
+    transform: rotate(12deg);
+    filter: drop-shadow(0 2px 3px rgba(15, 23, 42, 0.35));
+    z-index: 3;
+  }
+
+  :global(html.holiday-mode .q-tracker-santa-cap) {
+    display: block;
+  }
+
+  :global(html.holiday-mode .q-tracker-bullet) {
+    box-shadow:
+      0 0 0 2px #1b5e20,
+      0 3px 10px rgba(217, 4, 41, 0.3);
+  }
+
+  :global(html.holiday-mode .q-status-card) {
+    position: relative;
+    overflow: hidden;
+    border: 2px solid #2e8b57;
+    box-shadow:
+      0 10px 25px rgba(46, 139, 87, 0.14),
+      0 0 0 1px rgba(212, 175, 55, 0.4);
+  }
+
+  /* Snow-dusted effect on Q status card and station arrival cards */
+  :global(html.holiday-mode .q-status-card::before),
+  :global(html.holiday-mode .q-station-card::before),
+  :global(html.holiday-mode) .brighton-timeline-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 10px;
+    background:
+      radial-gradient(circle at 12% -2px, #ffffff 7px, transparent 8px),
+      radial-gradient(circle at 32% -3px, #f0f9ff 9px, transparent 10px),
+      radial-gradient(circle at 55% -1px, #ffffff 8px, transparent 9px),
+      radial-gradient(circle at 78% -3px, #e0f2fe 10px, transparent 11px),
+      radial-gradient(circle at 92% -2px, #ffffff 7px, transparent 8px),
+      linear-gradient(180deg, rgba(224, 242, 254, 0.95) 0%, rgba(255, 255, 255, 0) 100%);
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  :global(html.holiday-mode .q-station-card) {
+    position: relative;
+    overflow: hidden;
+    border-color: rgba(46, 139, 87, 0.35) !important;
+    box-shadow:
+      0 4px 14px rgba(46, 139, 87, 0.1),
+      inset 0 2px 4px rgba(224, 242, 254, 0.6) !important;
+  }
+
+  :global(html.holiday-mode .q-arrival-pill) {
+    background-color: #ecfdf5 !important;
+    color: #1b4332 !important;
+    border-color: #a7f3d0 !important;
+  }
+
+  /* Snow-dusted & vintage green/gold trim on Brighton Line History Timeline Card */
+  :global(html.holiday-mode) .brighton-timeline-card {
+    border: 2px solid #2e8b57;
+    background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 55%, #fefce8 100%);
+    box-shadow:
+      0 12px 28px rgba(27, 67, 50, 0.15),
+      0 0 0 1px rgba(212, 175, 55, 0.45);
+  }
+
+  :global(html.holiday-mode) .timeline-icon-badge {
+    background: #1b4332;
+    border-color: #d4af37;
+    box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.35);
+  }
+
+  :global(html.holiday-mode) .brighton-timeline-card:hover .timeline-card-title,
+  :global(html.holiday-mode) .timeline-card-link {
+    color: #1b4332;
+  }
+</style>

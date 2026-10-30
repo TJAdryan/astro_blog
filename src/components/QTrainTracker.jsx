@@ -412,7 +412,7 @@ const QTrainTracker = () => {
               const nextStop = stationMap[stationId] || stationId;
 
               return (
-                <div key={stationId} className="bg-white p-4 rounded border border-gray-200 shadow-sm">
+                <div key={stationId} className="q-station-card bg-white p-4 rounded border border-gray-200 shadow-sm">
                   <div className="flex justify-between items-start mb-3">
                     <div className="font-bold text-gray-800 text-2xl">
                       {nextStop}
@@ -442,7 +442,7 @@ const QTrainTracker = () => {
                             </div>
                             <div className="flex gap-2">
                               {times.map((time, i) => (
-                                <span key={i} className="text-lg font-bold text-blue-700 bg-blue-100 px-3 py-1 rounded border border-blue-200">
+                                <span key={i} className="q-arrival-pill text-lg font-bold text-blue-700 bg-blue-100 px-3 py-1 rounded border border-blue-200">
                                   {time} min
                                 </span>
                               ))}
@@ -628,11 +628,40 @@ const QTrainTracker = () => {
       {/* 2. Q DETAIL TAB (Identical to original "Regular Q Train" page!) */}
       {currentTab === 'q' && (
         <div className="space-y-6">
-          <div className="p-6 bg-white rounded-xl shadow-md space-y-4">
+          <div className="q-status-card p-6 bg-white rounded-xl shadow-md space-y-4">
             <div className="flex items-center space-x-4">
               <div className="flex-shrink-0">
-                <div className="w-12 h-12 rounded-full bg-[#FCCC0A] flex items-center justify-center text-black font-bold text-2xl border-2 border-black">
+                <div className="q-tracker-bullet relative w-12 h-12 rounded-full bg-[#FCCC0A] flex items-center justify-center text-black font-bold text-2xl border-2 border-black">
                   Q
+                  <svg
+                    className="q-tracker-santa-cap"
+                    viewBox="0 0 120 100"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <defs>
+                      <linearGradient id="qt-santa-red" x1="15" y1="10" x2="95" y2="75" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stopColor="#ef233c" />
+                        <stop offset="55%" stopColor="#d90429" />
+                        <stop offset="100%" stopColor="#8d0801" />
+                      </linearGradient>
+                      <linearGradient id="qt-santa-brim" x1="10" y1="45" x2="80" y2="85" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stopColor="#ffffff" />
+                        <stop offset="75%" stopColor="#f8fafc" />
+                        <stop offset="100%" stopColor="#cbd5e1" />
+                      </linearGradient>
+                    </defs>
+                    <path
+                      d="M18 52 C22 18, 56 6, 84 20 C98 27, 105 44, 102 64 C96 58, 89 48, 80 45 C72 42, 74 58, 76 66 Z"
+                      fill="url(#qt-santa-red)"
+                    />
+                    <path
+                      d="M8 50 C6 42, 16 38, 26 41 C34 38, 46 41, 56 46 C66 49, 78 55, 84 64 C88 71, 82 80, 72 79 C62 78, 52 74, 40 69 C28 64, 16 61, 10 56 C7 54, 8 52, 8 50 Z"
+                      fill="url(#qt-santa-brim)"
+                    />
+                    <circle cx="101" cy="69" r="14" fill="#ffffff" />
+                  </svg>
                 </div>
               </div>
               <div>
