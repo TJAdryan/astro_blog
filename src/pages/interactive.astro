@@ -480,6 +480,14 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     border: 1px solid #86efac;
   }
 
+  .holiday-bonus-card-link {
+    display: none;
+  }
+
+  :global(html.holiday-mode) .holiday-bonus-card-link {
+    display: block;
+  }
+
   :global(html.holiday-mode) .holiday-bonus-card {
     border: 2px solid #2e8b57;
     box-shadow:
