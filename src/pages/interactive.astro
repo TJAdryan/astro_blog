@@ -109,6 +109,25 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           </div>
         </div>
       </a>
+
+      <!-- Card 6: Holiday Tree Decorator (Bonus Seasonal Interactive) -->
+      <a href="/interactive/holiday-tree" class="sim-card-link holiday-bonus-card-link">
+        <div class="sim-card holiday-bonus-card">
+          <div class="image-container">
+            <img src="/img/holiday/ornaments.png" alt="Next Val Data Holiday Tree Decorator" class="sim-image" />
+            <div class="hover-overlay">
+              <span class="overlay-text">Decorate Tree →</span>
+            </div>
+          </div>
+          <div class="card-content">
+            <span class="category-badge holiday-badge">🎄 Seasonal Bonus</span>
+            <h3 class="card-title">Holiday Tree Studio</h3>
+            <p class="card-description">
+              Decorate a festive tree with classic baubles, MTA Q/B transit bullets, and data engineering badges, then download a shareable Next Val Data holiday postcard.
+            </p>
+          </div>
+        </div>
+      </a>
     </div>
 
     <details class="install-reference-card mt-12 mb-16 overflow-hidden rounded-3xl shadow-lg">
@@ -453,6 +472,19 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   .transit-badge {
     background-color: #fef3c7;
     color: #b45309;
+  }
+
+  .holiday-badge {
+    background-color: #dcfce7;
+    color: #166534;
+    border: 1px solid #86efac;
+  }
+
+  :global(html.holiday-mode) .holiday-bonus-card {
+    border: 2px solid #2e8b57;
+    box-shadow:
+      0 10px 25px rgba(46, 139, 87, 0.16),
+      0 0 0 1px rgba(212, 175, 55, 0.45);
   }
 
   .card-title {

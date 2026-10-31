@@ -1,0 +1,37 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import HolidayTreeDecorator from "../../components/HolidayTreeDecorator.tsx";
+---
+
+<BaseLayout
+  title="Holiday Tree Decorator — Next Val Data"
+  description="Interactive Holiday Mode bonus: Decorate a festive Next Val Data holiday tree with classic baubles, MTA Q/B transit badges, and data engineering ornaments, then download a shareable holiday card."
+  mainClass="max-w-6xl"
+>
+  <div class="py-6">
+    <div class="mb-6 flex items-center justify-between flex-wrap gap-3">
+      <a
+        href="/interactive"
+        class="text-accent hover:underline font-semibold flex items-center gap-1"
+      >
+        ← Back to Interactive Gallery
+      </a>
+      <span
+        class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-emerald-100 text-emerald-900 border border-emerald-300"
+      >
+        🎄 Holiday Mode Bonus Interactive
+      </span>
+    </div>
+
+    <div class="mb-8">
+      <h1 class="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white mb-2">
+        Next <span class="text-[#ff6b35]">Val</span> Data Holiday Tree Decorator
+      </h1>
+      <p class="text-slate-600 dark:text-slate-300 text-lg max-w-4xl leading-relaxed">
+        Hang classic ornaments, MTA Brighton Line bullets, and data engineering badges on the tree, customize your lighting and greeting, and download a high-resolution <strong>Happy Holidays from Next Val Data</strong> postcard with the official logo.
+      </p>
+    </div>
+
+    <HolidayTreeDecorator client:only="react" />
+  </div>
+</BaseLayout>

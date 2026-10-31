@@ -10,6 +10,15 @@
 >
     🎄 Holiday Mode
 </button>
+<a
+    id="holiday-tree-link"
+    href="/interactive/holiday-tree"
+    class="holiday-tree-link"
+    title="Decorate the Next Val Data Holiday Tree"
+    hidden
+>
+    🎨 Decorate Tree
+</a>
 
 <script>
     function initHolidayMode() {
@@ -64,6 +73,8 @@
             document.documentElement.classList.add("holiday-mode");
             localStorage.setItem("holiday-mode", "true");
             toggleBtn.classList.add("active");
+            const treeLink = document.getElementById("holiday-tree-link");
+            if (treeLink) treeLink.hidden = false;
             startSnow();
         }
 
@@ -71,6 +82,8 @@
             document.documentElement.classList.remove("holiday-mode");
             localStorage.setItem("holiday-mode", "false");
             toggleBtn.classList.remove("active");
+            const treeLink = document.getElementById("holiday-tree-link");
+            if (treeLink) treeLink.hidden = true;
         }
 
         function startSnow() {
@@ -164,5 +177,30 @@
         background: #2e8b57; /* Forest Green for a more classic look */
         color: white;
         border-color: #2e8b57;
+    }
+
+    .holiday-tree-link {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.45em 0.85em;
+        margin-left: 0.4em;
+        font-size: 0.82em;
+        font-weight: 700;
+        color: #1b4332 !important;
+        background: linear-gradient(135deg, #fef08a 0%, #fde047 100%);
+        border: 1px solid #d4af37 !important;
+        border-radius: 9999px;
+        text-decoration: none;
+        box-shadow: 0 2px 8px rgba(212, 175, 55, 0.28);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .holiday-tree-link[hidden] {
+        display: none !important;
+    }
+
+    .holiday-tree-link:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(212, 175, 55, 0.45);
     }
 </style>
