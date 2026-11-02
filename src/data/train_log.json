@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-11-02T22:01:53.220Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times between 14 St - Union Sq and 34 St - Herald Sq (up to 12 mins, normally every 10 mins)."
+    ]
+  },
+  {
     "date": "2026-11-01T18:13:42.561Z",
     "status": "Service Change",
     "details": [
@@ -208,13 +215,6 @@
     "status": "Service Change",
     "details": [
       "Southbound: Brighton Beach/Coney Island - Stillwell Av-bound trains are running in 2 sections: between 96 St and Brighton Beach, and between DeKalb Av and Coney Island - Stillwell Av."
-    ]
-  },
-  {
-    "date": "2026-09-30T13:10:57.120Z",
-    "status": "Service Change",
-    "details": [
-      "Southbound: Brighton Beach/Coney Island - Stillwell Av-bound trains are running in 2 sections: between 96 St and Brighton Beach, and between 14 St - Union Sq and Coney Island - Stillwell Av."
     ]
   }
 ]
