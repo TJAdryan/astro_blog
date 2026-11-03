@@ -170,7 +170,7 @@ const featuredArticles = [...articlesData]
             <div class="mt-6 text-center">
               <a
                 href="/blog"
-                class="inline-block px-6 py-2 bg-slate-800 dark:bg-slate-700 text-white rounded-lg font-semibold shadow hover:bg-slate-700 dark:hover:bg-slate-600 transition-colors"
+                class="section-cta-btn inline-block px-6 py-2 bg-slate-800 dark:bg-slate-700 text-white rounded-lg font-semibold shadow hover:bg-slate-700 dark:hover:bg-slate-600 transition-colors"
               >
                 View All Posts
               </a>
@@ -242,7 +242,7 @@ const featuredArticles = [...articlesData]
         <div class="mt-6 text-center">
           <a
             href="/interactive"
-            class="inline-block px-6 py-2 bg-slate-800 dark:bg-slate-700 text-white rounded-lg font-semibold shadow hover:bg-slate-700 dark:hover:bg-slate-600 transition-colors"
+            class="section-cta-btn inline-block px-6 py-2 bg-slate-800 dark:bg-slate-700 text-white rounded-lg font-semibold shadow hover:bg-slate-700 dark:hover:bg-slate-600 transition-colors"
           >
             Explore All Simulations
           </a>
@@ -319,7 +319,7 @@ const featuredArticles = [...articlesData]
         <div class="mt-6 text-center">
           <a
             href="/interesting-articles/"
-            class="inline-block px-6 py-2 bg-slate-800 dark:bg-slate-700 text-white rounded-lg font-semibold shadow hover:bg-slate-700 dark:hover:bg-slate-600 transition-colors"
+            class="section-cta-btn inline-block px-6 py-2 bg-slate-800 dark:bg-slate-700 text-white rounded-lg font-semibold shadow hover:bg-slate-700 dark:hover:bg-slate-600 transition-colors"
           >
             View Full Reading List
           </a>
@@ -1138,6 +1138,103 @@ const featuredArticles = [...articlesData]
 
   .reading-list-card:hover .reading-card-author {
     color: var(--accent);
+  }
+
+  /* --------------------------------------------------- */
+  /* Holiday Mode: Homepage Cards & "View All" CTA Links */
+  /* --------------------------------------------------- */
+  .writing-card,
+  .project-card {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .writing-card::before,
+  .project-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.4),
+      transparent
+    );
+    transition: 0.5s;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .writing-card:hover::before,
+  .project-card:hover::before {
+    left: 100%;
+  }
+
+  :global(html.holiday-mode) .writing-card,
+  :global(html.holiday-mode) .project-card,
+  :global(html.holiday-mode) .reading-list-card {
+    border-color: rgba(46, 139, 87, 0.2);
+  }
+
+  :global(html.holiday-mode) .writing-card::before,
+  :global(html.holiday-mode) .project-card::before,
+  :global(html.holiday-mode) .reading-list-card::before {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(224, 242, 254, 0.55),
+      rgba(254, 243, 199, 0.45),
+      transparent
+    );
+  }
+
+  :global(html.holiday-mode) .writing-card:hover,
+  :global(html.holiday-mode) .project-card:hover,
+  :global(html.holiday-mode) .reading-list-card:hover {
+    border-color: rgba(46, 139, 87, 0.55);
+    box-shadow:
+      0 12px 28px rgba(46, 139, 87, 0.2),
+      0 0 0 1px rgba(212, 175, 55, 0.42);
+  }
+
+  :global(html.holiday-mode) .writing-card-title a:hover,
+  :global(html.holiday-mode) .project-card:hover .project-title,
+  :global(html.holiday-mode) .project-link-text,
+  :global(html.holiday-mode) .reading-list-card:hover .reading-card-title,
+  :global(html.holiday-mode) .reading-list-card:hover .reading-card-author {
+    color: #2e8b57;
+  }
+
+  :global(html.holiday-mode) .project-overlay {
+    background: rgba(15, 41, 30, 0.45);
+  }
+
+  :global(html.holiday-mode) .project-overlay-text {
+    background: linear-gradient(135deg, #1b4332 0%, #2e8b57 100%);
+    color: #fef08a;
+    border-color: #d4af37;
+    box-shadow: 0 6px 16px rgba(15, 41, 30, 0.45);
+  }
+
+  :global(html.holiday-mode) .section-cta-btn {
+    background: linear-gradient(135deg, #1b4332 0%, #2e8b57 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid #d4af37;
+    box-shadow:
+      0 4px 14px rgba(27, 67, 50, 0.25),
+      0 0 0 1px rgba(212, 175, 55, 0.25);
+    transition: all 0.25s ease;
+  }
+
+  :global(html.holiday-mode) .section-cta-btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.08);
+    box-shadow:
+      0 8px 20px rgba(46, 139, 87, 0.32),
+      0 0 0 1.5px rgba(212, 175, 55, 0.6);
   }
 
   /* End CSS */
