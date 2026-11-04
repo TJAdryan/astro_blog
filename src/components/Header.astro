@@ -142,6 +142,32 @@ import HolidayToggle from "./HolidayToggle.astro";
 			</a>
 		</div>
 	</nav>
+	<div class="holiday-fairy-lights" aria-hidden="true">
+		<span class="light-bulb bulb-gold"></span>
+		<span class="light-bulb bulb-cranberry"></span>
+		<span class="light-bulb bulb-pine"></span>
+		<span class="light-bulb bulb-ice"></span>
+		<span class="light-bulb bulb-gold"></span>
+		<span class="light-bulb bulb-cranberry"></span>
+		<span class="light-bulb bulb-pine"></span>
+		<span class="light-bulb bulb-ice"></span>
+		<span class="light-bulb bulb-gold"></span>
+		<span class="light-bulb bulb-cranberry"></span>
+		<span class="light-bulb bulb-pine"></span>
+		<span class="light-bulb bulb-ice"></span>
+		<span class="light-bulb bulb-gold"></span>
+		<span class="light-bulb bulb-cranberry"></span>
+		<span class="light-bulb bulb-pine"></span>
+		<span class="light-bulb bulb-ice"></span>
+		<span class="light-bulb bulb-gold"></span>
+		<span class="light-bulb bulb-cranberry"></span>
+		<span class="light-bulb bulb-pine"></span>
+		<span class="light-bulb bulb-ice"></span>
+		<span class="light-bulb bulb-gold"></span>
+		<span class="light-bulb bulb-cranberry"></span>
+		<span class="light-bulb bulb-pine"></span>
+		<span class="light-bulb bulb-ice"></span>
+	</div>
 </header>
 
 <style>
@@ -204,6 +230,7 @@ import HolidayToggle from "./HolidayToggle.astro";
 	}
 
 	header {
+		position: relative;
 		margin: 0;
 		padding: 0 1em;
 		background: white;
@@ -389,6 +416,117 @@ import HolidayToggle from "./HolidayToggle.astro";
 	}
 	:global(html.holiday-mode) .q-santa-cap {
 		display: block;
+	}
+
+	:global(html.holiday-mode) nav a.active {
+		border-bottom-color: #2e8b57;
+	}
+
+	/* Holiday Mode Twinkling Fairy Lights Strand */
+	.holiday-fairy-lights {
+		display: none;
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: -7px;
+		height: 12px;
+		justify-content: space-around;
+		align-items: flex-start;
+		padding: 0 1.25rem;
+		pointer-events: none;
+		z-index: 30;
+		border-top: 1.5px solid rgba(27, 67, 50, 0.45);
+	}
+
+	:global(html.holiday-mode) .holiday-fairy-lights {
+		display: flex;
+	}
+
+	.light-bulb {
+		position: relative;
+		width: 7px;
+		height: 10px;
+		border-radius: 50% 50% 55% 55%;
+		margin-top: 1px;
+		transform-origin: top center;
+	}
+
+	/* Brass socket cap */
+	.light-bulb::before {
+		content: "";
+		position: absolute;
+		top: -2px;
+		left: 1.5px;
+		width: 4px;
+		height: 3px;
+		border-radius: 1px;
+		background: #d4af37;
+	}
+
+	.bulb-gold {
+		background: #fde047;
+		box-shadow:
+			0 0 8px 2px rgba(250, 204, 21, 0.75),
+			0 0 16px rgba(250, 204, 21, 0.35);
+		animation: fairyTwinkleA 2.6s ease-in-out infinite;
+	}
+
+	.bulb-cranberry {
+		background: #fb7185;
+		box-shadow:
+			0 0 8px 2px rgba(225, 29, 72, 0.75),
+			0 0 16px rgba(225, 29, 72, 0.35);
+		animation: fairyTwinkleB 3.1s ease-in-out infinite 0.55s;
+	}
+
+	.bulb-pine {
+		background: #4ade80;
+		box-shadow:
+			0 0 8px 2px rgba(34, 197, 94, 0.75),
+			0 0 16px rgba(34, 197, 94, 0.35);
+		animation: fairyTwinkleA 2.9s ease-in-out infinite 1.1s;
+	}
+
+	.bulb-ice {
+		background: #7dd3fc;
+		box-shadow:
+			0 0 8px 2px rgba(56, 189, 248, 0.75),
+			0 0 16px rgba(56, 189, 248, 0.35);
+		animation: fairyTwinkleB 3.4s ease-in-out infinite 1.65s;
+	}
+
+	@keyframes fairyTwinkleA {
+		0%, 100% {
+			opacity: 0.98;
+			filter: brightness(1.12);
+		}
+		50% {
+			opacity: 0.45;
+			filter: brightness(0.82);
+		}
+	}
+
+	@keyframes fairyTwinkleB {
+		0%, 100% {
+			opacity: 0.5;
+			filter: brightness(0.85);
+		}
+		50% {
+			opacity: 1;
+			filter: brightness(1.18);
+		}
+	}
+
+	@media (max-width: 640px) {
+		.holiday-fairy-lights .light-bulb:nth-child(even) {
+			display: none;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.light-bulb {
+			animation: none !important;
+		}
 	}
 </style>
 
