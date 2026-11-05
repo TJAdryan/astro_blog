@@ -5,7 +5,7 @@ pubDate: 2026-11-05
 tags: ["Python", "Polars", "Pandas", "Data Engineering"]
 category: "Data Engineering"
 ---
-Pandas to Polars: Why Speed Matters for Finding the Truth
+ Pandas to Polars: Why Speed Matters for Finding the Truth
 
 I stuck with Pandas for a long time because the muscle memory was there. Even when scripts dragged or memory spiked, it felt easier to wait on a slow run, or work from a smaller sample, than to rethink how I write dataframe code.
 
@@ -15,15 +15,15 @@ The main mental shift is moving away from changing a dataframe one step at a tim
 
 Below are two common analysis patterns side by side: filtering with derived columns, and group aggregations with window calculations.
 
-Filtering and Derived Columns
+## Filtering and Derived Columns
 
 A typical first pass on raw data means filtering out rows you don't want, calculating a few new columns, and tagging rows based on a threshold.
 
-Pandas
+### Pandas
 
-You filter first, adding .copy() to avoid SettingWithCopyWarning, then add new columns one line at a time:
+You filter first, adding `.copy()` to avoid `SettingWithCopyWarning`, then add new columns one line at a time:
 
-python
+```python
 import numpy as np
 import pandas as pd
 
@@ -36,11 +36,13 @@ active = df[df["status"] != "cancelled"].copy()
 active["tax"] = active["subtotal"] * 0.08
 active["total"] = active["subtotal"] + active["tax"]
 active["priority"] = np.where(active["total"] >= 500, "high", "standard")
-Polars
+```
 
-You chain .filter() into .with_columns() and define all the new fields in one block:
+### Polars
 
-python
+You chain `.filter()` into `.with_columns()` and define all the new fields in one block:
+
+```python
 import polars as pl
 
 df = pl.read_csv("orders.csv")
@@ -52,18 +54,19 @@ clean = df.filter(pl.col("status") != "cancelled").with_columns(
     .then(pl.lit("high"))
     .otherwise(pl.lit("standard")),
 )
+```
 
-Every expression inside with_columns is independent, so Polars evaluates them concurrently instead of one series at a time. That independence is also why total uses subtotal * 1.08 rather than subtotal + tax. Expressions in the same block can't see each other's results. If you would rather reference tax, chain a second .with_columns() after the first.
+Every expression inside `with_columns` is independent, so Polars evaluates them concurrently instead of one series at a time. That independence is also why `total` uses `subtotal * 1.08` rather than `subtotal + tax`. Expressions in the same block can't see each other's results. If you would rather reference `tax`, chain a second `.with_columns()` after the first.
 
-Group Aggregations and Window Calculations
+## Group Aggregations and Window Calculations
 
 Once the data is clean, the next step is usually rolling up summary numbers by group, or ranking rows within a group without collapsing the original table.
 
-Pandas
+### Pandas
 
-Grouping pushes your keys into the index, so you almost always call .reset_index() right after to get a flat table back:
+Grouping pushes your keys into the index, so you almost always call `.reset_index()` right after to get a flat table back:
 
-python
+```python
 # Group summary
 summary = (
     active.groupby("region")
@@ -80,11 +83,13 @@ summary = (
 active["regional_rank"] = active.groupby("region")["total"].rank(
     method="dense", ascending=False
 )
-Polars
+```
 
-There is no index to reset or align. Aggregations return a normal table, and window functions run inline with .over(), much like OVER (PARTITION BY ...) in SQL:
+### Polars
 
-python
+There is no index to reset or align. Aggregations return a normal table, and window functions run inline with `.over()`, much like `OVER (PARTITION BY ...)` in SQL:
+
+```python
 # Group summary
 summary = (
     clean.group_by("region")
@@ -100,5 +105,6 @@ summary = (
 ranked = clean.with_columns(
     regional_rank=pl.col("total").rank(method="dense", descending=True).over("region")
 )
+```
 
-Once .with_columns() and .over() click, the code reads from top to bottom. When you point it at millions of rows to test a hypothesis, the answer comes back almost immediately.
+Once `.with_columns()` and `.over()` click, the code reads from top to bottom. When you point it at millions of rows to test a hypothesis, the answer comes back almost immediately.
