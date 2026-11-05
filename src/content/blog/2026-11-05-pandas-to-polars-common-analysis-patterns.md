@@ -5,26 +5,25 @@ pubDate: 2026-11-05
 tags: ["Python", "Polars", "Pandas", "Data Engineering"]
 category: "Data Engineering"
 ---
+Pandas to Polars: Why Speed Matters for Finding the Truth
 
-For a long time, sticking with Pandas was the easiest choice simply because our muscle memory was already there. Even when scripts started to drag or memory usage spiked, it felt faster to wait on a slow run—or take a smaller sample of the data—than to rethink how we write dataframe code.
+I stuck with Pandas for a long time because the muscle memory was there. Even when scripts dragged or memory spiked, it felt easier to wait on a slow run, or work from a smaller sample, than to rethink how I write dataframe code.
 
-At this point, though, you really can't ignore the performance advantage of [Polars](https://pola.rs/) anymore. And the biggest payoff isn't just saving a few seconds on a pipeline run—it's that speed changes how you investigate data. When queries run across all of your CPU cores in milliseconds instead of minutes, you don't have to settle for checking a 10,000-row sample and hoping it represents the rest of the table. You can afford to run your checks against the entire dataset and actually confirm the truth of what's in there. Because that feedback loop is so fast, you end up asking more questions, catching edge cases earlier, and trusting your numbers a whole lot more. That alone is reason enough to reach for it more often.
+Polars has changed that for me. Speed changes how you investigate data. When queries run across all your CPU cores in milliseconds instead of minutes, you don't have to check a sample of 10,000 rows and hope it represents the rest of the table. You can run your checks against the entire dataset and confirm what is actually in it. The feedback loop is short enough that you ask more questions, catch edge cases earlier, and trust your numbers more.
 
-When you make the jump from Pandas to Polars, the main mental shift is moving away from step-by-step, in-place mutations and index juggling toward declarative expressions. Instead of telling Python *how* to modify a dataframe one column at a time, you describe *what* you want the result to look like and let the engine optimize and parallelize the work behind the scenes.
+The main mental shift is moving away from changing a dataframe one step at a time and juggling the index. Polars uses declarative expressions instead. You describe the result you want and let the engine optimize and parallelize the work.
 
-Below are two common everyday analysis patterns side by side—covering filtering, derived columns, group aggregations, and window calculations—so you can see how the translation feels in practice.
+Below are two common analysis patterns side by side: filtering with derived columns, and group aggregations with window calculations.
 
----
+Filtering and Derived Columns
 
-### Filtering and Derived Columns
+A typical first pass on raw data means filtering out rows you don't want, calculating a few new columns, and tagging rows based on a threshold.
 
-A standard first pass on raw data usually means filtering out rows you don't want, calculating a few new numeric columns, and tagging rows based on a threshold.
+Pandas
 
-#### Pandas
+You filter first, adding .copy() to avoid SettingWithCopyWarning, then add new columns one line at a time:
 
-In Pandas, you typically filter first (remembering `.copy()` so you don't get hit with `SettingWithCopyWarning`) and then tack on new columns one line at a time:
-
-```python
+python
 import numpy as np
 import pandas as pd
 
@@ -37,13 +36,11 @@ active = df[df["status"] != "cancelled"].copy()
 active["tax"] = active["subtotal"] * 0.08
 active["total"] = active["subtotal"] + active["tax"]
 active["priority"] = np.where(active["total"] >= 500, "high", "standard")
-```
+Polars
 
-#### Polars
+You chain .filter() into .with_columns() and define all the new fields in one block:
 
-In Polars, you chain `.filter()` right into `.with_columns()` and define all of your new fields in one block:
-
-```python
+python
 import polars as pl
 
 df = pl.read_csv("orders.csv")
@@ -55,21 +52,18 @@ clean = df.filter(pl.col("status") != "cancelled").with_columns(
     .then(pl.lit("high"))
     .otherwise(pl.lit("standard")),
 )
-```
 
-Because every expression inside `with_columns` is independent, Polars evaluates them concurrently across your CPU cores instead of running sequential, single-threaded operations one series at a time.
+Every expression inside with_columns is independent, so Polars evaluates them concurrently instead of one series at a time. That independence is also why total uses subtotal * 1.08 rather than subtotal + tax. Expressions in the same block can't see each other's results. If you would rather reference tax, chain a second .with_columns() after the first.
 
----
+Group Aggregations and Window Calculations
 
-### Group Aggregations and Window Calculations
+Once the data is clean, the next step is usually rolling up summary numbers by group, or ranking rows within a group without collapsing the original table.
 
-Once the data is clean, the next step is usually rolling up summary numbers by group—or ranking rows within a group without collapsing the original table.
+Pandas
 
-#### Pandas
+Grouping pushes your keys into the index, so you almost always call .reset_index() right after to get a flat table back:
 
-In Pandas, grouping pushes your grouping keys into the index, which means you almost always end up calling `.reset_index()` right after just to get a normal flat table back:
-
-```python
+python
 # Group summary
 summary = (
     active.groupby("region")
@@ -86,13 +80,11 @@ summary = (
 active["regional_rank"] = active.groupby("region")["total"].rank(
     method="dense", ascending=False
 )
-```
+Polars
 
-#### Polars
+There is no index to reset or align. Aggregations return a normal table, and window functions run inline with .over(), much like OVER (PARTITION BY ...) in SQL:
 
-In Polars, there is no index layer to reset or align. Aggregations return a standard table right away, and window functions run inline using `.over()`—very much like `OVER (PARTITION BY ...)` in SQL:
-
-```python
+python
 # Group summary
 summary = (
     clean.group_by("region")
@@ -108,6 +100,5 @@ summary = (
 ranked = clean.with_columns(
     regional_rank=pl.col("total").rank(method="dense", descending=True).over("region")
 )
-```
 
-Once you get used to `.with_columns()` and `.over()`, the code reads cleanly from top to bottom—and when you point it at millions of rows to verify a hypothesis, you get your answer back almost immediately.
+Once .with_columns() and .over() click, the code reads from top to bottom. When you point it at millions of rows to test a hypothesis, the answer comes back almost immediately.
