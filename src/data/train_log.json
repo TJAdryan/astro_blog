@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-11-06T19:47:45.315Z",
+    "status": "Delays",
+    "details": [
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Atlantic Av - Barclays Ctr and 7 Av (up to 11 mins, normally every 9 mins)."
+    ]
+  },
+  {
     "date": "2026-11-05T20:26:06.445Z",
     "status": "Service Change",
     "details": [
@@ -209,13 +216,6 @@
     "status": "Service Change",
     "details": [
       "Southbound: Some Coney Island - Stillwell Av-bound trains are making local stops between 57 St - 7 Av and Times Sq - 42 St."
-    ]
-  },
-  {
-    "date": "2026-10-04T14:50:16.565Z",
-    "status": "Delays",
-    "details": [
-      "Northbound: 96 St-bound trains are having longer wait times between Coney Island - Stillwell Av and Times Sq - 42 St (up to 12 mins, normally every 9 mins)."
     ]
   }
 ]
