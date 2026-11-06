@@ -8,13 +8,25 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 const posts = (await getCollection("blog")).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
+
+// Extract unique categories & top tags for filter pills
+const categories = Array.from(
+	new Set(
+		posts
+			.flatMap((post) => [
+				post.data.category,
+				...(post.data.tags || []),
+			])
+			.filter(Boolean),
+	),
+).sort();
 ---
 
 <BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
 	<style>
 		/* Search Bar Styles */
 		.search-container {
-			margin-bottom: 2rem;
+			margin-bottom: 1.25rem;
 			position: relative;
 		}
 
@@ -73,6 +85,92 @@ const posts = (await getCollection("blog")).sort(
 					linear-gradient(#f8fafc, #f8fafc) padding-box,
 					linear-gradient(to right, #2e8b57, #d90429, #d4af37) border-box;
 			}
+		}
+
+		/* Tag / Category Filter Pills */
+		.categories-wrapper {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.5rem;
+			margin-bottom: 2rem;
+		}
+
+		.category-pill {
+			background: rgba(255, 255, 255, 0.8);
+			color: #475569;
+			border: 1px solid rgba(255, 107, 53, 0.15);
+			border-radius: 50px;
+			padding: 0.35rem 0.9rem;
+			font-size: 0.82rem;
+			font-weight: 600;
+			cursor: pointer;
+			transition: all 0.2s ease;
+		}
+
+		.category-pill:hover {
+			background: #e2e8f0;
+			color: #1e293b;
+			transform: translateY(-1px);
+		}
+
+		.category-pill.active {
+			background: var(--accent);
+			color: white;
+			border-color: var(--accent);
+			box-shadow: 0 4px 10px rgba(255, 107, 53, 0.25);
+		}
+
+		@media (prefers-color-scheme: dark) {
+			.category-pill {
+				background: rgba(226, 232, 240, 0.85);
+				color: #334155;
+				border-color: rgba(255, 107, 53, 0.15);
+			}
+			.category-pill:hover {
+				background: #cbd5e1;
+				color: #0f172a;
+			}
+			.category-pill.active {
+				background: var(--accent);
+				color: white;
+				border-color: var(--accent);
+			}
+		}
+
+		:global(html.holiday-mode) .category-pill {
+			border-color: rgba(46, 139, 87, 0.2);
+		}
+
+		:global(html.holiday-mode) .category-pill:hover {
+			border-color: rgba(46, 139, 87, 0.45);
+			color: #1b5e20;
+		}
+
+		:global(html.holiday-mode) .category-pill.active {
+			background: #2e8b57;
+			color: white;
+			border-color: #2e8b57;
+			box-shadow: 0 4px 12px rgba(46, 139, 87, 0.3);
+		}
+
+		.post-tags {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.4rem;
+			margin-top: 0.65rem;
+		}
+
+		ul li:first-child .post-tags {
+			justify-content: center;
+		}
+
+		.post-tag {
+			font-size: 0.75rem;
+			background: rgba(var(--gray-light), 0.85);
+			color: rgb(var(--gray-dark));
+			padding: 0.15rem 0.5rem;
+			border-radius: 4px;
+			font-weight: 500;
 		}
 
 		ul {
@@ -178,7 +276,7 @@ const posts = (await getCollection("blog")).sort(
 			line-height: 1;
 		}
 		.date {
-			margin: 0;
+			margin: 0.35rem 0 0 0;
 			color: rgb(var(--gray));
 		}
 		ul li a:hover h4,
@@ -226,6 +324,9 @@ const posts = (await getCollection("blog")).sort(
 				width: 100%;
 				text-align: center;
 			}
+			ul li .post-tags {
+				justify-content: center;
+			}
 			ul li:first-child {
 				margin-bottom: 0;
 			}
@@ -248,39 +349,65 @@ const posts = (await getCollection("blog")).sort(
 				type="text"
 				id="blog-search"
 				class="search-input"
-				placeholder="Search writing..."
+				placeholder="Search writing by title, topic, or tag..."
 				autocomplete="off"
 			/>
 		</div>
 
+		<div class="categories-wrapper" id="blog-tags-filter">
+			<button class="category-pill active" data-tag="All">All</button>
+			{
+				categories.map((tag) => (
+					<button class="category-pill" data-tag={tag}>
+						{tag}
+					</button>
+				))
+			}
+		</div>
+
 		<ul id="blog-list">
 			{
-				posts.map((post, index) => (
-					<li
-						class="post-item"
-						style={`animation-delay: ${index * 0.1}s`}
-					>
-						<a href={`/blog/${post.slug}/`}>
-							{post.data.heroImage && (
-								<Image
-									width={720}
-									height={360}
-									src={post.data.heroImage}
-									alt=""
-								/>
-							)}
-							<h4 class="title">{post.data.title}</h4>
-							<p class="date">
-								<FormattedDate date={post.data.pubDate} />
-							</p>
-							{/* Hidden search data */}
-							<span class="sr-only search-data">
-								{post.data.title.toLowerCase()}{" "}
-								{post.data.description?.toLowerCase()}
-							</span>
-						</a>
-					</li>
-				))
+				posts.map((post, index) => {
+					const postTags = [
+						post.data.category,
+						...(post.data.tags || []),
+					].filter(Boolean);
+					return (
+						<li
+							class="post-item"
+							data-tags={JSON.stringify(postTags)}
+							style={`animation-delay: ${index * 0.1}s`}
+						>
+							<a href={`/blog/${post.slug}/`}>
+								{post.data.heroImage && (
+									<Image
+										width={720}
+										height={360}
+										src={post.data.heroImage}
+										alt=""
+									/>
+								)}
+								<h4 class="title">{post.data.title}</h4>
+								<p class="date">
+									<FormattedDate date={post.data.pubDate} />
+								</p>
+								{post.data.tags && post.data.tags.length > 0 && (
+									<div class="post-tags">
+										{post.data.tags.map((tag) => (
+											<span class="post-tag">#{tag}</span>
+										))}
+									</div>
+								)}
+								{/* Hidden search data */}
+								<span class="sr-only search-data">
+									{post.data.title.toLowerCase()}{" "}
+									{post.data.description?.toLowerCase() || ""}{" "}
+									{postTags.join(" ").toLowerCase()}
+								</span>
+							</a>
+						</li>
+					);
+				})
 			}
 		</ul>
 		<div id="no-results" class="no-results">
@@ -289,26 +416,31 @@ const posts = (await getCollection("blog")).sort(
 	</section>
 
 	<script>
-		const searchInput = document.getElementById("blog-search");
+		const searchInput = document.getElementById("blog-search") as HTMLInputElement | null;
 		const blogList = document.getElementById("blog-list");
 		const noResults = document.getElementById("no-results");
+		const filterWrapper = document.getElementById("blog-tags-filter");
 
-		if (searchInput && blogList) {
+		if (blogList) {
 			const items = blogList.querySelectorAll(".post-item");
+			let selectedTag = "All";
 
-			searchInput.addEventListener("input", (e) => {
-				const searchTerm = (
-					e.target as HTMLInputElement
-				).value.toLowerCase();
+			function filterPosts() {
+				const searchTerm = (searchInput?.value || "").toLowerCase();
 				let hasResults = false;
 
 				items.forEach((item) => {
 					const searchData =
 						item.querySelector(".search-data")?.textContent || "";
-					if (searchData.includes(searchTerm)) {
+					const itemTags: string[] = JSON.parse(
+						item.getAttribute("data-tags") || "[]",
+					);
+					const matchesSearch = searchData.includes(searchTerm);
+					const matchesTag =
+						selectedTag === "All" || itemTags.includes(selectedTag);
+
+					if (matchesSearch && matchesTag) {
 						(item as HTMLElement).style.display = "";
-						// Re-trigger animation for searched items?
-						// Maybe too distracting, let's keep it simple.
 						hasResults = true;
 					} else {
 						(item as HTMLElement).style.display = "none";
@@ -318,7 +450,21 @@ const posts = (await getCollection("blog")).sort(
 				if (noResults) {
 					noResults.style.display = hasResults ? "none" : "block";
 				}
-			});
+			}
+
+			searchInput?.addEventListener("input", filterPosts);
+
+			if (filterWrapper) {
+				const pills = filterWrapper.querySelectorAll(".category-pill");
+				pills.forEach((pill) => {
+					pill.addEventListener("click", () => {
+						pills.forEach((p) => p.classList.remove("active"));
+						pill.classList.add("active");
+						selectedTag = pill.getAttribute("data-tag") || "All";
+						filterPosts();
+					});
+				});
+			}
 		}
 	</script>
 </BaseLayout>

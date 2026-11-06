@@ -1,0 +1,126 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+	<div class="footer-inner">
+		<div class="footer-brand">
+			<span class="footer-title">
+				Next <span class="footer-accent">Val</span> Data
+			</span>
+			<span class="footer-copy">
+				&copy; {currentYear} Dominick Ryan. All rights reserved.
+			</span>
+		</div>
+
+		<nav class="footer-links" aria-label="Footer navigation">
+			<a href="/blog">Posts</a>
+			<a href="/interesting-articles">Reading List</a>
+			<a href="/interactive">Interactive</a>
+			<a href="/q-train">Q-Train</a>
+			<a href="/rss.xml" title="RSS Feed">RSS</a>
+			<a
+				href="https://mastodon.social/@tjadomryan"
+				target="_blank"
+				rel="noopener noreferrer"
+			>
+				Mastodon
+			</a>
+			<a
+				href="https://github.com/tjadryan"
+				target="_blank"
+				rel="noopener noreferrer"
+			>
+				GitHub
+			</a>
+		</nav>
+	</div>
+</footer>
+
+<style>
+	.site-footer {
+		margin-top: 4rem;
+		padding: 2rem 1.25rem 2.75rem;
+		border-top: 1px solid rgba(148, 163, 184, 0.22);
+		background: rgba(248, 250, 252, 0.6);
+		font-size: 0.88rem;
+		color: #64748b;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.site-footer {
+			background: rgba(15, 23, 42, 0.5);
+			border-top-color: rgba(148, 163, 184, 0.15);
+			color: #94a3b8;
+		}
+	}
+
+	:global(html.holiday-mode) .site-footer {
+		border-top-color: rgba(46, 139, 87, 0.28);
+		padding-bottom: 3.25rem; /* Extra clearance above the fixed snowdrift overlay */
+	}
+
+	.footer-inner {
+		max-width: 1100px;
+		margin: 0 auto;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+
+	.footer-brand {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.65rem;
+	}
+
+	.footer-title {
+		font-weight: 800;
+		color: rgb(var(--black));
+		letter-spacing: -0.03em;
+	}
+
+	.footer-accent {
+		color: var(--accent);
+	}
+
+	:global(html.holiday-mode) .footer-accent {
+		color: #2e8b57;
+	}
+
+	.footer-links {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 1rem;
+	}
+
+	.footer-links a {
+		color: inherit;
+		text-decoration: none;
+		font-weight: 600;
+		transition: color 0.2s ease;
+	}
+
+	.footer-links a:hover {
+		color: var(--accent);
+	}
+
+	:global(html.holiday-mode) .footer-links a:hover {
+		color: #2e8b57;
+	}
+
+	@media (max-width: 640px) {
+		.footer-inner {
+			flex-direction: column;
+			text-align: center;
+		}
+		.footer-brand,
+		.footer-links {
+			justify-content: center;
+		}
+	}
+</style>

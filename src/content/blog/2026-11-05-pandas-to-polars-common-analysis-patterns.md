@@ -5,7 +5,6 @@ pubDate: 2026-11-05
 tags: ["Python", "Polars", "Pandas", "Data Engineering"]
 category: "Data Engineering"
 ---
- Pandas to Polars: Why Speed Matters for Finding the Truth
 
 I stuck with Pandas for a long time because the muscle memory was there. Even when scripts dragged or memory spiked, it felt easier to wait on a slow run, or work from a smaller sample, than to rethink how I write dataframe code.
 

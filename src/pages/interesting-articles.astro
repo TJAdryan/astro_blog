@@ -1,5 +1,31 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import articlesData from '../data/articles.json';
+
+function getDomain(urlStr: string) {
+  try {
+    const hostname = new URL(urlStr).hostname;
+    return hostname.replace(/^www\./, '');
+  } catch (e) {
+    return 'external resource';
+  }
+}
+
+function getCategoryClass(area: string) {
+  const norm = (area || '').toLowerCase();
+  if (norm.includes('ai') || norm.includes('machine learning')) return 'badge-ai';
+  if (norm.includes('database')) return 'badge-db';
+  if (norm.includes('distributed')) return 'badge-dist';
+  if (norm.includes('social')) return 'badge-social';
+  if (norm.includes('economics')) return 'badge-econ';
+  if (norm.includes('genomics') || norm.includes('crispr')) return 'badge-crispr';
+  if (norm.includes('software') || norm.includes('engineering')) return 'badge-se';
+  return 'badge-default';
+}
+
+const categories = Array.from(
+  new Set(articlesData.map((art) => art.area).filter(Boolean))
+).sort();
 ---
 
 <BaseLayout title="My Reading List" description="A curated archive of seminal research papers, academic literature, books, and reference documentation that I read and study.">
@@ -22,14 +48,88 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       />
     </div>
 
-    <!-- Category Filter Pills -->
+    <!-- Category Filter Pills (Server-Rendered) -->
     <div class="categories-wrapper" id="categories-filter">
-      <!-- Will be dynamically populated with category pills -->
+      <button class="category-pill active" data-category="All">All</button>
+      {
+        categories.map((cat) => (
+          <button class="category-pill" data-category={cat}>
+            {cat}
+          </button>
+        ))
+      }
     </div>
 
-    <!-- Articles List -->
+    <!-- Articles List (Server-Rendered from src/data/articles.json) -->
     <ul id="articles-grid">
-      <!-- All articles will be rendered dynamically here -->
+      {
+        articlesData.map((art, index) => {
+          const badgeClass = getCategoryClass(art.area);
+          const domain = getDomain(art.url);
+          const searchText = [
+            art.title,
+            art.author,
+            art.area,
+            art.description || '',
+            domain,
+          ]
+            .join(' ')
+            .toLowerCase();
+
+          return (
+            <li
+              class="post-item"
+              data-category={art.area || 'Resource'}
+              data-search={searchText}
+              style={`animation-delay: ${Math.min(index * 0.03, 0.6)}s`}
+            >
+              <a href={art.url} target="_blank" rel="noopener noreferrer">
+                <div class="card-meta">
+                  <span class={`area-badge ${badgeClass}`}>
+                    {art.area || 'Resource'}
+                  </span>
+                  <span class="domain-badge">
+                    <svg
+                      style="width: 14px; height: 14px; margin-right: 4px; display: inline-block;"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                      />
+                    </svg>
+                    {domain}
+                  </span>
+                </div>
+                <h4 class="title">
+                  {art.title}
+                  <svg
+                    style="width: 14px; height: 14px; margin-left: 4px; display: inline-block;"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                    />
+                  </svg>
+                </h4>
+                {art.description && <p class="description">{art.description}</p>}
+                <p class="date">By {art.author || 'Unknown'}</p>
+              </a>
+            </li>
+          );
+        })
+      }
     </ul>
     <div id="no-results" class="no-results">
       No reading list items match your search or filter criteria.
@@ -39,7 +139,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 <script is:inline>
   document.addEventListener('DOMContentLoaded', function() {
-    let allArticles = [];
     let selectedCategory = 'All';
     let searchQuery = '';
 
@@ -48,147 +147,49 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     const searchInput = document.getElementById('reading-search');
     const noResults = document.getElementById('no-results');
 
-    fetch('/data/articles.json')
-      .then(res => res.json())
-      .then(articles => {
-        allArticles = articles;
-        
-        // 1. Extract unique categories (areas)
-        const categories = new Set();
-        articles.forEach(art => {
-          if (art.area) categories.add(art.area);
-        });
+    if (!grid) return;
+    const items = grid.querySelectorAll('.post-item');
 
-        // 2. Render filter pills
-        renderFilterPills(Array.from(categories).sort());
+    function filterArticles() {
+      let visibleCount = 0;
 
-        // 3. Initial render
-        renderArticles();
+      items.forEach((item) => {
+        const itemCategory = item.getAttribute('data-category') || '';
+        const itemSearch = item.getAttribute('data-search') || '';
 
-        // 4. Setup search event listener
-        if (searchInput) {
-          searchInput.addEventListener('input', (e) => {
-            searchQuery = e.target.value.toLowerCase();
-            renderArticles();
-          });
+        const matchCategory =
+          selectedCategory === 'All' || itemCategory === selectedCategory;
+        const matchSearch = itemSearch.includes(searchQuery);
+
+        if (matchCategory && matchSearch) {
+          item.style.display = '';
+          visibleCount++;
+        } else {
+          item.style.display = 'none';
         }
-      })
-      .catch(err => {
-        if (grid) {
-          grid.innerHTML = '<p class="text-gray-500 text-center py-8">Unable to load the reading list.</p>';
-        }
-        console.error('Failed to load articles.json', err);
       });
 
-    function getDomain(urlStr) {
-      try {
-        const hostname = new URL(urlStr).hostname;
-        return hostname.replace(/^www\./, '');
-      } catch (e) {
-        return 'external resource';
+      if (noResults) {
+        noResults.style.display = visibleCount === 0 ? 'block' : 'none';
       }
     }
 
-    function getCategoryClass(area) {
-      const norm = (area || '').toLowerCase();
-      if (norm.includes('ai') || norm.includes('machine learning')) return 'badge-ai';
-      if (norm.includes('database')) return 'badge-db';
-      if (norm.includes('distributed')) return 'badge-dist';
-      if (norm.includes('social')) return 'badge-social';
-      if (norm.includes('economics')) return 'badge-econ';
-      if (norm.includes('genomics') || norm.includes('crispr')) return 'badge-crispr';
-      if (norm.includes('software') || norm.includes('engineering')) return 'badge-se';
-      return 'badge-default';
-    }
-
-    function renderFilterPills(categoriesList) {
-      if (!filterContainer) return;
-      filterContainer.innerHTML = '';
-
-      // Add 'All' pill
-      const allPill = document.createElement('button');
-      allPill.className = 'category-pill active';
-      allPill.textContent = 'All';
-      allPill.addEventListener('click', () => selectCategory('All', allPill));
-      filterContainer.appendChild(allPill);
-
-      categoriesList.forEach(cat => {
-        const pill = document.createElement('button');
-        pill.className = 'category-pill';
-        pill.textContent = cat;
-        pill.addEventListener('click', () => selectCategory(cat, pill));
-        filterContainer.appendChild(pill);
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        searchQuery = e.target.value.toLowerCase();
+        filterArticles();
       });
     }
 
-    function selectCategory(cat, pillElement) {
-      selectedCategory = cat;
-      // Update active state in UI
+    if (filterContainer) {
       const pills = filterContainer.querySelectorAll('.category-pill');
-      pills.forEach(p => p.classList.remove('active'));
-      pillElement.classList.add('active');
-
-      renderArticles();
-    }
-
-    function renderArticles() {
-      if (!grid) return;
-      grid.innerHTML = '';
-
-      // Filter articles based on selectedCategory and searchQuery
-      const filtered = allArticles.filter(art => {
-        const matchCategory = selectedCategory === 'All' || art.area === selectedCategory;
-        
-        const textToSearch = [
-          art.title,
-          art.author,
-          art.area,
-          art.description || '',
-          getDomain(art.url)
-        ].join(' ').toLowerCase();
-        
-        const matchSearch = textToSearch.includes(searchQuery);
-
-        return matchCategory && matchSearch;
-      });
-
-      if (filtered.length === 0) {
-        if (noResults) noResults.style.display = 'block';
-        return;
-      }
-
-      if (noResults) noResults.style.display = 'none';
-
-      filtered.forEach((art, index) => {
-        const card = document.createElement('li');
-        card.className = 'post-item';
-        card.style.animationDelay = `${index * 0.03}s`;
-
-        const badgeClass = getCategoryClass(art.area);
-
-        card.innerHTML = `
-          <a href="${art.url}" target="_blank" rel="noopener">
-            <div class="card-meta">
-              <span class="area-badge ${badgeClass}">${art.area || 'Resource'}</span>
-              <span class="domain-badge">
-                <svg style="width: 14px; height: 14px; margin-right: 4px; display: inline-block;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
-                </svg>
-                ${getDomain(art.url)}
-              </span>
-            </div>
-            <h4 class="title">
-              ${art.title}
-              <svg style="width: 14px; height: 14px; margin-left: 4px; display: inline-block;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-              </svg>
-            </h4>
-            ${art.description ? `<p class="description">${art.description}</p>` : ''}
-            <p class="date">By ${art.author || 'Unknown'}</p>
-          </a>
-        `;
-
-        grid.appendChild(card);
+      pills.forEach((pill) => {
+        pill.addEventListener('click', () => {
+          pills.forEach((p) => p.classList.remove('active'));
+          pill.classList.add('active');
+          selectedCategory = pill.getAttribute('data-category') || 'All';
+          filterArticles();
+        });
       });
     }
   });
