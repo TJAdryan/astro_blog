@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-11-08T18:11:46.922Z",
+    "status": "Service Change",
+    "details": [
+      "Southbound: Coney Island - Stillwell Av-bound trains are making local stops between 34 St - Herald Sq and Canal St."
+    ]
+  },
+  {
     "date": "2026-11-07T17:56:39.370Z",
     "status": "Service Change",
     "details": [
@@ -206,13 +213,6 @@
   },
   {
     "date": "2026-10-08T13:11:51.847Z",
-    "status": "Service Change",
-    "details": [
-      "Northbound: Some 96 St-bound trains are skipping Avenue M, Avenue J, Avenue H, Cortelyou Rd, Beverley Rd, and Parkside Av."
-    ]
-  },
-  {
-    "date": "2026-10-07T13:11:26.787Z",
     "status": "Service Change",
     "details": [
       "Northbound: Some 96 St-bound trains are skipping Avenue M, Avenue J, Avenue H, Cortelyou Rd, Beverley Rd, and Parkside Av."
