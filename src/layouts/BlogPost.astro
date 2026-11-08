@@ -65,6 +65,78 @@ const {
 			border-radius: 8px;
 			margin-top: 1.5rem;
 			margin-bottom: 1.5rem;
+			padding-right: 4.5rem;
+		}
+
+		.prose :global(.code-block-wrapper) {
+			position: relative;
+			max-width: 720px;
+			margin: 1.5rem auto;
+		}
+
+		.prose :global(.code-block-wrapper pre) {
+			margin-top: 0;
+			margin-bottom: 0;
+		}
+
+		.prose :global(.copy-code-btn) {
+			position: absolute;
+			top: 0.65rem;
+			right: 0.65rem;
+			display: inline-flex;
+			align-items: center;
+			gap: 0.35rem;
+			padding: 0.35rem 0.65rem;
+			font-family: "Atkinson", system-ui, -apple-system, sans-serif;
+			font-size: 0.75rem;
+			font-weight: 700;
+			line-height: 1;
+			color: rgba(248, 250, 252, 0.85);
+			background: rgba(30, 41, 59, 0.75);
+			border: 1px solid rgba(255, 255, 255, 0.18);
+			border-radius: 6px;
+			cursor: pointer;
+			backdrop-filter: blur(6px);
+			-webkit-backdrop-filter: blur(6px);
+			opacity: 0.85;
+			transition:
+				opacity 0.2s ease,
+				background-color 0.2s ease,
+				border-color 0.2s ease,
+				color 0.2s ease,
+				transform 0.15s ease;
+			z-index: 10;
+			user-select: none;
+		}
+
+		.prose :global(.code-block-wrapper:hover .copy-code-btn),
+		.prose :global(.copy-code-btn:focus-visible) {
+			opacity: 1;
+		}
+
+		.prose :global(.copy-code-btn:hover) {
+			background: rgba(51, 65, 85, 0.92);
+			border-color: var(--accent, #ff6b35);
+			color: #ffffff;
+			transform: translateY(-1px);
+		}
+
+		.prose :global(.copy-code-btn:focus-visible) {
+			outline: 2px solid var(--accent, #ff6b35);
+			outline-offset: 2px;
+		}
+
+		.prose :global(.copy-code-btn.copied) {
+			background: rgba(16, 185, 129, 0.22);
+			border-color: #10b981;
+			color: #6ee7b7;
+			opacity: 1;
+		}
+
+		.prose :global(.copy-code-btn svg) {
+			width: 14px;
+			height: 14px;
+			flex-shrink: 0;
 		}
 
 		/* Unordered lists styling */
@@ -146,4 +218,61 @@ const {
 			<slot />
 		</div>
 	</article>
+
+	<script>
+		function initCodeCopyButtons() {
+			const codeBlocks = document.querySelectorAll(".prose pre");
+
+			const copyIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>Copy</span>`;
+			const checkIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg><span>Copied!</span>`;
+
+			codeBlocks.forEach((pre) => {
+				if (
+					pre.parentElement?.classList.contains("code-block-wrapper") ||
+					pre.classList.contains("mermaid")
+				) {
+					return;
+				}
+
+				const wrapper = document.createElement("div");
+				wrapper.className = "code-block-wrapper";
+				pre.parentNode?.insertBefore(wrapper, pre);
+				wrapper.appendChild(pre);
+
+				const button = document.createElement("button");
+				button.type = "button";
+				button.className = "copy-code-btn";
+				button.setAttribute("aria-label", "Copy code to clipboard");
+				button.innerHTML = copyIcon;
+
+				let resetTimeout: ReturnType<typeof setTimeout> | null = null;
+
+				button.addEventListener("click", async () => {
+					const codeEl = pre.querySelector("code");
+					const textToCopy = (codeEl ? codeEl.innerText : (pre as HTMLElement).innerText).replace(/\n$/, "");
+
+					try {
+						await navigator.clipboard.writeText(textToCopy);
+						button.classList.add("copied");
+						button.innerHTML = checkIcon;
+						button.setAttribute("aria-label", "Copied to clipboard");
+
+						if (resetTimeout) clearTimeout(resetTimeout);
+						resetTimeout = setTimeout(() => {
+							button.classList.remove("copied");
+							button.innerHTML = copyIcon;
+							button.setAttribute("aria-label", "Copy code to clipboard");
+						}, 2000);
+					} catch (err) {
+						console.error("Failed to copy code:", err);
+					}
+				});
+
+				wrapper.appendChild(button);
+			});
+		}
+
+		initCodeCopyButtons();
+		document.addEventListener("astro:page-load", initCodeCopyButtons);
+	</script>
 </BaseLayout>
