@@ -448,5 +448,14 @@
     "source": "PubMed",
     "topic": "CRISPR",
     "dateAdded": "2026-11-02T13:05:49.449Z"
+  },
+  {
+    "id": "http://arxiv.org/abs/2610.35485v1",
+    "title": "Understanding Python Linters through a Comprehensive and Systematic Empirical Study",
+    "summary": "Code linters, tools that automatically detect code issues, help developers accelerate development and improve code quality by identifying errors early. Unlike previous studies that focused mainly on single linters or informal comparisons, this paper presents the first large-scale empirical study of five widely used Python linters: Ruff, Pylint, Flake8, Mypy and Black, through four key user concerns: linting rule checks, speed, configuration methods, and linter preferences. We analyze 1,551 linting rules, categorize them into five types, and construct rule mappings, finding that more than 40% are shared between multiple linters, with Ruff and Pylint together covering over 80% of all rules. Pylint has the most rules in the first two categories, and Ruff leads in the last three. Next, we measure their running times on 1,000 GitHub projects under three setups (single-rule, default, all-rules), finding a consistent speed ranking from fastest to slowest: Ruff, Mypy, Flake8, Black, and Pylint. Ruff is extremely fast, with runtimes typically within one second. Then, we summarize four configuration methods and four types of configuration options from 443 available options across the five linters. While all linters support the four configuration methods, they differ in project configuration formats and flexibility in their configuration options. Finally, an analysis of 3,094 GitHub projects using the five linters reveals that over 50% use multiple linters, share strong consensus on option selections and rule suppressions, but exhibit project-specific variations in enabled-rule configurations. Our findings provide actionable insights for linter users and establish a benchmark dataset and taxonomy to support future research, such as cross-linter rule mapping, performance modeling, and automated configuration.",
+    "link": "http://arxiv.org/abs/2610.35485v1",
+    "source": "arXiv",
+    "topic": "Python",
+    "dateAdded": "2026-11-09T22:49:20.516Z"
   }
 ]
