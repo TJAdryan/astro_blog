@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-11-10T20:07:54.673Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times between Kings Hwy and 14 St - Union Sq (up to 15 mins, normally every 10 mins).",
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Atlantic Av - Barclays Ctr and Coney Island - Stillwell Av (up to 15 mins, normally every 9 mins)."
+    ]
+  },
+  {
     "date": "2026-11-08T18:11:46.922Z",
     "status": "Service Change",
     "details": [
@@ -209,13 +217,6 @@
     "details": [
       "Northbound: Some 96 St-bound trains are skipping Avenue M, Avenue J, Avenue H, Cortelyou Rd, Beverley Rd, and Parkside Av.",
       "Northbound: Some 96 St-bound trains are making local stops between Times Sq - 42 St and 57 St - 7 Av."
-    ]
-  },
-  {
-    "date": "2026-10-08T13:11:51.847Z",
-    "status": "Service Change",
-    "details": [
-      "Northbound: Some 96 St-bound trains are skipping Avenue M, Avenue J, Avenue H, Cortelyou Rd, Beverley Rd, and Parkside Av."
     ]
   }
 ]
