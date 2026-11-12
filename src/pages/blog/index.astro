@@ -208,13 +208,15 @@ const categories = Array.from(
 			margin-bottom: 1rem;
 			text-align: center;
 		}
-		ul li:first-child img {
+		ul li:first-child img,
+		ul li:first-child :global(img) {
 			width: 100%;
 		}
 		ul li:first-child .title {
 			font-size: 2.369rem;
 		}
-		ul li img {
+		ul li img,
+		ul li :global(img) {
 			margin-bottom: 0.5rem;
 			border-radius: 12px;
 			width: 100%;
@@ -383,8 +385,10 @@ const categories = Array.from(
 									<Image
 										width={720}
 										height={360}
-										src={post.data.heroImage}
-										alt=""
+										src={post.data.heroImage as any}
+										alt={post.data.title}
+										loading={index === 0 ? "eager" : "lazy"}
+										decoding="async"
 									/>
 								)}
 								<h4 class="title">{post.data.title}</h4>

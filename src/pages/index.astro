@@ -1,8 +1,13 @@
 ---
+import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 import FormattedDate from "../components/FormattedDate.astro";
 import articlesData from "../data/articles.json";
+import trainPicImg from "../assets/cards/train_pic.png";
+import housingSimImg from "../assets/cards/housing_sim.jpg";
+import boidsSimImg from "../assets/cards/boids_sim.jpg";
+import cartoonDoorImg from "../assets/cards/cartoon_door.png";
 
 // Fetch posts and sort
 const posts = await getCollection("blog");
@@ -52,9 +57,13 @@ const featuredArticles = [...articlesData]
                 id="login-secret"
                 class="login-secret absolute inset-0 flex items-center justify-center opacity-0 pointer-events-none z-0"
               >
-                <img
-                  src="/img/cartoon_door.png"
+                <Image
+                  src={cartoonDoorImg}
                   alt="Login Door"
+                  width={160}
+                  height={160}
+                  loading="lazy"
+                  decoding="async"
                   class="h-24 w-auto hover:brightness-110 transition-all"
                 />
               </a>
@@ -188,7 +197,15 @@ const featuredArticles = [...articlesData]
           <!-- Card 1: Q Train Tracker -->
           <a href="/q-train" class="project-card">
             <div class="project-image-wrap">
-              <img src="/img/train_pic.png" alt="BMT Brighton Line Transit Tracker" class="project-img" />
+              <Image
+                src={trainPicImg}
+                alt="BMT Brighton Line Transit Tracker"
+                width={640}
+                height={360}
+                loading="lazy"
+                decoding="async"
+                class="project-img"
+              />
               <div class="project-overlay">
                 <span class="project-overlay-text">Launch Tracker →</span>
               </div>
@@ -206,7 +223,15 @@ const featuredArticles = [...articlesData]
           <!-- Card 2: Housing Simulation -->
           <a href="/interactive/housing-simulation" class="project-card">
             <div class="project-image-wrap">
-              <img src="/img/housing_sim.jpg" alt="Housing Market Simulation" class="project-img" />
+              <Image
+                src={housingSimImg}
+                alt="Housing Market Simulation"
+                width={640}
+                height={360}
+                loading="lazy"
+                decoding="async"
+                class="project-img"
+              />
               <div class="project-overlay">
                 <span class="project-overlay-text">Run Simulation →</span>
               </div>
@@ -224,7 +249,15 @@ const featuredArticles = [...articlesData]
           <!-- Card 3: Boids Flocking -->
           <a href="/interactive/boids" class="project-card">
             <div class="project-image-wrap">
-              <img src="/img/boids_sim.jpg" alt="Boids Flocking Simulation" class="project-img" />
+              <Image
+                src={boidsSimImg}
+                alt="Boids Flocking Simulation"
+                width={640}
+                height={360}
+                loading="lazy"
+                decoding="async"
+                class="project-img"
+              />
               <div class="project-overlay">
                 <span class="project-overlay-text">Launch Simulation →</span>
               </div>
@@ -879,14 +912,16 @@ const featuredArticles = [...articlesData]
     background: #0f172a;
   }
 
-  .project-img {
+  .project-img,
+  .project-image-wrap :global(img) {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .project-card:hover .project-img {
+  .project-card:hover .project-img,
+  .project-card:hover .project-image-wrap :global(img) {
     transform: scale(1.06);
   }
 

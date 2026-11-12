@@ -1,5 +1,12 @@
 ---
+import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import boidsSimImg from "../assets/cards/boids_sim.jpg";
+import gameOfLifeSimImg from "../assets/cards/game_of_life_sim.jpg";
+import housingSimImg from "../assets/cards/housing_sim.jpg";
+import aaronsDivergenceImg from "../assets/cards/aarons_divergence.jpg";
+import trainPicImg from "../assets/cards/train_pic.png";
+import ornamentsImg from "../assets/cards/ornaments.png";
 ---
 
 <BaseLayout title="Interactive Simulations Gallery" mainClass="max-w-6xl">
@@ -19,7 +26,15 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       <a href="/interactive/boids" class="sim-card-link">
         <div class="sim-card">
           <div class="image-container">
-            <img src="/img/boids_sim.jpg" alt="Boids Flocking Simulation" class="sim-image" />
+            <Image
+              src={boidsSimImg}
+              alt="Boids Flocking Simulation"
+              width={640}
+              height={360}
+              loading="lazy"
+              decoding="async"
+              class="sim-image"
+            />
             <div class="hover-overlay">
               <span class="overlay-text">Launch Simulation →</span>
             </div>
@@ -38,7 +53,15 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       <a href="/interactive/game-of-life" class="sim-card-link">
         <div class="sim-card">
           <div class="image-container">
-            <img src="/img/game_of_life_sim.jpg" alt="Conway's Game of Life Simulation" class="sim-image" />
+            <Image
+              src={gameOfLifeSimImg}
+              alt="Conway's Game of Life Simulation"
+              width={640}
+              height={360}
+              loading="lazy"
+              decoding="async"
+              class="sim-image"
+            />
             <div class="hover-overlay">
               <span class="overlay-text">Launch Simulation →</span>
             </div>
@@ -57,7 +80,15 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       <a href="/interactive/housing-simulation" class="sim-card-link">
         <div class="sim-card">
           <div class="image-container">
-            <img src="/img/housing_sim.jpg" alt="U.S. Housing Market Simulation" class="sim-image" />
+            <Image
+              src={housingSimImg}
+              alt="U.S. Housing Market Simulation"
+              width={640}
+              height={360}
+              loading="lazy"
+              decoding="async"
+              class="sim-image"
+            />
             <div class="hover-overlay">
               <span class="overlay-text">Launch Simulation →</span>
             </div>
@@ -76,7 +107,15 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       <a href="/interactive/aarons-divergence" class="sim-card-link">
         <div class="sim-card">
           <div class="image-container">
-            <img src="/img/aarons_divergence.jpg" alt="Aaron's Divergence Simulation" class="sim-image" />
+            <Image
+              src={aaronsDivergenceImg}
+              alt="Aaron's Divergence Simulation"
+              width={640}
+              height={360}
+              loading="lazy"
+              decoding="async"
+              class="sim-image"
+            />
             <div class="hover-overlay">
               <span class="overlay-text">Launch Simulation →</span>
             </div>
@@ -95,7 +134,15 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       <a href="/q-train" class="sim-card-link">
         <div class="sim-card">
           <div class="image-container">
-            <img src="/img/train_pic.png" alt="BMT Brighton Line Transit Tracker" class="sim-image" />
+            <Image
+              src={trainPicImg}
+              alt="BMT Brighton Line Transit Tracker"
+              width={640}
+              height={360}
+              loading="lazy"
+              decoding="async"
+              class="sim-image"
+            />
             <div class="hover-overlay">
               <span class="overlay-text">Launch Tracker →</span>
             </div>
@@ -114,7 +161,15 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       <a href="/interactive/holiday-tree" class="sim-card-link holiday-bonus-card-link">
         <div class="sim-card holiday-bonus-card">
           <div class="image-container">
-            <img src="/img/holiday/ornaments.png" alt="Next Val Data Holiday Tree Decorator" class="sim-image" />
+            <Image
+              src={ornamentsImg}
+              alt="Next Val Data Holiday Tree Decorator"
+              width={640}
+              height={360}
+              loading="lazy"
+              decoding="async"
+              class="sim-image"
+            />
             <div class="hover-overlay">
               <span class="overlay-text">Decorate Tree →</span>
             </div>
@@ -438,7 +493,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     background-color: #f1f5f9;
   }
 
-  .sim-image {
+  .sim-image,
+  .image-container :global(img) {
     position: absolute;
     top: 0;
     left: 0;
@@ -448,7 +504,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .sim-card-link:hover .sim-image {
+  .sim-card-link:hover .sim-image,
+  .sim-card-link:hover .image-container :global(img) {
     transform: scale(1.05);
   }
 

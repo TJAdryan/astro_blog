@@ -32,7 +32,8 @@ const {
 		.hero-image {
 			width: 100%;
 		}
-		.hero-image img {
+		.hero-image img,
+		.hero-image :global(img) {
 			display: block;
 			margin: 0 auto;
 			border-radius: 12px;
@@ -193,7 +194,14 @@ const {
 		<div class="hero-image">
 			{
 				heroImage && (
-					<Image width={1020} height={510} src={heroImage} alt="" />
+					<Image
+						width={1020}
+						height={510}
+						src={heroImage as any}
+						alt={title}
+						loading="eager"
+						decoding="async"
+					/>
 				)
 			}
 		</div>
