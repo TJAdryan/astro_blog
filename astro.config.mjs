@@ -15,6 +15,10 @@ export default defineConfig({
     site: 'https://nextvaldata.com', // Update this to your real domain
     output: 'server',
     adapter: netlify(),
+    redirects: {
+        '/blog/2025-10-20-getting--70x-data-processing-speed-with-gpu-vs-cpu':
+            '/blog/2025-10-20-getting-70x-data-processing-speed-with-gpu-vs-cpu/',
+    },
     integrations: [mdx(), sitemap(), react(), tailwind(), clerk()],
     markdown: {
         remarkPlugins: [remarkMermaid],
