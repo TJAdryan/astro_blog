@@ -5,13 +5,33 @@ import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
 import "../styles/global.css";
 import "../styles/custom.css";
 import BaseHead from "../components/BaseHead.astro";
-const { title = SITE_TITLE, description = SITE_DESCRIPTION, image, favicon } = Astro.props;
+const {
+  title = SITE_TITLE,
+  description = SITE_DESCRIPTION,
+  image,
+  favicon,
+  ogType,
+  pubDate,
+  updatedDate,
+  tags,
+  category,
+} = Astro.props;
 ---
 
 <!doctype html>
 <html lang="en" class="scroll-smooth">
   <head>
-    <BaseHead title={title} description={description} image={image} favicon={favicon} />
+    <BaseHead
+      title={title}
+      description={description}
+      image={image}
+      favicon={favicon}
+      ogType={ogType}
+      pubDate={pubDate}
+      updatedDate={updatedDate}
+      tags={tags}
+      category={category}
+    />
     <style is:global>
       /* Reset any default max-width constraints */
       body {

@@ -14,13 +14,29 @@ const {
   noindex = false,
   image,
   favicon,
+  ogType,
+  pubDate,
+  updatedDate,
+  tags,
+  category,
 } = Astro.props;
 ---
 
 <!doctype html>
 <html lang="en" class="scroll-smooth">
   <head>
-    <BaseHead title={title} description={description} image={image} favicon={favicon} noindex={noindex} />
+    <BaseHead
+      title={title}
+      description={description}
+      image={image}
+      favicon={favicon}
+      noindex={noindex}
+      ogType={ogType}
+      pubDate={pubDate}
+      updatedDate={updatedDate}
+      tags={tags}
+      category={category}
+    />
   </head>
   <body
     class="min-h-screen bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-50"

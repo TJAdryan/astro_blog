@@ -24,10 +24,24 @@ const {
 	favicon,
 	noindex,
 	hideTitle,
+	tags,
+	category,
 } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description} mainClass="max-w-5xl" image={ogImage || heroImage} favicon={favicon} noindex={noindex}>
+<BaseLayout
+	title={title}
+	description={description}
+	mainClass="max-w-5xl"
+	image={ogImage || heroImage}
+	favicon={favicon}
+	noindex={noindex}
+	ogType="article"
+	pubDate={pubDate}
+	updatedDate={updatedDate}
+	tags={tags}
+	category={category}
+>
 	<style>
 		.hero-image {
 			width: 100%;
