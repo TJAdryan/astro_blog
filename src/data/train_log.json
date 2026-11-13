@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-11-13T20:11:37.451Z",
+    "status": "Service Change",
+    "details": [
+      "Southbound: Some Coney Island - Stillwell Av-bound trains are skipping Avenue H, Avenue J, and Avenue M."
+    ]
+  },
+  {
     "date": "2026-11-12T20:34:52.804Z",
     "status": "Delays",
     "details": [
@@ -210,13 +217,6 @@
     "status": "Service Change",
     "details": [
       "Northbound: Some 96 St-bound trains are skipping Avenue M, Avenue J, Avenue H, Cortelyou Rd, Beverley Rd, and Parkside Av."
-    ]
-  },
-  {
-    "date": "2026-10-11T13:06:32.901Z",
-    "status": "Service Change",
-    "details": [
-      "<Q> trains are running between 96 St and Prospect Park."
     ]
   }
 ]
