@@ -2,6 +2,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import articlesData from '../data/articles.json';
 
+export const prerender = true;
+
 function getDomain(urlStr: string) {
   try {
     const hostname = new URL(urlStr).hostname;

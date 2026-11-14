@@ -168,34 +168,51 @@ const articleJsonLd =
   )
 }
 
-<!-- Mermaid -->
-<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"
-></script>
+<!-- Mermaid (Lazy-loaded only when .mermaid diagrams exist on the page) -->
 <script>
   // @ts-nocheck
   declare const mermaid: any;
-  document.addEventListener("DOMContentLoaded", function () {
-    // Initialize Mermaid
-    // @ts-ignore
-    mermaid.initialize({
-      startOnLoad: false,
-      theme: "default",
-      securityLevel: "loose",
-      flowchart: {
-        htmlLabels: true,
-        curve: "basis",
-      },
-      themeVariables: {
-        fontSize: "24px",
-        fontFamily: "Inter, system-ui, sans-serif",
-      },
-      logLevel: 5, // Suppress logging
-    });
+  let mermaidLoadPromise: Promise<any> | null = null;
 
-    // Create and inject modal if it doesn't exist
-    let modal: HTMLDialogElement | null = document.getElementById(
+  function loadMermaid(): Promise<any> {
+    if (typeof window !== "undefined" && (window as any).mermaid) {
+      return Promise.resolve((window as any).mermaid);
+    }
+    if (mermaidLoadPromise) {
+      return mermaidLoadPromise;
+    }
+    mermaidLoadPromise = new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js";
+      script.async = true;
+      script.onload = () => {
+        const m = (window as any).mermaid;
+        m.initialize({
+          startOnLoad: false,
+          theme: "default",
+          securityLevel: "loose",
+          flowchart: {
+            htmlLabels: true,
+            curve: "basis",
+          },
+          themeVariables: {
+            fontSize: "24px",
+            fontFamily: "Inter, system-ui, sans-serif",
+          },
+          logLevel: 5,
+        });
+        resolve(m);
+      };
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
+    return mermaidLoadPromise;
+  }
+
+  function ensureMermaidModal(): HTMLDialogElement {
+    let modal = document.getElementById(
       "mermaid-modal",
-    ) as HTMLDialogElement;
+    ) as HTMLDialogElement | null;
     if (!modal) {
       modal = document.createElement("dialog");
       modal.id = "mermaid-modal";
@@ -208,7 +225,6 @@ const articleJsonLd =
       `;
       document.body.appendChild(modal);
 
-      // Close on backdrop click
       modal.addEventListener("click", (event) => {
         const rect = modal!.getBoundingClientRect();
         const isInDialog =
@@ -221,68 +237,57 @@ const articleJsonLd =
         }
       });
     }
+    return modal;
+  }
 
-    function openModal(svgContent: string) {
-      const modalContent = document.getElementById("mermaid-modal-content");
-      if (modalContent && modal) {
-        modalContent.innerHTML = svgContent;
-        // Ensure SVG in modal is scalable
-        const svg = modalContent.querySelector("svg");
-        if (svg) {
-          // Allow the SVG to be its natural size or larger, up to 100% width of container if it fits
-          // But importantly, DO NOT constrain height, so it doesn't shrink text
-          svg.style.width = "auto";
-          svg.style.height = "auto";
-          svg.style.maxWidth = "100%";
-          // Remove fixed width/height attributes if they exist to allow CCS scaling
-          svg.removeAttribute("width");
-          svg.removeAttribute("height");
-        }
-        modal.showModal();
+  function openModal(svgContent: string) {
+    const modal = ensureMermaidModal();
+    const modalContent = document.getElementById("mermaid-modal-content");
+    if (modalContent && modal) {
+      modalContent.innerHTML = svgContent;
+      const svg = modalContent.querySelector("svg");
+      if (svg) {
+        svg.style.width = "auto";
+        svg.style.height = "auto";
+        svg.style.maxWidth = "100%";
+        svg.removeAttribute("width");
+        svg.removeAttribute("height");
       }
+      modal.showModal();
     }
+  }
 
-    // Function to render Mermaid diagrams
-    async function renderMermaidDiagrams() {
-      // console.log("Rendering mermaid diagrams...");
-      const mermaidElements = document.querySelectorAll(".mermaid");
-      // console.log(`Found ${mermaidElements.length} mermaid elements`);
+  async function renderMermaidDiagrams() {
+    const mermaidElements = document.querySelectorAll(".mermaid");
+    if (mermaidElements.length === 0) return;
 
-      for (let i = 0; i < mermaidElements.length; i++) {
-        const element = mermaidElements[i] as HTMLElement;
-        if (!element.dataset.processed) {
-          // console.log(`Processing mermaid element ${i}`);
-          element.dataset.processed = "true";
-          const id = `mermaid-${Date.now()}-${i}`;
+    const m = await loadMermaid();
 
-          try {
-            // @ts-ignore
-            const { svg } = await mermaid.render(
-              id,
-              element.textContent?.trim() || "",
-            );
-            element.innerHTML = svg;
+    for (let i = 0; i < mermaidElements.length; i++) {
+      const element = mermaidElements[i] as HTMLElement;
+      if (!element.dataset.processed) {
+        element.dataset.processed = "true";
+        const id = `mermaid-${Date.now()}-${i}`;
 
-            // Add interaction
-            element.style.cursor = "zoom-in";
-            element.title = "Click to enlarge";
-            element.addEventListener("click", () => openModal(svg));
-
-            // console.log(`Successfully rendered mermaid diagram ${i}`);
-          } catch (error: any) {
-            console.error("Mermaid rendering error:", error);
-            element.innerHTML = `<p style="color: red;">Error rendering diagram: ${error.message}</p>`;
-          }
+        try {
+          const { svg } = await m.render(
+            id,
+            element.textContent?.trim() || "",
+          );
+          element.innerHTML = svg;
+          element.style.cursor = "zoom-in";
+          element.title = "Click to enlarge";
+          element.addEventListener("click", () => openModal(svg));
+        } catch (error: any) {
+          console.error("Mermaid rendering error:", error);
+          element.innerHTML = `<p style="color: red;">Error rendering diagram: ${error.message}</p>`;
         }
       }
     }
+  }
 
-    // Render diagrams
-    renderMermaidDiagrams();
-
-    // Also run when navigating in SPA mode
-    window.addEventListener("astro:page-load", renderMermaidDiagrams);
-  });
+  document.addEventListener("DOMContentLoaded", renderMermaidDiagrams);
+  window.addEventListener("astro:page-load", renderMermaidDiagrams);
 </script>
 
 <style is:global>

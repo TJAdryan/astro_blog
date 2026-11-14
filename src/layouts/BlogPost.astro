@@ -36,7 +36,7 @@ const {
 	image={ogImage || heroImage}
 	favicon={favicon}
 	noindex={noindex}
-	ogType="article"
+	ogType={pubDate ? "article" : "website"}
 	pubDate={pubDate}
 	updatedDate={updatedDate}
 	tags={tags}
