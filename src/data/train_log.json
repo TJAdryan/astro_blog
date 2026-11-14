@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-11-14T18:37:59.159Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times between Newkirk Plaza and DeKalb Av (up to 17 mins, normally every 8 mins).",
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times at Brighton Beach (up to 10 mins, normally every 8 mins)."
+    ]
+  },
+  {
     "date": "2026-11-13T20:11:37.451Z",
     "status": "Service Change",
     "details": [
@@ -210,13 +218,6 @@
     "details": [
       "Northbound: 96 St-bound trains are having longer wait times between 14 St - Union Sq and 34 St - Herald Sq (up to 12 mins, normally every 10 mins).",
       "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times at W 8 St - NY Aquarium (up to 12 mins, normally every 10 mins)."
-    ]
-  },
-  {
-    "date": "2026-10-13T13:14:56.245Z",
-    "status": "Service Change",
-    "details": [
-      "Northbound: Some 96 St-bound trains are skipping Avenue M, Avenue J, Avenue H, Cortelyou Rd, Beverley Rd, and Parkside Av."
     ]
   }
 ]
