@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-11-16T22:40:18.274Z",
+    "status": "Service Change",
+    "details": [
+      "Northbound: Some 96 St-bound trains are skipping 72 St, and 86 St."
+    ]
+  },
+  {
     "date": "2026-11-15T19:13:00.929Z",
     "status": "Service Change",
     "details": [
@@ -213,10 +220,5 @@
     "details": [
       "Southbound: Some Coney Island - Stillwell Av-bound trains are skipping Avenue H, Avenue J, and Avenue M."
     ]
-  },
-  {
-    "date": "2026-10-15T13:07:52.620Z",
-    "status": "Good Service",
-    "details": []
   }
 ]
