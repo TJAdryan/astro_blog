@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-11-18T21:02:01.914Z",
+    "status": "Delays",
+    "details": [
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Sheepshead Bay and Ocean Pkwy (up to 19 mins, normally every 13 mins)."
+    ]
+  },
+  {
     "date": "2026-11-17T21:29:03.012Z",
     "status": "Service Change",
     "details": [
@@ -212,13 +219,6 @@
     "status": "Delays",
     "details": [
       "Northbound: 96 St-bound trains are having longer wait times between Lexington Av/63 St and 72 St (up to 15 mins, normally every 11 mins)."
-    ]
-  },
-  {
-    "date": "2026-10-17T13:05:09.803Z",
-    "status": "Service Change",
-    "details": [
-      "Northbound: Some 96 St-bound trains are skipping Cortelyou Rd, Beverley Rd, and Parkside Av."
     ]
   }
 ]
