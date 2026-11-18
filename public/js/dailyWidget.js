@@ -1,4 +1,8 @@
 document.addEventListener("DOMContentLoaded", async () => {
+  const titleElement = document.getElementById("article-title");
+  const authorElement = document.getElementById("article-author");
+  if (!titleElement || !authorElement) return;
+
   // Fetch articles from JSON file
   const response = await fetch("/data/articles.json");
   const articles = await response.json();
@@ -10,12 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const articleIndex = dayOfYear % articles.length;
   const dailyArticle = articles[articleIndex];
 
-  const titleElement = document.getElementById("article-title");
-  const authorElement = document.getElementById("article-author");
-
-  if (titleElement && authorElement) {
-    titleElement.href = dailyArticle.url;
-    titleElement.textContent = dailyArticle.title;
-    authorElement.textContent = `${dailyArticle.author} — [${dailyArticle.area}]`;
-  }
+  titleElement.href = dailyArticle.url;
+  titleElement.textContent = dailyArticle.title;
+  authorElement.textContent = `${dailyArticle.author} — [${dailyArticle.area}]`;
 });
