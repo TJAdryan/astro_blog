@@ -1,8 +1,21 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { isAuthorizedAdmin } from '../allowed_emails';
 import TrackerDashboard from '../components/TrackerDashboard.jsx';
 import fs from 'node:fs';
 import path from 'node:path';
+
+const user = await Astro.locals.currentUser();
+if (!user) return Astro.redirect('/login');
+
+const userEmail = user?.emailAddresses?.[0]?.emailAddress || '';
+if (userEmail && userEmail.toLowerCase() === 'sophiogabatashvili@gmail.com') {
+    return Astro.redirect('/wedding');
+}
+
+if (!isAuthorizedAdmin(userEmail)) {
+    return Astro.redirect('/unauthorized');
+}
 
 // Data Loading
 let history = [];
@@ -19,6 +32,6 @@ try {
 }
 ---
 
-<BaseLayout>
+<BaseLayout noindex={true}>
     <TrackerDashboard client:load history={history} />
 </BaseLayout>

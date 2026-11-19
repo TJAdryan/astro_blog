@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { ALLOWED_EMAILS } from "../allowed_emails";
+import { isAuthorizedAdmin } from "../allowed_emails";
 
 const user = await Astro.locals.currentUser();
 if (!user) return Astro.redirect("/login");
@@ -12,10 +12,8 @@ if (userEmail && userEmail.toLowerCase() === "sophiogabatashvili@gmail.com") {
   return Astro.redirect("/wedding");
 }
 
-if (ALLOWED_EMAILS.length > 0) {
-  if (!userEmail || !ALLOWED_EMAILS.includes(userEmail)) {
-    return Astro.redirect("/unauthorized");
-  }
+if (!isAuthorizedAdmin(userEmail)) {
+  return Astro.redirect("/unauthorized");
 }
 
 import {
@@ -51,7 +49,7 @@ try {
 }
 ---
 
-<BaseLayout>
+<BaseLayout noindex={true}>
   <div
     class="min-h-[80vh] flex flex-col items-center justify-center p-4 bg-gradient-to-b from-white to-blue-50/30"
   >

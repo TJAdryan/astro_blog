@@ -11,7 +11,15 @@ const DOCUMENT_ID = '1T7ytVl8r9sWkcEp5HxfVuN8p3YRIvGcFTaZMYefG0mw';
 export const POST = async ({ request, redirect }) => {
     try {
         const data = await request.formData();
-        const dream = data.get('dream_details');
+        const rawDream = data.get('dream_details');
+        const dream =
+            typeof rawDream === 'string'
+                ? rawDream
+                      .replace(/---+/g, '—')
+                      .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, '')
+                      .trim()
+                      .slice(0, 500)
+                : '';
 
         let credentialsStr = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
 
@@ -33,7 +41,7 @@ export const POST = async ({ request, redirect }) => {
             }
         }
 
-        if (dream && credentialsStr) {
+        if (dream.length > 0 && credentialsStr) {
             const entry = {
                 date: new Date().toISOString(),
                 dream: dream

@@ -4,6 +4,11 @@ Allow: /
 # Sitemap location
 Sitemap: https://nextvaldata.com/sitemap-index.xml
 
-# Optional: Block specific paths if needed
-# Disallow: /private/
-# Disallow: /admin/
+# Block internal, authenticated, and API paths from crawlers
+Disallow: /api/
+Disallow: /private
+Disallow: /dashboard
+Disallow: /tracker
+Disallow: /login
+Disallow: /unauthorized
+Disallow: /abyss

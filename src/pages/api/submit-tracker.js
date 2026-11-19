@@ -4,11 +4,15 @@ import { google } from 'googleapis';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { authorizeApiRequest } from '../../allowed_emails';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const TRACKER_FILE = path.resolve(__dirname, '../../data/tracker_log.json');
 
-export const POST = async ({ request, redirect }) => {
+export const POST = async ({ request, redirect, locals }) => {
+    const authResult = await authorizeApiRequest(locals);
+    if (!authResult.authorized) return authResult.response;
+
     const data = await request.formData();
 
     // Extract Form Data

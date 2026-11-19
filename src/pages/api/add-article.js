@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 import { parseStringPromise } from 'xml2js';
 import { google } from 'googleapis';
 import { Buffer } from 'buffer';
+import { authorizeApiRequest } from '../../allowed_emails';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const QUEUE_FILE = path.resolve(__dirname, '../../data/article_queue.json');
@@ -26,7 +27,7 @@ async function fetchArxivPaper(topic) {
         return null;
     }
 
-    const url = `http://export.arxiv.org/api/query?search_query=${query}&start=0&max_results=50&sortBy=submittedDate&sortOrder=descending`;
+    const url = `https://export.arxiv.org/api/query?search_query=${query}&start=0&max_results=50&sortBy=submittedDate&sortOrder=descending`;
 
     try {
         const response = await fetch(url);
@@ -90,7 +91,10 @@ async function fetchPubmedPaper() {
 
 // --- Main API Handler ---
 
-export const POST = async ({ request, redirect }) => {
+export const POST = async ({ request, redirect, locals }) => {
+    const authResult = await authorizeApiRequest(locals);
+    if (!authResult.authorized) return authResult.response;
+
     const data = await request.formData();
     const topic = data.get('topic'); // 'data-engineering' or 'crispr'
 

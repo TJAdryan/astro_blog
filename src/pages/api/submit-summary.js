@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { Buffer } from 'buffer';
+import { authorizeApiRequest } from '../../allowed_emails';
 
 export const prerender = false;
 
@@ -10,14 +11,17 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const QUEUE_FILE = path.resolve(__dirname, '../../data/article_queue.json');
 const LOG_FILE = path.resolve(__dirname, '../../data/completed_log.json');
 
-export const POST = async ({ request, redirect }) => {
+export const POST = async ({ request, redirect, locals }) => {
+    const authResult = await authorizeApiRequest(locals);
+    if (!authResult.authorized) return authResult.response;
+
     const data = await request.formData();
     const summary = data.get('summary');
     const articleId = data.get('articleId');
     const articleTitle = data.get('articleTitle');
     const articleLink = data.get('articleLink');
 
-    if (!summary || summary.length < 300) {
+    if (!summary || typeof summary !== 'string' || summary.length < 300) {
         return new Response('Summary too short', { status: 400 });
     }
 
@@ -261,6 +265,6 @@ export const POST = async ({ request, redirect }) => {
 
     } catch (error) {
         console.error(`Error in stage ${stage}:`, error);
-        return new Response(`Error in stage [${stage}]: ${error.message}`, { status: 500 });
+        return new Response('Internal server error.', { status: 500 });
     }
 };

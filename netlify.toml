@@ -14,7 +14,7 @@
   to = "/sitemap-index.xml"
   status = 301
 
-# Headers for better SEO and performance
+# Headers for better SEO, security, and performance
 [[headers]]
   for = "/*"
   [headers.values]
@@ -22,6 +22,9 @@
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+    Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
+    X-Permitted-Cross-Domain-Policies = "none"
 
 [[headers]]
   for = "/sitemap-*.xml"

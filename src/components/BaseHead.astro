@@ -190,7 +190,7 @@ const articleJsonLd =
         m.initialize({
           startOnLoad: false,
           theme: "default",
-          securityLevel: "loose",
+          securityLevel: "strict",
           flowchart: {
             htmlLabels: true,
             curve: "basis",
@@ -280,7 +280,10 @@ const articleJsonLd =
           element.addEventListener("click", () => openModal(svg));
         } catch (error: any) {
           console.error("Mermaid rendering error:", error);
-          element.innerHTML = `<p style="color: red;">Error rendering diagram: ${error.message}</p>`;
+          const errP = document.createElement("p");
+          errP.style.color = "red";
+          errP.textContent = `Error rendering diagram: ${error?.message || "Invalid syntax"}`;
+          element.replaceChildren(errP);
         }
       }
     }

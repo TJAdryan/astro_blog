@@ -5,11 +5,15 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { Buffer } from 'buffer';
+import { authorizeApiRequest } from '../../allowed_emails';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const QUEUE_FILE = path.resolve(__dirname, '../../data/article_queue.json');
 
-export const POST = async ({ request, redirect }) => {
+export const POST = async ({ request, redirect, locals }) => {
+    const authResult = await authorizeApiRequest(locals);
+    if (!authResult.authorized) return authResult.response;
+
     const data = await request.formData();
     const articleId = data.get('articleId');
     const articleTitle = data.get('articleTitle');
@@ -138,8 +142,6 @@ export const POST = async ({ request, redirect }) => {
         stage = 'Queue Update';
         const githubToken = process.env.GITHUB_TOKEN;
 
-        let queueUpdated = false;
-
         // GitHub Update
         if (githubToken) {
             stage = 'GitHub Queue Update';
@@ -168,8 +170,7 @@ export const POST = async ({ request, redirect }) => {
                     // DEBUG: Log queue sizes
                     console.log(`[API] Queue size: Before=${queue.length}, After=${updatedQueue.length}`);
                     if (queue.length === updatedQueue.length) {
-                        // This is important: If filter didn't remove anything, TELL THE USER.
-                        return new Response(`Error: Article ID matching failed. ID not found or mismatch.\nTarget: ${articleId}\nQueue IDs: ${queue.map(q => q.id).join(', ')}`, { status: 400 });
+                        return new Response('Error: Article ID not found in queue.', { status: 400 });
                     }
 
                     const updateResponse = await fetch(getUrl, {
@@ -190,27 +191,26 @@ export const POST = async ({ request, redirect }) => {
 
                     if (!updateResponse.ok) {
                         const errText = await updateResponse.text();
-                        return new Response(`GitHub API Update Failed: ${updateResponse.status} ${updateResponse.statusText}\n${errText}`, { status: 500 });
+                        console.error('GitHub API Update Failed:', updateResponse.status, errText);
+                        return new Response('Failed to update article queue.', { status: 500 });
                     }
                     console.log('[API] GitHub update successful');
                 } else {
-                    return new Response(`GitHub API Fetch Failed: ${getResponse.status}`, { status: 500 });
+                    console.error('GitHub API Fetch Failed:', getResponse.status);
+                    return new Response('Failed to fetch article queue.', { status: 500 });
                 }
             } catch (ghError) {
                 console.error('GitHub API Error:', ghError);
-                return new Response(`GitHub API Exception: ${ghError.message}`, { status: 500 });
+                return new Response('Internal server error while updating queue.', { status: 500 });
             }
         } else {
-            return new Response('Configuration Error: GITHUB_TOKEN is missing on server.', { status: 500 });
+            return new Response('Server configuration error.', { status: 500 });
         }
-
-        // Local File System Update (Dev only really)
-        // ... (keep existing local update logic but don't rely on it for response)
 
         return redirect('/private?success=archived');
 
     } catch (error) {
         console.error(`Error in stage ${stage}:`, error);
-        return new Response(`Error in stage [${stage}]: ${error.message}`, { status: 500 });
+        return new Response('Internal server error.', { status: 500 });
     }
 };
