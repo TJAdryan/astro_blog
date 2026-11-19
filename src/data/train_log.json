@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-11-19T21:07:39.020Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times between 14 St - Union Sq and Canal St (up to 12 mins, normally every 10 mins)."
+    ]
+  },
+  {
     "date": "2026-11-18T21:02:01.914Z",
     "status": "Delays",
     "details": [
@@ -212,13 +219,6 @@
     "status": "Service Change",
     "details": [
       "Some <Q> trains are making local stops between 57 St - 7 Av and Times Sq - 42 St."
-    ]
-  },
-  {
-    "date": "2026-10-18T13:04:39.711Z",
-    "status": "Delays",
-    "details": [
-      "Northbound: 96 St-bound trains are having longer wait times between Lexington Av/63 St and 72 St (up to 15 mins, normally every 11 mins)."
     ]
   }
 ]
