@@ -1,13 +1,11 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { getVerifiedUserEmail } from "../allowed_emails";
 
 const user = await Astro.locals.currentUser();
 if (user) {
-    const userEmail = user?.emailAddresses?.[0]?.emailAddress;
-    if (
-        userEmail &&
-        userEmail.toLowerCase() === "sophiogabatashvili@gmail.com"
-    ) {
+    const userEmail = getVerifiedUserEmail(user);
+    if (userEmail === "sophiogabatashvili@gmail.com") {
         return Astro.redirect("/wedding");
     }
 }

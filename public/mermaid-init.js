@@ -6,7 +6,7 @@ mermaidScript.onload = function() {
   mermaid.initialize({
     startOnLoad: false,
     theme: 'default',
-    securityLevel: 'loose',
+    securityLevel: 'strict',
     flowchart: {
       htmlLabels: true,
       curve: 'basis'
@@ -15,24 +15,19 @@ mermaidScript.onload = function() {
 
   // Function to render Mermaid diagrams
   function renderMermaidDiagrams() {
-    console.log('Rendering mermaid diagrams...');
     const mermaidElements = document.querySelectorAll('.mermaid');
-    console.log(`Found ${mermaidElements.length} mermaid elements`);
     
     mermaidElements.forEach(async (element, index) => {
       if (!element.dataset.processed) {
-        console.log(`Processing mermaid element ${index}:`, element.textContent.trim());
         element.dataset.processed = 'true';
         const id = `mermaid-${Date.now()}-${index}`;
         
         try {
           const { svg } = await mermaid.render(id, element.textContent.trim());
           element.innerHTML = svg;
-          console.log(`Successfully rendered mermaid diagram ${index}`);
           
           // Add click handler for modal expansion
           element.addEventListener('click', function(e) {
-            console.log('Diagram clicked!');
             e.preventDefault();
             e.stopPropagation();
             showDiagramModal(element);
@@ -44,7 +39,9 @@ mermaidScript.onload = function() {
           
         } catch (error) {
           console.error('Mermaid rendering error:', error);
-          element.innerHTML = `<p>Error rendering diagram: ${error.message}</p>`;
+          const errP = document.createElement('p');
+          errP.textContent = `Error rendering diagram: ${error?.message || 'Invalid syntax'}`;
+          element.replaceChildren(errP);
         }
       }
     });

@@ -10,7 +10,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const TRACKER_FILE = path.resolve(__dirname, '../../data/tracker_log.json');
 
 export const POST = async ({ request, redirect, locals }) => {
-    const authResult = await authorizeApiRequest(locals);
+    const authResult = await authorizeApiRequest(locals, request);
     if (!authResult.authorized) return authResult.response;
 
     const data = await request.formData();

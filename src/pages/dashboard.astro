@@ -1,14 +1,14 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { isAuthorizedAdmin } from "../allowed_emails";
+import { getVerifiedUserEmail, isAuthorizedAdmin } from "../allowed_emails";
 
 const user = await Astro.locals.currentUser();
 if (!user) return Astro.redirect("/login");
 
-const userEmail = user?.emailAddresses?.[0]?.emailAddress;
+const userEmail = getVerifiedUserEmail(user);
 
 // VIP: Redirect Sophio to wedding page immediately (Implicit Allow)
-if (userEmail && userEmail.toLowerCase() === "sophiogabatashvili@gmail.com") {
+if (userEmail === "sophiogabatashvili@gmail.com") {
   return Astro.redirect("/wedding");
 }
 

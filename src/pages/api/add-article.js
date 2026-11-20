@@ -39,12 +39,14 @@ async function fetchArxivPaper(topic) {
 
         // Pick a random one
         const entry = entries[Math.floor(Math.random() * entries.length)];
+        const rawLink = String(entry.id[0] || '').trim();
+        const safeLink = rawLink.replace(/^http:\/\//i, 'https://');
 
         return {
             id: entry.id[0],
             title: entry.title[0].replace(/\n/g, ' ').trim(),
             summary: entry.summary[0].trim(),
-            link: entry.id[0],
+            link: safeLink,
             source: 'arXiv',
             topic: topicLabel,
             dateAdded: new Date().toISOString()
@@ -92,7 +94,7 @@ async function fetchPubmedPaper() {
 // --- Main API Handler ---
 
 export const POST = async ({ request, redirect, locals }) => {
-    const authResult = await authorizeApiRequest(locals);
+    const authResult = await authorizeApiRequest(locals, request);
     if (!authResult.authorized) return authResult.response;
 
     const data = await request.formData();

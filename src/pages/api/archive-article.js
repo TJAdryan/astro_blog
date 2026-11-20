@@ -11,7 +11,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const QUEUE_FILE = path.resolve(__dirname, '../../data/article_queue.json');
 
 export const POST = async ({ request, redirect, locals }) => {
-    const authResult = await authorizeApiRequest(locals);
+    const authResult = await authorizeApiRequest(locals, request);
     if (!authResult.authorized) return authResult.response;
 
     const data = await request.formData();

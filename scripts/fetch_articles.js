@@ -16,7 +16,7 @@ if (!fs.existsSync(dataDir)) {
 async function fetchArxivPaper() {
     // Search for Data Engineering
     const query = 'cat:cs.DB+AND+ti:"data engineering"';
-    const url = `http://export.arxiv.org/api/query?search_query=${query}&start=0&max_results=10&sortBy=submittedDate&sortOrder=descending`;
+    const url = `https://export.arxiv.org/api/query?search_query=${query}&start=0&max_results=10&sortBy=submittedDate&sortOrder=descending`;
 
     const response = await fetch(url);
     const xml = await response.text();
@@ -27,12 +27,13 @@ async function fetchArxivPaper() {
 
     // Pick a random one from the top 10 to keep it fresh but relevant
     const entry = entries[Math.floor(Math.random() * entries.length)];
+    const safeLink = String(entry.id[0] || '').trim().replace(/^http:\/\//i, 'https://');
 
     return {
         id: entry.id[0],
         title: entry.title[0].replace(/\n/g, ' ').trim(),
         summary: entry.summary[0].trim(),
-        link: entry.id[0],
+        link: safeLink,
         source: 'arXiv',
         topic: 'Data Engineering',
         dateAdded: new Date().toISOString()
@@ -75,7 +76,7 @@ async function fetchPubmedPaper() {
 async function fetchPythonPaper() {
     // Search for Python in CS
     const query = 'cat:cs.SE+AND+ti:"python"';
-    const url = `http://export.arxiv.org/api/query?search_query=${query}&start=0&max_results=10&sortBy=submittedDate&sortOrder=descending`;
+    const url = `https://export.arxiv.org/api/query?search_query=${query}&start=0&max_results=10&sortBy=submittedDate&sortOrder=descending`;
 
     const response = await fetch(url);
     const xml = await response.text();
@@ -86,12 +87,13 @@ async function fetchPythonPaper() {
 
     // Pick a random one
     const entry = entries[Math.floor(Math.random() * entries.length)];
+    const safeLink = String(entry.id[0] || '').trim().replace(/^http:\/\//i, 'https://');
 
     return {
         id: entry.id[0],
         title: entry.title[0].replace(/\n/g, ' ').trim(),
         summary: entry.summary[0].trim(),
-        link: entry.id[0],
+        link: safeLink,
         source: 'arXiv',
         topic: 'Python',
         dateAdded: new Date().toISOString()

@@ -14,25 +14,20 @@ const { code } = Astro.props;
 <script>
   import mermaid from 'mermaid';
 
-  function renderMermaid(selector: string, code: string) {
-    const el = document.querySelector(selector);
-    if (el) {
-      el.innerHTML = code;
-      mermaid.init(undefined, el as HTMLElement);
-    }
-  }
-
   document.addEventListener('DOMContentLoaded', function () {
     mermaid.initialize({
       startOnLoad: true,
       theme: 'default',
-      securityLevel: 'loose',
+      securityLevel: 'strict',
       flowchart: {
         htmlLabels: true,
         curve: 'basis'
       }
     });
-    renderMermaid('#mermaid-diagram', `{code}`);
+    const el = document.querySelector('#mermaid-diagram');
+    if (el) {
+      mermaid.init(undefined, el as HTMLElement);
+    }
   });
 </script>
 
