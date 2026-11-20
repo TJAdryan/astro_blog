@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-11-20T20:53:39.394Z",
+    "status": "Delays",
+    "details": [
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times at 96 St (up to 13 mins, normally every 11 mins)."
+    ]
+  },
+  {
     "date": "2026-11-19T21:07:39.020Z",
     "status": "Delays",
     "details": [
@@ -212,13 +219,6 @@
     "status": "Service Change",
     "details": [
       "Northbound: Some 96 St-bound trains are making local stops between Times Sq - 42 St and 57 St - 7 Av."
-    ]
-  },
-  {
-    "date": "2026-10-19T13:07:57.685Z",
-    "status": "Service Change",
-    "details": [
-      "Some <Q> trains are making local stops between 57 St - 7 Av and Times Sq - 42 St."
     ]
   }
 ]
