@@ -45,8 +45,8 @@ export const POST = async ({ request, redirect, locals }) => {
         const mEnv = import.meta.env?.GOOGLE_SERVICE_ACCOUNT_JSON || import.meta.env?.GOOGLE_SERVICES_ACCOUNT_JSON;
         let jsonVar = pEnv || mEnv;
 
-        // FALLBACK: Manual .env read (Fix for Astro dev mode usually skipping complex env vars)
-        if (!jsonVar) {
+        // FALLBACK: Manual .env read (local dev only)
+        if (!jsonVar && import.meta.env.DEV) {
             try {
                 const envPath = path.resolve(process.cwd(), '.env');
                 if (fs.existsSync(envPath)) {

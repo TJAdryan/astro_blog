@@ -6,7 +6,7 @@
   publish = "dist"
   
   # Node version to use
-  environment = { NODE_VERSION = "18", SECRETS_SCAN_OMIT_KEYS = "PUBLIC_CLERK_PUBLISHABLE_KEY" }
+  environment = { NODE_VERSION = "22", SECRETS_SCAN_OMIT_KEYS = "PUBLIC_CLERK_PUBLISHABLE_KEY" }
 
 # Redirect rules (optional)
 [[redirects]]
@@ -14,17 +14,17 @@
   to = "/sitemap-index.xml"
   status = 301
 
-# Headers for better SEO, security, and performance
+# Security headers for static and prerendered routes
 [[headers]]
   for = "/*"
   [headers.values]
     X-Frame-Options = "DENY"
-    X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
     Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
     X-Permitted-Cross-Domain-Policies = "none"
+    Content-Security-Policy = "frame-ancestors 'none'; object-src 'none'; base-uri 'self'; upgrade-insecure-requests;"
 
 [[headers]]
   for = "/sitemap-*.xml"

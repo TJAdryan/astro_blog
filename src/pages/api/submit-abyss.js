@@ -23,8 +23,8 @@ export const POST = async ({ request, redirect }) => {
 
         let credentialsStr = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
 
-        // Fallback for local development if process.env isn't populated yet
-        if (!credentialsStr) {
+        // Fallback for local development only if process.env isn't populated yet
+        if (!credentialsStr && import.meta.env.DEV) {
             try {
                 const envPath = path.resolve(process.cwd(), '.env');
                 const env = fs.readFileSync(envPath, 'utf8');

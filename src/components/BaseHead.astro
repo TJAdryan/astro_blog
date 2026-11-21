@@ -168,43 +168,30 @@ const articleJsonLd =
   )
 }
 
-<!-- Mermaid (Lazy-loaded only when .mermaid diagrams exist on the page) -->
+<!-- Mermaid (Lazy-loaded from local bundle only when .mermaid diagrams exist on the page) -->
 <script>
-  // @ts-nocheck
-  declare const mermaid: any;
   let mermaidLoadPromise: Promise<any> | null = null;
 
   function loadMermaid(): Promise<any> {
-    if (typeof window !== "undefined" && (window as any).mermaid) {
-      return Promise.resolve((window as any).mermaid);
-    }
     if (mermaidLoadPromise) {
       return mermaidLoadPromise;
     }
-    mermaidLoadPromise = new Promise((resolve, reject) => {
-      const script = document.createElement("script");
-      script.src = "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js";
-      script.async = true;
-      script.onload = () => {
-        const m = (window as any).mermaid;
-        m.initialize({
-          startOnLoad: false,
-          theme: "default",
-          securityLevel: "strict",
-          flowchart: {
-            htmlLabels: true,
-            curve: "basis",
-          },
-          themeVariables: {
-            fontSize: "24px",
-            fontFamily: "Inter, system-ui, sans-serif",
-          },
-          logLevel: 5,
-        });
-        resolve(m);
-      };
-      script.onerror = reject;
-      document.head.appendChild(script);
+    mermaidLoadPromise = import("mermaid").then(({ default: m }) => {
+      m.initialize({
+        startOnLoad: false,
+        theme: "default",
+        securityLevel: "strict",
+        flowchart: {
+          htmlLabels: true,
+          curve: "basis",
+        },
+        themeVariables: {
+          fontSize: "24px",
+          fontFamily: "Inter, system-ui, sans-serif",
+        },
+        logLevel: 5,
+      });
+      return m;
     });
     return mermaidLoadPromise;
   }
