@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-11-21T19:55:18.570Z",
+    "status": "Service Change",
+    "details": [
+      "Northbound: Some 96 St-bound trains are skipping Neck Rd, and Avenue U."
+    ]
+  },
+  {
     "date": "2026-11-20T20:53:39.394Z",
     "status": "Delays",
     "details": [
@@ -212,13 +219,6 @@
     "details": [
       "Northbound: 96 St-bound trains are having longer wait times between Sheepshead Bay and Avenue M (up to 22 mins, normally every 12 mins).",
       "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Avenue H and Avenue J (up to 12 mins, normally every 10 mins)."
-    ]
-  },
-  {
-    "date": "2026-10-20T13:07:41.063Z",
-    "status": "Service Change",
-    "details": [
-      "Northbound: Some 96 St-bound trains are making local stops between Times Sq - 42 St and 57 St - 7 Av."
     ]
   }
 ]
