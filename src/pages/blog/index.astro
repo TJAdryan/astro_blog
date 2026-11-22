@@ -11,17 +11,85 @@ const posts = (await getCollection("blog")).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
 
-// Extract unique categories & top tags for filter pills
-const categories = Array.from(
-	new Set(
-		posts
-			.flatMap((post) => [
-				post.data.category,
-				...(post.data.tags || []),
-			])
-			.filter(Boolean),
-	),
-).sort();
+// Canonical tag names for consistent casing & display
+const CANONICAL_TAGS: Record<string, string> = {
+	ai: "AI",
+	python: "Python",
+	pandas: "Pandas",
+	security: "Security",
+	travel: "Travel",
+	georgia: "Georgia",
+	excel: "Excel",
+	devops: "DevOps",
+	database: "Databases",
+	databases: "Databases",
+	"sql server": "SQL Server",
+	postgresql: "PostgreSQL",
+	duckdb: "DuckDB",
+	cuda: "CUDA",
+	"gpu computing": "GPU Computing",
+	gtfs: "GTFS",
+	https: "HTTPS",
+	ssl: "SSL",
+	laps: "LAPS",
+	jit: "JIT",
+	pim: "PIM",
+	mta: "MTA",
+	xml: "XML",
+	xlsxwriter: "XlsxWriter",
+	"entra id": "Entra ID",
+	microsoft: "Microsoft",
+	sharepoint: "SharePoint",
+	onedrive: "OneDrive",
+	teams: "Teams",
+	"microsoft-graph": "Microsoft Graph",
+	"local-ai": "Local AI",
+	"vector search": "Vector Search",
+	"quantum computing": "Quantum Computing",
+	"data engineering": "Data Engineering",
+	"data science": "Data Science",
+	bioinformatics: "Bioinformatics",
+	cloud: "Cloud",
+	automation: "Automation",
+	"housing-simulation": "Housing Simulation",
+};
+
+const CORE_CATEGORIES = new Set([
+	"data engineering",
+	"bioinformatics",
+	"security",
+	"automation",
+	"cloud",
+]);
+
+// Extract unique categories & top tags with normalized casing and counts
+const tagCounts = new Map<string, number>();
+const displayNames = new Map<string, string>();
+
+posts.forEach((post) => {
+	const postAllTags = [post.data.category, ...(post.data.tags || [])]
+		.filter(Boolean)
+		.map((t) => t.trim());
+	const uniquePostTags = new Set(postAllTags.map((t) => t.toLowerCase()));
+
+	uniquePostTags.forEach((lower) => {
+		tagCounts.set(lower, (tagCounts.get(lower) || 0) + 1);
+		if (CANONICAL_TAGS[lower]) {
+			displayNames.set(lower, CANONICAL_TAGS[lower]);
+		} else if (!displayNames.has(lower)) {
+			const original =
+				postAllTags.find((t) => t.toLowerCase() === lower) || lower;
+			displayNames.set(lower, original);
+		}
+	});
+});
+
+// Select top categories & tags (core categories or >= 2 posts)
+const categories = Array.from(tagCounts.entries())
+	.filter(([lower, count]) => CORE_CATEGORIES.has(lower) || count >= 2)
+	.map(([lower]) => displayNames.get(lower) || lower)
+	.filter((val, idx, arr) => arr.indexOf(val) === idx)
+	.sort((a, b) => a.localeCompare(b));
 ---
 
 <BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
@@ -432,24 +500,37 @@ const categories = Array.from(
 			let selectedTag = "All";
 
 			function filterPosts() {
-				const searchTerm = (searchInput?.value || "").toLowerCase();
+				const searchTerm = (searchInput?.value || "").toLowerCase().trim();
 				let hasResults = false;
 
 				items.forEach((item) => {
+					const el = item as HTMLElement;
 					const searchData =
-						item.querySelector(".search-data")?.textContent || "";
+						el.querySelector(".search-data")?.textContent?.toLowerCase() || "";
 					const itemTags: string[] = JSON.parse(
-						item.getAttribute("data-tags") || "[]",
+						el.getAttribute("data-tags") || "[]",
 					);
-					const matchesSearch = searchData.includes(searchTerm);
+					const matchesSearch = !searchTerm || searchData.includes(searchTerm);
+					const selectedLower = selectedTag.trim().toLowerCase();
 					const matchesTag =
-						selectedTag === "All" || itemTags.includes(selectedTag);
+						selectedTag === "All" ||
+						itemTags.some((t) => {
+							const tLower = t.trim().toLowerCase();
+							return (
+								tLower === selectedLower ||
+								(selectedLower === "databases" && tLower === "database") ||
+								(selectedLower === "database" && tLower === "databases") ||
+								(selectedLower === "housing simulation" && tLower === "housing-simulation")
+							);
+						});
 
 					if (matchesSearch && matchesTag) {
-						(item as HTMLElement).style.display = "";
+						el.style.display = "";
+						el.style.animation = "none";
+						el.style.opacity = "1";
 						hasResults = true;
 					} else {
-						(item as HTMLElement).style.display = "none";
+						el.style.display = "none";
 					}
 				});
 
@@ -457,6 +538,13 @@ const categories = Array.from(
 					noResults.style.display = hasResults ? "none" : "block";
 				}
 			}
+
+			// Clear animation delays after initial load so filtering is always instant
+			setTimeout(() => {
+				items.forEach((item) => {
+					(item as HTMLElement).style.animationDelay = "0s";
+				});
+			}, 800);
 
 			searchInput?.addEventListener("input", filterPosts);
 
