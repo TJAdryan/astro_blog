@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-11-22T20:03:55.549Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times between Canal St and 14 St - Union Sq (up to 14 mins, normally every 8 mins).",
+      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between DeKalb Av and Ocean Pkwy (up to 11 mins, normally every 8 mins)."
+    ]
+  },
+  {
     "date": "2026-11-21T19:55:18.570Z",
     "status": "Service Change",
     "details": [
@@ -211,14 +219,6 @@
     "status": "Delays",
     "details": [
       "Northbound: 96 St-bound trains are having longer wait times between 7 Av and Canal St (up to 12 mins, normally every 10 mins)."
-    ]
-  },
-  {
-    "date": "2026-10-21T13:08:52.060Z",
-    "status": "Delays",
-    "details": [
-      "Northbound: 96 St-bound trains are having longer wait times between Sheepshead Bay and Avenue M (up to 22 mins, normally every 12 mins).",
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Avenue H and Avenue J (up to 12 mins, normally every 10 mins)."
     ]
   }
 ]
