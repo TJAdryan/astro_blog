@@ -457,5 +457,23 @@
     "source": "arXiv",
     "topic": "Python",
     "dateAdded": "2026-11-09T22:49:20.516Z"
+  },
+  {
+    "id": "42959952",
+    "title": "Genetic engineering of primary human mesenchymal stromal cells using the CRISPR/Cas9 synergistic activation mediator.",
+    "summary": "No abstract available via summary API. Please click link to read.",
+    "link": "https://pubmed.ncbi.nlm.nih.gov/42959952/",
+    "source": "PubMed",
+    "topic": "CRISPR",
+    "dateAdded": "2026-11-24T00:29:58.379Z"
+  },
+  {
+    "id": "http://arxiv.org/abs/2610.39504v1",
+    "title": "When Static Reachability Says No: Checking Joern-Based Negative Verdicts for Python Against Execution",
+    "summary": "A negative reachability verdict removes a finding from human review. We check such verdicts against execution. Our pipeline, SourceLens, maps Semgrep findings to a Python program's call graph, whose edges a query takes from the calls that Joern links in its code property graph. We ran two command-line programs from the PyCG macro-benchmark, in which the benchmark's manual call graph and Joern disagree, under coverage and recorded the calls between their functions. On these edges, 123 functions of asciinema are unreachable from the program's entry points. The project's own integration script executes 86 of them, and all our runs 113. In Sublist3r, 19 of 24 are executed. The latest Joern release gives the same verdicts. The missing calls go through values, such as classes and functions passed around, or have no call expression, as in with blocks and property reads. In asciinema, four missing edges make 50 of the 113 executed functions reachable. The manual call graphs also lack observed calls, in asciinema many of them property reads and with blocks, which the benchmark may not count as calls. A rule that turns negative verdicts into unknown recovers 62 of the 113 and 15 of the 19, mostly through dunder and private method names. It recovers 0 of the 5 security findings with a negative verdict, all in executed functions. Its selectivity cannot be measured, as only 10 and 5 negative verdicts were not executed, and under library entry-point models it degrades every negative verdict.",
+    "link": "https://arxiv.org/abs/2610.39504v1",
+    "source": "arXiv",
+    "topic": "Python",
+    "dateAdded": "2026-11-24T00:29:58.548Z"
   }
 ]
