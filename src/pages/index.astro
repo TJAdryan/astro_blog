@@ -27,6 +27,7 @@ function getDomain(urlStr: string) {
 function getCategoryClass(area: string) {
   const norm = (area || "").toLowerCase();
   if (norm.includes("ai") || norm.includes("machine learning")) return "badge-ai";
+  if (norm.includes("data analysis") || norm.includes("data")) return "badge-da";
   if (norm.includes("database")) return "badge-db";
   if (norm.includes("distributed")) return "badge-dist";
   if (norm.includes("social")) return "badge-social";
@@ -1112,6 +1113,7 @@ const featuredArticles = [...articlesData]
 
   /* Specific Badge Colors */
   .badge-ai { background-color: #f5f3ff; color: #7c3aed; border: 1px solid #ddd6fe; }
+  .badge-da { background-color: #ecfeff; color: #0891b2; border: 1px solid #a5f3fc; }
   .badge-db { background-color: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
   .badge-dist { background-color: #e0e7ff; color: #4f46e5; border: 1px solid #c7d2fe; }
   .badge-social { background-color: #fdf2f8; color: #db2777; border: 1px solid #fbcfe8; }

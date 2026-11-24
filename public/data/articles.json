@@ -87,21 +87,21 @@
     "title": "Data Structures for Statistical Computing in Python",
     "author": "Wes McKinney (2010)",
     "url": "https://doi.org/10.25080/Majora-92bf1922-00a",
-    "area": "Data Analysis / Python",
+    "area": "Data Analysis",
     "description": "The classic paper introducing the pandas library to the scientific Python community, detailing the design of high-performance DataFrame data structures for analysis."
   },
   {
     "title": "Python for Data Analysis (2nd ed.)",
     "author": "Wes McKinney (2017)",
     "url": "https://wesmckinney.com/book/",
-    "area": "Data Analysis / Book",
+    "area": "Data Analysis",
     "description": "A comprehensive handbook by pandas creator Wes McKinney, detailing essential techniques for data manipulation, cleaning, exploratory analysis, and visualization in Python."
   },
   {
     "title": "pandas (project)",
     "author": "pandas-dev (orig. Wes McKinney)",
     "url": "https://pandas.pydata.org/",
-    "area": "Data Analysis / Tools",
+    "area": "Data Analysis",
     "description": "The open-source project documentation and repository home for pandas, the foundational data analysis and manipulation library for the Python programming language."
   },
   {
@@ -112,8 +112,8 @@
     "description": "The landmark study demonstrating that the CRISPR/Cas9 system can be programmed to cut specific DNA sequences, laying the foundation for modern gene editing."
   },
   {
-    "title": "MDPI IJMS CRISPR/Cas9 Delivery Systems to Enhance Gene Editing EfficiencyArticle (Vol. 26, No. 9, 4420)",
-    "author": "",
+    "title": "CRISPR/Cas9 Delivery Systems to Enhance Gene Editing Efficiency",
+    "author": "IJMS Review (2025)",
     "url": "https://www.mdpi.com/1422-0067/26/9/4420",
     "area": "Genomics / CRISPR",
     "description": "A comprehensive scientific review highlighting advanced delivery vehicles (both viral and non-viral) designed to improve CRISPR/Cas9 target efficiency and specificity."
