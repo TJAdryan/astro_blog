@@ -748,14 +748,14 @@ const QTrainTracker = () => {
             </div>
           ) : (
             arrivals.map((trip) => {
-              const locationHint =
+              const primaryLocation =
                 trip.upcomingStop === selectedStationId
                   ? trip.minutes <= 1
                     ? 'Approaching platform'
-                    : 'Next stop'
+                    : `Next: ${selectedStation.name}`
                   : trip.upcomingStopName
-                    ? `${trip.previousStop ? 'Near' : 'At'} ${trip.upcomingStopName}`
-                    : null;
+                    ? `${trip.previousStop ? 'Next:' : 'At'} ${trip.upcomingStopName}`
+                    : trip.destinationName;
 
               return (
                 <div
@@ -770,11 +770,11 @@ const QTrainTracker = () => {
                       {trip.route}
                     </span>
                     <div className="min-w-0">
-                      <div className="font-bold text-sm sm:text-base text-slate-800 dark:text-slate-100 truncate">
-                        {trip.destinationName}
+                      <div className="font-extrabold text-base sm:text-lg text-slate-900 dark:text-white leading-snug truncate">
+                        {primaryLocation}
                       </div>
                       <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 flex-wrap">
-                        {locationHint && <span className="truncate">{locationHint}</span>}
+                        <span className="truncate">To {trip.destinationName}</span>
                         {trip.isDelayed && (
                           <span className="px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-300 font-bold text-[10px] uppercase">
                             Delayed
