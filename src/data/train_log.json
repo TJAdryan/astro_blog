@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-11-25T22:04:34.460Z",
+    "status": "Service Change",
+    "details": [
+      "Southbound: Coney Island - Stillwell Av-bound trains are running in 2 sections: between 96 St and Coney Island - Stillwell Av, and between 42 St - Bryant Pk and Coney Island - Stillwell Av via <F> and <B>."
+    ]
+  },
+  {
     "date": "2026-11-24T22:52:07.658Z",
     "status": "Service Change",
     "details": [
@@ -211,14 +218,6 @@
     "details": [
       "Northbound: 96 St-bound trains are having longer wait times at Church Av (up to 14 mins, normally every 12 mins).",
       "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between 14 St - Union Sq and Atlantic Av - Barclays Ctr (up to 14 mins, normally every 11 mins)."
-    ]
-  },
-  {
-    "date": "2026-10-23T13:06:48.202Z",
-    "status": "Delays",
-    "details": [
-      "Northbound: 96 St-bound trains are having longer wait times between Atlantic Av - Barclays Ctr and DeKalb Av (up to 14 mins, normally every 10 mins).",
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Prospect Park and Church Av (up to 13 mins, normally every 10 mins)."
     ]
   }
 ]
