@@ -3,7 +3,7 @@ import Layout from '../layouts/BaseLayout.astro';
 import QTrainTracker from '../components/QTrainTracker.jsx';
 
 const title = "BMT Brighton Line Status";
-const description = "Real-time status updates for the Q and B trains on the BMT Brighton Line.";
+const description = "Real-time Q and B train arrivals, interactive 20-stop corridor map, and live service alerts for every BMT Brighton Line station.";
 ---
 
 <Layout title={title} description={description}>
@@ -11,7 +11,7 @@ const description = "Real-time status updates for the Q and B trains on the BMT 
     <h1 class="q-page-title text-4xl font-bold text-center mb-6">{title}</h1>
 
     <!-- MTA Holiday Nostalgia Train Banner (Visible only in Holiday Mode) -->
-    <div class="holiday-nostalgia-banner max-w-md mx-auto mb-8" role="region" aria-label="Holiday Nostalgia Ride Special">
+    <div class="holiday-nostalgia-banner max-w-lg mx-auto mb-8" role="region" aria-label="Holiday Nostalgia Ride Special">
       <div class="nostalgia-rollsign">
         <span class="nostalgia-bullet">Q</span>
         <span class="nostalgia-rollsign-text">HOLIDAY NOSTALGIA SPECIAL</span>
@@ -30,7 +30,7 @@ const description = "Real-time status updates for the Q and B trains on the BMT 
     </div>
 
     <!-- Dedicated Brighton Line History Banner Link -->
-    <section class="mt-16 border-t border-slate-200 dark:border-slate-800 pt-12 max-w-md mx-auto">
+    <section class="mt-16 border-t border-slate-200 dark:border-slate-800 pt-12 max-w-lg mx-auto">
       <div class="brighton-timeline-card bg-gradient-to-br from-slate-50 to-white dark:from-slate-800/20 dark:to-slate-900/30 rounded-3xl p-6 border border-slate-200/60 dark:border-slate-800/80 shadow-md transition-all duration-300 hover:shadow-xl hover:scale-[1.01] group relative overflow-hidden">
         
         <!-- Subtle background decorative element representing subway line layout -->
