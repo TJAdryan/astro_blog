@@ -2,7 +2,7 @@
 title: Bring me the Data
 tags: ["General"]
 pubDate: 2025-06-14 12:00:00 -0400
-description: "A post about Bring me the Data. Here is an extended description to meet the minimum character requirement for summaries."
+description: "A practical Python walkthrough for pulling NYC Restaurant Inspections data programmatically from the NYC Open Data API for daily automation."
 category: "Data Engineering"
 ---
 

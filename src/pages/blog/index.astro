@@ -2,7 +2,7 @@
 import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
 import FormattedDate from "../../components/FormattedDate.astro";
-import { SITE_DESCRIPTION, SITE_TITLE } from "../../consts";
+import { SITE_TITLE } from "../../consts";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
 export const prerender = true;
@@ -11,11 +11,27 @@ const posts = (await getCollection("blog")).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
 
+function estimateReadingTime(body: string | undefined): number {
+	if (!body) return 1;
+	const cleaned = body
+		.replace(/^import\s.+$/gm, " ")
+		.replace(/```[\s\S]*?```/g, (block) => {
+			// Count code blocks at roughly half prose weight
+			const codeWords = block.split(/\s+/).filter(Boolean).length;
+			return " word ".repeat(Math.ceil(codeWords * 0.5));
+		})
+		.replace(/<[^>]+>/g, " ")
+		.replace(/[#*_`~>\[\]()]/g, " ");
+	const words = cleaned.split(/\s+/).filter(Boolean).length;
+	return Math.max(1, Math.ceil(words / 220));
+}
+
 // Canonical tag names for consistent casing & display
 const CANONICAL_TAGS: Record<string, string> = {
 	ai: "AI",
 	python: "Python",
 	pandas: "Pandas",
+	polars: "Polars",
 	security: "Security",
 	travel: "Travel",
 	georgia: "Georgia",
@@ -90,9 +106,14 @@ const categories = Array.from(tagCounts.entries())
 	.map(([lower]) => displayNames.get(lower) || lower)
 	.filter((val, idx, arr) => arr.indexOf(val) === idx)
 	.sort((a, b) => a.localeCompare(b));
+
+const totalPosts = posts.length;
+const pageTitle = `Posts | ${SITE_TITLE}`;
+const pageDescription =
+	"Technical essays, data engineering guides, systems benchmarks, and software development walkthroughs by Dominick Ryan.";
 ---
 
-<BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
+<BaseLayout title={pageTitle} description={pageDescription}>
 	<style>
 		/* Search Bar Styles */
 		.search-container {
@@ -103,21 +124,21 @@ const categories = Array.from(tagCounts.entries())
 		.search-input {
 			width: 100%;
 			padding: 1rem 1.5rem;
-			font-size: 1.1rem;
-			border: 2px solid transparent; /* Prepare for gradient border */
+			font-size: 1.05rem;
+			border: 2px solid transparent;
 			border-radius: 50px;
 			background:
 				linear-gradient(#fff, #fff) padding-box,
 				linear-gradient(to right, #ff6b35, #ff9f43) border-box;
 			box-shadow: 0 4px 15px rgba(255, 107, 53, 0.1);
-			transition: all 0.3s ease;
+			transition: box-shadow 0.2s ease, transform 0.2s ease;
 			outline: none;
 			color: var(--black);
 		}
 
 		.search-input:focus {
 			box-shadow: 0 8px 25px rgba(255, 107, 53, 0.25);
-			transform: translateY(-2px);
+			transform: translateY(-1px);
 		}
 
 		.search-input::placeholder {
@@ -162,19 +183,19 @@ const categories = Array.from(tagCounts.entries())
 			display: flex;
 			flex-wrap: wrap;
 			gap: 0.5rem;
-			margin-bottom: 2rem;
+			margin-bottom: 1.25rem;
 		}
 
 		.category-pill {
-			background: rgba(255, 255, 255, 0.8);
+			background: rgba(255, 255, 255, 0.85);
 			color: #475569;
-			border: 1px solid rgba(255, 107, 53, 0.15);
+			border: 1px solid rgba(255, 107, 53, 0.18);
 			border-radius: 50px;
 			padding: 0.35rem 0.9rem;
 			font-size: 0.82rem;
 			font-weight: 600;
 			cursor: pointer;
-			transition: all 0.2s ease;
+			transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
 		}
 
 		.category-pill:hover {
@@ -192,9 +213,9 @@ const categories = Array.from(tagCounts.entries())
 
 		@media (prefers-color-scheme: dark) {
 			.category-pill {
-				background: rgba(226, 232, 240, 0.85);
+				background: rgba(226, 232, 240, 0.88);
 				color: #334155;
-				border-color: rgba(255, 107, 53, 0.15);
+				border-color: rgba(255, 107, 53, 0.18);
 			}
 			.category-pill:hover {
 				background: #cbd5e1;
@@ -223,88 +244,128 @@ const categories = Array.from(tagCounts.entries())
 			box-shadow: 0 4px 12px rgba(46, 139, 87, 0.3);
 		}
 
-		.post-tags {
+		/* Results status bar */
+		.results-bar {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			flex-wrap: wrap;
+			gap: 0.5rem;
+			margin-bottom: 1.5rem;
+			font-size: 0.9rem;
+			color: #64748b;
+		}
+
+		@media (prefers-color-scheme: dark) {
+			.results-bar {
+				color: #94a3b8;
+			}
+		}
+
+		.clear-filters-btn {
+			background: transparent;
+			border: 1px solid rgba(255, 107, 53, 0.35);
+			color: var(--accent);
+			border-radius: 999px;
+			padding: 0.2rem 0.75rem;
+			font-size: 0.8rem;
+			font-weight: 600;
+			cursor: pointer;
+			transition: background-color 0.18s ease, color 0.18s ease;
+		}
+
+		.clear-filters-btn:hover {
+			background: var(--accent);
+			color: #ffffff;
+		}
+
+		.clear-filters-btn[hidden] {
+			display: none;
+		}
+
+		:global(html.holiday-mode) .clear-filters-btn {
+			border-color: rgba(46, 139, 87, 0.45);
+			color: #2e8b57;
+		}
+
+		:global(html.holiday-mode) .clear-filters-btn:hover {
+			background: #2e8b57;
+			color: #ffffff;
+		}
+
+		/* Post Grid */
+		ul {
 			display: flex;
 			flex-wrap: wrap;
-			gap: 0.4rem;
-			margin-top: 0.65rem;
+			gap: 1.75rem;
+			list-style-type: none;
+			margin: 0;
+			padding: 0;
+		}
+
+		ul li {
+			width: calc(50% - 0.875rem);
+			display: flex;
+		}
+
+		ul li * {
+			text-decoration: none;
+			transition: color 0.2s ease;
+		}
+
+		ul li:first-child {
+			width: 100%;
+			margin-bottom: 0.5rem;
+			text-align: center;
+		}
+
+		ul li:first-child img,
+		ul li:first-child :global(img) {
+			width: 100%;
+		}
+
+		ul li:first-child .title {
+			font-size: 2.15rem;
+		}
+
+		ul li:first-child .post-meta {
+			justify-content: center;
+		}
+
+		ul li:first-child .excerpt {
+			max-width: 64ch;
+			margin-left: auto;
+			margin-right: auto;
+			-webkit-line-clamp: 4;
 		}
 
 		ul li:first-child .post-tags {
 			justify-content: center;
 		}
 
-		.post-tag {
-			font-size: 0.75rem;
-			background: rgba(var(--gray-light), 0.85);
-			color: rgb(var(--gray-dark));
-			padding: 0.15rem 0.5rem;
-			border-radius: 4px;
-			font-weight: 500;
-		}
-
-		ul {
-			display: flex;
-			flex-wrap: wrap;
-			gap: 2rem;
-			list-style-type: none;
-			margin: 0;
-			padding: 0;
-		}
-		ul li {
-			width: calc(50% - 1rem);
-			/* Animation setup */
-			opacity: 0;
-			animation: slideIn 0.5s ease-out forwards;
-		}
-
-		@keyframes slideIn {
-			from {
-				opacity: 0;
-				transform: translateY(20px);
-			}
-			to {
-				opacity: 1;
-				transform: translateY(0);
-			}
-		}
-
-		ul li * {
-			text-decoration: none;
-			transition: 0.2s ease;
-		}
-		ul li:first-child {
-			width: 100%;
-			margin-bottom: 1rem;
-			text-align: center;
-		}
-		ul li:first-child img,
-		ul li:first-child :global(img) {
-			width: 100%;
-		}
-		ul li:first-child .title {
-			font-size: 2.369rem;
-		}
 		ul li img,
 		ul li :global(img) {
-			margin-bottom: 0.5rem;
-			border-radius: 12px;
+			margin-bottom: 0.85rem;
+			border-radius: 10px;
 			width: 100%;
 			aspect-ratio: 16/9;
 			object-fit: cover;
 		}
+
 		ul li a {
-			display: block;
+			display: flex;
+			flex-direction: column;
+			width: 100%;
 			padding: 1.5rem;
-			background: rgba(255, 255, 255, 0.8);
+			background: rgba(255, 255, 255, 0.92);
 			border-radius: 12px;
-			border: 1px solid rgba(255, 107, 53, 0.1);
-			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-			transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smoother hover */
-			height: 100%;
+			border: 1px solid rgba(255, 107, 53, 0.14);
+			box-shadow: 0 2px 10px rgba(15, 23, 42, 0.06);
+			transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease, background-color 0.22s ease;
 			position: relative;
 			overflow: hidden;
 		}
+
 		/* Shine effect on hover */
 		ul li a::before {
 			content: "";
@@ -322,42 +383,94 @@ const categories = Array.from(tagCounts.entries())
 			transition: 0.5s;
 			pointer-events: none;
 		}
+
 		ul li a:hover::before {
 			left: 100%;
 		}
 
 		ul li a:hover {
-			transform: translateY(-5px);
-			box-shadow: 0 12px 30px rgba(255, 107, 53, 0.25);
+			transform: translateY(-4px);
+			box-shadow: 0 12px 28px rgba(255, 107, 53, 0.2);
 			border-color: rgba(255, 107, 53, 0.4);
 		}
+
 		@media (prefers-color-scheme: dark) {
 			ul li a {
-				background: rgba(226, 232, 240, 0.75);
-				border-color: rgba(255, 107, 53, 0.2);
-				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+				background: rgba(241, 245, 249, 0.94);
+				border-color: rgba(255, 107, 53, 0.22);
+				box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
 			}
 			ul li a:hover {
-				background: rgba(255, 255, 255, 0.95);
-				border-color: rgba(255, 107, 53, 0.45);
+				background: rgba(255, 255, 255, 0.98);
+				border-color: rgba(255, 107, 53, 0.5);
 			}
 		}
+
 		.title {
 			margin: 0;
 			color: rgb(var(--black));
-			line-height: 1;
+			line-height: 1.24;
+			font-size: 1.32rem;
+			font-weight: 800;
+			letter-spacing: -0.02em;
 		}
-		.date {
-			margin: 0.35rem 0 0 0;
-			color: rgb(var(--gray));
+
+		.post-meta {
+			display: flex;
+			align-items: center;
+			flex-wrap: wrap;
+			gap: 0.45rem;
+			margin: 0.45rem 0 0 0;
+			font-size: 0.85rem;
+			font-weight: 600;
+			color: #64748b;
 		}
-		ul li a:hover h4,
-		ul li a:hover .date {
+
+		.meta-dot {
+			opacity: 0.55;
+		}
+
+		.reading-time {
+			color: #475569;
+		}
+
+		.excerpt {
+			margin: 0.7rem 0 0 0;
+			font-size: 0.95rem;
+			line-height: 1.55;
+			color: #334155;
+			display: -webkit-box;
+			-webkit-box-orient: vertical;
+			-webkit-line-clamp: 3;
+			overflow: hidden;
+		}
+
+		.post-tags {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.4rem;
+			margin-top: auto;
+			padding-top: 0.9rem;
+		}
+
+		.post-tag {
+			font-size: 0.75rem;
+			background: rgba(var(--gray-light), 0.9);
+			color: rgb(var(--gray-dark));
+			padding: 0.15rem 0.55rem;
+			border-radius: 5px;
+			font-weight: 600;
+		}
+
+		ul li a:hover .title,
+		ul li a:hover .post-meta {
 			color: rgb(var(--accent));
 		}
+
 		:global(html.holiday-mode) ul li a {
-			border-color: rgba(46, 139, 87, 0.18);
+			border-color: rgba(46, 139, 87, 0.2);
 		}
+
 		:global(html.holiday-mode) ul li a::before {
 			background: linear-gradient(
 				90deg,
@@ -367,43 +480,54 @@ const categories = Array.from(tagCounts.entries())
 				transparent
 			);
 		}
+
 		:global(html.holiday-mode) ul li a:hover {
 			border-color: rgba(46, 139, 87, 0.55);
 			box-shadow:
 				0 12px 30px rgba(46, 139, 87, 0.2),
 				0 0 0 1px rgba(212, 175, 55, 0.35);
 		}
-		:global(html.holiday-mode) ul li a:hover h4,
-		:global(html.holiday-mode) ul li a:hover .date {
+
+		:global(html.holiday-mode) ul li a:hover .title,
+		:global(html.holiday-mode) ul li a:hover .post-meta {
 			color: #2e8b57;
 		}
+
 		ul a:hover img {
 			box-shadow: var(--box-shadow);
 		}
+
 		.no-results {
 			text-align: center;
-			padding: 2rem;
-			color: var(--gray);
-			font-size: 1.2rem;
+			padding: 2.5rem 1.5rem;
+			color: #64748b;
+			font-size: 1.05rem;
 			display: none;
 			width: 100%;
 		}
+
 		@media (max-width: 720px) {
 			ul {
-				gap: 0.5em;
+				gap: 1rem;
 			}
 			ul li {
 				width: 100%;
-				text-align: center;
-			}
-			ul li .post-tags {
-				justify-content: center;
+				text-align: left;
 			}
 			ul li:first-child {
 				margin-bottom: 0;
+				text-align: left;
+			}
+			ul li:first-child .post-meta,
+			ul li:first-child .post-tags {
+				justify-content: flex-start;
 			}
 			ul li:first-child .title {
-				font-size: 1.563em;
+				font-size: 1.563rem;
+			}
+			ul li:first-child .excerpt {
+				margin-left: 0;
+				margin-right: 0;
 			}
 		}
 	</style>
@@ -418,23 +542,31 @@ const categories = Array.from(tagCounts.entries())
 
 		<div class="search-container">
 			<input
-				type="text"
+				type="search"
 				id="blog-search"
 				class="search-input"
-				placeholder="Search writing by title, topic, or tag..."
+				placeholder="Search writing by title, summary, topic, or tag..."
+				aria-label="Search blog posts"
 				autocomplete="off"
 			/>
 		</div>
 
-		<div class="categories-wrapper" id="blog-tags-filter">
-			<button class="category-pill active" data-tag="All">All</button>
+		<div class="categories-wrapper" id="blog-tags-filter" role="group" aria-label="Filter posts by topic">
+			<button type="button" class="category-pill active" data-tag="All" aria-pressed="true">All</button>
 			{
 				categories.map((tag) => (
-					<button class="category-pill" data-tag={tag}>
+					<button type="button" class="category-pill" data-tag={tag} aria-pressed="false">
 						{tag}
 					</button>
 				))
 			}
+		</div>
+
+		<div class="results-bar" aria-live="polite">
+			<span id="results-count">Showing all {totalPosts} posts</span>
+			<button type="button" id="clear-filters" class="clear-filters-btn" hidden>
+				Clear filters
+			</button>
 		</div>
 
 		<ul id="blog-list">
@@ -444,11 +576,11 @@ const categories = Array.from(tagCounts.entries())
 						post.data.category,
 						...(post.data.tags || []),
 					].filter(Boolean);
+					const readingTime = estimateReadingTime(post.body);
 					return (
 						<li
 							class="post-item"
 							data-tags={JSON.stringify(postTags)}
-							style={`animation-delay: ${index * 0.1}s`}
 						>
 							<a href={`/blog/${post.slug}/`}>
 								{post.data.heroImage && (
@@ -462,9 +594,14 @@ const categories = Array.from(tagCounts.entries())
 									/>
 								)}
 								<h4 class="title">{post.data.title}</h4>
-								<p class="date">
+								<p class="post-meta">
 									<FormattedDate date={post.data.pubDate} />
+									<span class="meta-dot" aria-hidden="true">·</span>
+									<span class="reading-time">{readingTime} min read</span>
 								</p>
+								{post.data.description && (
+									<p class="excerpt">{post.data.description}</p>
+								)}
 								{post.data.tags && post.data.tags.length > 0 && (
 									<div class="post-tags">
 										{post.data.tags.map((tag) => (
@@ -485,7 +622,7 @@ const categories = Array.from(tagCounts.entries())
 			}
 		</ul>
 		<div id="no-results" class="no-results">
-			No articles found matching that search.
+			No articles found matching your current filter.
 		</div>
 	</section>
 
@@ -494,71 +631,164 @@ const categories = Array.from(tagCounts.entries())
 		const blogList = document.getElementById("blog-list");
 		const noResults = document.getElementById("no-results");
 		const filterWrapper = document.getElementById("blog-tags-filter");
+		const resultsCount = document.getElementById("results-count");
+		const clearFiltersBtn = document.getElementById("clear-filters") as HTMLButtonElement | null;
 
 		if (blogList) {
-			const items = blogList.querySelectorAll(".post-item");
+			const items = Array.from(blogList.querySelectorAll(".post-item")) as HTMLElement[];
+			const pills = filterWrapper
+				? (Array.from(filterWrapper.querySelectorAll(".category-pill")) as HTMLButtonElement[])
+				: [];
+			const totalCount = items.length;
 			let selectedTag = "All";
 
-			function filterPosts() {
-				const searchTerm = (searchInput?.value || "").toLowerCase().trim();
-				let hasResults = false;
+			function normalizeTag(value: string): string {
+				return value.trim().toLowerCase();
+			}
 
-				items.forEach((item) => {
-					const el = item as HTMLElement;
+			function tagMatches(itemTag: string, targetTag: string): boolean {
+				const tLower = normalizeTag(itemTag);
+				const selectedLower = normalizeTag(targetTag);
+				return (
+					tLower === selectedLower ||
+					(selectedLower === "databases" && tLower === "database") ||
+					(selectedLower === "database" && tLower === "databases") ||
+					(selectedLower === "housing simulation" && tLower === "housing-simulation") ||
+					(selectedLower === "housing-simulation" && tLower === "housing simulation") ||
+					(selectedLower === "microsoft graph" && tLower === "microsoft-graph") ||
+					(selectedLower === "microsoft-graph" && tLower === "microsoft graph") ||
+					(selectedLower === "local ai" && tLower === "local-ai") ||
+					(selectedLower === "local-ai" && tLower === "local ai")
+				);
+			}
+
+			function syncPillState() {
+				const selectedLower = normalizeTag(selectedTag);
+				pills.forEach((pill) => {
+					const pillTag = pill.getAttribute("data-tag") || "All";
+					const isActive =
+						(selectedLower === "all" && pillTag === "All") ||
+						tagMatches(pillTag, selectedTag);
+					pill.classList.toggle("active", isActive);
+					pill.setAttribute("aria-pressed", String(isActive));
+				});
+			}
+
+			function syncUrlParams(searchTerm: string) {
+				try {
+					const url = new URL(window.location.href);
+					if (selectedTag && normalizeTag(selectedTag) !== "all") {
+						url.searchParams.set("tag", selectedTag);
+					} else {
+						url.searchParams.delete("tag");
+					}
+					if (searchTerm) {
+						url.searchParams.set("q", searchTerm);
+					} else {
+						url.searchParams.delete("q");
+					}
+					window.history.replaceState({}, "", url.toString());
+				} catch {
+					// Ignore history API errors in restricted contexts
+				}
+			}
+
+			function filterPosts(updateUrl = true) {
+				const rawSearch = (searchInput?.value || "").trim();
+				const searchTerm = rawSearch.toLowerCase();
+				let visibleCount = 0;
+
+				items.forEach((el) => {
 					const searchData =
 						el.querySelector(".search-data")?.textContent?.toLowerCase() || "";
 					const itemTags: string[] = JSON.parse(
 						el.getAttribute("data-tags") || "[]",
 					);
 					const matchesSearch = !searchTerm || searchData.includes(searchTerm);
-					const selectedLower = selectedTag.trim().toLowerCase();
 					const matchesTag =
-						selectedTag === "All" ||
-						itemTags.some((t) => {
-							const tLower = t.trim().toLowerCase();
-							return (
-								tLower === selectedLower ||
-								(selectedLower === "databases" && tLower === "database") ||
-								(selectedLower === "database" && tLower === "databases") ||
-								(selectedLower === "housing simulation" && tLower === "housing-simulation")
-							);
-						});
+						normalizeTag(selectedTag) === "all" ||
+						itemTags.some((t) => tagMatches(t, selectedTag));
 
 					if (matchesSearch && matchesTag) {
 						el.style.display = "";
-						el.style.animation = "none";
-						el.style.opacity = "1";
-						hasResults = true;
+						visibleCount++;
 					} else {
 						el.style.display = "none";
 					}
 				});
 
+				const isFiltered = normalizeTag(selectedTag) !== "all" || Boolean(searchTerm);
+
+				if (resultsCount) {
+					if (!isFiltered) {
+						resultsCount.textContent = `Showing all ${totalCount} posts`;
+					} else {
+						const parts: string[] = [];
+						if (normalizeTag(selectedTag) !== "all") {
+							parts.push(`topic "${selectedTag}"`);
+						}
+						if (rawSearch) {
+							parts.push(`search "${rawSearch}"`);
+						}
+						const noun = visibleCount === 1 ? "post" : "posts";
+						resultsCount.textContent = `Showing ${visibleCount} of ${totalCount} ${noun} for ${parts.join(" & ")}`;
+					}
+				}
+
+				if (clearFiltersBtn) {
+					clearFiltersBtn.hidden = !isFiltered;
+				}
+
 				if (noResults) {
-					noResults.style.display = hasResults ? "none" : "block";
+					noResults.style.display = visibleCount === 0 ? "block" : "none";
+				}
+
+				if (updateUrl) {
+					syncUrlParams(rawSearch);
 				}
 			}
 
-			// Clear animation delays after initial load so filtering is always instant
-			setTimeout(() => {
-				items.forEach((item) => {
-					(item as HTMLElement).style.animationDelay = "0s";
-				});
-			}, 800);
+			function applyUrlParams() {
+				const params = new URLSearchParams(window.location.search);
+				const tagParam = params.get("tag")?.trim() || "";
+				const queryParam = params.get("q")?.trim() || "";
 
-			searchInput?.addEventListener("input", filterPosts);
+				if (tagParam) {
+					const matchingPill = pills.find((p) =>
+						tagMatches(p.getAttribute("data-tag") || "", tagParam),
+					);
+					selectedTag = matchingPill?.getAttribute("data-tag") || tagParam;
+				} else {
+					selectedTag = "All";
+				}
 
-			if (filterWrapper) {
-				const pills = filterWrapper.querySelectorAll(".category-pill");
-				pills.forEach((pill) => {
-					pill.addEventListener("click", () => {
-						pills.forEach((p) => p.classList.remove("active"));
-						pill.classList.add("active");
-						selectedTag = pill.getAttribute("data-tag") || "All";
-						filterPosts();
-					});
-				});
+				if (searchInput) {
+					searchInput.value = queryParam;
+				}
+
+				syncPillState();
+				filterPosts(false);
 			}
+
+			searchInput?.addEventListener("input", () => filterPosts(true));
+
+			pills.forEach((pill) => {
+				pill.addEventListener("click", () => {
+					selectedTag = pill.getAttribute("data-tag") || "All";
+					syncPillState();
+					filterPosts(true);
+				});
+			});
+
+			clearFiltersBtn?.addEventListener("click", () => {
+				selectedTag = "All";
+				if (searchInput) searchInput.value = "";
+				syncPillState();
+				filterPosts(true);
+			});
+
+			window.addEventListener("popstate", applyUrlParams);
+			applyUrlParams();
 		}
 	</script>
 </BaseLayout>

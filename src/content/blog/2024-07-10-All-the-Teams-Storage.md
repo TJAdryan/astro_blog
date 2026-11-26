@@ -2,7 +2,7 @@
 title: Identifying Microsoft Teams Storage Usage with Python and Graph API
 tags: ["python", "microsoft-graph", "teams", "admin", "General"]
 pubDate: 2024-07-10 12:00:00 -0400
-description: "A post about Identifying Microsoft Teams Storage Usage with Python and Graph API. Here is an extended description to meet the minimum character requirement for summaries."
+description: "Using Python, MSAL, and async Microsoft Graph API calls to audit SharePoint and Microsoft Teams storage usage across an organization."
 category: "Data Engineering"
 ---
 

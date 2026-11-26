@@ -3,7 +3,7 @@ title: 'Taking the Small Wins: How Incremental Improvements Cut My API Call Time
   from 70 to 45 Minutes'
 tags: ["General"]
 pubDate: 2025-07-19 12:00:00 -0400
-description: "A post about Taking the Small Wins: How Incremental Improvements Cut\" My API Call Times from 70 to 45 Minutes."
+description: "How switching from Python's built-in json module to Rust-backed orjson cut nightly API processing times from 70 minutes down to 45 minutes."
 category: "Data Engineering"
 ---
 

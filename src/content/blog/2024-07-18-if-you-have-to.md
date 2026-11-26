@@ -2,7 +2,7 @@
 title: 'If You Have To Use Excel, Automate It: Formatting with Python'
 tags: ["python", "excel", "pandas", "xlsxwriter", "automation", "General"]
 pubDate: 2024-07-18 12:00:00 -0400
-description: "A post about If You Have To Use Excel, Automate It: Formatting with Python. Here is an extended description to meet the minimum character requirement for summaries."
+description: "Automate daily Excel report formatting with Python, Pandas, and XlsxWriter—turning repetitive spreadsheet cleanup into a repeatable script."
 category: "Data Engineering"
 ---
 

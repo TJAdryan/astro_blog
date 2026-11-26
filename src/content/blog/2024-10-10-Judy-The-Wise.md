@@ -1,6 +1,6 @@
 ---
 title: 2024 10 10 Judy The Wise
-description: "A post about 2024 10 10 Judy The Wise. Here is an extended description to meet the minimum character requirement for summaries."
+description: "How a single courtroom exchange on Judge Judy revealed the hidden dynamics of performative bullying, false alliances, and self-interest."
 pubDate: 2024-10-10
 category: "Data Engineering"
 tags: ["General"]
