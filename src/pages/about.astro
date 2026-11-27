@@ -5,7 +5,7 @@ export const prerender = true;
 ---
 
 <Layout
-	title="About Me"
+	title="About Me | NextValData"
 	description="Senior Systems and Data Engineer focused on building practical, reliable data pipelines and infrastructure."
 	hideTitle={true}
 >
@@ -48,16 +48,42 @@ export const prerender = true;
 		</p>
 		<div class="grid-list">
 			<div class="project-card">
-				<h4>Hybrid Cloud & Virtualization</h4>
+				<h4><a href="/blog/2026-01-26-azure-apps-when-to-proxy/">Hybrid Cloud & Virtualization</a></h4>
 				<p>Hands-on administration across <strong>Azure</strong> and on-prem <strong>VMware/Hyper-V</strong> environments. I set up secure, low-friction access using <strong>Azure Virtual Desktop (AVD)</strong> and keep identity management clean with <strong>Entra ID</strong>.</p>
+				<div class="card-links">
+					<a href="/blog/2026-01-26-azure-apps-when-to-proxy/" class="card-cta">Read the write-up: Azure Apps Proxy vs. Steer →</a>
+					<div class="card-sublinks">
+						<a href="/blog/2026-04-07-the-evolution-of-laps/">Modern LAPS</a>
+						<span aria-hidden="true">·</span>
+						<a href="/blog/2026-04-24-best-practices-of-jit-access/">JIT Access</a>
+						<span aria-hidden="true">·</span>
+						<a href="/blog/?tag=Entra+ID">All Entra ID posts</a>
+					</div>
+				</div>
 			</div>
 			<div class="project-card">
-				<h4>Practical Performance Tuning</h4>
+				<h4><a href="/blog/2025-10-20-getting-70x-data-processing-speed-with-gpu-vs-cpu/">Practical Performance Tuning</a></h4>
 				<p>Instead of throwing expensive cloud compute at slow workloads, I profile bottlenecks directly—whether that means writing better queries, adopting columnar tools, or offloading heavy compute to <strong>GPU acceleration (CUDA/RAPIDS)</strong> for measured <strong>70x speedups</strong>.</p>
+				<div class="card-links">
+					<a href="/blog/2025-10-20-getting-70x-data-processing-speed-with-gpu-vs-cpu/" class="card-cta">Read the write-up: 70x Speedup with GPU vs. CPU →</a>
+					<div class="card-sublinks">
+						<a href="/blog/2026-11-05-pandas-to-polars-common-analysis-patterns/">Pandas to Polars</a>
+						<span aria-hidden="true">·</span>
+						<a href="/blog/2025-11-19-get-your-rows-in-duck/">pg_duckdb 1.0</a>
+					</div>
+				</div>
 			</div>
 			<div class="project-card">
-				<h4>Real-World Monitoring</h4>
+				<h4><a href="/blog/2025-07-19-taking-the-small-wins/">Real-World Monitoring</a></h4>
 				<p>Built a high-availability telemetry platform collecting real-time health data from <strong>2,000+ distributed devices</strong>, giving support teams sub-second visibility so issues get caught before users feel them.</p>
+				<div class="card-links">
+					<a href="/blog/2025-07-19-taking-the-small-wins/" class="card-cta">Read the write-up: Cutting API Telemetry Times by 36% →</a>
+					<div class="card-sublinks">
+						<a href="/q-train">Live Transit Telemetry</a>
+						<span aria-hidden="true">·</span>
+						<a href="/blog/2025-06-01-next-train-to-alberquerque/">GTFS-Realtime Pipeline</a>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -69,16 +95,34 @@ export const prerender = true;
 		</p>
 		<div class="grid-list">
 			<div class="project-card">
-				<h4>Pragmatic Lakehouses</h4>
+				<h4><a href="/blog/2025-09-29-from-raw-to-polished/">Pragmatic Lakehouses</a></h4>
 				<p>Structuring raw, messy inputs into clean, queryable datasets using the <strong>Medallion Architecture</strong> (Bronze/Silver/Gold) on <strong>Microsoft Fabric</strong>.</p>
+				<div class="card-links">
+					<a href="/blog/2025-09-29-from-raw-to-polished/" class="card-cta">Read the write-up: Medallion Architecture Guide →</a>
+					<div class="card-sublinks">
+						<a href="/blog/2025-10-28-billing-anxiety-vs-the-lakehouse/">Billing Anxiety vs. The Lakehouse</a>
+					</div>
+				</div>
 			</div>
 			<div class="project-card">
-				<h4>Workflow Orchestration</h4>
+				<h4><a href="/blog/2025-06-29-better-pipelines-with-dagster/">Workflow Orchestration</a></h4>
 				<p>Using <strong>Dagster</strong> for software-defined orchestration, building event-driven, idempotent pipelines with built-in asset checks and clear error tracing so failures are easy to debug.</p>
+				<div class="card-links">
+					<a href="/blog/2025-06-29-better-pipelines-with-dagster/" class="card-cta">Read the write-up: Building Pipelines with Dagster →</a>
+					<div class="card-sublinks">
+						<a href="/blog/2026-01-05-transforming-21-million-rows-crispr/">21M-Row CRISPR Pipeline</a>
+					</div>
+				</div>
 			</div>
 			<div class="project-card">
-				<h4>Resilient Services</h4>
+				<h4><a href="/blog/2025-05-26-automated-sql-backups-to-google-drive/">Resilient Services</a></h4>
 				<p>Bringing systems engineering habits to data services—building lightweight, event-driven services that handle network hiccups gracefully and recover automatically.</p>
+				<div class="card-links">
+					<a href="/blog/2025-05-26-automated-sql-backups-to-google-drive/" class="card-cta">Read the write-up: Automated SQL Backups with Python →</a>
+					<div class="card-sublinks">
+						<a href="/blog/?tag=Automation">All Automation posts</a>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -90,8 +134,14 @@ export const prerender = true;
 		</p>
 		<div class="grid-list">
 			<div class="project-card">
-				<h4>Fixing Healthcare Data Plumbing</h4>
+				<h4><a href="/blog/2025-08-10-fact-and-friction-in-healthcare-data/">Fixing Healthcare Data Plumbing</a></h4>
 				<p>Re-engineered stalled EDI claims pipelines for home care agencies (<strong>LHCSAs</strong>) to resolve blocked revenue cycles, and migrated legacy on-prem SQL setups to modern <strong>FHIR-compliant cloud architectures</strong>.</p>
+				<div class="card-links">
+					<a href="/blog/2025-08-10-fact-and-friction-in-healthcare-data/" class="card-cta">Read the write-up: Fact and Friction in Healthcare Data →</a>
+					<div class="card-sublinks">
+						<a href="/blog/?tag=Data+Engineering">All Data Engineering posts</a>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -242,6 +292,8 @@ export const prerender = true;
 			border: 1px solid #bae7ff;
 		}
 		.project-card {
+			display: flex;
+			flex-direction: column;
 			margin-bottom: 1rem;
 			padding: 1.5rem;
 			border-left: 4px solid var(--accent);
@@ -261,7 +313,49 @@ export const prerender = true;
 			margin-top: 0;
 		}
 		.project-card p {
-			margin-bottom: 0;
+			margin-bottom: 1rem;
+		}
+		.card-links {
+			margin-top: auto;
+			padding-top: 0.9rem;
+			border-top: 1px solid rgba(148, 163, 184, 0.2);
+			display: flex;
+			flex-direction: column;
+			gap: 0.45rem;
+		}
+		.card-cta {
+			display: inline-flex;
+			align-items: center;
+			font-size: 0.9rem;
+			font-weight: 700;
+			color: var(--accent);
+			text-decoration: none;
+			transition: color 0.18s ease, transform 0.18s ease;
+		}
+		.card-cta:hover {
+			text-decoration: underline;
+			transform: translateX(2px);
+		}
+		.card-sublinks {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			gap: 0.4rem;
+			font-size: 0.8rem;
+			color: #64748b;
+		}
+		.card-sublinks a {
+			color: #475569;
+			font-weight: 600;
+			text-decoration: none;
+		}
+		.card-sublinks a:hover {
+			color: var(--accent);
+			text-decoration: underline;
+		}
+		:global(html.holiday-mode) .card-cta,
+		:global(html.holiday-mode) .card-sublinks a:hover {
+			color: #2e8b57;
 		}
 	</style>
 </Layout>
