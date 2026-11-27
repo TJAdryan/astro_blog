@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-11-27T21:46:10.836Z",
+    "status": "Delays",
+    "details": [
+      "Northbound: 96 St-bound trains are having longer wait times between Atlantic Av - Barclays Ctr and DeKalb Av (up to 16 mins, normally every 10 mins)."
+    ]
+  },
+  {
     "date": "2026-11-26T22:02:55.347Z",
     "status": "Delays",
     "details": [
@@ -210,14 +217,6 @@
     "details": [
       "Northbound: 96 St-bound trains are having longer wait times between Neck Rd and Coney Island - Stillwell Av (up to 81 mins, normally every 12 mins).",
       "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Church Av and Beverley Rd (up to 13 mins, normally every 10 mins)."
-    ]
-  },
-  {
-    "date": "2026-10-25T13:04:43.123Z",
-    "status": "Delays",
-    "details": [
-      "Northbound: 96 St-bound trains are having longer wait times between Newkirk Plaza and Times Sq - 42 St (up to 14 mins, normally every 11 mins).",
-      "Southbound: Coney Island - Stillwell Av-bound trains are having longer wait times between Brighton Beach and Coney Island - Stillwell Av (up to 18 mins, normally every 13 mins)."
     ]
   }
 ]
