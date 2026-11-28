@@ -2,7 +2,7 @@
 title: 'Building Data Pipelines with Dagster: Practical'
 tags: ["General"]
 pubDate: 2025-06-29
-description: "A post about Building Data Pipelines with Dagster: Practical."
+description: "Building a practical Dagster pipeline that pulls NYC Open Data, transforms assets with visual lineage, and feeds static charts and a Streamlit dashboard."
 category: "Data Engineering"
 ---
 

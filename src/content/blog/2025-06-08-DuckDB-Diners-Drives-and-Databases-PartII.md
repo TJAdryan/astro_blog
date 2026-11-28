@@ -2,7 +2,7 @@
 title: DuckDB - Diners, Drives, and Databases Part II
 tags: ["General"]
 pubDate: 2025-06-08
-description: "A post about DuckDB - Diners, Drives, and Databases Part II."
+description: "Using DuckDB as a lightweight in-process ETL engine to transform CSVs with SQL, export compressed GZIP and Parquet files, and validate schemas for PostgreSQL."
 category: "Data Engineering"
 ---
 

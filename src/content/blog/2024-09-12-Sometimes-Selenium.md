@@ -2,7 +2,7 @@
 title: 'Sometimes Selenium Works Best: Web Automation in Python'
 tags: ["General"]
 pubDate: 2024-09-12 12:00:00 -0400
-description: "A post about Sometimes Selenium Works Best: Web Automation in Python."
+description: "Practical Python web automation tips with Selenium for handling pop-ups, scraping unfriendly sites, and automating repetitive browser tasks."
 category: "Data Engineering"
 ---
 

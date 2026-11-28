@@ -1,10 +1,14 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { SITE_TITLE } from "../consts";
 
 export const prerender = true;
 ---
 
-<BaseLayout>
+<BaseLayout
+  title={`Contact | ${SITE_TITLE}`}
+  description="Get in touch with Dominick Ryan for data engineering discussions, questions about blog posts, or collaboration opportunities."
+>
   <div class="container">
     <div class="hero-section">
       <div class="hero-grid">

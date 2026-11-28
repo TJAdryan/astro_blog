@@ -2,7 +2,7 @@
 title: 'The Legend of CRISPR: Long Ago and Far Away a Young Prokaryote...'
 tags: ["General"]
 pubDate: 2025-05-15 12:00:00 -0400
-description: "A post about The Legend of CRISPR: Long Ago and Far Away a Young Prokaryote...."
+description: "How an ancient bacterial defense against viruses became CRISPR gene editing—and how it is already saving lives and powering bioinformatics tools."
 category: "Data Engineering"
 ---
 

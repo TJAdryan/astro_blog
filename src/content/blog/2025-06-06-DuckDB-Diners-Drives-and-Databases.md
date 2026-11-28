@@ -2,7 +2,7 @@
 title: DuckDB - Diners, Drives, and Databases Part I
 tags: ["General"]
 pubDate: 2025-06-06
-description: "A post about DuckDB - Diners, Drives, and Databases Part I."
+description: "Getting started with DuckDB for zero-setup analytical SQL on real-world NYC restaurant inspection CSV data—and where it shines alongside Pandas."
 category: "Data Engineering"
 ---
 

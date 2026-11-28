@@ -2,7 +2,7 @@
 title: Automated SQL Backups to Google Drive with Python
 tags: ["General"]
 pubDate: 2025-05-26 12:00:00 -0400
-description: "A post about Automated SQL Backups to Google Drive with Python."
+description: "A step-by-step Python script and cron workflow for compressing SQL database backups into .gz archives and uploading them safely to Google Drive."
 category: "Data Engineering"
 ---
 

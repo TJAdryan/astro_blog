@@ -2,7 +2,7 @@
 title: 'Brighter But Not Harmful: The ''uv'' Python Installer'
 tags: ["General"]
 pubDate: 2025-04-25 12:00:00 -0400
-description: "A post about Brighter But Not Harmful: The ''uv'' Python Installer."
+description: "Why Astral's Rust-backed uv package manager is a fast, unobtrusive drop-in upgrade over traditional pip and virtual environment workflows."
 category: "Data Engineering"
 ---
 

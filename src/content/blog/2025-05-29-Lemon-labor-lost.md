@@ -2,7 +2,7 @@
 title: 'Lemon Labor Lost: A Quest for the Perfect Cookie'
 tags: ["General"]
 pubDate: 2025-05-29 12:00:00 -0400
-description: "A post about Lemon Labor Lost: A Quest for the Perfect Cookie."
+description: "An iterative baking experiment in pursuit of the ideal bright, chewy lemon cookie—and what went right and wrong along the way."
 category: "Data Engineering"
 ---
 
